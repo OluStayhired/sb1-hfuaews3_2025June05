@@ -55,7 +55,7 @@ export function FirstPostModal({ isOpen, onClose, onEdit, onToggleShowPost }: Fi
           .single();
 
         if (fetchError) {
-          if (fetchError.code === 'PGRST116') { // No rows found
+          if (fetchError.code === 'PGRST116') { // No rows found . . 
             setFirstPost(null);
           } else {
             console.error('Error fetching first post:', fetchError);
