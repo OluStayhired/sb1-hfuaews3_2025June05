@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "allowJs": true, 
+    "strict": true,   
+    "esModuleInterop": true, 
+    "declaration": false, 
+    "inlineSources": true, 
+    "lib": ["es2020"], 
+    "module": "esnext", 
+    "moduleResolution": "nodenext", 
+    "target": "es2020", 
+    "noEmitOnError": true, 
+    "noImplicitAny": true, 
+    "noImplicitReturns": true, 
+    "noUnusedLocals": true, 
+    "noUnusedParameters": true, 
+    "forceConsistentCasingInFileNames": true, 
+    "skipLibCheck": true,    
+    "resolveJsonModule": true, 
+    "rootDir": "./", 
+    "outDir": "../dist", 
+    "allowImportingTsExtensions": true,
+    "types": [
+    
+       "deno.ns",
+       "deno.unstable", 
+       "npm:@types/node" 
+    ]
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.js",
+    "./**/*.json"
+  ],
+  "exclude": [
+    "node_modules",
+    "../dist"    
+  ]
+}

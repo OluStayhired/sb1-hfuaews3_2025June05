@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "types": ["@supabase/supabase-js"]
+  },
+  "imports": {
+    "date-fns": "npm:date-fns@2.29.3",
+    "date-fns-tz": "npm:date-fns-tz@2.0.0",
+    "https://deno.land/std@0.168.0/http/server.ts": "https://deno.land/std@0.168.0/http/server.ts",
+    "npm:@supabase/supabase-js": "npm:@supabase/supabase-js",
+    "https://deno.land/std@0.212.0/uuid/mod.ts": "https://deno.land/std@0.212.0/uuid/mod.ts"
+  }
+}

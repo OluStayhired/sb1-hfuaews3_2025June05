@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "types": ["@supabase/supabase-js"]
+  },
+  "imports": {
+    "date-fns": "npm:date-fns@2.29.3",
+    "date-fns-tz": "npm:date-fns-tz@2.0.0"
+  },
+  "importMap": "./functions/bluesky-poster/import_map.json"
+}

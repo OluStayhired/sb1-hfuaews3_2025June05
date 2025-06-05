@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-env --allow-read index.ts"
+  },
+  "imports": {
+    "date-fns": "npm:date-fns@2.29.3",
+    "date-fns-tz": "npm:date-fns-tz@2.0.0"
+  },
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "types": ["@supabase/supabase-js"]
+  },
+  "importMap": "import_map.json"
+}
