@@ -492,7 +492,7 @@ const filteredContent = getFilteredContent();
         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
     }`}
   >
-    All 30 Days
+    Full Calendar
   </button>
 </div>
 
