@@ -23,7 +23,18 @@ export function TooltipHelp({ text, children, bgColor = 'gray-900', textColor = 
     >
       {children} {/* This is the trigger element (your button/icon) removed whitespace-nowrap */}
       <div
-        className={`absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2
+          className={`absolute z-1000 bottom-full left-1/2 transform -translate-x-1/2 mb-2
+           bg-gray-900 text-white text-xs rounded-md py-1 px-2 // Static classes for testing
+            shadow-lg whitespace-nowrap
+           ${isTooltipVisible ? 'opacity-100' : 'opacity-0'}
+           transition-opacity duration-300 pointer-events-none`}
+>
+          {text}
+      </div>
+
+{/*
+      <div
+        className={`absolute z-1000 bottom-full left-1/2 transform -translate-x-1/2 mb-2
                    bg-${bgColor} text-${textColor} text-xs rounded-md py-1 px-2
                     shadow-lg whitespace-nowrap 
                    ${isTooltipVisible ? 'opacity-100' : 'opacity-0'} // Use state for opacity
@@ -32,6 +43,7 @@ export function TooltipHelp({ text, children, bgColor = 'gray-900', textColor = 
         
         {text}
       </div>
+  */}      
     </div>
   );
 }
