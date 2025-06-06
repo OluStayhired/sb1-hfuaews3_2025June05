@@ -292,7 +292,7 @@ Ensure that:
 }
 
 
-export async function generateCalendar(calendar_info: string, startDayofWeek: string): Promise<GeminiResponse> {
+export async function generateCalendar(calendar_info: string, startDayofWeek: string, calendar_days: int): Promise<GeminiResponse> {
   // Check cache
   const cacheKey = JSON.stringify(calendar_info, startDayofWeek);
   const cached = calendarCache.get(cacheKey);
@@ -311,12 +311,12 @@ const getWeekday = (date: Date): string => {
 
   // More structured prompt to prevent recursion
   const prompt = `
-    As an experienced social media content marketer with 10 years experience, create a 30-day content calendar  based on this information: ${calendar_info}
+    As an experienced social media content marketer with 10 years experience, create a ${calendar_days}-day content calendar based on this information: ${calendar_info}
 
 This content calendar MUST start with the day of the week as ${startDayofWeek}.    
 
     Requirements:
-    1. Create exactly 30 days of content, starting with the first day's day_of_week being "${startDayofWeek}".
+    1. Create exactly ${calendar_days} days of content, starting with the first day's day_of_week being "${startDayofWeek}".
     2. Focus on the target audience's pain points
     3. Ensure each day has a unique theme
     4. Keep topics concise and actionable
@@ -327,11 +327,11 @@ This content calendar MUST start with the day of the week as ${startDayofWeek}.
     9. Content is engaging and platform appropriate
     10. Remove hashtags and generic content 
 
-Generate a 30-day content calendar in valid JSON format. 
+Generate a ${calendar_days}-day content calendar in valid JSON format. 
 The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".
-Provide the output as a JSON array with exactly 30 objects each containing:
+Provide the output as a JSON array with exactly ${calendar_days} objects each containing:
     {
-      "day":(number 1-30),
+      "day":(number 1-${calendar_days}),
       "day_of_week": (full day name e.g. "Monday"),
       "theme": (theme for the day),
       "topic": (specific topic),

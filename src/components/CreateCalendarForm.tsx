@@ -7,6 +7,7 @@ import { CheckCircle2, Calendar, Target, Goal, Package2, X, Loader2 } from 'luci
 import { Calendar as CalendarIcon, ChevronRight, ChevronLeft, Megaphone, CalendarPlus } from 'lucide-react';
 import { ShowCalendarContent } from './ShowCalendarContent';
 import { CreateCalendarProgressModal } from './CreateCalendarProgressModal';
+import { addDays } from 'date-fns';
 
 //import { useDebounce } from '/src/hooks/useDebounce';
 
@@ -57,6 +58,9 @@ const [isCalendarCreated, setIsCalendarCreated] = useState(false);
 const [createdCalendarName, setCreatedCalendarName] = useState('');
 const [showProgressModal, setShowProgressModal] = useState(false);
 
+  const [calendarDays, setCalendarDays] = useState<number>(14); 
+  const [productTier, setProductTier] = useState<string>('free');  
+
 // Modify the success handler in CreateCalendarForm
 const handleSuccess = (campaignName: string) => {
   setCreatedCalendarName(campaignName);
@@ -64,6 +68,57 @@ const handleSuccess = (campaignName: string) => {
   // Don't close the form yet
   // onClose(); // Remove this
 };
+
+  useEffect(() => {
+    async function fetchAndSetUserPreferences() {
+ 
+      const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session?.user) {
+          throw new Error('No authenticated user found in session.');
+          }
+
+  const userEmail = session.user.email;
+  const userId = session.user.id;
+
+  if (!userEmail) {
+    throw new Error('User email not found in session.');
+  }
+
+  if (!userId) {
+    throw new Error('User ID not found in session.');
+  }
+      
+      if (!userEmail || !userId) {
+        return;
+      }
+
+      const { data: productTierDataFromDb, error: productTierError } = await supabase
+        .from('user_preferences')
+        .select('calendar_days, product_tier, target_audience, problem')
+        .eq('email', userEmail)
+        .eq('user_id', userId)
+        .single();
+
+      if (productTierError) {
+        console.error("Error fetching user preferences:", productTierError);
+        return;
+      }
+
+      if (productTierDataFromDb) {
+        setFormData(prev => ({
+          ...prev,
+          targetAudience: productTierDataFromDb.target_audience || '',
+          coreServices: productTierDataFromDb.problem || '',
+        }));
+
+        setCalendarDays(productTierDataFromDb.calendar_days || 14);
+        setProductTier(productTierDataFromDb.product_tier || 'Standard');
+      }
+    }
+
+    fetchAndSetUserPreferences();
+  });
 
 
   useEffect(() => {
@@ -330,9 +385,26 @@ const getWeekday = (date: Date): string => {
   // Now you have both userEmail and userId available to use
   console.log('User Email:', userEmail);
   console.log('User ID:', userId);
+
+ //determine the calendar_days value 
+// Retrieve the selected calendar from the user_preferences table
+      {/*      
+    const { data: productTier, error: productTierError } = await supabase
+      .from('user_preferences')
+      .select('calendar_days, product_tier')
+      .eq('email', userEmail)
+      .eq('user_id', userId)
+      .single();
+
+  const calendar_days = productTier.calendar_days;
+      */}
       
   const startDate = new Date(formData.startDate);
-  const endDate = addDays(startDate, (30-1));
+      
+  //const endDate = addDays(startDate, (30-1));
+
+  const endDate = addDays(startDate, (calendarDays-1));    
+      
   const formattedEndDate = endDate.toISOString();
       
       // Save questions and answers to Supabase
@@ -372,7 +444,7 @@ const getWeekday = (date: Date): string => {
       
       //const DayofWeek = {start_date: new Date(formData.startDate).toLocaleDateString('en-GB',{weekday: 'long'})};
 
-      const generatedCalendar = await generateCalendar(calendarInfo, DayofWeek.start_date);
+      const generatedCalendar = await generateCalendar(calendarInfo, DayofWeek.start_date, calendarDays);
 
       if (generatedCalendar.error) throw new Error(generatedCalendar.error);
 
@@ -396,7 +468,11 @@ const getWeekday = (date: Date): string => {
       const calendarGeminiResult = cleanAndParseJSON(utf8String)
 
        // Validate the structure
-      if (!Array.isArray(calendarGeminiResult) || calendarGeminiResult.length !== 30) {
+      //if (!Array.isArray(calendarGeminiResult) || calendarGeminiResult.length !== 30) {
+        //throw new Error('Invalid calendar data format');
+      //}
+
+      if (!Array.isArray(calendarGeminiResult) || calendarGeminiResult.length !== calendarDays) {
         throw new Error('Invalid calendar data format');
       }
 

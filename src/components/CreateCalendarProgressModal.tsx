@@ -38,7 +38,7 @@ export function CreateCalendarProgressModal({
       const timer = setTimeout(() => {
         setCompletedStages(prev => [...prev, stages[currentStage].id]);
         setCurrentStage(prev => prev + 1);
-      }, 7000); // Each stage takes 7 seconds
+      }, 2500); // Each stage takes 7 seconds
       
       return () => clearTimeout(timer);
     }

@@ -397,9 +397,26 @@ const filteredContent = getFilteredContent();
 
   if (!calendarContent.length) {
     return (
-      <div className="text-center text-gray-500 py-8">
-        No content available for this calendar
+  <div className="flex flex-col items-center justify-center h-full text-gray-500">
+     <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
+        <Calendar className="w-12 h-12 font-light text-blue-500" />
       </div>
+      
+        <div className="text-center text-gray-500 py-8">
+          {/*No content available for this calendar*/}
+            <p className="text-gray-600 mb-3 mt-2">Sorry! No content available for this calendar 😔</p>
+            <p className="text-gray-400 mb-4 text-sm">Create a campaign to get started</p>
+          
+          <button
+                  onClick={handleBackToCalendarList}
+                  className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5 mr-2" />
+                  <span>Back to Campaign List</span>
+          </button>
+          
+        </div>
+  </div>
     );
   }
 

@@ -146,7 +146,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
               <div className="mb-8">
                 <div className="flex items-center text-center space-x-2 mb-4">
                   <Bug className="w-5 h-5 text-blue-500"/>
-                  <h3 className="text-xl font-medium text-gray-900">Problem</h3>
+                  <h3 className="text-xl font-medium text-gray-900">Report Problem</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -167,7 +167,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                               }
                             required
                         >
-                        <option value="" disabled className="text-gray-400">Select feature type</option>
+                        <option value="" disabled className="text-gray-400">feature type</option>
                           {featureTypeOptions.map(option => (
                         <option key={option} value={option} className="text-gray-900">{option}</option>
                         ))}
@@ -189,7 +189,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                               }
                       required
                     >
-                      <option value="" disabled className="text-gray-400">Select app section</option>
+                      <option value="" disabled className="text-gray-400">affected section</option>
                       {appSectionOptions.map(option => (
                        <option key={option} value={option} className="text-gray-900">{option}</option>
                       ))}
@@ -211,7 +211,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                               }
                       required
                     >
-                      <option value="" disabled className="text-gray-400">Select social channel</option>
+                      <option value="" disabled className="text-gray-400">social channel</option>
                       {socialChannelOptions.map(option => (
                        <option key={option} value={option} className="text-gray-900">{option}</option>
                       ))}
