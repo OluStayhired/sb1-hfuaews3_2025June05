@@ -27,6 +27,10 @@ const genAI = new GoogleGenerativeAI('', { // Pass an empty string or null, as t
 // which, in your secure setup, should ideally never happen.
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Rest of the file remains the same...
 
 export interface GeminiResponse {
@@ -210,17 +214,6 @@ export async function generateThreadIdeas(topic: string): Promise<GeminiResponse
   return generateContent(prompt);
 }
 
-{/*
-export async function generateCalendar(calendar_info: string): Promise<GeminiResponse> {
-  const prompt = `
-   Act as an experienced social media content marketer. You have 10 years experience writing highly-engaging content for your clients on platforms like twitter. You have research capabilities and fully understand how to create a social media calendar that groups social media topics into categories. Using the information ${calendar_info}, reverse engineer the fears, wants and major pain points of the ideal target audience to create a 30 day Content Calendarin a table with the columns  Day Of Week, Day, Theme, Topic, Call To Action, Notes. 
-
-Format as an output to be sent into a table.
-  `;
-
-  return generateContent(prompt);
-}
-*/}
 
 export async function generateFirstPostIdeas(content_audience: string):Promise<GeminiResponse> {
 
@@ -291,8 +284,8 @@ Ensure that:
   }
 }
 
-
-export async function generateCalendar(calendar_info: string, startDayofWeek: string, calendar_days: int): Promise<GeminiResponse> {
+//------ start generate calendar no retries ------//
+export async function generateCalendar(calendar_info: string, startDayofWeek: string, calendarDays: int): Promise<GeminiResponse> {
   // Check cache
   const cacheKey = JSON.stringify(calendar_info, startDayofWeek);
   const cached = calendarCache.get(cacheKey);
@@ -311,12 +304,12 @@ const getWeekday = (date: Date): string => {
 
   // More structured prompt to prevent recursion
   const prompt = `
-    As an experienced social media content marketer with 10 years experience, create a ${calendar_days}-day content calendar based on this information: ${calendar_info}
+    As an experienced social media content marketer with 10 years experience, create a ${calendarDays}-day content calendar based on this information: ${calendar_info}
 
 This content calendar MUST start with the day of the week as ${startDayofWeek}.    
 
     Requirements:
-    1. Create exactly ${calendar_days} days of content, starting with the first day's day_of_week being "${startDayofWeek}".
+    1. Create exactly ${calendarDays} days of content, starting with the first day's day_of_week being "${startDayofWeek}".
     2. Focus on the target audience's pain points
     3. Ensure each day has a unique theme
     4. Keep topics concise and actionable
@@ -327,11 +320,11 @@ This content calendar MUST start with the day of the week as ${startDayofWeek}.
     9. Content is engaging and platform appropriate
     10. Remove hashtags and generic content 
 
-Generate a ${calendar_days}-day content calendar in valid JSON format. 
+Generate a ${calendarDays}-day content calendar in valid JSON format. 
 The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".
-Provide the output as a JSON array with exactly ${calendar_days} objects each containing:
+Provide the output as a JSON array with exactly ${calendarDays} objects each containing:
     {
-      "day":(number 1-${calendar_days}),
+      "day":(number 1-${calendarDays}),
       "day_of_week": (full day name e.g. "Monday"),
       "theme": (theme for the day),
       "topic": (specific topic),
@@ -379,6 +372,134 @@ Ensure that:
     };
   }
 }
+//------ end generate calendar no retries ------//
+
+
+//------ start generate calendar with retries ------//
+export async function generateCalendarWithRetry(
+  calendar_info: string, 
+  startDayofWeek: string, 
+  calendarDays: number,
+  maxRetries: number = 5,
+  initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+  
+  // Check cache
+  const cacheKey = JSON.stringify({ calendar_info, startDayofWeek, calendarDays });
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log('Returning calendar from cache.');
+    return cached.response;
+  }
+
+const getWeekday = (date: Date): string => {
+  return date.toLocaleDateString('en-US', { weekday: 'long' });
+};
+
+  console.log('startDayofWeek :', {startDayofWeek});
+  
+  // Rate limiting
+  //await rateLimiter.checkAndWait();
+
+  // More structured prompt to prevent recursion
+  const prompt = `
+    As an experienced social media content marketer with 10 years experience, create a ${calendarDays}-day content calendar based on this information: ${calendar_info}
+
+This content calendar MUST start with the day of the week as ${startDayofWeek}.    
+
+    Requirements:
+    1. Create exactly ${calendarDays} days of content, starting with the first day's day_of_week being "${startDayofWeek}".
+    2. Focus on the target audience's pain points
+    3. Ensure each day has a unique theme
+    4. Keep topics concise and actionable
+    5. Include clear calls to action
+    6. Limit response to one complete table
+    7. Do not include any follow-up questions or suggestions
+    8. Notes provide context or tips
+    9. Content is engaging and platform appropriate
+    10. Remove hashtags and generic content 
+
+Generate a ${calendarDays}-day content calendar in valid JSON format. 
+The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".
+Provide the output as a JSON array with exactly ${calendarDays} objects each containing:
+    {
+      "day":(number 1-${calendarDays}),
+      "day_of_week": (full day name e.g. "Monday"),
+      "theme": (theme for the day),
+      "topic": (specific topic),
+      "content": (actual post content),
+      "call_to_action": (specific CTA),
+      "notes": (additional notes or tips)
+      
+    }
+
+Example of the first object in the JSON array:
+    {
+      "day": 1,
+      "day_of_week": "${startDayofWeek}",
+      "theme": "...",
+      "topic": "...",
+      "content": "...",
+      "call_to_action": "...",
+      "notes": "..."
+    }    
+
+Ensure that:
+
+* All string values (day_of_week, theme, topic, content, call_to_action, notes) are enclosed in double quotes.
+
+* Any special characters within string values (e.g., forward slashes / , backslashes and [ and ] should be properly escaped to prevent JSON parsing errors.
+
+* Specifically, square brackets [ and ] should be escaped as \[ and \].
+  `;
+
+  let currentRetry = 0;
+  let delayTime = initialDelayMs;
+
+  while (currentRetry < maxRetries) {
+    try {
+      await rateLimiter.checkAndWait();
+
+      //const response = await model.generateContent(prompt);
+      
+      const response = await generateContent(prompt);
+      
+      calendarCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
+
+      return response;
+
+    } catch (error: any) {
+      const isRetryableError =
+        error.status === 503 ||
+        error.status === 429 ||
+        (error.message && (error.message.includes('503') || error.message.includes('429')));
+      const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+        currentRetry++;
+        console.warn(
+          `Gemini API call failed (Error: ${error.status || error.message}). ` +
+          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+        );
+        await sleep(delayTime);
+        delayTime *= 2;
+        delayTime = delayTime * (1 + Math.random() * 0.2);
+        delayTime = Math.min(delayTime, 30000);
+      } else {
+        console.error(`Calendar generation failed after ${currentRetry} retries:`, error);
+        throw new Error(`Failed to generate calendar: ${error.message || 'Unknown error occurred.'}`);
+      }
+    }
+  }
+
+  throw new Error("Max retries exhausted for calendar generation (wait 5 mins and try again).");
+}
+//------ end generate calendar with retries ------//
+
+
 // Prompt to Generate List Focused Posts
 
 export async function generateListPost(theme: string, topic: string, target_audience: string, content: string, call_to_action: string): Promise<GeminiResponse> {
@@ -518,3 +639,107 @@ Follow the [Rules] below:
     };
   }
 }
+
+// ------------- Start Generate First Post With Retry ------------------------ //
+
+
+export async function generateFirstPostWithRetry(
+  target_audience: string,
+  content: string, 
+  char_length: string,
+  maxRetries: number = 5,
+  initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+  // Check cache
+ const cacheKey = JSON.stringify({ target_audience, content }); // Include all variables
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.response;
+  }
+
+  // Rate limiting
+  await rateLimiter.checkAndWait();
+
+  const prompt = `
+Act as an experienced social media content creator who specializes in creating practical, actionable, and repeatable content that resonate with ${target_audience}.
+
+Analyze deeply the information in the ${content} to identify the most pressing fears, wants and aspirations for ${target_audience}. Use your experience to focus on either the fears, frustrations, aspirations or wants for this post.
+
+Starting with a hook, improve the post so that it resonates with ${target_audience} while keeping to the key message in ${content}.
+
+Use a copywriting framework similar to the [framework] below:
+
+[framework]:
+start with a hook that is a **declarative statement**, directly describing a personal feeling or the action causing the pain point related to the identified key pain point within the ${target_audience}, and use personal pronouns and conversational language to convey deep emotional resonance appropriate to the context. **The hook must follow the structure of "Subject + Verb + Object" or "Subject + Verb + Adjective" and must not contain any interrogative words or phrasing.**
+
+keep the hook directly related to the identified key pain point and actionable, emphasizing a repeatable process or transformation.
+
+then, transform the ${content} into a deeply relatable story to the audience ${target_audience}.
+
+conclude with a simple, conversational question that encourages engagement, but does not demand work from the user.
+
+follow the AIDA copywriting framework, emphasizing action and implementation.
+
+Follow the [Rules] below:
+
+[Rules]:
+- Keep to ${char_length} Characters in total
+- Use a first person singular grammar.
+- Keep to impactful and meaningful sentences, focusing on actionable advice.
+- Place each sentence in the post on a new line.
+- Add a space after each line. 
+- Start with a Hook that is a **declarative statement** directly describing a feeling or action related to the identified key pain point, using personal pronouns and conversational language. **Do not use any interrogative words or phrasing in the hook.**
+- Provide simple, conversational language.
+- Ban Generic Content
+- Ban hashtags
+- Ban bullet points.
+- Keep it natural
+  `;
+
+  let currentRetry = 0;
+  let delayTime = initialDelayMs;
+
+  while (currentRetry < maxRetries) {
+    try {
+      await rateLimiter.checkAndWait();
+
+      //const response = await model.generateContent(prompt);
+      
+      const response = await generateContent(prompt);
+      
+      calendarCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
+
+      return response;
+
+    } catch (error: any) {
+      const isRetryableError =
+        error.status === 503 ||
+        error.status === 429 ||
+        (error.message && (error.message.includes('503') || error.message.includes('429')));
+      const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+        currentRetry++;
+        console.warn(
+          `Gemini API call failed (Error: ${error.status || error.message}). ` +
+          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+        );
+        await sleep(delayTime);
+        delayTime *= 2;
+        delayTime = delayTime * (1 + Math.random() * 0.2);
+        delayTime = Math.min(delayTime, 30000);
+      } else {
+        console.error(`Post generation failed after ${currentRetry} retries:`, error);
+        throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+      }
+    }
+  }
+
+  throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}
+
+
+// -------------- End Generate First Post WIth Retry ------------------------ //

@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { X, Loader2, Check, Calendar, Sparkles, Database, FileText, Megaphone } from 'lucide-react';
 
+
+// Define stages OUTSIDE the component to ensure it's a stable reference
+const ALL_STAGES = [
+  { id: 'preparing', label: 'Preparing campaign data', icon: <Calendar className="w-5 h-5" /> },
+  { id: 'generating', label: 'Generating content ideas', icon: <Sparkles className="w-5 h-5" /> },
+  { id: 'storing', label: 'Storing in database', icon: <Database className="w-5 h-5" /> },
+  { id: 'finalizing', label: 'Creating calendar entries', icon: <FileText className="w-5 h-5" /> },
+  { id: 'complete', label: 'Finalizing campaign', icon: <Megaphone className="w-5 h-5" /> }
+];
+
 interface CreateCalendarProgressModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,13 +25,7 @@ export function CreateCalendarProgressModal({
   campaignName
 }: CreateCalendarProgressModalProps) {
   // Define the stages of calendar creation
-  const stages = [
-    { id: 'preparing', label: 'Preparing campaign data', icon: <Calendar className="w-5 h-5" /> },
-    { id: 'generating', label: 'Generating content ideas', icon: <Sparkles className="w-5 h-5" /> },
-    { id: 'storing', label: 'Storing in database', icon: <Database className="w-5 h-5" /> },
-    { id: 'finalizing', label: 'Creating calendar entries', icon: <FileText className="w-5 h-5" /> },
-    { id: 'complete', label: 'Finalizing campaign', icon: <Megaphone className="w-5 h-5" /> }
-  ];
+  const stages = ALL_STAGES;
 
   // Track the current active stage
   const [currentStage, setCurrentStage] = useState(0);
@@ -38,7 +42,7 @@ export function CreateCalendarProgressModal({
       const timer = setTimeout(() => {
         setCompletedStages(prev => [...prev, stages[currentStage].id]);
         setCurrentStage(prev => prev + 1);
-      }, 2500); // Each stage takes 7 seconds
+      }, 1250); // <--- Changed to 1.25 seconds per stage
       
       return () => clearTimeout(timer);
     }

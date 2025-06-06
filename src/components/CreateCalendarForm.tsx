@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { generateCalendar } from '../lib/gemini';
+import { generateCalendar, generateCalendarWithRetry } from '../lib/gemini';
 import { useAuthStore } from '../auth';
 import { useAuth } from '../context/AuthContext';
 import { CheckCircle2, Calendar, Target, Goal, Package2, X, Loader2 } from 'lucide-react';
@@ -444,7 +444,9 @@ const getWeekday = (date: Date): string => {
       
       //const DayofWeek = {start_date: new Date(formData.startDate).toLocaleDateString('en-GB',{weekday: 'long'})};
 
-      const generatedCalendar = await generateCalendar(calendarInfo, DayofWeek.start_date, calendarDays);
+      //const generatedCalendar = await generateCalendar(calendarInfo, DayofWeek.start_date, calendarDays);
+
+      const generatedCalendar = await generateCalendarWithRetry(calendarInfo, DayofWeek.start_date, calendarDays);
 
       if (generatedCalendar.error) throw new Error(generatedCalendar.error);
 

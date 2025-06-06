@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
-import { generateCalendar, generateListPost, generateFirstPostIdeas, generateFirstPost } from '../lib/gemini';
+import { generateCalendar, generateListPost, generateFirstPostIdeas, generateFirstPost, generateFirstPostWithRetry } from '../lib/gemini';
 import { getCompanyProblemAndAudience, CompanyInsightsResponse } from '../lib/firecrawl';
 import { v4 as uuidv4 } from 'uuid';
 import { Routes, Route, useNavigate, useLocation, Navigate, useSearchParams } from 'react-router-dom';
@@ -329,6 +329,8 @@ const handleForceClose = async () => {
     
     // 4. Call generateFirstPostIdeas with the audience text
     const postIdeasResponse = await generateFirstPostIdeas(audience);
+
+
     
     if (postIdeasResponse.error) {
       setError(`Failed to generate post ideas: ${postIdeasResponse.error}`);
@@ -471,11 +473,20 @@ const handleGenerateContent = async () => {
     }
     
     // 3. Call generateFirstPost with the appropriate parameters
-    const generatedPostResponse = await generateFirstPost(
+    const generatedPostResponse = await generateFirstPostWithRetry(
       selectedIdeaData.target_audience,
       selectedIdeaData.content,
       charLength
     );
+
+     // 3. Call generateFirstPost with the appropriate parameters
+    //const generatedPostResponse = await generateFirstPost(
+     // selectedIdeaData.target_audience,
+     // selectedIdeaData.content,
+     // charLength
+    //);
+
+    
     
      if (generatedPostResponse.error) {
         // Check for specific 503 error from the proxy

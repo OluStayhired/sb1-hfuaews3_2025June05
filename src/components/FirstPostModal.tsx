@@ -191,7 +191,7 @@ export function FirstPostModal({ isOpen, onClose, onEdit, onToggleShowPost }: Fi
               </div>
               
               <div className="mt-3 p-3 bg-gray-50 rounded-md">
-                <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                <p className="text-xs text-gray-600 whitespace-pre-wrap">
                   {firstPost.first_post}
                 </p>
               </div>

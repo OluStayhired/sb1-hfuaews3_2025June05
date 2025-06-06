@@ -645,15 +645,14 @@ const filteredContent = getFilteredContent();
               </button>
     </TooltipHelp>
 
+    <TooltipHelp  text = {`Content Score ${Math.round(calculateContentScore(content.content).totalScore)}%`} >
               <button
                   className={`inline-flex items-center px-1 py-1 bg-gray-100 ${getScoreColor(calculateContentScore(content.content).totalScore)} rounded-md hover:bg-gray-100 transition-colors group relative`}
-                  title="Post Readability"
+                  //title="Post Readability"
               >
                 <CheckCircle className="w-3 h-3" />
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">
-                  Score: {Math.round(calculateContentScore(content.content).totalScore)}%
-                  </div>
-              </button>    
+              </button>  
+    </TooltipHelp>
             </div>  
         </p>
       </div>
