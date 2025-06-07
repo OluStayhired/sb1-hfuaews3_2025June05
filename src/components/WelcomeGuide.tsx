@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Import useEffect
-import { ArrowRight, ArrowLeft, X, Lightbulb, Users, User, FileText, Send, Globe, CheckCircle, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, X, Lightbulb, Users, User, FileText, Send, Globe, CheckCircle, Sparkles, Loader2, ThumbsUp } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -198,14 +198,14 @@ const handleForceClose = async () => {
           content: postToUpdate.content || null,
           first_post: postToUpdate.first_post || null,
         }, {
-          onConflict: 'id', // Conflict resolution by ID
+          onConflict: 'email', // Conflict resolution by ID
         });
     } else {
       // Scenario 2: No existing record, perform insert
       console.log('Performing insert for new post idea (guide closed early).');
       operationPromise = supabase
         .from('first_post_idea')
-        .insert({
+        .upsert({
           ...baseData,
           // For a new record when closing early, these might be null/empty
           topic: null,
@@ -213,6 +213,8 @@ const handleForceClose = async () => {
           content: null,
           first_post: null,
           created_at: new Date().toISOString(), // Add created_at for new inserts
+        }, {
+          onConflict: 'email', // Conflict resolution by ID
         });
     }
 
@@ -397,6 +399,12 @@ const handleForceClose = async () => {
             topic: idea.topic,
             content: idea.content
         })));
+
+        // --- PRECISELY HERE ---
+        // Set selectedContentIdea with the ID of the single, pre-selected idea
+        setSelectedContentIdea(upsertedIdeas[0].id);
+        // --- END PRECISE LOCATION ---
+     
     } else {
         // Fallback or error handling if insertedIdeas is null unexpectedly
         console.warn("No inserted ideas returned, but no insertError. Check Supabase RLS or insert config.");
@@ -985,17 +993,18 @@ const handleBlueskyModalSuccess = () => {
           <div className="space-y-8">
             <div className="text-center">
               <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                <Lightbulb className="h-8 w-8 text-purple-600" />
+                <ThumbsUp className="h-8 w-8 text-purple-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Choose Your Content Idea</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Choose Social Media Style</h2>
               <p className="text-sm text-gray-500 max-w-md mx-auto">
-                Select a content topic and social channel style for your first post.
+                Select a social channel style for your first post.
               </p>
             </div>
 
             <div className="space-y-4">
               <label className="block text-sm font-normal text-gray-700 mb-2">Choose content idea 💡:</label>
               <div className="grid gap-3">
+                {/*
                 {contentIdeas.map(idea => (
                   <div
                     key={idea.id}
@@ -1017,6 +1026,48 @@ const handleBlueskyModalSuccess = () => {
                     </div>
                   </div>
                 ))}
+
+                */}
+
+                {/*Start Selecting The Only Content Idea*/}
+
+                {contentIdeas.map(idea => {
+    // Since there's always only one idea, we can consider it
+    // inherently selected and not clickable.
+    const isSelected = true; // This will always be true for the single idea
+
+    return (
+        <div
+            key={idea.id}
+            // Remove the onClick handler completely as it's not needed
+            // onClick={() => handleSelectContentIdea(idea.id)} <-- REMOVE THIS LINE
+            className={`p-4 rounded-lg transition-colors
+                        ${
+                          // Always apply the "selected" styles
+                          'border border-blue-500 bg-blue-50'
+                        }
+                        // Explicitly remove cursor-pointer and hover effects
+                        // 'cursor-default' can be used if you want to explicitly show it's not clickable
+                        // Remove 'hover:border-blue-300 hover:bg-blue-50' as well
+                       `}
+        >
+            <div className="flex justify-between items-start">
+                <div>
+                    <h3 className="font-medium text-gray-900">{idea.theme}</h3>
+                    <p className="text-sm text-gray-700 mt-1">{idea.topic}</p>
+                </div>
+                {/* Always show the checkmark for the single, pre-selected item */}
+                {isSelected && (
+                    <CheckCircle className="w-5 h-5 text-blue-500" />
+                )}
+            </div>
+        </div>
+    );
+})}
+
+
+                {/*End Selecting The Only  Content Idea*/}
+                
               </div>
             </div>
 

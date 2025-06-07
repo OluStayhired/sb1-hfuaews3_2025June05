@@ -231,7 +231,8 @@ const fetchCalendarContent = async () => {
         .select('target_audience, active')
         .eq('calendar_name', content.calendar_name)
         .eq('email', currentUserEmail)
-        .single();
+        .maybeSingle()
+        //.single();
 
       if (questionError) {
         console.error('Error fetching calendar data:', questionError);
