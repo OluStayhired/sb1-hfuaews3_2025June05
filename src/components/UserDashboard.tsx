@@ -624,8 +624,8 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                   shadow-blue-500/30
                   `}
             >
-              <Sparkles className="w-5 h-5 mr-2" /> {/* Reduced icon size */}
-              Create 2 Weeks of Content
+               <Sparkles className="w-6 h-6 mr-2 text-yellow-400 fill-yellow-500" /> {/* Reduced icon size */}
+                Plan 14 Days of Content
             </button>
         </div>
       </div>

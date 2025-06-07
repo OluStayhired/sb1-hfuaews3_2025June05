@@ -9,6 +9,8 @@ import { getCompanyProblemAndAudience, CompanyInsightsResponse } from '../lib/fi
 import { v4 as uuidv4 } from 'uuid';
 import { Routes, Route, useNavigate, useLocation, Navigate, useSearchParams } from 'react-router-dom';
 import { CreateBlueskyModal } from './CreateBlueskyModal';
+import { TooltipHelp } from '../utils/TooltipHelp';
+import { TooltipExtended } from '../utils/TooltipExtended';
 
 interface FirstPostIdeaRecord {
   id: string;
@@ -879,9 +881,9 @@ const handleBlueskyModalSuccess = () => {
                 <Sparkles className="h-8 w-8 text-blue-600" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to SoSavvy! 👋</h2>
-              <p className="text-lg text-gray-600 mb-6">Craft your first social media post in 30 seconds!</p>
+              <p className="text-lg text-gray-600 mb-6">Create your first social media post in 30 seconds!</p>
               <p className="text-sm text-gray-500 max-w-md mx-auto">
-                We'll help you write engaging content for your ideal audience, fast!
+                Start writing and scheduling engaging posts your audience will love ❤️
               </p>
             </div>
 
@@ -932,13 +934,24 @@ const handleBlueskyModalSuccess = () => {
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">We found your ideal customers!</h2>
               <p className="text-sm text-gray-500 max-w-md mx-auto">
-                Tell us about the problem you're solving and who you're solving it for.
+                We also understand the problem you solve and who you solve it for
               </p>
             </div>
 
             <div className="space-y-4">
+            <div>
+                <label htmlFor="audience" className="block text-sm font-medium text-gray-700 mb-1">Here's your ideal customer!</label>
+                <textarea
+                  id="audience"
+                  value={audience}
+                  onChange={(e) => setAudience(e.target.value)}
+                  placeholder="Your ideal customer is a marketer..."
+                  className="w-full px-4 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300 min-h-[100px]"
+                />
+              </div>
+        
               <div>
-                <label htmlFor="problemStatement" className="block text-sm font-medium text-gray-700 mb-1">What problem are you solving?</label>
+                <label htmlFor="problemStatement" className="block text-sm font-medium text-gray-700 mb-1">This is the problem you're solving!</label>
                 <textarea
                   id="problemStatement"
                   value={problemStatement}
@@ -948,16 +961,7 @@ const handleBlueskyModalSuccess = () => {
                 />
               </div>
 
-              <div>
-                <label htmlFor="audience" className="block text-sm font-medium text-gray-700 mb-1">Who is your ideal customer?</label>
-                <textarea
-                  id="audience"
-                  value={audience}
-                  onChange={(e) => setAudience(e.target.value)}
-                  placeholder="Your ideal customer is a marketer..."
-                  className="w-full px-4 py-2 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300 min-h-[100px]"
-                />
-              </div>
+              
             </div>
 
         {/* --- ERROR DISPLAY AREA --- */}
@@ -1002,7 +1006,7 @@ const handleBlueskyModalSuccess = () => {
             </div>
 
             <div className="space-y-4">
-              <label className="block text-sm font-normal text-gray-700 mb-2">Choose content idea 💡:</label>
+              <label className="block text-sm font-normal text-gray-700 mb-2">Sample content idea 💡:</label>
               <div className="grid gap-3">
                 {/*
                 {contentIdeas.map(idea => (
@@ -1039,12 +1043,10 @@ const handleBlueskyModalSuccess = () => {
     return (
         <div
             key={idea.id}
-            // Remove the onClick handler completely as it's not needed
-            // onClick={() => handleSelectContentIdea(idea.id)} <-- REMOVE THIS LINE
             className={`p-4 rounded-lg transition-colors
                         ${
                           // Always apply the "selected" styles
-                          'border border-blue-500 bg-blue-50'
+                          'bg-gradient-to-r from-blue-50 to-white border border-blue-100'
                         }
                         // Explicitly remove cursor-pointer and hover effects
                         // 'cursor-default' can be used if you want to explicitly show it's not clickable
@@ -1074,18 +1076,25 @@ const handleBlueskyModalSuccess = () => {
             <div className="space-y-4">
               <label className="block text-sm font-normal text-gray-700 mb-2">Select social channel style ✍️:</label>
               <div className="flex space-x-3">
+               
                 <button
                   onClick={() => handleSelectSocialChannel('Twitter')}
-                  className={`flex-1 p-3 border rounded-lg flex flex-col items-center transition-colors ${
+                  className={`flex-1 p-3 border rounded-lg flex justify-center flex-col items-center transition-colors ${
                     selectedSocialChannel === 'Twitter'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
                   }`}
                 >
-                  <img src={XLogo} alt="Twitter/X" className="w-6 h-6 mb-2" />
-                  <span className="text-sm font-medium">Twitter/X</span>
+                <TooltipExtended text="Choose Twitter for short form content of 280 characters or less">
+                  <div className="flex flex-col items-center">
+                    <img src={XLogo} alt="Twitter/X" className="w-6 h-6 mb-2" />
+                    <span className="text-sm font-medium">Twitter/X</span>
+                  </div>
+                </TooltipExtended>
                 </button>
+                
 
+                
                 <button
                   onClick={() => handleSelectSocialChannel('LinkedIn')}
                   className={`flex-1 p-3 border rounded-lg flex flex-col items-center transition-colors ${
@@ -1094,10 +1103,16 @@ const handleBlueskyModalSuccess = () => {
                       : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
                   }`}
                 >
-                  <img src={LinkedInLogo} alt="LinkedIn" className="w-6 h-6 mb-2" />
-                  <span className="text-sm font-medium">LinkedIn</span>
+                 <TooltipExtended text="Choose LinkedIn for medium form content of 600 characters or more"> 
+                   <div className="flex flex-col items-center">
+                      <img src={LinkedInLogo} alt="LinkedIn" className="w-6 h-6 mb-2" />
+                      <span className="text-sm text-center font-medium">LinkedIn</span>
+                   </div>
+                 </TooltipExtended>
                 </button>
+                
 
+                
                 <button
                   onClick={() => handleSelectSocialChannel('Bluesky')}
                   className={`flex-1 p-3 border rounded-lg flex flex-col items-center transition-colors ${
@@ -1106,9 +1121,15 @@ const handleBlueskyModalSuccess = () => {
                       : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
                   }`}
                 >
-                  <img src={BlueskyLogo} alt="Bluesky" className="w-6 h-6 mb-2" />
-                  <span className="text-sm font-medium">Bluesky</span>
+                  <TooltipExtended text="Choose Bluesky (similar to Twitter) 300 characters or less">
+                    <div className="flex flex-col items-center">
+                      <img src={BlueskyLogo} alt="Bluesky" className="w-6 h-6 mb-2" />
+                      <span className="text-sm text-center font-medium">Bluesky</span>
+                    </div>
+                  </TooltipExtended>
                 </button>
+                
+                
               </div>
             </div>
 
