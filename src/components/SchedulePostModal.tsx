@@ -633,7 +633,7 @@ const renderContentStep = () => (
     onClick={handleCreateCampaign}
     className="text-blue-500 hover:text-blue-600 text-sm font-medium flex items-center group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
   >
-    Create a Campaign for Content Ideas & AI help 💡
+    Create 2 Weeks of Content in minutes ⏰
     <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
   </button>
 </p>
