@@ -625,7 +625,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                   `}
             >
               <Sparkles className="w-5 h-5 mr-2" /> {/* Reduced icon size */}
-                Launch Campaign
+              Create 2 Weeks of Content
             </button>
         </div>
       </div>

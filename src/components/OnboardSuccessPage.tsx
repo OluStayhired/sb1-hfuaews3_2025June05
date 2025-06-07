@@ -111,7 +111,7 @@ export function OnboardSuccessPage({ isOpen, onClose, postContent }: OnboardSucc
               className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
             >
               <PlusCircle className="mr-2 h-5 w-5" />
-              <span className="font-medium">Create Content Campaign</span>
+              <span className="font-medium">Get 2 Weeks of Content</span>
             </button>
           
             
