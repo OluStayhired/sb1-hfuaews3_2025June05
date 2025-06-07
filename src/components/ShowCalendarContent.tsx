@@ -596,7 +596,7 @@ const filteredContent = getFilteredContent();
 
   <div className="absolute top-1 left-1 flex space-x-1 z-10">
 
-    <TooltipHelp  text = "Send to Calendar">
+    <TooltipHelp  text = "📅 Send to Calendar">
       <button
               onClick={() => handleAddToCalendar(content)}
               className="inline-flex items-center border border-gray-300 items-left px-1 py-1 bg-gray-100 text-gray-500 rounded-md hover:bg-blue-500 hover:text-white hover:border hover:border-blue-500 transition-colors"
