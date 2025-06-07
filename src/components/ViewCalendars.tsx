@@ -399,11 +399,12 @@ const handleViewCalendarList = () => {
               
           {calendarList.length === 0 && !isCreateCalendarFormOpen && !showCampaignList && !selectedCalendar && !isCampaignSuccessModalOpen ? (
                 <>
+                  {/*
                   <div className="mx-auto flex items-center justify-center bg-gray-50 rounded-full w-12 h-12">
                     <Megaphone className="w-8 h-8 font-light text-gray-400" />
                   </div>
                   <p className="text-gray-600 mb-3 mt-4">No Campaigns</p>
-                  <p className="text-gray-400 mb-4 text-sm"> Create your first Campaign </p>
+                  <p className="text-gray-400 mb-4 text-sm"> Create 2 weeks of content in minutes </p>
                   <button
                     onClick={handleCreateCalendarClick}
                     className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -411,6 +412,21 @@ const handleViewCalendarList = () => {
                     <PlusCircle className="w-5 h-5 mr-2" />
                     <span>Create Campaign</span>
                   </button>
+                  */}
+                <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
+                  <Calendar className="w-12 h-12 font-light text-blue-500" />
+                </div>
+                <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
+                <p className="text-gray-400 mb-4 text-sm">Create your First content Campaign</p>
+                <button
+                  onClick={handleCreateCalendarClick}
+                  className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  <PlusCircle className="w-5 h-5 mr-2" />
+                  <span>Create Campaign</span>
+                </button>
+              </div>
                 </>
               ) : null}
 

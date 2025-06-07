@@ -4,7 +4,7 @@ import { generateCalendar, generateCalendarWithRetry } from '../lib/gemini';
 import { useAuthStore } from '../auth';
 import { useAuth } from '../context/AuthContext';
 import { CheckCircle2, Calendar, Target, Goal, Package2, X, Loader2 } from 'lucide-react';
-import { Calendar as CalendarIcon, ChevronRight, ChevronLeft, Megaphone, CalendarPlus } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronRight, ChevronLeft, Megaphone, CalendarPlus, CheckCircle } from 'lucide-react';
 import { ShowCalendarContent } from './ShowCalendarContent';
 import { CreateCalendarProgressModal } from './CreateCalendarProgressModal';
 import { addDays } from 'date-fns';
@@ -608,7 +608,7 @@ const getWeekday = (date: Date): string => {
               <textarea
                 value={formData.calendarDescription}
                 onChange={(e) => setFormData(prev => ({ ...prev, calendarDescription: e.target.value }))}
-                className="mb-3 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="mb-3 text-sm w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows={1}
                 placeholder="Describe the purpose of this content calendar"
                 required
@@ -639,7 +639,7 @@ const getWeekday = (date: Date): string => {
               <textarea
                 value={formData.targetAudience}
                 onChange={(e) => setFormData(prev => ({ ...prev, targetAudience: e.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full text-sm px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows={4}
                 placeholder="Describe your target audience in detail..."
                 required
@@ -695,19 +695,22 @@ const getWeekday = (date: Date): string => {
               <textarea
                 value={formData.coreServices}
                 onChange={(e) => setFormData(prev => ({ ...prev, coreServices: e.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                rows={6}
+                className="w-full text-sm px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                rows={4}
                 placeholder="Describe your core offerings and their unique value propositions..."
                 required
               />
             </div>
 
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-medium text-blue-700 mb-2">Review Your Calendar Settings</h4>
-              <div className="space-y-2 text-sm">
-                <p><strong>Calendar Name:</strong> {formData.calendarName}</p>
-                <p><strong>Target Audience:</strong> {formData.targetAudience}</p>
-                <p><strong>Selected Goals:</strong> {formData.selectedGoals.join(', ')}</p>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="w-5 h-5 text-green-500 mb-2" />
+                  <h4 className="text-left justify-center font-medium text-gray-700 mb-2">Review Your Settings</h4>
+                </div>
+              <div className="space-y-2 text-sm text-gray-500">
+                <p className="text-sm text-left"><strong>Calendar Name:</strong> {formData.calendarName}</p>
+                <p className="text-sm text-left"><strong>Target Audience:</strong> {formData.targetAudience}</p>
+                <p className="text-sm text-left"><strong>Selected Goals:</strong> {formData.selectedGoals.join(', ')}</p>
               </div>
             </div>
           </div>
