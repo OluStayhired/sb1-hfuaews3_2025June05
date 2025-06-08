@@ -208,7 +208,7 @@ export function SettingsPage() {
                     value={userPreferences.target_audience || ''}
                     onChange={handleInputChange}
                     placeholder="Describe your ideal target audience"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                     rows={3}
                   />
                 </div>
@@ -223,7 +223,7 @@ export function SettingsPage() {
                     value={userPreferences.problem || ''}
                     onChange={handleInputChange}
                     placeholder="What problems does your business solve for your customers?"
-                    className="w-full px-3 py-2 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white  text-gray-900"
+                    className="w-full text-sm px-3 py-2 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white  text-gray-900"
                     rows={3}
                   />
                 </div>
