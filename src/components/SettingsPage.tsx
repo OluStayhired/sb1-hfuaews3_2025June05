@@ -256,10 +256,10 @@ export function SettingsPage() {
               </h3>
               <div className="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
                 <div>
-                  <p className="text-gray-700  font-medium">Free Plan</p>
+                  <p className="text-gray-700  font-medium">Standard Plan</p>
                   <p className="text-sm text-gray-500">Basic features</p>
                 </div>
-                <span className="text-sm text-gray-500">Coming Soon</span>
+                <span className="text-sm text-gray-500">Pricing Soon</span>
               </div>
             </div>
 
