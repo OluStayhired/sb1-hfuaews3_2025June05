@@ -169,7 +169,7 @@ function LandingPage() {
         */}
         
         <p className="text-sm text-gray-600">
-          The smart solution for audience builders on Bluesky <img src={BlueskyLogo} alt="Bluesky" className="inline-block w-3 h-3 align-middle" /> and LinkedIn <img src={LinkedInSolidLogo} alt="Bluesky" className="inline-block w-3 h-3 align-middle" />
+          The smart solution for audience builders on Bluesky <img src={BlueskyLogo} alt="Bluesky" className="inline-block w-3 h-3 align-middle" /> LinkedIn <img src={LinkedInSolidLogo} alt="LinkedIn" className="inline-block w-3 h-3 align-middle" /> and Twitter <img src={XLogo} alt="Twitter" className="inline-block w-3 h-3 align-middle" />
         </p>
         {/* Social links */}
       </div>
