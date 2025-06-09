@@ -6,6 +6,7 @@ import { AuthModal } from '../components/AuthModal';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-logo.svg';
 import LinkedInSolidLogo from '../images/linkedin-solid-logo.svg';
+import XLogo from '../images/x-logo.svg';
 import googleLogo from '../images/google-logo-48.svg';
 
 function LandingPage() {
@@ -39,7 +40,8 @@ function LandingPage() {
 
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    //<div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <div className="min-h-screen bg-white">
       <nav className="px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           
@@ -84,7 +86,7 @@ function LandingPage() {
         <p className="text-3xl text-gray-900 font-bold mb-6">Overcome <> <span className="text-gray-900 underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>writer's block</span></> on Social Media</p>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
             Stop struggling for inspiration, let's unlock your creative potential!  <br/>
-            Write engaging posts to grow on Twitter(X) LinkedIn and Bluesky 
+            Write engaging posts to grow on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
              {/*<img src={LinkedInSolidLogo} alt="LinkedIn" className="inline-block w-4 h-4" />*/} 
             {/*<img src={BlueskyLogo} alt="Bluesky" className="inline-block w-4 h-4" />*/}
           </p>
@@ -109,11 +111,16 @@ function LandingPage() {
 
         {/*Start Social Media Icons*/}
           <div className="flex justify-center items-center space-x-8 mt-8">
-            <div className="flex items-center p-2 bg-gray-100 hover:bg-gray-200 space-x-2 text-blue-700 rounded-tl-xl rounded-br-xl">
+            <div className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
               <img src={BlueskyLogo} alt="Bluesky" className="w-8 h-8 rounded-lg" />
             </div>
-            <div className="flex items-center p-2 bg-gray-100 hover:bg-gray-200 space-x-2 text-blue-700 rounded-tl-xl rounded-br-xl">
+            <div className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
               <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-8 h-8 rounded-lg" />
+            </div>
+
+            {/*<div className="flex items-center p-2 bg-blue-100 hover:bg-gray-200 space-x-2 text-blue-700 rounded-tl-xl rounded-br-xl">*/}
+            <div className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
+              <img src={XLogo} alt="Twitter" className="w-8 h-8 rounded-lg" />
             </div>
           </div>
 
