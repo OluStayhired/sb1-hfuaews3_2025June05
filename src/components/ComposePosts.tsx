@@ -897,9 +897,47 @@ const handleGenerateContent = async () => {
                 
                 {/* End Add a button to open the ContentCampaignModal */}
 
-          src/components/ViewCalendars.tsx
+          
 
                     {/* End Add button to show draft posts */}
+
+                    <TooltipHelp text="View drafts">
+            <button
+                onClick={() => {
+                  setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
+                  setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
+                }}
+                className="ml-2 flex items-center p-2 bg-gray-100 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                // Added 'items-center' to the button's class for vertical alignment
+            >
+            <FileEdit className="w-4 h-4 mr-2" />
+              <span className="text-xs">Saved Drafts</span>
+              {/* The 'totalDraftCount' wrapped in a gray badge */}
+            {totalDraftCount > 0 && ( // Only show the badge if there are drafts
+              <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-200 text-blue-400 text-xs font-semibold">
+                {totalDraftCount}
+              </span>
+            )}
+        </button>
+            {/*
+              <button
+                  //onClick={() => setIsDraftPostModalOpen(!isDraftPostModalOpen)}
+
+                  onClick={() => { // Start a single arrow function block
+                    setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
+                    setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
+                    }}
+                  className="ml-2 flex p-2 bg-gray-100 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                  //title="View Drafts"
+                >
+
+                
+                  <FileEdit className="w-4 h-4 mr-2"/>
+                  <span className="text-xs">Saved Drafts ({totalDraftCount})</span>
+                             
+                </button>
+                */}
+       </TooltipHelp>
                     
                   </>
                 ) : (
