@@ -897,26 +897,7 @@ const handleGenerateContent = async () => {
                 
                 {/* End Add a button to open the ContentCampaignModal */}
 
-                    {/* Start Add button to show draft posts */}  
-          <TooltipHelp text="View drafts">
-              <button
-                  //onClick={() => setIsDraftPostModalOpen(!isDraftPostModalOpen)}
-
-                  onClick={() => { // Start a single arrow function block
-                    setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
-                    setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
-                    }}
-                  className="ml-2 flex p-2 bg-gray-100 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
-                  //title="View Drafts"
-                >
-
-                
-                  <FileEdit className="w-4 h-4 mr-2"/>
-                  <span className="text-xs">Saved Drafts ({totalDraftCount})</span>
-                
-                  
-                </button>
-       </TooltipHelp>
+          src/components/ViewCalendars.tsx
 
                     {/* End Add button to show draft posts */}
                     
