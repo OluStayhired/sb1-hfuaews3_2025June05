@@ -7,6 +7,7 @@ import { CreateCalendarForm } from '/src/components/CreateCalendarForm';
 import { format, addDays, parseISO, differenceInDays } from 'date-fns';
 import {DeleteCampaignWarning} from '/src/components/DeleteCampaignWarning';
 import { TooltipExtended } from '../utils/TooltipExtended';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 
 interface CalendarListProps {
@@ -45,6 +46,8 @@ export function CalendarList({
     setIsCreateCalendarFormOpen(true);
   };  
 
+  const navigate = useNavigate();
+  const location = useLocation();
   //useEffect(() => {
   //setShowOnlyActiveLocal(showOnlyActive);
 //}, [showOnlyActive]);
@@ -57,6 +60,10 @@ export function CalendarList({
       </div>
     );
   }
+
+  const handleCreateCampaign = () => {
+    navigate('/dashboard/campaign');
+  };
 
  const handleOpenDeleteCampaignWarning = (calendarName: string) => {
     setSelectedCalendarToDelete(calendarName);
@@ -230,8 +237,21 @@ const handleDeleteCampaign = async (calendarName: string) => {
           </h3>
         </div>
 
-        <div className="flex rounded-lg border border-gray-300 overflow-hidden">
+        <div className="flex item-center">
+
+          
         {/* "Active" Button */}
+        
+        <button
+            onClick={handleCreateCampaign}
+            //className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors mr-4"
+              className="inline-flex text-sm items-center px-4 py-2 hover:border-blue-400 hover:text-blue-500 hover:bg-gray-50 bg-white border border-gray-200 rounded-lg text-gray-600 mr-2">
+         
+            <PlusCircle className="w-4 h-4 mr-2" />
+            <span>Create Campaign</span>
+        </button>
+      
+         <div className="flex rounded-lg border border-gray-300 overflow-hidden"> 
           <button
             onClick={() => setShowOnlyActiveLocal(true)} // Sets state to show only active
             className={`
@@ -263,7 +283,7 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 <span>All</span>
             </button>
           </div>
-        
+        </div>
       </div>
 
       <div className="overflow-x-auto">
