@@ -118,7 +118,7 @@ const handleSuccess = (campaignName: string) => {
     }
 
     fetchAndSetUserPreferences();
-  });
+  }, []);
 
 
   useEffect(() => {
