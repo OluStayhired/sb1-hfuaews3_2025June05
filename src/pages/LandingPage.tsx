@@ -83,7 +83,8 @@ function LandingPage() {
             Get <> <span className="text-blue-600">instant</span> </> content ideas
           </h1>
 
-        <p className="text-3xl text-gray-900 font-bold mb-6">Overcome <> <span className="text-gray-900 underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>writer's block</span></> on Social Media</p>
+        {/*<p className="text-3xl text-gray-900 font-bold mb-6">Overcome <> <span className="text-gray-900 underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>writer's block</span></> on Social Media</p>*/}
+        <p className="text-3xl text-gray-900 font-bold mb-6">Build your <> <span className="text-gray-900 underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>Personal Brand</span></> on Autopilot</p>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
             Stop struggling for inspiration, let's unlock your creative potential!  <br/>
             Write engaging posts to grow on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
