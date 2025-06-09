@@ -884,7 +884,7 @@ const handleGenerateContent = async () => {
                 {/* Start Add a button to open the ContentCampaignModal */}
                     <button
                         onClick={handleOpenContentCalendarModal}
-                        className="ml-2 p-2 bg-gray-100 flex items-center text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                        className="ml-2 px-2 py-2.5 bg-gray-100 flex items-center text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
                         //title="Get Content Ideas"
                         >
                           <TooltipHelp text="Browse ideas">
