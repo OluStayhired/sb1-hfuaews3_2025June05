@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Send, Calendar, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -49,8 +49,6 @@ function ComposePosts() {
   const [isDraftPostModalOpen, setIsDraftPostModalOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-
-
   const [campaignContent, setCampaignContent] = useState<Array<{ theme: string; topic: string; content: string }> | null>(null);
 
   const [max_length, setMaxLength] = useState(300);
@@ -61,6 +59,11 @@ function ComposePosts() {
     setContent(rewrittenContent);
     //setIsContentCalendarModalOpen(false);
   };
+
+  const [draftPosts, setDraftPosts] = useState<{[key: string]: DraftPost[]}>({});
+  const [isDraftLoading, setIsDraftLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [totalDraftCount, setTotalDraftCount] = useState(0); // New state variable
 
   // --- NEW: Use useLocation hook to access navigation state ---
   const location = useLocation();
@@ -101,6 +104,58 @@ useEffect(() => {
   
   fetchUserId();
 }, []);
+
+
+const fetchDraftPosts = useCallback(async () => {
+        try {
+            setIsDraftLoading(true); // Set loading state when fetching
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.user?.email) {
+                console.warn('No user session found to fetch drafts.');
+                setDraftPosts({}); // Clear drafts if no session
+                setTotalDraftCount(0);
+                return;
+            }
+
+            const { data, error: fetchError } = await supabase
+                .from('user_post_draft')
+                .select('*')
+                .eq('user_email', session.user.email)
+                .eq('draft_status', true)
+                .order('created_at', { ascending: false });
+
+            if (fetchError) throw fetchError;
+
+            const groupedDrafts: {[key: string]: DraftPost[]} = data.reduce((acc, post) => {
+                const channel = post.social_channel;
+                if (!acc[channel]) {
+                    acc[channel] = [];
+                }
+                acc[channel].push(post);
+                return acc;
+            }, {});
+
+            setDraftPosts(groupedDrafts);
+
+            let count = 0;
+            for (const channel in groupedDrafts) {
+                count += groupedDrafts[channel].length;
+            }
+            setTotalDraftCount(count);
+            setError(null); // Clear any previous errors on successful fetch
+        } catch (err) {
+            console.error('Error fetching draft posts:', err);
+            setError('Failed to load draft posts');
+            setDraftPosts({}); // Clear drafts on error
+            setTotalDraftCount(0);
+        } finally {
+            setIsDraftLoading(false); // Reset loading state regardless of success or failure
+        }
+    }, []);  
+
+  useEffect(() => {
+    fetchDraftPosts();
+  }, [fetchDraftPosts]);
 
 useEffect(() => {
     if (activeAccountId) {
@@ -857,7 +912,7 @@ const handleGenerateContent = async () => {
 
                 
                   <FileEdit className="w-4 h-4 mr-2"/>
-                  <span className="text-xs">View Drafts</span>
+                  <span className="text-xs">Saved Drafts ({totalDraftCount})</span>
                 
                   
                 </button>
