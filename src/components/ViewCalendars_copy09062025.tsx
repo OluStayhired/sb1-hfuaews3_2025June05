@@ -143,19 +143,6 @@ useEffect(() => {
     fetchCalendarContent(); 
   }
 }, [currentUserEmail]);
-
-
-// Add this useEffect within your ViewCalendars component, after your state declarations
-useEffect(() => {
-    if (!calendarListLoading && currentUserEmail && !isCreateCalendarFormOpen && !selectedCalendar && !isCampaignSuccessModalOpen) {
-        if (calendarList.length > 0) {
-            setShowCampaignList(true); // Automatically show the list if calendars exist
-        } else {
-            setShowCampaignList(false);
-        }
-    }
-}, [calendarListLoading, calendarList.length, currentUserEmail, isCreateCalendarFormOpen, selectedCalendar, isCampaignSuccessModalOpen]);  
-  
   
   const handleCreateCalendarClick = () => {
     console.log('Create Campaign button clicked in ViewCalendars!');
@@ -344,116 +331,194 @@ const handleViewCalendarList = () => {
     <div className="p-4">
       <div className="max-w-8xl mx-auto">
 
-        {/* ------------------------------------------------------------- */}
-        {/* MODIFIED HEADER SECTION - Ensure it hides when other views are active */}
-        {/* ------------------------------------------------------------- */}
-        {!(isCreateCalendarFormOpen || showCampaignList || selectedCalendar || isCampaignSuccessModalOpen) && (
-          <div className="flex items-center space-x-2 mb-8">
-            <div className="p-2 bg-blue-100 rounded-md">
-              <Megaphone className="w-5 h-5 text-blue-500"/>
-            </div>
-            <h2 className="text-xl font-semibold text-gray-900">View Campaigns</h2>
+      {/* ------------------------------------------------------------- */}
+      {/* START OF MODIFIED HEADER SECTION */}
+      {/* ------------------------------------------------------------- */}
+      {/* The header (icon + text) should ONLY be visible when no specific sub-component is active */}
+      {!(isCreateCalendarFormOpen || showCampaignList || selectedCalendar || isCampaignSuccessModalOpen) && (
+        <div className="flex items-center space-x-2 mb-8">
+          <div className="p-2 bg-blue-100 rounded-md">
+            <Megaphone className="w-5 h-5 text-blue-500"/>
           </div>
-        )}
+          <h2 className="text-xl font-semibold text-gray-900">View Campaigns</h2>
+        </div>
+      )}
+      {/* ------------------------------------------------------------- */}
+      {/* END OF MODIFIED HEADER SECTION */}
+      {/* ------------------------------------------------------------- */}
+        
+        {/*<div className="flex items-center space-x-2 mb-8"> 
+        <div className="p-2 bg-blue-100 rounded-md"> 
+         <Megaphone className="w-5 h-5 text-blue-500"/> 
+      </div>
+   
+      <h2 className="text-xl font-semibold text-gray-900">View Campaigns</h2>
 
-        {/* Start inside the white border p-12 is height */}
+    </div> End of Flex container */}
+        
+          
+        {/*Start inside the white boarder p-12 is height*/}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12">
+          
+          {/*Below is the inner boarder used to be blue-300*/}
+          
           <div className={`flex items-center justify-center border-1 border border-white rounded-lg ${
-            isCreateCalendarFormOpen || showCampaignList || selectedCalendar || isCampaignSuccessModalOpen || calendarListLoading ? 'min-h-[300px]' : 'h-80'
+            isCreateCalendarFormOpen || showCampaignList || selectedCalendar || isCampaignSuccessModalOpen  ? 'min-h-[300px]' : 'h-80' 
           }`}>
-            <div className="text-center w-full">
-
-              {/* Conditional rendering for content */}
-              {calendarListLoading ? (
-                // 1. Show loader while fetching calendar list
-                <div className="flex justify-center py-4">
-                  <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
-                </div>
-              ) : calendarListError ? (
-                // 2. Show error if fetching failed
-                <div className="text-red-500 text-center py-4">{calendarListError}</div>
-              ) : isCreateCalendarFormOpen ? (
-                // 3. Render CreateCalendarForm if active
-                <div className="mt-6 w-full h-full flex flex-col">
-                  <div className="flex-grow">
-                    <CreateCalendarForm
-                      onSuccess={handleCampaignSuccess} // Use the new handler
-                      onClose={handleCloseCreateCalendarForm}
-                    />
-                  </div>
-                </div>
-              ) : selectedCalendar && currentUserEmail ? (
-                // 4. Render ShowCalendarContent if a specific calendar is selected
-                <div className="mt-8 w-full">
-                  <ShowCalendarContent
-                    calendarName={selectedCalendar}
-                    userEmail={currentUserEmail}
-                    onBackToList={handleBackToList}
-                  />
-                </div>
-              ) : showCampaignList ? (
-                // 5. Render CalendarList if showCampaignList is true (automatically set by useEffect)
-                <div className="mt-6 w-full h-full flex flex-col">
-                  <div className="flex-grow">
-                    {/*
-                    <div className="flex items-center mt-4 mb-6 ml-6">
-                      
-                      <button
-                        onClick={() => setShowCampaignList(false)}
-                        className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-                        title="Hide Campaigns List"
-                      >
-                        <ArrowLeft className="w-5 h-5 text-gray-500"/>
-                      </button>
-                    </div>
-                    */}
-                    <div className="flex-grow overflow-y-auto">
-                      <CalendarList
-                        calendars={calendarList}
-                        onToggleActive={handleToggleActive}
-                        currentUserEmail={currentUserEmail}
-                        fetchCalendarList={fetchCalendarList}
-                        fetchCalendarContent={fetchCalendarContent}
-                        onSelectCalendar={(calendarName) => {
-                          setSelectedCalendar(calendarName);
-                          setShowCampaignList(false); // Hide the list when a calendar is selected
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                // 6. Default: No calendars found, no other views active, show "Create Campaign" prompt
+            <div className="text-center w-full"> 
+            {calendarList.length > 0 && !isCreateCalendarFormOpen && !showCampaignList && !selectedCalendar ? (
                 <>
-                  <div className="flex flex-col items-center justify-center h-full text-gray-500">
-                    <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
-                      <Calendar className="w-12 h-12 font-light text-blue-500" />
+                  <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
+                    <CalendarSearch className="w-12 h-12 font-medium text-blue-500" />
+                  </div>
+                  <p className="text-gray-900 mb-3 mt-4">Manage Your Content Ideas 💡</p>
+                  {/*<p className="text-gray-400 mb-4 text-sm"> Access all your campaigns right here</p>*/}
+                  <p className="text-gray-400 mb-4 text-sm">Turn post ideas into killer content that builds trust with your customers</p>
+                  <div className="flex space-x-4 justify-center">
+                    {/*  
+                  <button
+                    onClick={handleCreateCalendarClick}
+                    className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    <PlusCircle className="w-5 h-5 mr-2" />
+                    <span>Create Campaign</span>
+                  </button>
+                  */}
+                  <button
+                    onClick={handleViewCalendarList}
+                    className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    <div>
+                          <Search className="w-5 h-5 mr-2" />
                     </div>
-                    <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
-                    <p className="text-gray-400 mb-4 text-sm">Create your First content Campaign</p>
-                    <button
-                      onClick={handleCreateCalendarClick}
-                      className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                    >
-                      <PlusCircle className="w-5 h-5 mr-2" />
-                      <span>Create Campaign</span>
-                    </button>
+                    <span>View Campaigns</span>
+                  </button>
                   </div>
                 </>
+              ) : null}
+              
+          {calendarList.length === 0 && !isCreateCalendarFormOpen && !showCampaignList && !selectedCalendar && !isCampaignSuccessModalOpen ? (
+                <>
+                  {/*
+                  <div className="mx-auto flex items-center justify-center bg-gray-50 rounded-full w-12 h-12">
+                    <Megaphone className="w-8 h-8 font-light text-gray-400" />
+                  </div>
+                  <p className="text-gray-600 mb-3 mt-4">No Campaigns</p>
+                  <p className="text-gray-400 mb-4 text-sm"> Create 2 weeks of content in minutes </p>
+                  <button
+                    onClick={handleCreateCalendarClick}
+                    className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    <PlusCircle className="w-5 h-5 mr-2" />
+                    <span>Create Campaign</span>
+                  </button>
+                  */}
+                <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
+                  <Calendar className="w-12 h-12 font-light text-blue-500" />
+                </div>
+                <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
+                <p className="text-gray-400 mb-4 text-sm">Create your First content Campaign</p>
+                <button
+                  onClick={handleCreateCalendarClick}
+                  className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  <PlusCircle className="w-5 h-5 mr-2" />
+                  <span>Create Campaign</span>
+                </button>
+              </div>
+                </>
+              ) : null}
+
+              {/* Conditionally render the CreateCalendarForm */}
+              {isCreateCalendarFormOpen && (
+                <div className="mt-6 w-full h-full flex flex-col"> 
+                  <div className="flex-grow"> 
+                    <CreateCalendarForm
+                          onSuccess={(campaignName) => {
+                          console.log('Campaign created successfully');
+                          setCreatedCampaignName(campaignName);
+                          setIsCampaignSuccessModalOpen(true);
+                          setIsCreateCalendarFormOpen(false); 
+                          setSelectedCalendar(campaignName);  
+                          setShowCampaignList(false);  
+                          fetchCalendarList(); 
+                          fetchCalendarContent(); 
+                            }}
+                          onClose={handleCloseCreateCalendarForm}
+                        />
+                  </div>
+                </div>
               )}
+              
+              {selectedCalendar && currentUserEmail && (
+                          <div className="mt-8 w-full">
+                            
+                            {/*console.log('Rendering ShowCalendarContent with calendar:', selectedCalendar, 'and email:', currentUserEmail, 'and onBackToList:', handleBackToList)*/}
+                            
+                              <ShowCalendarContent
+                                calendarName={selectedCalendar}
+                                userEmail={currentUserEmail}
+                                onBackToList={handleBackToList}
+                                />
+                            </div>
+                )}
+
+     {/* Conditionally render the CalendarList based on showCampaignList */}
+          {showCampaignList && (
+                            <div className="mt-6 w-full h-full flex flex-col">
+                                <div className="flex-grow">
+                                    <div className="flex items-center mt-4 mb-6 ml-6">
+                          
+                                        <button
+                                            onClick={() => setShowCampaignList(false)}
+                                          className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                                          title="Close"
+                                        >
+                                          <ArrowLeft className="w-5 h-5 text-gray-500"/>
+                                        </button>
+                                    </div>
+
+                                    {calendarListLoading ? (
+                                        <div className="flex justify-center py-4">
+                                            <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+                                        </div>
+                                    ) : calendarListError ? (
+                                        <div className="text-red-500 text-center py-4">{calendarListError}</div>
+                                    ) : (
+                                        <div className="flex-grow overflow-y-auto"> {/* Added overflow-y-auto for scrolling if needed */}
+                                            <CalendarList
+                                                calendars={calendarList}
+                                                onToggleActive={handleToggleActive}
+                                                currentUserEmail={currentUserEmail}
+                                                fetchCalendarList={fetchCalendarList}
+                                                fetchCalendarContent={fetchCalendarContent}
+                                                //showOnlyActive={true}
+                                                onSelectCalendar={(calendarName) => {
+                                                    setSelectedCalendar(calendarName);
+                                                    setShowCampaignList(false);
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+            
             </div>
           </div>
-        </div>
-        {/* CampaignSuccessfulModal is typically rendered outside the main content box as it's a modal overlay */}
         {isCampaignSuccessModalOpen && (
-          <div className="mt-8 w-full">
-            <CampaignSuccessfulModal
+        <div className="mt-8 w-full">
+          <CampaignSuccessfulModal
               isOpen={isCampaignSuccessModalOpen}
               onClose={() => setIsCampaignSuccessModalOpen(false)}
               campaignName={createdCampaignName}
             />
-          </div>
-        )}
+        </div>
+         )}
+          
+        </div>
+        {/*End inside the white boarder*/}
       </div>
     </div>
   );
