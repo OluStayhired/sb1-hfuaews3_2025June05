@@ -321,6 +321,7 @@ const handleForceClose = async () => {
         user_id: currentUserId,
         target_audience: audience,
         problem: problemStatement,
+        timezone: (Intl.DateTimeFormat().resolvedOptions().timeZone),
         updated_at: new Date().toISOString()
       }, {
         onConflict: 'email'
