@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { z } from 'zod';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp, signIn } = useAuth();
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -38,6 +40,8 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       } else {
         await signIn(email, password);
         onClose();
+        // Navigate to the dashboard
+        navigate('/dashboard', { replace: true }); 
       }
     } catch (err) {
       if (err instanceof z.ZodError) {

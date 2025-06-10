@@ -58,7 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
         setIsAuthenticated(true);
-        navigate('/dashboard');
+      // commented out since it seems to cause a problem refreshing
+      //navigate('/dashboard');
       } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         setUser(null);
         setIsAuthenticated(false);

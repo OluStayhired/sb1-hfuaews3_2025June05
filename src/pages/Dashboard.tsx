@@ -873,6 +873,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
 
         <main className="flex-1 overflow-auto">
           <Routes>
+            <Route index element={<UserDashboard />} />
             <Route path="compose" element={<ComposePosts />} />
             <Route path="schedule" element={<ManageSchedule />} />
             <Route path="calendars" element={<ViewCalendars />} />
@@ -890,7 +891,9 @@ const isLinkedInAuthenticated = !!linkedinUser;
             
             {/*Default Route Shown Below*/}
             
-            <Route path="*" element={<Navigate to="userdashboard" replace={true} />} />
+            {/*<Route path="*" element={<Navigate to="userdashboard" replace={true} />} />*/}
+            <Route path="*" element={<Navigate to="/dashboard/userdashboard" replace={true} />} />
+
           </Routes>
         </main>
       </div>
