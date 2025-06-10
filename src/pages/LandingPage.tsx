@@ -216,7 +216,7 @@ function LandingPage() {
         <p className="order-2 sm:order-1">&copy; 2024 soSavvy.app All rights reserved.</p> {/* Order for mobile */}
         <div className="flex space-x-6 order-1 sm:order-2"> 
           {/* Order for mobile */}
-          <span>Made with ❤️ for founders and creators building their social media brand</span>
+          <span>Made with ❤️ for founders and creators building their personal brands with purpose</span>
           <a href="https://bsky.app/profile/oluadedeji.bsky.social" className="text-blue-500 hover:text-blue-600">
             @oluadedeji.bsky.social
           </a>

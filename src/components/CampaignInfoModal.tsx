@@ -81,7 +81,7 @@ export function CampaignInfoModal({
 
         {/* Main Message - Prominent and Central */}
         <div className="text-center px-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Campaign Ended</h2> {/* Largest, boldest text for primary message */}
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Campaign Completed</h2> {/* Largest, boldest text for primary message */}
             <div className="flex items-center justify-center mb-4">
                   <p className="text-gray-500 text-sm mr-2">{campaignName}</p>
               <TooltipExtended text={campaignDescription}>
@@ -96,12 +96,13 @@ export function CampaignInfoModal({
         </div>
 
         {/* Campaign Status Block - Clear and concise messaging */}
-        <div className="px-6 py-4 bg-red-50 rounded-lg mx-6 mb-6 flex items-start space-x-3"> {/* Added mx-6 for side padding */}
+        <div className="px-6 py-4 bg-red-50 rounded-lg mx-6 mb-6 flex items-start space-x-3"> {/* Added mx-6 for side padding 
           <div className="flex-shrink-0 bg-red-100 p-2 rounded-full flex items-center justify-center">
             <CalendarCheck className="w-5 h-5 text-red-500" />
           </div>
+          */}
           <div>
-            <h3 className="font-semibold text-red-700">This campaign has concluded.</h3>
+            <h3 className="font-semibold text-red-700">This campaign has ended</h3>
             <p className="text-sm text-gray-700 mt-1">
               {isCampaignEnded
                 ? "Create a new campaign to continue engaging your audience."
@@ -114,6 +115,7 @@ export function CampaignInfoModal({
         {/* Campaign Details - Progress and Stats */}
         <div className="px-6 pb-6"> {/* Consistent padding */}
           {/* Campaign Progress */}
+          {/*
           <div className="mb-6">
             <div className="flex justify-between text-sm text-gray-500 mb-2">
               <span>Campaign Progress</span>
@@ -124,8 +126,11 @@ export function CampaignInfoModal({
                 className="h-full bg-gradient-to-r from-red-400 to-red-600 rounded-full" // Red gradient for progress
                 style={{ width: `${progressPercentage}%` }}
               />
+             
             </div>
+            
           </div>
+           */}
           
           {/* Campaign Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mb-6">
