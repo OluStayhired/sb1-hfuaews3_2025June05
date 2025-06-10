@@ -55,6 +55,9 @@ export function ReschedulePostModal({
         }
     }, [isOpen, selectedDate, scheduledTime]);
 
+    
+    const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
     // Effect for handling click outside date picker
     useEffect(() => {
         if (!isDatePickerOpen) return;
@@ -141,6 +144,7 @@ export function ReschedulePostModal({
             const updatedPostData = {
                 content_date: format(selectedDate, 'yyyy-MM-dd'),
                 content_time: formattedTimeForDatabase,
+                target_timezone: targetTimezone,
                 updated_at: new Date().toISOString(),
                 // Ensure schedule_status is true when rescheduling
                 schedule_status: true,
