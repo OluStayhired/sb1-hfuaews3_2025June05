@@ -7,6 +7,7 @@ import XLogo from '../images/x-logo.svg';
 import { format, parse, parseISO } from 'date-fns';
 import { generateListPost } from '../lib/gemini';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 interface AddToCalendarModalProps {
   isOpen: boolean;
@@ -58,6 +59,7 @@ export function AddToCalendarModal({ isOpen, onClose, content }: AddToCalendarMo
   const [isImproving, setIsImproving] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
 
+  const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 
 const validateAndSetDate = (selectedDate: Date, setDateError: 
@@ -391,6 +393,7 @@ useEffect(() => {
         target_audience: content.target_audience,
         content_date: format(selectedDate, 'yyyy-MM-dd'),
         content_time: formattedTimeForDatabase,
+        target_timezone: targetTimezone,
         created_at: new Date().toISOString()
       };
 
