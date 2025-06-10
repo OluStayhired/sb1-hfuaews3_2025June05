@@ -58,8 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
         setIsAuthenticated(true);
-      // commented out since it seems to cause a problem refreshing
-      //navigate('/dashboard');
+        // commented out since it seems to cause a problem refreshing
+        //navigate('/dashboard');
       } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         setUser(null);
         setIsAuthenticated(false);
@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Optional: Subscribe to real-time auth state changes (like token refresh, sign out)
     // This is separate from the initial load from hash/local storage but useful for keeping state in sync
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-       console.log('Auth state changed:', _event, session);
+       //console.log('Auth state changed:', _event, session);
        setSession(session);
        setUser(session?.user ?? null); // Use ?? null for safety
        // Do NOT clear hash here; that should only happen on the initial redirect load

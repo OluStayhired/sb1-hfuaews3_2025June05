@@ -161,11 +161,11 @@ useEffect(() => {
         }
 
       } else if (post.welcome_complete === true || post.save_close === true) {
-        console.log('UserDashboard: Welcome flow already completed or saved and closed.');
+        //console.log('UserDashboard: Welcome flow already completed or saved and closed.');
         setIsWelcomeGuideOpen(false);
       } else {
         
-        console.log('UserDashboard: Post found in unexpected state or not yet completed. Opening WelcomeGuide.');
+       //console.log('UserDashboard: Post found in unexpected state or not yet completed. Opening WelcomeGuide.');
         setIsWelcomeGuideOpen(true);
       }
     } else {
@@ -348,7 +348,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                 } else if (post.welcome_complete === true || post.save_close === true) {
                     // Scenario: User completed the welcome flow (either connected or saved/closed).
                     // Do nothing, keep WelcomeGuide closed.
-                    console.log('UserDashboard: Welcome flow already completed or saved and closed.');
+                    //console.log('UserDashboard: Welcome flow already completed or saved and closed.');
                     setIsWelcomeGuideOpen(false);
                 } else {
                     // Any other unexpected state of the post

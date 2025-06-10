@@ -445,7 +445,7 @@ const handleConnectTwitter = async () => {
         return;
       }
 
-      console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
+      //console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
 
     } catch (dbError) {
       console.error('handleConnectTwitter: Unexpected error storing OAuth data:', dbError);
@@ -478,7 +478,7 @@ const handleConnectTwitter = async () => {
                     `code_challenge=${encodeURIComponent(code_challenge)}&` + // Send the code challenge
                     `code_challenge_method=S256`; // Indicate the challenge method
 
-    console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
+    //console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
 
     // 7. Redirect the user's browser to Twitter's authorization page
     //    The Edge Function will take over when Twitter redirects back to REDIRECT_URI
@@ -496,9 +496,9 @@ const handleConnectTwitter = async () => {
 };  
 
   const handleConnectLinkedIn = async () => {
-  console.log('Connecting to LinkedIn...');
-  console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
-  console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
+  //console.log('Connecting to LinkedIn...');
+  //console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
+  //console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -506,7 +506,7 @@ const handleConnectTwitter = async () => {
       console.error('No authenticated user found. User must be logged in to connect LinkedIn.');
       return;
     }
-    console.log('Authenticated user ID:', session.user.id);
+    //console.log('Authenticated user ID:', session.user.id);
 
     const currentUserId = session.user.id;
     const currentUserEmail = session.user.email;
@@ -531,7 +531,7 @@ const handleConnectTwitter = async () => {
         return;
       }
 
-      console.log('OAuth state stored successfully:', uniqueState);
+      //console.log('OAuth state stored successfully:', uniqueState);
 
     } catch (error) {
       console.error('Unexpected error storing OAuth state:', error);
@@ -548,7 +548,7 @@ const handleConnectTwitter = async () => {
                             `scope=${scopeParam}&` +
                             `state=${encodeURIComponent(uniqueState)}`;
 
-    console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
+    //console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
 
     window.location.href = linkedInAuthUrl;
 
@@ -861,9 +861,15 @@ const isLinkedInAuthenticated = !!linkedinUser;
                         : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
+
                     
-                    {item.icon}
+                    
+                    <span className="bg-blue-50 rounded-full p-2 text-blue-500">{item.icon} </span>
+
+                    
                     <span>{item.label}</span>
+
+                    
                   </button>
                 </li>
               ))}
@@ -873,7 +879,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
 
         <main className="flex-1 overflow-auto">
           <Routes>
-            <Route index element={<UserDashboard />} />
+            {/*<Route index element={<UserDashboard />} />*/}
             <Route path="compose" element={<ComposePosts />} />
             <Route path="schedule" element={<ManageSchedule />} />
             <Route path="calendars" element={<ViewCalendars />} />
@@ -891,9 +897,9 @@ const isLinkedInAuthenticated = !!linkedinUser;
             
             {/*Default Route Shown Below*/}
             
-            {/*<Route path="*" element={<Navigate to="userdashboard" replace={true} />} />*/}
-            <Route path="*" element={<Navigate to="/dashboard/userdashboard" replace={true} />} />
-
+            {/* Re-enable this, making sure the target is an ABSOLUTE path relative to BrowserRouter root */}
+              <Route path="*" element={<Navigate to="/dashboard/userdashboard" replace={true} />} />
+    
           </Routes>
         </main>
       </div>
