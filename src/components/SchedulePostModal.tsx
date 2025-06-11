@@ -8,6 +8,8 @@ import { generateListPost } from '../lib/gemini';
 import { format, parse } from 'date-fns';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { useNavigate } from 'react-router-dom';
+import { TooltipExtended } from '../utils/TooltipExtended';
+import { TooltipHelp } from '../utils/TooltipHelp';
 
 interface SchedulePostModalProps {
   isOpen: boolean;
@@ -783,6 +785,7 @@ const renderActionButtons = () => (
       </button>
       
       {currentStep === 'content' ? (
+    <TooltipExtended text="Please select a campaign or draft a post to continue" show={!canProceedToSchedule()}>
         <button
           onClick={() => setCurrentStep('schedule')}
           disabled={!canProceedToSchedule()}
@@ -791,7 +794,10 @@ const renderActionButtons = () => (
           <span>Next</span>
           <ChevronRight className="w-4 h-4" />
         </button>
+    </TooltipExtended>
       ) : (
+
+    <TooltipExtended text="Please select a campaign or draft a post to continue" show={!postContent.trim()}>
         <button
           onClick={handleSave}
           disabled={!postContent.trim() || isSaving || timeError !== null}
@@ -814,6 +820,8 @@ const renderActionButtons = () => (
             </>
           )}
         </button>
+      </TooltipExtended>
+    
       )}
     </div>
   </div>

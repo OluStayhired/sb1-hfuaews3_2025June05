@@ -6,8 +6,9 @@ import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import { format, parse, parseISO } from 'date-fns';
 import { generateListPost } from '../lib/gemini';
-import { TooltipHelp } from '../utils/TooltipHelp';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+import { TooltipExtended } from '../utils/TooltipExtended';
+import { TooltipHelp } from '../utils/TooltipHelp';
 
 interface AddToCalendarModalProps {
   isOpen: boolean;
@@ -683,6 +684,7 @@ const renderScheduleStep = () => (
         </button>
         
         {currentStep === 'content' ? (
+      <TooltipExtended text="Please choose a social media account to continue" show={!selectedChannel}>
           <button
             onClick={() => setCurrentStep('schedule')}
             disabled={!selectedChannel}
@@ -691,7 +693,19 @@ const renderScheduleStep = () => (
             <span>Next</span>
             <ChevronRight className="w-4 h-4" />
           </button>
+      </TooltipExtended>
         ) : (
+
+      <TooltipExtended 
+        
+        text="Please select a time slot to schedule your post"
+        show= {
+                      (timeSelectionMode === 'slots' ? !selectedTime : !customTime) || 
+                        isSaving || 
+                        dateError !== null || 
+                        timeError !== null
+                      }
+        >
           <button
             onClick={handleSave}
             //disabled={!selectedTime || isSaving}
@@ -720,6 +734,7 @@ const renderScheduleStep = () => (
               </>
             )}
           </button>
+      </TooltipExtended>
         )}
       </div>
     </div>
