@@ -16,6 +16,7 @@ import { isToday } from 'date-fns';
 import { CampaignInfoModal } from './CampaignInfoModal';
 import { CampaignInfoCard } from  './CampaignInfoCard';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { useNavigate } from 'react-router-dom';
 
 interface ShowCalendarContentProps {
   calendarName: string;
@@ -69,12 +70,18 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [timeFilter, setTimeFilter] = useState<'this-week' | 'next-week' | 'all' | null>('this-week');
   const [showCampaignInfo, setShowCampaignInfo] = useState(true);
   const [showCampaignInfoModal, setShowCampaignInfoModal] = useState(true);
-   const [selectedCampaignForModal, setSelectedCampaignForModal] = useState<CalendarContent | null>(null); 
+  const [selectedCampaignForModal, setSelectedCampaignForModal] = useState<CalendarContent | null>(null); 
+  const navigate = useNavigate();
   //const today = new Date();
 
   const handleCreateNewCampaign = () => {
     setShowCampaignInfo(false);
     onBackToList();
+  };
+
+  const handleCreateCampaign = () => {
+    navigate('/dashboard/campaign');
+    //onClose();
   };
 
     const handleCloseCampaignInfoModal = () => {
@@ -553,7 +560,7 @@ const filteredContent = getFilteredContent();
               </div>
               <div className="opacity-30 hover:opacity-100 flex-1 flex justify-end items-center space-x-1">
 
-              <TooltipHelp  text = "💡 Turn content idea into Post">
+              <TooltipHelp  text = "⚡Convert idea into post">
               <button
                 onClick={() => handleImproveContentAI(content)}
                 disabled={isImproving === content.id}
@@ -568,7 +575,7 @@ const filteredContent = getFilteredContent();
                 <Sparkles className="w-3 h-3 text-white" />
                 
                  )}
-                <span className="text-xs">Generate Post</span>
+                <span className="text-xs">Enhance Post</span>
               </button>
              </TooltipHelp>
                 
@@ -652,7 +659,7 @@ const filteredContent = getFilteredContent();
               >
                 <CheckCircle className="w-3 h-3" />
               </button>  
-    </TooltipHelp>
+      </TooltipHelp>
             </div>  
         </p>
       </div>
