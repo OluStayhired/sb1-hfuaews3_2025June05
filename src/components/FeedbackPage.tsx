@@ -145,7 +145,9 @@ export function FeedbackPage({}: FeedbackPageProps) {
               {/* Problem Type Section */}
               <div className="mb-8">
                 <div className="flex items-center text-center space-x-2 mb-4">
-                  <Bug className="w-5 h-5 text-blue-500"/>
+                  <span className="rounded-full p-2 bg-blue-50">
+                    <Bug className="w-5 h-5 text-blue-500"/>
+                  </span>                
                   <h3 className="text-xl font-medium text-gray-900">Report Problem</h3>
                 </div>
                 

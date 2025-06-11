@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Clock, Calendar, Check, Loader2, ChevronRight, ChevronLeft, Megaphone, AlertCircle, Sparkles, Info, ArrowRight } from 'lucide-react';
+import { X, Clock, Calendar, CalendarPlus, Check, Loader2, ChevronRight, ChevronLeft, Megaphone, AlertCircle, Sparkles, Info, ArrowRight, UserPlus, Edit2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -538,9 +538,14 @@ const renderContentStep = () => (
 
             {/* Social Channels */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="flex space-x-2 items-center">
+                    <span className="bg-blue-50 rounded-full p-1 mb-2">
+                      <UserPlus className="w-4 h-4 text-blue-500"/>
+                    </span>  
+                <label className="block text-sm font-medium text-gray-700 mb-2">               
                 Choose Account
               </label>
+                </div>
               <div className="flex flex-wrap gap-3">
                 {socialChannels.map((channel) => (
                   <button
@@ -585,9 +590,14 @@ const renderContentStep = () => (
               <>
                 {/* Calendar Selection */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">
-                    Select Campaign (Optional)
-                  </label>
+                  <div className="flex space-x-2 items-center">
+                    <span className="bg-blue-50 rounded-full p-1 mb-2">
+                      <Megaphone className="w-4 h-4 text-blue-500"/>
+                    </span>
+                      <label className="block text-xs font-medium text-gray-700 mb-2">
+                          Select Campaign (Optional)
+                      </label>
+                  </div>   
               {hasActiveCalendars ? ( 
                    <div className="grid grid-cols-2 gap-3 text-sm">
       {calendars.map((calendar) => (
@@ -635,7 +645,7 @@ const renderContentStep = () => (
     onClick={handleCreateCampaign}
     className="text-blue-500 hover:text-blue-600 text-sm font-medium flex items-center group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
   >
-    Create 2 Weeks of Content in minutes ⏰
+    Create 2 Weeks of Content in minutes 🚀
     <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
   </button>
 </p>
@@ -666,11 +676,13 @@ const renderContentStep = () => (
 
                 {/* Post Content */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">
-                    Post Content
+                  <div className="flex space-x-2 items-center">
+                    <span className="bg-blue-50 rounded-full p-1 mb-2"> <Edit2 className="w-4 h-4 text-blue-500"/></span>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">
+                      Write Post
                   </label>
-
-
+                  </div>
+                
                   <div className="relative">
                     
                   <textarea
@@ -717,9 +729,14 @@ const renderContentStep = () => (
 <div className="space-y-6">
     {/* Schedule Time */}
     <div>
-      <label className="block text-xs font-medium text-gray-700 mb-2">
-        Schedule Time
-      </label>
+      <div className="flex space-x-2 items-center">
+         <span className="bg-blue-50 rounded-full p-1 mb-2">
+           <CalendarPlus className="w-4 h-4 text-blue-500"/>
+         </span>  
+            <label className="block text-xs font-medium text-gray-700 mb-2">
+                Schedule Time
+            </label>
+        </div>
         <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 px-4 py-2 bg-gray-50 rounded-lg">
                <Calendar className="w-4 h-4 text-gray-500" />
