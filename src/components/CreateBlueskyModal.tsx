@@ -22,7 +22,7 @@ export function CreateBlueskyModal({ isOpen, onClose, onSuccess }: CreateBluesky
   const { login, isLoading, error, clearError, isAuthenticated } = useBlueskyStore();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [validationError, setValidationError] = useState('');
   const [isCheckingCredentials, setIsCheckingCredentials] = useState(false);
   //const { login, isLoading, error, clearError, isAuthenticated } = useAuthStore();
