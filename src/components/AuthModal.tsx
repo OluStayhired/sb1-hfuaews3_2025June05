@@ -36,7 +36,10 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
       if (isSignUp) {
         await signUp(email, password);
-        setError('Please check your email to verify your account');
+        onClose();
+        // Navigate to the dashboard
+        navigate('/dashboard', { replace: true }); 
+        //setError('Please check your email to verify your account');
       } else {
         await signIn(email, password);
         onClose();

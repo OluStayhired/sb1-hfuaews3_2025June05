@@ -2,7 +2,7 @@
 // src/components/SaveAndClosePage.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Edit, Home, ArrowRight, X, UserPlus, LayoutGrid } from 'lucide-react'; // Import X icon
+import { FileText, Edit, Home, ArrowRight, X, UserPlus, LayoutGrid, PlusCircle } from 'lucide-react'; // Import X icon
 import { checkConnectedSocials } from '../utils/checkConnectedSocial'; // Import the utility
 import { NoSocialModal } from './NoSocialModal'; // Assuming NoSocialModal is available
 
@@ -63,6 +63,7 @@ export function SaveAndClosePage({ isOpen, onClose, postContent }: SaveAndCloseP
             </button>
 
             {/* Secondary Button - Go to Dashboard */}
+            {/*
             <button
               onClick={() => {
                 onClose(); // Close the modal
@@ -73,6 +74,20 @@ export function SaveAndClosePage({ isOpen, onClose, postContent }: SaveAndCloseP
               <LayoutGrid className="mr-2 h-5 w-5" />
               <span className="font-medium">Go to Dashboard</span>
             </button>
+            */}
+
+             <button
+              onClick={() => {
+                onClose(); // Close the modal
+                navigate('/dashboard/campaign');
+              }}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
+            >
+              <LayoutGrid className="mr-2 h-5 w-5" />
+              <span className="font-medium">Create 14 Days of Content</span>
+            </button>
+
+            
           </div>
 
           {/*
