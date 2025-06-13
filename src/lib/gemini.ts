@@ -743,3 +743,83 @@ Follow the [Rules] below:
 
 
 // -------------- End Generate First Post WIth Retry ------------------------ //
+
+// -------------- Start Generate LinkedIn Post With Hook -------------------- //
+
+export async function generateHookPost(
+  theme: string, 
+  topic: string, 
+  target_audience: string,
+  content: string, 
+  char_length: string,
+  maxRetries: number = 5,
+  initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+// Check cache
+const cacheKey = JSON.stringify({ target_audience, content }); // Include all variables
+const cached = calendarCache.get(cacheKey);
+if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+  return cached.response;
+}
+
+// Rate limiting
+await rateLimiter.checkAndWait();
+
+const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content. I'm going to share some hooks ${hooks}. Using the best hook for the ${content}, build on this content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content utilizing one of the hooks into the content. for the hook, create a bridge statement that naturally connects the hook to the content. follow these rules in [Rules]
+
+Follow the [Rules] below:  
+
+[Rules]: 
+- Keep to ${char_length} Characters in total 
+- Place each sentence in the post on a new line. 
+- Provide simple, conversational language. 
+- Ban Generic Content 
+- Ban hashtags 
+- Ban bullet points. 
+- Keep it natural  
+`;
+
+ let currentRetry = 0;
+let delayTime = initialDelayMs;
+
+while (currentRetry < maxRetries) {
+  try {
+    await rateLimiter.checkAndWait();
+
+    //const response = await model.generateContent(prompt);
+    
+    const response = await generateContent(prompt);
+    
+    calendarCache.set(cacheKey, {
+      response,
+      timestamp: Date.now()
+    });
+
+    return response;
+
+  } catch (error: any) {
+    const isRetryableError =
+      error.status === 503 ||
+      error.status === 429 ||
+      (error.message && (error.message.includes('503') || error.message.includes('429')));
+    const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+    if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+      currentRetry++;
+      console.warn(
+        `Gemini API call failed (Error: ${error.status || error.message}). ` +
+        `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+      );
+      await sleep(delayTime);
+      delayTime *= 2;
+      delayTime = delayTime * (1 + Math.random() * 0.2);
+      delayTime = Math.min(delayTime, 30000);
+    } else {
+      console.error(`Post generation failed after ${currentRetry} retries:`, error);
+      throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+    }
+  }
+}
+
+throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}

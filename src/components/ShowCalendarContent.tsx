@@ -4,8 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { format, parseISO } from 'date-fns';
 import { startOfWeek, endOfWeek, addWeeks, isWithinInterval } from 'date-fns';
-import { Calendar, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle } from 'lucide-react';
-import { generateListPost } from '../lib/gemini';
+import BlueskyLogo from '../images/bluesky-logo.svg';
+import LinkedInLogo from '../images/linkedin-solid-logo.svg';
+import XLogo from '../images/x-logo.svg';
+import { Calendar, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart } from 'lucide-react';
+import { generateListPost, generateHookPost } from '../lib/gemini';
 import { ContentModal } from './ContentModal';
 import { AddToCalendarModal } from './AddToCalendarModal'
 import { checkConnectedSocials, checkPlatformConnection } from '../utils/checkConnectedSocial';
@@ -72,6 +75,7 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [showCampaignInfoModal, setShowCampaignInfoModal] = useState(true);
   const [selectedCampaignForModal, setSelectedCampaignForModal] = useState<CalendarContent | null>(null); 
   const navigate = useNavigate();
+  const [loadingCharLength, setLoadingCharLength] = useState<number | null>(null);
   //const today = new Date();
 
   const handleCreateNewCampaign = () => {
@@ -273,6 +277,57 @@ const handleImproveContentAI = async (content: CalendarContent) => {
     setIsImproving(null);
   }
 };
+
+const handleHookPost = async (content: CalendarContent, char_length: string) => {
+
+  
+
+  const uniqueKey = `${content.id}_${char_length}`;
+  
+  try {
+    //setIsImproving(content.id);
+    setLoadingCharLength(uniqueKey);
+    
+    // Generate improved content
+    const improvedContent = await generateHookPost(
+      content.theme,
+      content.topic,
+      content.target_audience || '', // Add target_audience to interface if not present
+      content.content,
+      char_length
+    );
+
+    //console.log('executing the Hook Posts Here')
+
+    if (improvedContent.error) throw new Error(improvedContent.error);
+
+    // Update in Supabase
+    const { error: updateError } = await supabase
+      .from('content_calendar')
+      .update({ 
+        content: improvedContent.text,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', content.id);
+
+    if (updateError) throw updateError;
+
+    // Optimistic update
+    setCalendarContent(prev => 
+      prev.map(item => 
+        item.id === content.id 
+          ? { ...item, content: improvedContent.text }
+          : item
+      )
+    );
+
+  } catch (err) {
+    console.error('Error improving content:', err);
+    // Could add error state/toast here
+  } finally {
+    setLoadingCharLength(null);
+  }
+};  
 
 
 const formatContentText = (text: string): string[] => {
@@ -558,28 +613,132 @@ const filteredContent = getFilteredContent();
                 {new Date(content.content_date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} </span>
                 
               </div>
-              <div className="opacity-30 hover:opacity-100 flex-1 flex justify-end items-center space-x-1">
+              
+              </div>
 
-              <TooltipHelp  text = "⚡Convert idea into post">
+        <div className="flex flex-col items-start mb-4">  {/*start AI Buttons Here */}
+              <div className="opacity-70 hover:opacity-100 flex-1 flex justify-end items-center space-x-2">
+
+                <TooltipHelp  text = "⚡Write from the heart">
               <button
                 onClick={() => handleImproveContentAI(content)}
+                //onClick={() => handleHookPost(content, 700)}
+                //disabled={loadingCharLength === `${content.id}_700`}
                 disabled={isImproving === content.id}
                
 
-                className="p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
+                //className="p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
                 //title="Improve Post"
+              //>
+
+                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
+                
+                
+                
+                {/*loadingCharLength === `${content.id}_700` ? (*/}
+                
                 {isImproving === content.id ? (
                   <Loader2 className="w-3 h-3 animate-spin" />
                 ) : (
-                <Sparkles className="w-3 h-3 text-white" />
+                                
+                <Heart className="w-3 h-3 text-red-500 fill-red-500" />
                 
                  )}
-                <span className="text-xs">Enhance Post</span>
+                <span className="text-xs">Emotional</span>
+              
+              </button>
+             
+                </TooltipHelp>
+
+              <TooltipHelp  text = "⚡Adapt for LinkedIn">
+              <button
+                //onClick={() => handleImproveContentAI(content)}
+                onClick={() => handleHookPost(content, 700)}
+                disabled={loadingCharLength === `${content.id}_700`}
+                //disabled={isImproving === content.id}
+               
+
+                //className="p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
+                //title="Improve Post"
+              //>
+
+                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
+              >
+                
+                {/*isImproving === content.id ? (*/}
+                
+                {loadingCharLength === `${content.id}_700` ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                
+                
+                //<Sparkles className="w-3 h-3 text-white" />
+
+                <img src={LinkedInLogo} className="w-3 h-3" />
+                
+                 )}
+                <span className="text-xs">LinkedIn</span>
               </button>
              </TooltipHelp>
+
+
+                <TooltipHelp  text = "⚡Adapt for Bluesky">
+              <button
+                //onClick={() => handleImproveContentAI(content)}
+                onClick={() => handleHookPost(content, 300)}
+                disabled={loadingCharLength === `${content.id}_300`}
+                //disabled={isImproving === content.id}
+               
+
+                //className="p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
+                //title="Improve Post"
+              //>
+
+                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
+                //title="Improve Post"
+              >
                 
-              </div>
+                {/*isImproving === content.id ? (*/}
+                
+                {loadingCharLength === `${content.id}_300` ? (
+                
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                //<Sparkles className="w-3 h-3 text-white" />
+
+                <img src={BlueskyLogo} className="w-3 h-3" />
+                
+                 )}
+                <span className="text-xs">Bluesky</span>
+              </button>
+             </TooltipHelp>
+
+                 <TooltipHelp  text = "⚡Adapt for Twitter">
+              <button
+                //onClick={() => handleImproveContentAI(content)}
+                onClick={() => handleHookPost(content, 280)}
+                disabled={loadingCharLength === `${content.id}_280`}
+               
+
+                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
+              >
+                
+                {loadingCharLength === `${content.id}_280` ? (
+                
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                <img src={XLogo} className="w-3 h-3" />
+                
+                 )}
+                <span className="text-xs">Twitter</span>
+              </button>
+             </TooltipHelp> 
+
+              </div> {/*End AI buttons here*/}
+                
+          {/*removed date close DIV*/}
+              
             </div>
 <div className="flex flex-col items-start">
             <h3 className="font-medium text-left text-sm text-gray-900 mb-1">{content.theme}</h3>
