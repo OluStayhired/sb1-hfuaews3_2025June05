@@ -511,7 +511,7 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
                 </button>
                 <TooltipExtended
                   text="Please select an account, at least one day, and a time slot to schedule."
-                  show={!selectedChannel || selectedDays.length === 0 || !selectedTime || !!timeError || calendarContent.length === 0}
+                  show={!selectedChannel || selectedDays.length === 0 || !selectedTime || calendarContent.length === 0}
                 >
                   {/*removed time error|| !!timeError*/}
                   <button
