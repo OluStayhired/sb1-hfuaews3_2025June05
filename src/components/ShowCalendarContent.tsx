@@ -580,7 +580,7 @@ const handleCloseBulkAddToCalendarModal = () => {
 
 {/* Add this section to show filter information */}
 {timeFilter !== 'all' && (
-  <div className="mt-6 text-left text-xs text-gray-500 mb-6">
+  <div className="mt-6 text-left text-xs text-gray-500">
     Showing {filteredContent.length} posts for {timeFilter === 'this-week' ? 'this week' : 'next week'}
     <button
       onClick={() => setTimeFilter('all')}
@@ -596,7 +596,7 @@ const handleCloseBulkAddToCalendarModal = () => {
 <TooltipHelp  text = "⚡ Bulk Schedule All Posts">
  <button
     onClick={handleOpenBulkAddToCalendarModal}
-    className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
+    className={`mt-6 flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
       timeFilter === 'all'
         ? 'bg-blue-50 text-blue-500'
         : 'bg-blue-50 text-blue-500 hover:bg-blue-100'
