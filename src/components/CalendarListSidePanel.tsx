@@ -203,7 +203,7 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
                 return (
                   <div 
                     key={calendar.calendar_name}
-                    //onClick={() => handleSelectCalendar(calendar.calendar_name)}
+                    onClick={() => handleSelectCalendar(calendar.calendar_name)} // renable this line here
                     className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer"
                   >
                     <div className="flex justify-between items-start mb-2">

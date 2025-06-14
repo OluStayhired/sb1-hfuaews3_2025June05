@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { CalendarCheck, PenSquare, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target } from 'lucide-react';
+import { CalendarCheck, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ComposePosts from '../components/ComposePosts';
 import ManageSchedule from '../components/ManageSchedule';
 import ViewCalendars from '../components/ViewCalendars';
 import CreateCampaign from '../components/CreateCampaign';
 import AccessAccounts from '../components/AccessAccounts';
+import ShowCalendarContent from '../components/ShowCalendarContent';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -690,6 +691,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
                 <span className="font-medium">Dashboard</span>
               </button>
 
+              {/*
                <button 
                 onClick={() => navigate('feedback')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
@@ -700,9 +702,23 @@ const isLinkedInAuthenticated = !!linkedinUser;
               >
                 <span className="font-medium">Feedback</span>
               </button>
+              */}
               
             </div>
+                       <button 
+                onClick={() => navigate('feedback')}
+                className={`flex bg-gray-50 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
+                  location.pathname.includes('feedback')
+                    ? 'text-blue-500 border border-blue-200'
+                    : 'text-gray-500 border border-gray-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-400'
+                }`}
+              >
+                       <ThumbsUp className="w-3.5 h-3.5"/>        
+                <span className="font-medium">Feedback</span>
+              </button>
           </div>
+          
+
 
           {user && (
             <div className="flex items-center space-x-4">
@@ -883,6 +899,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
             <Route path="compose" element={<ComposePosts />} />
             <Route path="schedule" element={<ManageSchedule />} />
             <Route path="calendars" element={<ViewCalendars />} />
+            <Route path="calendars/:calendarName" element={<ShowCalendarContent />} /> 
             <Route path="campaign" element={<CreateCampaign />} />
             <Route path="userdashboard" element={<UserDashboard />} />
             <Route path="feedback" element={<FeedbackPage />} />

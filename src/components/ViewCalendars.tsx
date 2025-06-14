@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import { ShowCalendarContent } from './ShowCalendarContent';
 import { CalendarList } from './CalendarList';
 import { CampaignSuccessfulModal } from './CampaignSuccessfulModal'
+import { useSearchParams } from 'react-router-dom';
 
 
 interface ViewCalendarProps {
@@ -99,7 +100,9 @@ export function ViewCalendars({ onCreateCalendarClick }: ViewCalendarProps) {
   const [isCreateCalendarFormOpen, setIsCreateCalendarFormOpen] = useState(false);
   const [isCampaignSuccessModalOpen, setIsCampaignSuccessModalOpen] = useState(false);
   const [createdCampaignName, setCreatedCampaignName] = useState('');
-  const [selectedCalendar, setSelectedCalendar] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const selectedCalendarFromUrl = searchParams.get('calendar');
+  const [selectedCalendar, setSelectedCalendar] = useState<string | null>(selectedCalendarFromUrl);
   const [showCampaignList, setShowCampaignList] = useState(false);
 
 
@@ -123,6 +126,10 @@ export function ViewCalendars({ onCreateCalendarClick }: ViewCalendarProps) {
     setCurrentUserId(null);
   }
 };
+
+  useEffect(() => {
+    setSelectedCalendar(searchParams.get('calendar'));
+  }, [searchParams]);  
 
 useEffect(() => {
   fetchUserIdAndEmail();

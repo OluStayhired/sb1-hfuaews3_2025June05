@@ -165,7 +165,7 @@ useEffect(() => {
         setIsWelcomeGuideOpen(false);
       } else {
         
-       //console.log('UserDashboard: Post found in unexpected state or not yet completed. Opening WelcomeGuide.');
+        //console.log('UserDashboard: Post found in unexpected state or not yet completed. Opening WelcomeGuide.');
         setIsWelcomeGuideOpen(true);
       }
     } else {
@@ -578,6 +578,13 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
  const handleCreateCampaign = () => {
     navigate('/dashboard/campaign');
   };
+
+  const handleSelectCalendarFromSidebar = (calendarName: string) => {
+    // Close the sidebar first if it's open
+    setIsCalendarListOpen(false);
+    // Navigate to the ShowCalendarContent route, passing the calendarName
+    navigate(`/dashboard/calendars?calendar=${calendarName}`);
+  };
   
   if (isLoading) {
     return (
@@ -624,7 +631,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                   shadow-blue-500/30
                   `}
             >
-               <Sparkles className="w-6 h-6 mr-2 text-yellow-400 fill-yellow-500" /> {/* Reduced icon size */}
+              <Sparkles className="w-6 h-6 mr-2 text-yellow-400 fill-yellow-500" /> {/* Reduced icon size */}
                 Plan 14 Days of Content
             </button>
         </div>
@@ -849,9 +856,9 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
         setIsDraftPostsOpen(false);
         setIsScheduledPostsOpen(false)
       }}
-      onSelectCalendar={(calendarName) => {
-        navigate(`/dashboard/calendars?calendar=${calendarName}`);
-      }}
+      onSelectCalendar={handleSelectCalendarFromSidebar}
+      //onSelectCalendar={(calendarName) => {
+        //navigate(`/dashboard/calendars?calendar=${calendarName}`); }}
     />
 
      {/* Conditionally render the WelcomeGuide component */}

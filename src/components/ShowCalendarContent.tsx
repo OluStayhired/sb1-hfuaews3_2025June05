@@ -894,3 +894,4 @@ const filteredContent = getFilteredContent();
       
   );
 }
+export default ShowCalendarContent;
