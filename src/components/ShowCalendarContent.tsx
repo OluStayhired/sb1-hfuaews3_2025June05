@@ -592,11 +592,11 @@ const handleCloseBulkAddToCalendarModal = () => {
 )}
 
 {/*End This Week Next Week Show All Filter*/}
-<div className="flex inline">
+<div className="flex inline mt-6">
 <TooltipHelp  text = "⚡ Bulk Schedule All Posts">
  <button
     onClick={handleOpenBulkAddToCalendarModal}
-    className={`mt-6 flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
+    className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
       timeFilter === 'all'
         ? 'bg-blue-50 text-blue-500'
         : 'bg-blue-50 text-blue-500 hover:bg-blue-100'
