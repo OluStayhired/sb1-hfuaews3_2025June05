@@ -846,7 +846,8 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
       }}
       onContinueDraft={(content, socialChannel, userHandle) => {
         setIsDraftPostsOpen(false);
-        navigate('/dashboard/compose'); // Assuming this takes you to compose page
+        //navigate('/dashboard/compose'); // Assuming this takes you to compose page
+        navigate('/dashboard/compose', { state: { draftContent: content } });
       }}
     />
     <CalendarListSidePanel
