@@ -20,6 +20,8 @@ import { CampaignInfoModal } from './CampaignInfoModal';
 import { CampaignInfoCard } from  './CampaignInfoCard';
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { useNavigate } from 'react-router-dom';
+import { BulkAddToCalendarModal } from './BulkAddToCalendarModal'; 
+
 
 interface ShowCalendarContentProps {
   calendarName: string;
@@ -76,6 +78,7 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [selectedCampaignForModal, setSelectedCampaignForModal] = useState<CalendarContent | null>(null); 
   const navigate = useNavigate();
   const [loadingCharLength, setLoadingCharLength] = useState<number | null>(null);
+  const [isBulkAddToCalendarModalOpen, setIsBulkAddToCalendarModalOpen] = useState(false);
   //const today = new Date();
 
   const handleCreateNewCampaign = () => {
@@ -139,6 +142,8 @@ const validateAndSetDate = (date: Date) => {
     setShowNoSocialModal(true);
     return;
   }
+
+ 
 
  // Then validate the date
   const today = new Date();
@@ -212,6 +217,10 @@ const handleConnectLinkedIn = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+    const handleBulkScheduleSuccess = () => {
+    fetchCalendarContent(); // Refresh the calendar content
   };
 
   useEffect(() => {
@@ -439,6 +448,16 @@ const getFilteredContent = () => {
   
 
 const filteredContent = getFilteredContent();
+
+// Handler to open the BulkAddToCalendarModal
+const handleOpenBulkAddToCalendarModal = () => {
+  setIsBulkAddToCalendarModalOpen(true);
+};
+
+// Handler to close the BulkAddToCalendarModal
+const handleCloseBulkAddToCalendarModal = () => {
+  setIsBulkAddToCalendarModalOpen(false);
+};     
   
 
   if (loading) {
@@ -556,11 +575,12 @@ const filteredContent = getFilteredContent();
   >
     Full Calendar
   </button>
+
 </div>
 
 {/* Add this section to show filter information */}
 {timeFilter !== 'all' && (
-  <div className="mt-6 text-left text-xs text-gray-500">
+  <div className="mt-6 text-left text-xs text-gray-500 mb-6">
     Showing {filteredContent.length} posts for {timeFilter === 'this-week' ? 'this week' : 'next week'}
     <button
       onClick={() => setTimeFilter('all')}
@@ -572,8 +592,37 @@ const filteredContent = getFilteredContent();
 )}
 
 {/*End This Week Next Week Show All Filter*/}
+<div className="flex inline">
+<TooltipHelp  text = "⚡ Bulk Schedule All Posts">
+ <button
+    onClick={handleOpenBulkAddToCalendarModal}
+    className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
+      timeFilter === 'all'
+        ? 'bg-blue-50 text-blue-500'
+        : 'bg-blue-50 text-blue-500 hover:bg-blue-100'
+    }`}
+  >
+ <PlusCircle className="h-4 w-4 mr-2"/>
+    Schedule All
+  </button>          
+</TooltipHelp>
+</div>        
         
 </div>
+
+{/*      
+ <button
+    onClick={handleOpenBulkAddToCalendarModal}
+    className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
+      timeFilter === 'all'
+        ? 'bg-blue-500 text-white'
+        : 'bg-gray-900 text-white hover:bg-gray-500'
+    }`}
+  >
+ <PlusCircle className="h-4 w-4 mr-2"/>
+    Schedule All
+  </button> 
+  */}
 
 
       
@@ -890,6 +939,14 @@ const filteredContent = getFilteredContent();
                  selectedDate={invalidDate}
              />
            )}
+
+           {/* BulkAddToCalendarModal Component Call */}
+              <BulkAddToCalendarModal
+                  isOpen={isBulkAddToCalendarModalOpen}
+                  onClose={handleCloseBulkAddToCalendarModal}
+                  calendarName={calendarName}
+                  //onScheduleSuccess={handleBulkScheduleSuccess} 
+            />
     </div>
       
   );
