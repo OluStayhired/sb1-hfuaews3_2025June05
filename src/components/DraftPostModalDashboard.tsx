@@ -313,7 +313,7 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
                             className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center"
                           >
                             <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                            <span>Continue Draft</span>
+                            <span>Edit</span>
                        </button>
                       
                         <button 
