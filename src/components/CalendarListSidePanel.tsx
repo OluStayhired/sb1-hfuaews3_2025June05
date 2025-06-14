@@ -224,7 +224,7 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
                           {format(parseISO(calendar.start_date), 'MMM d')} - {format(parseISO(calendar.end_date), 'MMM d')}
                         </span>
 
-                          <TooltipExtended text={`${calendar.calendar_description} 💡`}>
+                        <TooltipExtended text={`⚡ ${calendar.calendar_description}`}>
                       <button
                             //onClick={() => handleShowCampaignInfo(calendar.calendar_name)} 
                             className="text-gray-500 hover:text-gray-600 px-2 py-1 rounded-md text-xs font-normal flex items-center" 
