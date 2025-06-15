@@ -7,6 +7,7 @@ import { CreateCalendarForm } from '/src/components/CreateCalendarForm';
 import { format, addDays, parseISO, differenceInDays } from 'date-fns';
 import {DeleteCampaignWarning} from '/src/components/DeleteCampaignWarning';
 import { TooltipExtended } from '../utils/TooltipExtended';
+import { TooltipHelp } from '../utils/TooltipHelp';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 
@@ -302,8 +303,11 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
                  <div className="p-1 bg-gray-100 rounded-full"> 
                    <Megaphone className="w-4 h-4 text-gray-500"/>
-                 </div>  
-                  <span className="whitespace-nowrap">Campaign</span>
+                 </div>                 
+                  <span className="whitespace-nowrap">
+                      Campaign
+                  </span>
+                  
                 </div> 
               </th>
 
@@ -312,7 +316,7 @@ const handleDeleteCampaign = async (calendarName: string) => {
                  <div className="p-1 bg-gray-100 rounded-full"> 
                    <Clock className="w-4 h-4 text-gray-500"/>
                  </div>  
-                  <span className="whitespace-nowrap">Days Left</span>
+                  <span className="whitespace-nowrap">Days</span>
                 </div>
               </th>
               
@@ -321,7 +325,7 @@ const handleDeleteCampaign = async (calendarName: string) => {
                  <div className="p-1 bg-gray-100 rounded-full"> 
                    <NotepadText className="w-4 h-4 text-gray-500"/>
                  </div>  
-                  <span className="whitespace-nowrap"> Description </span>
+                  <span className="whitespace-nowrap">Description </span>
                 </div>
                 
               </th>
@@ -409,12 +413,18 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 onClick={() => onSelectCalendar?.(calendar.calendar_name)}
                 className="hover:bg-gray-50 cursor-pointer"
               >
-                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
-                  {calendar.calendar_name} 
+                <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-900">
+                
+                  <span className="whitespace-wrap">
+                   {truncateText(calendar.calendar_name,50)}
+                   </span> 
+                
                 </td>
                 
-                <td className="px-6 py-4 whitespace-nowrap text-center text-xs font-medium text-gray-900">
+                <td className="px-4 py-4 whitespace-nowrap text-center text-xs text-gray-900">
+                <TooltipExtended text={`⚡ ${campaignDaysLeft} days left on the calendar`} >
                   {`${campaignDaysLeft}`} 
+                </TooltipExtended>
                 </td>
                 
                 <td className="px-6 py-4 text-xs text-gray-500"> 
@@ -424,7 +434,7 @@ const handleDeleteCampaign = async (calendarName: string) => {
                             
                 <td className="mt-4 px-6 py-4 text-xs text-gray-500">
                   <TooltipExtended text={`⚡${truncateText(calendar.target_audience,150)}`} className="z-10000"> 
-                  {truncateText(calendar.target_audience,100)}
+                      {truncateText(calendar.target_audience,100)}
                     </TooltipExtended>
                 </td>
                   
@@ -433,7 +443,7 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 <td className="px-6 py-4 text-xs text-gray-500">
                   <div className="flex flex-wrap gap-1">
                     {calendar.social_goals?.map((goal) => (
-                      <span key={goal} className="px-2 py-1 bg-gray-50 text-gray-500 rounded-full text-xs hover:bg-gray-100">
+                      <span key={goal} className="px-2 py-1 bg-gray-50 text-gray-500 rounded-lg text-xs hover:bg-gray-100">
                         {goal}
                       </span>
                     ))}
