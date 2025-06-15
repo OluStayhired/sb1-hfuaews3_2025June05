@@ -19,6 +19,7 @@ import { isToday } from 'date-fns';
 import { CampaignInfoModal } from './CampaignInfoModal';
 import { CampaignInfoCard } from  './CampaignInfoCard';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { TooltipExtended } from '../utils/TooltipExtended';
 import { useNavigate } from 'react-router-dom';
 import { BulkAddToCalendarModal } from './BulkAddToCalendarModal'; 
 
@@ -137,7 +138,7 @@ const validateAndSetDate = (date: Date) => {
     // Check for connected social accounts first
     const socials = await checkConnectedSocials();
   
-    if (!socials || (!socials.bluesky && !socials.linkedin)) {
+    if (!socials || (!socials.bluesky && !socials.linkedin && !socials.twitter)) {
     // No social accounts connected, show NoSocialModal
     setShowNoSocialModal(true);
     return;
@@ -450,14 +451,64 @@ const getFilteredContent = () => {
 const filteredContent = getFilteredContent();
 
 // Handler to open the BulkAddToCalendarModal
-const handleOpenBulkAddToCalendarModal = () => {
+const handleOpenBulkAddToCalendarModal = async (content: CalendarContent) => {
+
+  // Check for connected social accounts first
+    const socials = await checkConnectedSocials();
+  
+    if (!socials || (!socials.bluesky && !socials.linkedin && !socials.twitter)) {
+    // No social accounts connected, show NoSocialModal
+    setShowNoSocialModal(true);
+    return;
+    }
   setIsBulkAddToCalendarModalOpen(true);
 };
 
 // Handler to close the BulkAddToCalendarModal
 const handleCloseBulkAddToCalendarModal = () => {
   setIsBulkAddToCalendarModalOpen(false);
-};     
+};    
+
+const handleEditCampaignPost = async (content: CalendarContent) => {
+
+  // Check for connected social accounts first
+    const socials = await checkConnectedSocials();
+  
+    if (!socials || (!socials.bluesky && !socials.linkedin && !socials.twitter)) {
+    // No social accounts connected, show NoSocialModal
+    setShowNoSocialModal(true);
+    return;
+    }
+  else
+    {
+      setSelectedContent(content);
+      setIsModalOpen(true);
+    }
+                    
+}  
+
+const handleCopyCampaignPost = async (content: CalendarContent) => {
+ // Check for connected social accounts first
+    const socials = await checkConnectedSocials();
+  
+    if (!socials || (!socials.bluesky && !socials.linkedin && !socials.twitter)) {
+    // No social accounts connected, show NoSocialModal
+    setShowNoSocialModal(true);
+    return;
+    }
+  
+        try {
+              const sentences = formatContentText(content.content);
+              const formattedContentForClipboard = sentences.join('\n\n');
+
+                await navigator.clipboard.writeText(formattedContentForClipboard);
+                   setCopySuccess(content.id);
+                   setTimeout(() => setCopySuccess(null), 2000);
+                    } catch (err) {
+                      console.error('Failed to copy text:', err);
+                    }
+                  
+      }  
   
 
   if (loading) {
@@ -596,7 +647,7 @@ const handleCloseBulkAddToCalendarModal = () => {
 <TooltipHelp  text = "⚡ Bulk Schedule All Posts">
  <button
     onClick={handleOpenBulkAddToCalendarModal}
-    className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
+    className={`flex  items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
       timeFilter === 'all'
         ? 'bg-blue-50 text-blue-500'
         : 'bg-blue-50 text-blue-500 hover:bg-blue-100'
@@ -763,13 +814,10 @@ const handleCloseBulkAddToCalendarModal = () => {
               </button>
              </TooltipHelp>
 
-                 <TooltipHelp  text = "⚡Adapt for Twitter">
+            <TooltipHelp  text = "⚡Adapt for Twitter">
               <button
-                //onClick={() => handleImproveContentAI(content)}
                 onClick={() => handleHookPost(content, 280)}
                 disabled={loadingCharLength === `${content.id}_280`}
-               
-
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
                 
@@ -824,18 +872,7 @@ const handleCloseBulkAddToCalendarModal = () => {
 
     <TooltipHelp  text = "Copy Post">
               <button
-                 onClick={async () => {
-                    try {
-                     const sentences = formatContentText(content.content);
-    const formattedContentForClipboard = sentences.join('\n\n');
-
-                      await navigator.clipboard.writeText(formattedContentForClipboard);
-                      setCopySuccess(content.id);
-                      setTimeout(() => setCopySuccess(null), 2000);
-                    } catch (err) {
-                      console.error('Failed to copy text:', err);
-                    }
-                  }}
+                  onClick={() => handleCopyCampaignPost(content)}
               className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 hover:text-gray-300 transition-colors">
                 <Copy className="w-3 h-3" />
                        {copySuccess === content.id && (
@@ -848,12 +885,8 @@ const handleCloseBulkAddToCalendarModal = () => {
 
     <TooltipHelp  text = "Edit Post">
                <button
-                  onClick={() => {
-                    setSelectedContent(content);
-                    setIsModalOpen(true);
-                    }}
+                    onClick={() => handleEditCampaignPost(content)}
               className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 hover:text-gray-300 transition-colors"
-                 title="Edit Post"
           >
                       <SquarePen className="w-3 h-3" />
                  

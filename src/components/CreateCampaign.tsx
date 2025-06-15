@@ -227,7 +227,6 @@ const fetchCalendarContent = async () => {
         .select('target_audience, active')
         .eq('calendar_name', content.calendar_name)
         .eq('email', currentUserEmail)
-        //.single();
         .maybeSingle();
 
       if (questionError) {
@@ -368,8 +367,8 @@ const handleViewCalendarList = () => {
                   <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
                     <CalendarPlus className="w-12 h-12 font-light text-blue-500" />
                   </div>
-                  <p className="text-gray-600 mb-3 mt-4">Generate Content Ideas 💡</p>
-                  <p className="text-gray-400 mb-4 text-sm"> Get 14 days of content in minutes </p>
+                  <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
+                  <p className="text-gray-400 mb-4 text-sm"> Adapt it for LinkedIn, Twitter or Bluesky </p>
                   <button
                     onClick={handleCreateCalendarClick}
                     className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"

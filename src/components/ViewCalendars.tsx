@@ -6,7 +6,7 @@ import { supabase } from '../lib/supabase';
 import { generateCalendar, generateListPost } from '../lib/gemini';
 import { useAuthStore } from '../auth';
 import { 
-  Calendar, Edit2, Sparkles, X, ArrowLeft,
+  Calendar, Edit2, Sparkles, X, ArrowLeft, CalendarPlus,
   ChevronLeft, ChevronRight, 
   Loader2, Save, RefreshCw, CalendarCheck, Copy, ListOrdered, List, PartyPopper, Megaphone, ListChecks, LineChart, CalendarSearch, Search
 } from 'lucide-react';
@@ -434,7 +434,7 @@ const handleViewCalendarList = () => {
                 <>
                   <div className="flex flex-col items-center justify-center h-full text-gray-500">
                     <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
-                      <Calendar className="w-12 h-12 font-light text-blue-500" />
+                      <CalendarPlus className="w-12 h-12 font-light text-blue-500" />
                     </div>
                     <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
                     <p className="text-gray-400 mb-4 text-sm">Create your First content Campaign</p>
