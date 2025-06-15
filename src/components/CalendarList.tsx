@@ -1,7 +1,7 @@
 // src/components/CalendarList.tsx
 
 import React, { useState, useEffect } from 'react';
-import { CalendarCheck, Megaphone, X, ListChecks, PlusCircle, CheckCircle, ArrowLeft, CalendarSearch, Trash2, Goal } from 'lucide-react';
+import { CalendarCheck, Users, Megaphone, CircleCheck, Clock, X, ListChecks, PlusCircle, CheckCircle, ArrowLeft, CalendarSearch, Trash2, Goal, NotepadText } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { CreateCalendarForm } from '/src/components/CreateCalendarForm';
 import { format, addDays, parseISO, differenceInDays } from 'date-fns';
@@ -45,6 +45,13 @@ export function CalendarList({
     console.log('Create Campaign button clicked in ViewCalendars!');
     setIsCreateCalendarFormOpen(true);
   };  
+
+   const truncateText = (text: string, maxLength: number = 25): string => {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+};
+
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -181,7 +188,7 @@ const handleDeleteCampaign = async (calendarName: string) => {
 
   if (displayedCalendars.length === 0) {
   return (
-    <div className="text-center py-6 bg-white rounded-lg">
+    <div className="text-center py-6 bg-white rounded-lg z-99999">
       <div className="flex flex-col items-center space-y-4">
         {/* Icon and message */}
         <div className="bg-gray-50 p-3 rounded-full">
@@ -286,33 +293,85 @@ const handleDeleteCampaign = async (calendarName: string) => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
+      <div className="overflow-x-auto rounded-md mt-6">
+        <table className="w-full rounded-md">
+          <thead className="bg-gray-50 border border-gray-100 rounded-md">
             
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
-                Campaign
+              <th className="inline-block px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
+                <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
+                 <div className="p-1 bg-gray-100 rounded-full"> 
+                   <Megaphone className="w-4 h-4 text-gray-500"/>
+                 </div>  
+                  <span className="whitespace-nowrap">Campaign</span>
+                </div> 
               </th>
 
               <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
-                Days Left
+                <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
+                 <div className="p-1 bg-gray-100 rounded-full"> 
+                   <Clock className="w-4 h-4 text-gray-500"/>
+                 </div>  
+                  <span className="whitespace-nowrap">Days Left</span>
+                </div>
               </th>
               
               <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
-                Description
+                <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
+                 <div className="p-1 bg-gray-100 rounded-full"> 
+                   <NotepadText className="w-4 h-4 text-gray-500"/>
+                 </div>  
+                  <span className="whitespace-nowrap"> Description </span>
+                </div>
+                
               </th>
-              <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
-                Audience
+
+              
+               <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
+               <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
+                 <div className="p-1 bg-gray-100 rounded-full"> 
+                   <Users className="w-4 h-4 text-gray-500"/>
+                 </div>  
+                      <span className="whitespace-nowrap">Audience</span>
+                </div>
+                
               </th>
-              <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
-                Goals
+                 <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
+                <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
+                 <div className="p-1 bg-gray-100 rounded-full"> 
+                   <Goal className="w-4 h-4 text-gray-500"/>
+                 </div>  
+                    <span className="whitespace-nowrap">Goals</span>
+                </div>
               </th>
+
+              {/*
               <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
-                Status
+                <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
+                 <div className="p-1 bg-gray-100 rounded-full"> 
+                   <CheckCircle className="w-4 h-4 text-gray-500"/>
+                 </div>  
+                   <span className="whitespace-nowrap">Status</span>
+                </div>
               </th>
+              */}
+
+                      <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
+          <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
+            <div className="p-1 bg-gray-100 rounded-full">
+              <CheckCircle className="w-4 h-4 text-gray-500"/>
+            </div>
+            <span className="whitespace-nowrap">Status</span>
+          </div>
+        </th>
+              
               <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
-                Delete
+               <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
+                 <div className="p-1 bg-gray-100 rounded-full"> 
+                   <Trash2 className="w-4 h-4 text-gray-500"/>
+                 </div>  
+                 <span className="whitespace-nowrap">Delete</span>
+                </div>
               </th>
               
             </tr>
@@ -351,29 +410,39 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 className="hover:bg-gray-50 cursor-pointer"
               >
                 <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
-                  {calendar.calendar_name}
+                  {calendar.calendar_name} 
                 </td>
                 
                 <td className="px-6 py-4 whitespace-nowrap text-center text-xs font-medium text-gray-900">
-                  {campaignDaysLeft} 
+                  {`${campaignDaysLeft}`} 
                 </td>
                 
-                <td className="px-6 py-4 text-xs text-gray-500">
-                  {calendar.description}
+                <td className="px-6 py-4 text-xs text-gray-500"> 
+                  {truncateText(calendar.description,100)}
                 </td>
-                <td className="px-6 py-4 text-xs text-gray-500">
-                  {calendar.target_audience}
+
+                            
+                <td className="mt-4 px-6 py-4 text-xs text-gray-500">
+                  <TooltipExtended text={`⚡${truncateText(calendar.target_audience,150)}`} className="z-10000"> 
+                  {truncateText(calendar.target_audience,100)}
+                    </TooltipExtended>
                 </td>
+                  
+                
+                  
                 <td className="px-6 py-4 text-xs text-gray-500">
                   <div className="flex flex-wrap gap-1">
                     {calendar.social_goals?.map((goal) => (
-                      <span key={goal} className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs">
+                      <span key={goal} className="px-2 py-1 bg-gray-50 text-gray-500 rounded-full text-xs hover:bg-gray-100">
                         {goal}
                       </span>
                     ))}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+
+                  <div className="flex justify-center items-center h-full">
+                    
                   <label 
                     className="relative inline-flex items-center cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
@@ -399,8 +468,13 @@ const handleDeleteCampaign = async (calendarName: string) => {
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                   </label>
+                    
+                  </div>
+                  
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+
+                  <div className="rounded-full p-1 flex justify-center items-center">
                   
                   <button
                       
@@ -410,8 +484,12 @@ const handleDeleteCampaign = async (calendarName: string) => {
                     }}
                     className="text-red-500 hover:text-red-700"
                   >
+                    
                     <Trash2 className="w-5 h-5" />
+                    
                   </button>
+                  </div>
+                  
                 </td>
               </tr>
               );

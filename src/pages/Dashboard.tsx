@@ -638,15 +638,17 @@ const isLinkedInAuthenticated = !!linkedinUser;
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200">
         <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center space-x-8">
+          
+          <div className="flex items-center justify-between"> {/*space-x-8">*/}
+            
             <div className="flex items-center space-x-2">
               <div className="bg-blue-600 rounded-full p-2 rotate-180">
                 <PenTool className="h-6 w-6 fill-white stroke-blue-600" />
               </div>
               <span className="text-xl font-medium text-gray-900">SoSavvy</span>
             </div>
-
-            <div className="flex items-center space-x-6">
+          
+            <div className="ml-24 flex items-center space-x-8">
               <button 
                 onClick={() => navigate('calendars')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
@@ -691,6 +693,18 @@ const isLinkedInAuthenticated = !!linkedinUser;
                 <span className="font-medium">Dashboard</span>
               </button>
 
+              <button 
+                onClick={() => navigate('feedback')}
+                className={`flex bg-gray-50 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
+                  location.pathname.includes('feedback')
+                    ? 'text-blue-500 border border-blue-200'
+                    : 'text-gray-500 border border-gray-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-400'
+                }`}
+              >
+                       <ThumbsUp className="w-3.5 h-3.5"/>        
+                <span className="font-medium">Feedback</span>
+              </button>
+
               {/*
                <button 
                 onClick={() => navigate('feedback')}
@@ -705,18 +719,11 @@ const isLinkedInAuthenticated = !!linkedinUser;
               */}
               
             </div>
-                       <button 
-                onClick={() => navigate('feedback')}
-                className={`flex bg-gray-50 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
-                  location.pathname.includes('feedback')
-                    ? 'text-blue-500 border border-blue-200'
-                    : 'text-gray-500 border border-gray-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-400'
-                }`}
-              >
-                       <ThumbsUp className="w-3.5 h-3.5"/>        
-                <span className="font-medium">Feedback</span>
-              </button>
+
+
+            
           </div>
+          
           
 
 

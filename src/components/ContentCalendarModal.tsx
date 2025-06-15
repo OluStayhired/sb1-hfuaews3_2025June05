@@ -176,7 +176,7 @@ export function ContentCalendarModal({
         </div>
 
         {/* Global Copy All Button - adjusted styling for consistency if desired, or remove if not needed */}
-        {/* If you want the "Copy All" button to persist at the bottom, keep this div */}
+        {/* If you want the "Copy All" button to persist at the bottom, keep this div 
         <div className="absolute bottom-4 left-4 flex space-x-2">
           <button
             onClick={() => {
@@ -192,7 +192,8 @@ export function ContentCalendarModal({
             <span className="ml-2 text-xs text-green-500">Copied!</span>
           )}
         </div>
-
+      */}
+      
       </div>
     </div>
   );
