@@ -330,7 +330,7 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
               <div className="bg-green-100 rounded-full p-2">
                 <Check className="w-5 h-5 text-green-500" />
               </div>
-              <div>
+              <div className="text-left">
                 <p className="font-medium text-gray-900">Posts Scheduled Successfully!</p>
                 <p className="text-sm text-gray-500">Your posts have been added to the schedule.</p>
               </div>
