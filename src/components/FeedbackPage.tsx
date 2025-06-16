@@ -6,7 +6,8 @@ import {
   CheckCircle, 
   AlertCircle, 
   Bug,
-  Loader2
+  Loader2,
+  Star
 } from 'lucide-react';
 
 interface FeedbackPageProps {}
@@ -31,7 +32,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
   // Options for dropdowns
   const featureTypeOptions = ['Upgrade', 'Bug Fix', 'Enhancement', 'General'];
   const appSectionOptions = ['Dashboard', 'Drafts', 'Campaigns', 'Calendar', 'Schedule', 'General'];
-  const socialChannelOptions = ['LinkedIn', 'Bluesky', 'Twitter'];
+  const socialChannelOptions = ['LinkedIn', 'Bluesky', 'Twitter', 'General'];
 
   // Fetch current user on component mount
   useEffect(() => {
@@ -146,8 +147,8 @@ export function FeedbackPage({}: FeedbackPageProps) {
               <div className="mb-8">
                 <div className="flex items-center text-center space-x-2 mb-4">
                   <span className="rounded-full p-2 bg-blue-50">
-                    <Bug className="w-5 h-5 text-blue-500"/>
-                  </span>                
+                  <Bug className="w-5 h-5 text-blue-500"/>
+                  </span>  
                   <h3 className="text-xl font-medium text-gray-900">Report Problem</h3>
                 </div>
                 

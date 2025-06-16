@@ -1,6 +1,6 @@
 // src/components/BulkAddToCalendarModal.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Clock, Calendar, Check, Loader2, Megaphone, AlertCircle, Sparkles, UserPlus, Edit2 } from 'lucide-react';
+import { X, Clock, Calendar, Check, Loader2, Megaphone, AlertCircle, Sparkles, UserPlus, Edit2, PlusCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -60,7 +60,7 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [calendarContent, setCalendarContent] = useState<CalendarContentItem[]>([]); // State for fetched calendar content
 
-  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   const getSelectedChannelTimezone = () => {
     const activeChannel = socialChannels.find(channel => channel.id === selectedChannel);
@@ -420,12 +420,13 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
                         <button
                           key={day}
                           onClick={() => handleDayToggle(day)}
-                          className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                          className={`flex items-center px-3 py-1.5 rounded-full text-xs transition-colors ${
                             selectedDays.includes(day)
                               ? 'bg-blue-500 text-white'
                               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                           }`}
                         >
+                          <PlusCircle className="w-3 h-3 mr-2"/>
                           {day}
                         </button>
                       ))}
