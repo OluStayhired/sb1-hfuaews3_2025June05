@@ -804,11 +804,11 @@ const handleSaveTimezone = async (newTimezone: string) => {
 
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-white h-full">
       <div className="max-w-8xl mx-auto">
         <div className="flex items-center justify-between mb-8"> 
           <div className="flex items-center space-x-2"> 
-            <div className="p-2 bg-blue-100 rounded-md"> 
+            <div className="p-2 bg-blue-50 rounded-md"> 
                <UserPlus className="w-5 h-5 text-blue-500"/> 
             </div>
               <h2 className="text-xl font-semibold text-gray-900">Connected Accounts</h2>
@@ -822,7 +822,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
         <div className="space-y-6">
  {/* Bluesky Account */}
           {blueskyUser ? (
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-gradient-to-r from-blue-50 to-white  p-6 rounded-lg border border-blue-100 hover:border hover:border-blue-300">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -899,11 +899,11 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     <p className="text-sm text-gray-500">Connect your Bluesky account</p>
                   </div>
                 </div>
-                <TooltipHelp text="Connect Bluesky">
+                <TooltipHelp text="⚡Connect Bluesky">
                 <button
                   onClick={handleConnectBluesky}
                   disabled={isLoading}
-                  className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
                 >
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -923,7 +923,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
           
       {/* LinkedIn Account */}
           {linkedinUser ? (
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-gradient-to-r from-blue-50 to-white  p-6 rounded-lg border border-blue-100 hover:border hover:border-blue-300">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -998,11 +998,11 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     <p className="text-sm text-gray-500">Connect your LinkedIn account</p>
                   </div>
                 </div>
-                <TooltipHelp text="Connect LinkedIn ">
+                <TooltipHelp text="⚡Connect LinkedIn ">
                 <button
                   onClick={handleConnectLinkedIn}
                   disabled={linkedinLoading}
-                  className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
                 >
                   {linkedinLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -1020,7 +1020,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
          
   {/* Twitter Account */}
           {twitterUser ? (
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-gradient-to-r from-blue-50 to-white  p-6 rounded-lg border border-blue-100 hover:border hover:border-blue-300">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -1096,10 +1096,11 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     <p className="text-sm text-gray-500">Connect your X account</p>
                   </div>
                 </div>
+              <TooltipHelp text="⚡Connect Twitter">
                 <button
                   onClick={handleConnectTwitter}
                   disabled={twitterLoading}
-                  className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
                 >
                   {twitterLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -1110,6 +1111,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     </>
                   )}
                 </button>
+              </TooltipHelp>
               </div>
             </div>
           )}  

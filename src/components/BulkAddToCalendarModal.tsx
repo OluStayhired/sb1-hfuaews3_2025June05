@@ -347,10 +347,10 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
                   <Megaphone className="w-4 h-4 text-blue-500"/>
                 </span>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Scheduling from Campaign: <span className="font-semibold">{calendarName}</span>
+                  <span className="font-semibold">{calendarName}</span>
                 </label>
               </div>
-              <div className="text-sm text-gray-600 mb-4">
+              <div className="text-sm text-gray-500 mb-4 text-left ml-8">
                 {calendarContent.length} content ideas available in this campaign.
               </div>
 

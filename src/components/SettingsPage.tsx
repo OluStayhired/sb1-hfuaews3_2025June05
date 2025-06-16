@@ -141,18 +141,27 @@ export function SettingsPage() {
   // Removed the modal overlay and fixed positioning
   // This div now represents the main content area of your page
   return (
-    //<div className="w-full p-2 lg:p-2"> {/* Added container for max-width, center, padding */}
     <div className="w-full mx-auto">
-      {/*<div className="bg-white rounded-xl shadow-lg w-full max-w-4xl mx-auto p-6 md:p-8"> {/* Adjusted max-width for page content */}
-      
-      <div className="bg-white w-full mx-auto p-6 md:p-8">
-        {/* Header - Removed X close button */}
-        <div className="flex items-center mb-6 pb-4 border-b border-gray-200">
-          <div className="p-2 bg-blue-50 rounded-lg">
-            <Settings className="w-5 h-5 text-blue-500" />
-          </div>
-          <h2 className="text-xl font-semibold text-gray-900 ml-3">Account Settings</h2>
+      <div className="bg-white w-full mx-auto p-4">
+        <div className="flex items-center space-x-2 mb-8"> 
+            <div className="p-2 bg-blue-50 rounded-md"> 
+               <Settings className="w-5 h-5 text-blue-500"/> 
+            </div>
+        
+              <h2 className="text-xl font-semibold text-gray-900">Account Settings</h2>
         </div>
+      
+    {/* --------- old header information -----------
+      
+   //<div className="w-full mx-auto">
+   //   <div className="bg-white w-full mx-auto p-6 md:p-8">
+    //    <div className="flex items-center space-x-2 mb-8 pb-4 border-b border-gray-200">
+    //      <div className="p-2 bg-blue-50 rounded-lg">
+    //        <Settings className="w-5 h-5 text-blue-500" />
+     //     </div>
+     //     <h2 className="text-xl font-semibold text-gray-900 ml-3">Account Settings</h2>
+      //  </div>
+ */} 
 
         {isLoading ? (
           <div className="flex justify-center py-12">
@@ -160,8 +169,9 @@ export function SettingsPage() {
           </div>
         ) : (
           <div className="space-y-6">
+      
             {/* User Information Section */}
-            <div className="max-w-4xl mx-auto p-2 md:p-4">
+        <div className="max-w-4xl mx-auto p-2 md:p-4">
               <h3 className="text-md font-medium text-gray-700 mb-4 flex items-center">
                 <User className="w-5 h-5 mr-2 text-blue-500" />
                 Account
@@ -208,7 +218,7 @@ export function SettingsPage() {
                     value={userPreferences.target_audience || ''}
                     onChange={handleInputChange}
                     placeholder="Describe your ideal target audience"
-                    className="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 text-sm py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                     rows={3}
                   />
                 </div>
@@ -223,7 +233,7 @@ export function SettingsPage() {
                     value={userPreferences.problem || ''}
                     onChange={handleInputChange}
                     placeholder="What problems does your business solve for your customers?"
-                    className="w-full text-sm px-3 py-2 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white  text-gray-900"
+                    className="w-full px-3 text-sm py-2 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white  text-gray-900"
                     rows={3}
                   />
                 </div>
@@ -259,7 +269,7 @@ export function SettingsPage() {
                   <p className="text-gray-700  font-medium">Standard Plan</p>
                   <p className="text-sm text-gray-500">Basic features</p>
                 </div>
-                <span className="text-sm text-gray-500">Pricing Soon</span>
+                <span className="text-sm text-gray-500">Coming Soon</span>
               </div>
             </div>
 
@@ -316,6 +326,7 @@ export function SettingsPage() {
         )}
       </div>
     </div>
+   
   );
 }
 

@@ -323,7 +323,7 @@ const handleViewCalendarList = () => {
 };
   
  return (
-    <div className="p-4">
+    <div className="p-4 bg-white h-full">
       <div className="max-w-8xl mx-auto">
 
         {/*  
@@ -338,7 +338,7 @@ const handleViewCalendarList = () => {
         
 {!(isCreateCalendarFormOpen || showCampaignList || selectedCalendar || isCampaignSuccessModalOpen) && (
         <div className="flex items-center space-x-2 mb-8">
-          <div className="p-2 bg-blue-100 rounded-md">
+          <div className="p-2 bg-blue-50 rounded-md">
             <Megaphone className="w-5 h-5 text-blue-500"/>
           </div>
           <h2 className="text-xl font-semibold text-gray-900">New Campaigns</h2>
@@ -351,7 +351,7 @@ const handleViewCalendarList = () => {
 
         
         {/*Start inside the white boarder*/}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12">
+        <div className="bg-white  p-12">
 
            {/*below used to be border-blue-300*/}
           

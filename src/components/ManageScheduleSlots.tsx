@@ -314,7 +314,7 @@ const handleActiveTimeToggle = async (day: string, time: string, currentActive: 
   }
 
   return (
-    <div className="bg-white shadow-sm p-6">
+    <div className="bg-white shadow-sm p-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2 mb-8"> 
