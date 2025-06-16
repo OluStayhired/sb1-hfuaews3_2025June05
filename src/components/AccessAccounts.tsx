@@ -864,7 +864,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     <span className="mr-1">Connected </span>
                   </span>
 
-                <TooltipHelp text="Disconnect Bluesky">
+                <TooltipHelp text="Remove Bluesky">
                   <button
                     onClick={handleDisconnectBluesky}
                     disabled={isLoading || disconnectingAccount === blueskyUser.handle}
@@ -963,7 +963,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     <Zap className="w-3.5 h-3.5 mr-1" />
                     <span className="mr-1">Connected </span>
                   </span>
-                  <TooltipHelp text="Disconnect LinkedIn">
+                  <TooltipHelp text="Remove LinkedIn">
                   <button
                     onClick={handleDisconnectLinkedIn}
                     disabled={linkedinLoading || disconnectingLinkedInAccount === linkedinUser.handle}
@@ -1061,7 +1061,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     <span className="mr-1">Connected </span>
                   </span>
 
-                  <TooltipHelp text="Disconnect Twitter">
+                  <TooltipHelp text="Remove Twitter">
                   <button
                     onClick={handleDisconnectTwitter}
                     disabled={twitterLoading || disconnectingTwitterAccount === twitterUser.handle}
