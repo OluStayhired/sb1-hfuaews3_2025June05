@@ -887,13 +887,13 @@ const handleGenerateContent = async () => {
                 {/* Start Add a button to open the ContentCampaignModal */}
                     <button
                         onClick={handleOpenContentCalendarModal}
-                        className="ml-2 px-2 py-2.5 bg-gray-100 flex items-center text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                        className="ml-2 px-2 py-2 bg-gray-100 flex items-center text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
                         //title="Get Content Ideas"
                         >
                           <TooltipHelp text="Browse ideas">
-                            <Lightbulb className="w-4 h-4 mr-2"/>
+                            <Lightbulb className="w-4 h-4"/>
                            </TooltipHelp>
-                            <span className="text-xs">View Ideas</span>
+                      {/*<span className="text-xs">Ideas</span>*/}
                            
                             
                       </button>
@@ -901,7 +901,7 @@ const handleGenerateContent = async () => {
                 {/* End Add a button to open the ContentCampaignModal */}
 
           {/* Start Add button to show draft posts */}  
-          <TooltipHelp text="View drafts">
+          <TooltipHelp text="View saved drafts">
             <button
                 onClick={() => {
                   setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
@@ -911,7 +911,7 @@ const handleGenerateContent = async () => {
                 // Added 'items-center' to the button's class for vertical alignment
             >
             <FileEdit className="w-4 h-4 mr-2" />
-              <span className="text-xs">Saved Drafts</span>
+              <span className="text-xs">Drafts</span>
               {/* The 'totalDraftCount' wrapped in a gray badge */}
             {totalDraftCount > 0 && ( // Only show the badge if there are drafts
               <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-200 text-blue-400 text-xs font-semibold">
