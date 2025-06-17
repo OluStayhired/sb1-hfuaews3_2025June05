@@ -797,14 +797,17 @@ const handleGenerateContent = async () => {
 };
 
   return (
-    <div className="p-4">
+    <div className="p-8">
       <div className="max-w-4xl mx-auto">
+
+        {/*
         <div className="flex items-center space-x-2 mb-6"> 
           <div className="p-2 bg-blue-100 rounded-md"> 
             <FileEdit className="w-5 h-5 text-blue-500"/> 
           </div>
           <h2 className="text-xl font-semibold text-gray-900">Draft Post</h2>
         </div>
+        */}
 
         {isLoading ? (
           <div className="flex justify-center py-8">
@@ -897,11 +900,8 @@ const handleGenerateContent = async () => {
                 
                 {/* End Add a button to open the ContentCampaignModal */}
 
-          
-
-                    {/* End Add button to show draft posts */}
-
-                    <TooltipHelp text="View drafts">
+          {/* Start Add button to show draft posts */}  
+          <TooltipHelp text="View drafts">
             <button
                 onClick={() => {
                   setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
@@ -938,6 +938,8 @@ const handleGenerateContent = async () => {
                 </button>
                 */}
        </TooltipHelp>
+
+                    {/* End Add button to show draft posts */}
                     
                   </>
                 ) : (
