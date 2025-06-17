@@ -1,13 +1,14 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { generateCalendar, generateCalendarWithRetry } from '../lib/gemini';
+import { generateCalendar, generateCalendarWithRetry, generateCampaignName } from '../lib/gemini';
 import { useAuthStore } from '../auth';
 import { useAuth } from '../context/AuthContext';
-import { CheckCircle2, Calendar, Target, Goal, Package2, X, Loader2 } from 'lucide-react';
-import { Calendar as CalendarIcon, ChevronRight, ChevronLeft, Megaphone, CalendarPlus, CheckCircle } from 'lucide-react';
+import { CheckCircle2, Calendar, Target, Goal, Package2, X, Loader2, PartyPopper } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronRight, ChevronLeft, Megaphone, CalendarPlus, CheckCircle, Sparkles } from 'lucide-react';
 import { ShowCalendarContent } from './ShowCalendarContent';
 import { CreateCalendarProgressModal } from './CreateCalendarProgressModal';
 import { addDays } from 'date-fns';
+import { TooltipExtended } from '../utils/TooltipExtended';
 
 //import { useDebounce } from '/src/hooks/useDebounce';
 
@@ -60,6 +61,9 @@ const [showProgressModal, setShowProgressModal] = useState(false);
 
   const [calendarDays, setCalendarDays] = useState<number>(14); 
   const [productTier, setProductTier] = useState<string>('free');  
+  const [isGeneratingName, setIsGeneratingName] = useState(false);
+  const [isGeneratingBrand, setIsGeneratingBrand] = useState(false);
+  const [isGeneratingCommunity, setIsGeneratingCommunity] = useState(false);
 
 // Modify the success handler in CreateCalendarForm
 const handleSuccess = (campaignName: string) => {
@@ -68,6 +72,10 @@ const handleSuccess = (campaignName: string) => {
   // Don't close the form yet
   // onClose(); // Remove this
 };
+
+//const campaign_theme = "founder brand building"  
+
+
 
   useEffect(() => {
     async function fetchAndSetUserPreferences() {
@@ -118,7 +126,7 @@ const handleSuccess = (campaignName: string) => {
     }
 
     fetchAndSetUserPreferences();
-  }, []);
+}, []);
 
 
   useEffect(() => {
@@ -174,7 +182,7 @@ const DateSelector = ({
       
       <div className="flex items-center space-x-4">
         <div className="flex-1">
-          <div className="relative">
+          <div className="relative text-sm">
             <input
               type="date"
               value={dateValue}
@@ -191,7 +199,7 @@ const DateSelector = ({
         <button
           type="button"
           onClick={onSelectToday}
-          className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
+          className="px-4 py-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
         >
           <CalendarIcon className="w-4 h-4" />
           <span>Start Today</span>
@@ -296,7 +304,72 @@ const checkCalendarName = useCallback(
   [currentUserEmail]  // Empty dependency array since we're getting email from auth session
 );
   
+const handleGenerateCalendarName = async (campaign_theme: string) => {
+    setIsGeneratingName(true);
+    setError(null); // Clear any previous errors
 
+    if (!formData.targetAudience || !formData.coreServices) {
+        setError('Please provide your Target Audience and Problems You Solve before generating a campaign name.');
+        setIsGeneratingName(false);
+        return;
+    }
+
+    try {
+        const response = await generateCampaignName(
+            formData.targetAudience,
+            formData.coreServices, // This is the 'problem'
+            campaign_theme
+        );
+
+        if (response.error) {
+            throw new Error(response.error);
+        }
+
+        // --- Start of suggested change ---
+      const decoder = new TextDecoder('utf-8');
+      let utf8String;
+
+       // Ensure response.text is treated as a string for encoding
+      if (typeof response.text === 'string') {
+        utf8String = decoder.decode(new TextEncoder().encode(response.text));
+      } else {
+        // Fallback for non-string types, though generateCampaignName should return string
+        utf8String = decoder.decode(response.text);
+      }
+
+      // Use the cleanAndParseJSON function for robust parsing
+      const generatedData = cleanAndParseJSON(utf8String);
+      // --- End of suggested change ---
+
+      if (Array.isArray(generatedData) && generatedData.length > 0) {
+    setFormData(prev => ({
+        ...prev,
+        calendarName: generatedData[0].title || '', // Access the first element of the array
+        calendarDescription: generatedData[0].description || '' // Access the first element of the array
+    }));
+} else {
+    // Handle cases where the data might not be in the expected array format
+    // This could happen if cleanAndParseJSON returns an empty array or something else
+    console.error("Generated data is not in the expected array format:", generatedData);
+    setError("Failed to parse campaign name/description. Unexpected data format.");
+}
+      
+        // Assuming the response.text is a JSON string like { "title": "...", "description": "..." }
+       // const generatedData = JSON.parse(response.text);
+
+        //setFormData(prev => ({
+          //  ...prev,
+            //calendarName: generatedData.title || '',
+          //  calendarDescription: generatedData.description || ''
+        //}));
+
+    } catch (err: any) {
+        console.error('Error generating campaign name/description:', err);
+        setError(`Failed to generate campaign name/description: ${err.message || 'Unknown error'}`);
+    } finally {
+        setIsGeneratingName(false);
+    }
+};  
   
   const handleGoalToggle = (goal: string) => {
     setFormData(prev => {
@@ -570,9 +643,30 @@ const getWeekday = (date: Date): string => {
           <div className="space-y-0">
             
             <div className="text-left">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Calendar Name</label>
-             
+              <div className="flex space-x-3 items-center mb-2">
+              <label className="block text-sm font-medium text-gray-700 flex items-center space-x-2">Calendar Name</label>
 
+                <TooltipExtended text="⚡ Auto-Generate a content campaign name and description">
+                <button
+                    type="button"
+                    onClick={() => handleGenerateCalendarName("Growing My Social Media Followers")} // Call the new function
+                    disabled={isGeneratingName || !formData.targetAudience || !formData.coreServices} // Disable when generating or missing data
+                    className="p-1 space-x-1 text-center flex bg-blue-100 rounded-md items-center text-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                >
+                    {isGeneratingName ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                        <Sparkles className="w-3 h-3" />
+                    )}
+                  
+                  {/*<p className="text-sm">click here </p>*/}
+                  
+                </button>
+                
+              </TooltipExtended>
+      
+              </div>
+              
 
               {/*Start New Validated Calendar Name Check*/} 
               <div className="relative mb-3">
@@ -584,7 +678,7 @@ const getWeekday = (date: Date): string => {
                     setFormData(prev => ({ ...prev, calendarName: newName }));
                     checkCalendarName(newName);
                   }}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  className={`w-full text-sm px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                       nameError ? 'border-red-300' : isNameUnique ? 'border-green-300' : 'border-gray-300'
                   }`}
                   placeholder="Enter a name for your calendar"
@@ -604,7 +698,16 @@ const getWeekday = (date: Date): string => {
             </div>
             
             <div className="text-left">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Calendar Description</label>
+              {/*<label className="block text-sm font-medium text-gray-700 mb-2">Calendar Description</label>*/}
+              <div className="flex space-x-3 items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-700 flex items-center space-x-2">Calendar Description</label>
+              
+                {/* <button type="button" className="p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                  <Sparkles className="w-3 h-3" />
+              </button>
+              */}
+              </div>
+              
               <textarea
                 value={formData.calendarDescription}
                 onChange={(e) => setFormData(prev => ({ ...prev, calendarDescription: e.target.value }))}
@@ -640,7 +743,7 @@ const getWeekday = (date: Date): string => {
                 value={formData.targetAudience}
                 onChange={(e) => setFormData(prev => ({ ...prev, targetAudience: e.target.value }))}
                 className="w-full text-sm px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                rows={4}
+                rows={6}
                 placeholder="Describe your target audience in detail..."
                 required
               />
@@ -703,9 +806,9 @@ const getWeekday = (date: Date): string => {
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex items-center space-x-2">
+                <div className="flex items-center text-center space-x-2">
                   <CheckCircle2 className="w-5 h-5 text-green-500 mb-2" />
-                  <h4 className="text-left justify-center font-medium text-gray-700 mb-2">Review Your Settings</h4>
+                  <h4 className="justify-center text-center font-medium text-gray-700 mb-2">Review Your Settings</h4>
                 </div>
               <div className="space-y-2 text-sm text-gray-500">
                 <p className="text-sm text-left"><strong>Calendar Name:</strong> {formData.calendarName}</p>
