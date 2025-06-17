@@ -1028,7 +1028,7 @@ const handleConnectLinkedInClick = () => {
                             setIsPostWarningModalOpen(true);
                             }}
                        className="p-1 flex-1 items-center rounded-md text-gray-500 bg-gray-50 hover:text-green-700 hover:bg-green-100 transition-colors"
-                       title="Post Now"
+                       //title="Post Now"
                      >
                         <Send className="w-3 h-3" />
                       
@@ -1036,11 +1036,11 @@ const handleConnectLinkedInClick = () => {
 
                     </TooltipHelp>  
                   
-                  <TooltipHelp text="Schedule post">
+                  <TooltipHelp text="Reschedule post">
                     <button
                         onClick={() => handleRescheduleClick(scheduledPost)}
                         className="p-1 rounded-md text-gray-500 bg-gray-50 hover:text-yellow-600 hover:bg-yellow-100 transition-colors" 
-                        title="Reschedule post" 
+                        //title="Reschedule post" 
                       >
   
                       <Calendar className="w-3 h-3" /> 
@@ -1051,7 +1051,7 @@ const handleConnectLinkedInClick = () => {
                     <button
                        onClick={() => handleEditPost(scheduledPost)}
                        className="p-1 rounded-md text-gray-500 bg-gray-50 hover:text-blue-500 hover:bg-blue-100 transition-colors"
-                       title="Edit post"
+                       //title="Edit post"
                      >
                         <SquarePen className="w-3 h-3" />
                     </button>
@@ -1061,7 +1061,7 @@ const handleConnectLinkedInClick = () => {
                     <button
                        onClick={() => handleDeleteClick(scheduledPost)}
                        className="p-1 rounded-md text-red-300 bg-red-50 hover:text-red-500 hover:bg-red-100 transition-colors"
-                       title="Delete post"
+                       //title="Delete post"
                      >
                            <Trash2 className="w-3 h-3" />
                     </button>
@@ -1117,6 +1117,8 @@ const handleConnectLinkedInClick = () => {
                           <div className="flex justify-end mt-2">
                             
 {/* Pause/Activate Post button */}
+
+                     
 <button
   // Use a template literal for the className string
   className={`
@@ -1161,9 +1163,12 @@ const handleConnectLinkedInClick = () => {
       {scheduledPost.schedule_status ? 'Pausing...' : 'Activating...'}
     </span>
   ) : ( // Else, Normal text based on schedule_status
-    scheduledPost.schedule_status ? 'Post Scheduled' : 'Post Disabled'
+  <TooltipHelp text="click to change status">  
+    {scheduledPost.schedule_status ? 'Post Scheduled' : 'Post Disabled'}
+  </TooltipHelp>  
   )}
 </button>
+    
 
                           </div>
 
