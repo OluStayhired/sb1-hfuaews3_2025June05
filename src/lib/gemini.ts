@@ -784,7 +784,7 @@ Act as an experienced social media content creator who specializes in creating p
 
 Analyze deeply the information in the ${content} to identify the most pressing fears, wants and aspirations for ${target_audience}. Use your experience to focus on either the fears, frustrations, aspirations or wants for this content.
 
-Now I'm going to share some hooks in ${hooksData}. Read all the hooks and select the best hook for the ${content}
+Read all the hooks provided in the list ${hooksData} and select the best hook for the ${content}
 
 Starting with the most appropriate hook from the hooks list, improve the post so that it resonates with ${target_audience} while keeping to the key message in ${content}.
 
@@ -889,7 +889,7 @@ export async function generateHookPost(
   // Rate limiting
   await rateLimiter.checkAndWait();
 
-const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content. I'm going to share some hooks ${hooks}. Using the best hook for the ${content}, build on this content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content utilizing one of the hooks into the content. for the hook, create a bridge statement that naturally connects the hook to the content. follow these rules in [Rules]
+const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content. Read all the hooks in ${hooks} and use the best hook for the ${content}, build on this content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content utilizing one of the hooks into the content. for the hook, create a bridge statement that naturally connects the hook to the content. follow these rules in [Rules]
 
 Follow the [Rules] below:  
 
@@ -974,7 +974,7 @@ export async function generateHookPostV2(
   // Rate limiting
   await rateLimiter.checkAndWait();
 
-const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content. I'm going to share some hooks in ${hooksData}. Read all the hooks and select the best hook for the ${content}, build on this content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content utilizing one of the hooks in ${hooksData} into the content. for the hook, create a bridge statement that naturally connects the hook to the content. follow these rules in [Rules]
+const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content. Read the hooks in ${hooksData} and select the best hook for the ${content}, build on this content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content utilizing one of the hooks in ${hooksData} into the content. for the hook, create a bridge statement that naturally connects the hook to the content. follow these rules in [Rules]
 
 Follow the [Rules] below:  
 
