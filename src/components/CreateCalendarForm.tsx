@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { generateCalendar, generateCalendarWithRetry, generateCampaignName } from '../lib/gemini';
+import { generateCalendar, generateCalendarWithRetry, generateCampaignName, generateTargetAudience } from '../lib/gemini';
 import { useAuthStore } from '../auth';
 import { useAuth } from '../context/AuthContext';
 import { CheckCircle2, Calendar, Target, Goal, Package2, X, Loader2, PartyPopper } from 'lucide-react';
@@ -9,6 +9,7 @@ import { ShowCalendarContent } from './ShowCalendarContent';
 import { CreateCalendarProgressModal } from './CreateCalendarProgressModal';
 import { addDays } from 'date-fns';
 import { TooltipExtended } from '../utils/TooltipExtended';
+import { TooltipHelp } from '../utils/TooltipHelp';
 
 //import { useDebounce } from '/src/hooks/useDebounce';
 
@@ -62,6 +63,7 @@ const [showProgressModal, setShowProgressModal] = useState(false);
   const [calendarDays, setCalendarDays] = useState<number>(14); 
   const [productTier, setProductTier] = useState<string>('free');  
   const [isGeneratingName, setIsGeneratingName] = useState(false);
+  const [isGeneratingAudience, setIsGeneratingAudience] = useState(false);
   const [isGeneratingBrand, setIsGeneratingBrand] = useState(false);
   const [isGeneratingCommunity, setIsGeneratingCommunity] = useState(false);
 
@@ -195,7 +197,8 @@ const DateSelector = ({
             <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           </div>
         </div>
-        
+
+        <TooltipHelp text="⚡Reset Start Date" className="mx-auto">
         <button
           type="button"
           onClick={onSelectToday}
@@ -204,6 +207,7 @@ const DateSelector = ({
           <CalendarIcon className="w-4 h-4" />
           <span>Start Today</span>
         </button>
+      </TooltipHelp>
       </div>
     </div>
   );
@@ -370,6 +374,38 @@ const handleGenerateCalendarName = async (campaign_theme: string) => {
         setIsGeneratingName(false);
     }
 };  
+
+// ----------- Start create target audience enhancement ---------- //
+  
+const handleGenerateTargetAudience = async () => {
+   if (!formData.targetAudience.trim()) return; 
+  
+  try {
+    setIsGeneratingAudience(true);
+    
+    // Get the theme and topic from the selected calendar content
+    const improvedAudience = await generateTargetAudience(formData.targetAudience);
+
+    if (!improvedAudience.error) {
+       //setContent(improvedAudience.text);
+
+     setFormData(prev => ({
+            ...prev,
+            targetAudience: improvedAudience.text || ''          
+        }))
+      
+    } else {
+      console.error('Error improving audience:', improvedAudience.error);
+      // Optionally show an error message to the user
+    }
+  } catch (err) {
+    console.error('Error generating content:', err);
+  } finally {
+    setIsGeneratingAudience(false);
+  }
+};
+  
+// ----------- Start create target audience enhancement ---------- //  
   
   const handleGoalToggle = (goal: string) => {
     setFormData(prev => {
@@ -640,7 +676,7 @@ const getWeekday = (date: Date): string => {
         return (
           //<div className="space-y-6">
           
-          <div className="space-y-0">
+          <div className="space-y-0 max-w-xl mx-auto">
             
             <div className="text-left">
               <div className="flex space-x-3 items-center mb-2">
@@ -731,13 +767,35 @@ const getWeekday = (date: Date): string => {
 
       case 2:
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 max-w-xl mx-auto h-full">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <div className="flex items-center space-x-2">
                   <Target className="w-5 h-5 text-blue-500" />
                   <span>Who is your ideal target audience?</span>
+                  
+                  <TooltipExtended text="⚡Generate additional insights about your target audience">
+                <button
+                    type="button"
+                    onClick={handleGenerateTargetAudience} // Call the new function
+                    //disabled={!isGeneratingName || !formData.targetAudience || !formData.coreServices} // Disable when generating or missing data
+                    className="p-1 space-x-1 text-center flex bg-blue-100 rounded-md items-center text-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                >
+                    {isGeneratingAudience ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                        <Sparkles className="w-3 h-3" />
+                    )}
+                  
+                  {/*<p className="text-sm">click here </p>*/}
+                  
+                </button>
+                
+              </TooltipExtended>
                 </div>
+
+                
+                
               </label>
               <textarea
                 value={formData.targetAudience}
@@ -749,7 +807,7 @@ const getWeekday = (date: Date): string => {
               />
             </div>
 
-            <div>
+            <div className="h-full">
               <label className="block text-sm font-medium text-gray-700 mb-4">
                 <div className="flex items-center space-x-2">
                   <Goal className="w-5 h-5 text-blue-500" />
@@ -787,7 +845,7 @@ const getWeekday = (date: Date): string => {
 
       case 3:
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 max-w-xl mx-auto">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <div className="flex items-center space-x-2">
@@ -824,22 +882,27 @@ const getWeekday = (date: Date): string => {
     }
   };
 
-  return (             
-    <div className="max-w-2xl mx-auto bg-white rounded-xl p-6 relative">
-          <button
+  return (    
+    <div className="w-full h-full mx-auto bg-white rounded-xl p-6 relative min-h-screen "> 
+
+    {/*<div className="max-w-2xl mx-auto bg-white rounded-xl overflow-hidden mb-6 relative">
+          
+        <button
           onClick={() => onClose?.()}
           className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
           title="Close"
         >
           <X className="w-5 h-5 text-gray-500" />
       </button>
+*/}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-2">
-          <div className="bg-blue-50 rounded-full p-2">
+            <div className="bg-blue-50 rounded-full p-2">
               <CalendarPlus className="w-6 h-6 text-blue-500" />
             </div>
-        <h2 className="text-xl font-semibold">Create Campaign</h2>
+            <h2 className="text-xl font-semibold">Create Campaign</h2>
       </div>
+      
 
       {/* Add the close button 
       
@@ -863,7 +926,7 @@ const getWeekday = (date: Date): string => {
         />
 
       {/* Progress Indicator */}
-      <div className="mb-8">
+      <div className="mb-8 max-w-xl mx-auto mt-12">
         <div className="flex items-center justify-between">
           {[1, 2, 3].map((stepNumber) => (
             <div key={stepNumber} className="flex items-center">
@@ -881,9 +944,19 @@ const getWeekday = (date: Date): string => {
           ))}
         </div>
         <div className="flex justify-between mt-2">
+
+          <TooltipExtended text="⚡Share a start date for your content calendar">
           <span className="text-xs text-gray-500">Basic Info</span>
-          <span className="text-xs text-gray-500">Target & Goals</span>
-          <span className="text-xs text-gray-500">Services & Review</span>
+          </TooltipExtended>
+
+          
+          <TooltipExtended text="⚡Learn more about your audience and set your goals">
+            <span className="text-xs text-gray-500">Target & Goals</span>
+          </TooltipExtended>
+
+          <TooltipExtended text="⚡Review your answers and Generate your calendar">
+            <span className="text-xs text-gray-500">Services & Review</span>
+          </TooltipExtended>
         </div>
       </div>
 
@@ -911,7 +984,7 @@ const getWeekday = (date: Date): string => {
       />
        )}
 
-        <div className="flex justify-between pt-6">
+        <div className="flex justify-between pt-6 max-w-xl mx-auto h-full">
           {step > 1 && (
             <button
               type="button"
@@ -921,15 +994,29 @@ const getWeekday = (date: Date): string => {
               Back
             </button>
           )}
-          <button
-            type="submit"
-            disabled={loading || (step === 2 && formData.selectedGoals.length !== 3)}
-            className="ml-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 transition-colors flex items-center space-x-2"
-          >
-          
-              <span>{step === 3 ? 'Create Calendar' : 'Next'}</span>
-        
-          </button>
+     
+
+{step === 3 ? (
+  <TooltipExtended text="⚡ Create 2 weeks of content that's ready to GO!">
+    <button
+      type="submit"
+      disabled={loading || (step === 2 && formData.selectedGoals.length !== 3)}
+      className="ml-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 transition-colors flex items-center space-x-2"
+    >
+      <span>{step === 3 ? 'Create Calendar' : 'Next'}</span>
+    </button>
+  </TooltipExtended>
+) : (
+//<TooltipExtended text="⚡ You're almost done! Let's review your answers">
+  <button
+    type="submit"
+    disabled={loading || (step === 2 && formData.selectedGoals.length !== 3)}
+    className="ml-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 transition-colors flex items-center space-x-2"
+  >
+    <span>{step === 3 ? 'Create Calendar' : 'Next'}</span>
+  </button>
+ // </TooltipExtended>
+)}
         </div>
       </form>
      

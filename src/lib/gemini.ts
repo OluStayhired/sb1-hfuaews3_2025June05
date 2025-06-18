@@ -188,7 +188,7 @@ const hooks = `
 - The most [adjective] thing that happened when I tried [strategy/tactic]. 
 - You won't believe what [target audience] are saying about [product, service, etc.]! 
 - How to [action] without sacrificing [activity]. 
- [X] [topic] mistakes you MUST avoid at all costs! 
+- [X] [topic] mistakes you MUST avoid at all costs! 
 - [Customer Review] 
 - Try this next time when you [scenario]: 
 - How to [skill] like a [expert]. 
@@ -388,6 +388,10 @@ Ensure that:
     };
   }
 }
+
+
+
+
 
 //------ start generate calendar no retries ------//
 export async function generateCalendar(calendar_info: string, startDayofWeek: string, calendarDays: int): Promise<GeminiResponse> {
@@ -850,6 +854,7 @@ Follow the [Rules] below:
 
 // -------------- End Generate First Post WIth Retry ------------------------ //
 
+
 // -------------- Start Generate LinkedIn Post With Hook -------------------- //
 
 export async function generateHookPost(
@@ -934,25 +939,26 @@ Follow the [Rules] below:
   throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
 }
 
+
 //------- start generate name and description for campaign -------- //
 
 export async function generateCampaignName(
-  target_audience: string,
-  problem: string,
-  campaign_theme: string,
-  char_length: string,
-  maxRetries: number = 5,
-  initialDelayMs: number = 1000
+    target_audience: string,
+    problem: string,
+    campaign_theme: string,
+    char_length: string,
+    maxRetries: number = 5,
+    initialDelayMs: number = 1000
 ): Promise<GeminiResponse> {
-// Check cache
-const cacheKey = JSON.stringify({ target_audience, problem }); // Include all variables
-const cached = calendarCache.get(cacheKey);
-if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-  return cached.response;
-}
+  // Check cache
+ const cacheKey = JSON.stringify({ target_audience, problem }); // Include all variables
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.response;
+  }
 
-// Rate limiting
-await rateLimiter.checkAndWait();
+  // Rate limiting
+  await rateLimiter.checkAndWait();
 
 const prompt = `Act as an experienced social media marketing professional, you have deep knowledge of creating marketing campaigns and you have many years experience naming the campaigns and describing them in very simple and easy to understand language. Using the customer type ${target_audience} and the problem that my service or product solution solves in ${problem} to construct a 4 word title for my content campaign that will initially focus on ${campaign_theme} through content that appeal to my ${target_audience}. Add a 15 word description for the first campaign based on the rules. 
 
@@ -964,10 +970,10 @@ Follow the rules in [Rules]
 1. Use the writing formula to write the description in the style "Content ideas to achieve result" 
 2. Include an Action Verb in the Campaign title 
 3. Provide the output as a JSON array with exactly 2 objects each containing:
-    { 
-      title: "...." 
-      description: "...." 
-    } 
+      { 
+        title: "...." 
+        description: "...." 
+      } 
 
 Ensure that:
 
@@ -976,49 +982,131 @@ Ensure that:
 * Any special characters within string values (e.g., forward slashes / , backslashes and [ and ] should be properly escaped to prevent JSON parsing errors.
 
 * Specifically, square brackets [ and ] should be escaped as \[ and \].      
-`;
+  `;
 
- let currentRetry = 0;
- let delayTime = initialDelayMs;
+   let currentRetry = 0;
+   let delayTime = initialDelayMs;
 
-while (currentRetry < maxRetries) {
-  try {
-    await rateLimiter.checkAndWait();
+  while (currentRetry < maxRetries) {
+    try {
+      await rateLimiter.checkAndWait();
 
-    //const response = await model.generateContent(prompt);
-    
-    const response = await generateContent(prompt);
-    
-    calendarCache.set(cacheKey, {
-      response,
-      timestamp: Date.now()
-    });
+      //const response = await model.generateContent(prompt);
+      
+      const response = await generateContent(prompt);
+      
+      calendarCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
 
-    return response;
+      return response;
 
-  } catch (error: any) {
-    const isRetryableError =
-      error.status === 503 ||
-      error.status === 429 ||
-      (error.message && (error.message.includes('503') || error.message.includes('429')));
-    const isNetworkError = error.message && error.message.includes('Failed to fetch');
+    } catch (error: any) {
+      const isRetryableError =
+        error.status === 503 ||
+        error.status === 429 ||
+        (error.message && (error.message.includes('503') || error.message.includes('429')));
+      const isNetworkError = error.message && error.message.includes('Failed to fetch');
 
-    if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
-      currentRetry++;
-      console.warn(
-        `Gemini API call failed (Error: ${error.status || error.message}). ` +
-        `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
-      );
-      await sleep(delayTime);
-      delayTime *= 2;
-      delayTime = delayTime * (1 + Math.random() * 0.2);
-      delayTime = Math.min(delayTime, 30000);
-    } else {
-      console.error(`Post generation failed after ${currentRetry} retries:`, error);
-      throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+        currentRetry++;
+        console.warn(
+          `Gemini API call failed (Error: ${error.status || error.message}). ` +
+          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+        );
+        await sleep(delayTime);
+        delayTime *= 2;
+        delayTime = delayTime * (1 + Math.random() * 0.2);
+        delayTime = Math.min(delayTime, 30000);
+      } else {
+        console.error(`Post generation failed after ${currentRetry} retries:`, error);
+        throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+      }
     }
   }
+
+  throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}
+//------- end generate name and description for campaign -------- //
+
+// ------- Start generate enhance target audience ------------- //
+export async function generateTargetAudience(
+    target_audience: string,
+    char_length: string = 500,
+    maxRetries: number = 5,
+    initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+  // Check cache
+ const cacheKey = JSON.stringify({ target_audience }); // Include all variables
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.response;
+  }
+
+  // Rate limiting
+  await rateLimiter.checkAndWait();
+
+const prompt = `
+
+
+Act as an experienced Researcher with a deep knowledge of identifying pain points for ${target_audience}. You want to append to the existing challenges faced by ${target_audience} exactly the style already used. Deduce from their current struggle based on your insights and knowlegde determine 2 other highly critical problems they struggle with as a result of the listed struggle. Follow the rules below
+
+[Rules]: 
+
+- Keep to ${char_length} Characters in total 
+- Use simple language an 8th grader would understand
+- integrate your answer with existing ${target_audience}
+- Ban Generic Content 
+- Provide ONE (1) final content piece to include ${target_audience}
+- Do NOT offer variations or alternative options.
+- Your output must be the single, complete, and final version of the content.
+- Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
+ `;
+
+   let currentRetry = 0;
+   let delayTime = initialDelayMs;
+
+  while (currentRetry < maxRetries) {
+    try {
+      await rateLimiter.checkAndWait();
+
+      //const response = await model.generateContent(prompt);
+      
+      const response = await generateContent(prompt);
+      
+      calendarCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
+
+      return response;
+
+    } catch (error: any) {
+      const isRetryableError =
+        error.status === 503 ||
+        error.status === 429 ||
+        (error.message && (error.message.includes('503') || error.message.includes('429')));
+      const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+        currentRetry++;
+        console.warn(
+          `Gemini API call failed (Error: ${error.status || error.message}). ` +
+          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+        );
+        await sleep(delayTime);
+        delayTime *= 2;
+        delayTime = delayTime * (1 + Math.random() * 0.2);
+        delayTime = Math.min(delayTime, 30000);
+      } else {
+        console.error(`Post generation failed after ${currentRetry} retries:`, error);
+        throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+      }
+    }
+  }
+
+  throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
 }
 
-throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
-}
+// -------- End enhance target audience ------------- //
