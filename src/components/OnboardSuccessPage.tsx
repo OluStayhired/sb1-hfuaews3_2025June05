@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Calendar, ArrowRight, Home, X, LayoutGrid, PlusCircle } from 'lucide-react'; // Import X icon
 import { checkConnectedSocials } from '../utils/checkConnectedSocial'; // Import the utility
 import { NoSocialModal } from './NoSocialModal'; // Assuming NoSocialModal is available
+import { TooltipExtended } from '../utils/TooltipExtended';
+import { TooltipHelp } from '../utils/TooltipHelp';
+
 
 
 interface OnboardSuccessPageProps {
@@ -72,50 +75,53 @@ export function OnboardSuccessPage({ isOpen, onClose, postContent }: OnboardSucc
         </button>
 
         {/* Success Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white text-center">
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white items-center text-center">
           <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4">
             <CheckCircle className="h-10 w-10 text-blue-500" />
           </div>
           <h1 className="text-2xl font-bold">Account Connected!</h1>
           <p className="mt-2 text-blue-100">
-            You're all set to schedule your first post 🚀
+            You're all set to start generating content ideas 🚀
           </p>
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 items-center">
           <div className="mb-8">
             <p className="text-gray-600 text-center">
-              Your social media account has been successfully connected. You can now start on your content creation journey!
+              {/*Your social media account has been successfully connected. You can now start on your content creation journey!*/}
+              Launch your 2 week Content Campaign in 30 seconds! 
             </p>
           </div>
 
-          <div className="space-y-4">
-            {/* Primary Button - Schedule First Post */}
-            <button
-              onClick={handleComposeDraft}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center group"
-            >
-              <Calendar className="mr-2 h-5 w-5" />
-              <span className="font-medium">View Your First Post</span>
-              <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+          <div className="flex space-x-2 items-center justify-center"> {/* Added 'flex' and kept 'space-x-2' for horizontal spacing */}
+  
+            <TooltipExtended text="⚡Schedule your first post on LinkedIn, Twitter & Bluesky">
+              <button
+                onClick={handleComposeDraft}
+                // Removed w-full
+              className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center group"
+              >
+              <Calendar className="mr-2 h-4 w-4" />
+              <span className="font-normal text-sm">View First Post</span>
             </button>
+              </TooltipExtended>
 
             {/* Secondary Button - Go to Dashboard */}
-     
+              <TooltipExtended text="⚡Get instant content for 2 weeks on LinkedIn, Twitter & Bluesky">
             <button
               onClick={() => {
                 onClose(); // Close the modal
                 navigate('/dashboard/campaign');
               }}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-            >
-              <PlusCircle className="mr-2 h-5 w-5" />
-              <span className="font-medium">Get 2 Weeks of Content</span>
-            </button>
-          
-            
-          </div>
+              // Removed w-full
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
+              >
+              <PlusCircle className="mr-2 h-4 w-4" />
+                <span className="font-normal text-sm">Launch Content Campaign</span>
+                  </button>
+                    </TooltipExtended>
+                </div>
           {/*
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">
