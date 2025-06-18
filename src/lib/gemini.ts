@@ -684,7 +684,15 @@ Follow the [Rules] below:
 }
 
 
-export async function generateFirstPost(target_audience: string, content: string, char_length: string): Promise<GeminiResponse> {
+export async function generateFirstPost
+  (
+    
+    target_audience: string, 
+    content: string, 
+    char_length: string
+    
+  
+  ): Promise<GeminiResponse> {
   // Check cache
  const cacheKey = JSON.stringify({ target_audience, content }); // Include all variables
   const cached = calendarCache.get(cacheKey);
@@ -754,6 +762,7 @@ Follow the [Rules] below:
 
 
 export async function generateFirstPostWithRetry(
+  hooksData: string[],
   target_audience: string,
   content: string, 
   char_length: string,
@@ -773,14 +782,16 @@ export async function generateFirstPostWithRetry(
   const prompt = `
 Act as an experienced social media content creator who specializes in creating practical, actionable, and repeatable content that resonate with ${target_audience}.
 
-Analyze deeply the information in the ${content} to identify the most pressing fears, wants and aspirations for ${target_audience}. Use your experience to focus on either the fears, frustrations, aspirations or wants for this post.
+Analyze deeply the information in the ${content} to identify the most pressing fears, wants and aspirations for ${target_audience}. Use your experience to focus on either the fears, frustrations, aspirations or wants for this content.
 
-Starting with a hook, improve the post so that it resonates with ${target_audience} while keeping to the key message in ${content}.
+Now I'm going to share some hooks in ${hooksData}. Read all the hooks and select the best hook for the ${content}
+
+Starting with the most appropriate hook from the hooks list, improve the post so that it resonates with ${target_audience} while keeping to the key message in ${content}.
 
 Use a copywriting framework similar to the [framework] below:
 
 [framework]:
-start with a hook that is a **declarative statement**, directly describing a personal feeling or the action causing the pain point related to the identified key pain point within the ${target_audience}, and use personal pronouns and conversational language to convey deep emotional resonance appropriate to the context. **The hook must follow the structure of "Subject + Verb + Object" or "Subject + Verb + Adjective" and must not contain any interrogative words or phrasing.**
+start with your chosen hook, add a bridge statement and focus on a feeling or the action causing the pain point related to one of the identified key pain points within the ${target_audience}, and use personal pronouns and conversational language to convey deep emotional resonance appropriate to the context. **The hook must follow the structure of "Subject + Verb + Object" or "Subject + Verb + Adjective" and must not contain any interrogative words or phrasing.**
 
 keep the hook directly related to the identified key pain point and actionable, emphasizing a repeatable process or transformation.
 
@@ -794,16 +805,18 @@ Follow the [Rules] below:
 
 [Rules]:
 - Keep to ${char_length} Characters in total
-- Use a first person singular grammar.
 - Keep to impactful and meaningful sentences, focusing on actionable advice.
 - Place each sentence in the post on a new line.
 - Add a space after each line. 
-- Start with a Hook that is a **declarative statement** directly describing a feeling or action related to the identified key pain point, using personal pronouns and conversational language. **Do not use any interrogative words or phrasing in the hook.**
 - Provide simple, conversational language.
 - Ban Generic Content
 - Ban hashtags
 - Ban bullet points.
 - Keep it natural
+- Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
+- Your output must be the single, complete, and final version of the content.
+- Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
+- Do NOT use numbered lists or headings to present multiple content options.
   `;
 
   let currentRetry = 0;
@@ -939,6 +952,90 @@ Follow the [Rules] below:
   throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
 }
 
+
+// ------ Generate Hook Post 2 With Hooks from content_hooks table ------------- //
+export async function generateHookPostV2(
+    hooksData: string[],
+    theme: string, 
+    topic: string, 
+    target_audience: string,
+    content: string, 
+    char_length: string,
+    maxRetries: number = 5,
+    initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+  // Check cache
+ const cacheKey = JSON.stringify({ target_audience, content }); // Include all variables
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.response;
+  }
+
+  // Rate limiting
+  await rateLimiter.checkAndWait();
+
+const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content. I'm going to share some hooks in ${hooksData}. Read all the hooks and select the best hook for the ${content}, build on this content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content utilizing one of the hooks in ${hooksData} into the content. for the hook, create a bridge statement that naturally connects the hook to the content. follow these rules in [Rules]
+
+Follow the [Rules] below:  
+
+[Rules]: 
+- Keep to ${char_length} Characters in total 
+- Place each sentence in the post on a new line. 
+- Provide simple, conversational language. 
+- Ban Generic Content 
+- Ban hashtags 
+- Ban bullet points. 
+- Keep it natural  
+- Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
+- Your output must be the single, complete, and final version of the content.
+- Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
+- Do NOT use numbered lists or headings to present multiple content options.
+  `;
+
+   let currentRetry = 0;
+  let delayTime = initialDelayMs;
+
+  while (currentRetry < maxRetries) {
+    try {
+      await rateLimiter.checkAndWait();
+
+      //const response = await model.generateContent(prompt);
+      
+      const response = await generateContent(prompt);
+      
+      calendarCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
+
+      return response;
+
+    } catch (error: any) {
+      const isRetryableError =
+        error.status === 503 ||
+        error.status === 429 ||
+        (error.message && (error.message.includes('503') || error.message.includes('429')));
+      const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+        currentRetry++;
+        console.warn(
+          `Gemini API call failed (Error: ${error.status || error.message}). ` +
+          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+        );
+        await sleep(delayTime);
+        delayTime *= 2;
+        delayTime = delayTime * (1 + Math.random() * 0.2);
+        delayTime = Math.min(delayTime, 30000);
+      } else {
+        console.error(`Post generation failed after ${currentRetry} retries:`, error);
+        throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+      }
+    }
+  }
+
+  throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}
 
 //------- start generate name and description for campaign -------- //
 
