@@ -883,7 +883,7 @@ const getWeekday = (date: Date): string => {
   };
 
   return (    
-    <div className="w-full h-full mx-auto bg-white rounded-xl p-6 relative min-h-screen "> 
+    <div className="w-full h-full mx-auto bg-white rounded-xl px-6 relative min-h-screen "> 
 
     {/*<div className="max-w-2xl mx-auto bg-white rounded-xl overflow-hidden mb-6 relative">
           
@@ -895,6 +895,8 @@ const getWeekday = (date: Date): string => {
           <X className="w-5 h-5 text-gray-500" />
       </button>
 */}
+
+      {/*     
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-2">
             <div className="bg-blue-50 rounded-full p-2">
@@ -914,9 +916,11 @@ const getWeekday = (date: Date): string => {
           <X className="w-5 h-5 text-gray-500" />
       </button>
 
-      */}
+      
       
   </div>
+
+  */}
     
     <CreateCalendarProgressModal
       isOpen={showProgressModal}

@@ -351,7 +351,7 @@ const handleViewCalendarList = () => {
 
         
         {/*Start inside the white boarder*/}
-        <div className="bg-white  p-12">
+        <div className="bg-white">
 
            {/*below used to be border-blue-300*/}
           
