@@ -56,6 +56,7 @@ function ComposePosts() {
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const handleRewriteContent = (rewrittenContent: string) => {
+    setContent('');
     setContent(rewrittenContent);
     //setIsContentCalendarModalOpen(false);
   };

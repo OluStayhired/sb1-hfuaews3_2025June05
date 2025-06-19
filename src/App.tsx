@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { Loader2 } from 'lucide-react';
 import LinkedInAuthRedirect from './components/LinkedInAuthRedirect'; 
 import { ThemeProvider } from './context/ThemeContext';
+import { HooksProvider } from './context/HooksContext';
 
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -35,7 +36,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   );
 }
 
-
+// AppRoutes component
 function AppRoutes() {
   return (
     <Routes>
@@ -44,11 +45,18 @@ function AppRoutes() {
         path="/dashboard/*"
         element={
           <PrivateRoute>
-            <Dashboard />
+            {/*
+              Wrap Dashboard with HooksProvider here.
+              Dashboard and its children (like ContentCalendarModal)
+              will now have access to hooksData via useHooks().
+            */}
+            <HooksProvider>
+              <Dashboard />
+            </HooksProvider>
           </PrivateRoute>
         }
       />
-      {/*<Route path="/linkedin-auth" element={<LinkedInAuthRedirect />} /> */}
+      {/*<Route path="/linkedin-auth" element={<LinkedInAuthRedirect />} />  If you still need this route */}
     </Routes>
   );
 }

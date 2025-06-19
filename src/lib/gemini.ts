@@ -905,6 +905,12 @@ Follow the [Rules] below:
 - Your output must be the single, complete, and final version of the content.
 - Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
 - Do NOT use numbered lists or headings to present multiple content options.
+
+Ensure that:
+
+* Every sentence starts on a separate line
+
+* There is a space between each sentence for readability
   `;
 
    let currentRetry = 0;
@@ -990,6 +996,9 @@ Follow the [Rules] below:
 - Your output must be the single, complete, and final version of the content.
 - Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
 - Do NOT use numbered lists or headings to present multiple content options.
+
+Ensure that:
+* There is a space between each sentence for readability
   `;
 
    let currentRetry = 0;

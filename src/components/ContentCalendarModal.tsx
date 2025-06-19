@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { Calendar, Lightbulb, X, Sparkles, Copy, Loader2, PlusCircle } from 'lucide-react';
-import { generateListPost } from '../lib/gemini';
+import { generateListPost, generateHookPost, generateHookPostV2} from '../lib/gemini';
 import { useNavigate, Navigate } from 'react-router-dom';
+import BlueskyLogo from '../images/bluesky-logo.svg';
+import LinkedInLogo from '../images/linkedin-solid-logo.svg';
+import XLogo from '../images/x-logo.svg';
+import { TooltipHelp } from '../utils/TooltipHelp';
+import { TooltipExtended } from '../utils/TooltipExtended';
+import { useHooks } from '/src/context/HooksContext';
+
+
 
 interface ContentItem {
   id: string; // Assuming each content item now has a unique ID for tracking
@@ -27,9 +35,17 @@ export function ContentCalendarModal({
   content_date,
   onRewriteContent
 }: ContentCalendarModalProps) {
+  const { hooksData, isHooksLoading, hooksError } = useHooks();
   const [copySuccessMap, setCopySuccessMap] = useState<{ [key: string]: boolean }>({});
   const [rewritingItemId, setRewritingItemId] = useState<string | null>(null);
   const navigate = useNavigate();
+  //const [hooksData, setHooksData] = useState<string[]>([]);
+  //const [isHooksLoading, setIsHooksLoading] = useState(false); // New loading state for hooks
+  //const [hooksError, setHooksError] = useState<string | null>(null); // New error state for hooks
+  const [loadingCharLength, setLoadingCharLength] = useState<number | null>(null);
+  const [loadingProcess, setLoadingProcess] = useState<string | null>(null); 
+
+  const [loadingLinkedIn, setLoadingLinkedIn] = useState(false);
 
   if (!isOpen) return null;
 
@@ -48,6 +64,7 @@ export function ContentCalendarModal({
     }
   };
 
+ 
   const handleRewrite = async (item: ContentItem) => {
     setRewritingItemId(item.id);
     try {
@@ -71,6 +88,48 @@ export function ContentCalendarModal({
       setRewritingItemId(null);
     }
   };
+
+const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
+
+  //console.log('itemid: ', item.id)
+  //console.log('char_length: ', char_length)
+
+  const uniqueKey = `${item.id}_${char_length}`;
+  setLoadingProcess(uniqueKey);
+
+  //console.log('loadingProcess:  ', loadingProcess)
+  //console.log('uniqueKey:  ', uniqueKey)
+  
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  
+  try {
+    const improvedContent = await generateHookPostV2(
+      hooksData,
+      item.theme,
+      item.topic,
+      item.target_audience || '', // Add target_audience to interface if not present
+      item.content,
+      char_length
+    );
+
+    //console.log('executing the Hook Posts Here')
+
+    if (improvedContent.error) throw new Error(improvedContent.error)
+      else {
+        onRewriteContent(improvedContent.text);
+      }
+
+  } catch (err) {
+    console.error('Error improving content:', err);
+    // Could add error state/toast here
+  } finally {
+    //setRewritingItemId(null);
+    //setLoadingCharLength(null);
+    //setLoadingLinkedIn(false)
+    setLoadingProcess(null);
+  }
+};    
+ 
 
   const handleCreateCampaign = () => {
     navigate('/dashboard/campaign');
@@ -131,29 +190,120 @@ export function ContentCalendarModal({
                   <p className="text-xs text-gray-900">{item.topic || 'N/A'}</p>
                 </div>
 
-                <div className="bg-gray-50 p-2 rounded-md">
+                <div className="bg-gray-50 p-2 rounded-md relative">
+
+                      <div className="absolute top-0 right-0 pr-2 pt-2">
+                        {/* Copy Button for individual content */}
+                            <button
+                                onClick={() => handleCopyToClipboard(item.content, item.id)}
+                                className="p-2 space-x-2 text-xs bg-gray-100 text-gray-500 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition-colors flex items-center space-x-2"
+                            >
+                                {copySuccessMap[item.id] ? (
+                                  <span className="text-green-500">Copied!</span>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3 h-3" />
+                                          
+                                          </>
+                                          )}
+                                  </button>
+
+                      </div>
                   <h3 className="text-sm font-medium text-blue-500">Post Idea 💡</h3>
                   <p className="text-xs text-gray-500">{truncatedContent(item.content || '', 150)}</p>
                 </div>
-                <div className="flex justify-end mt-1 space-x-2"> {/* Added space-x-2 for gap between buttons */}
-                  {/* Copy Button for individual content */}
-                  <button
-                    onClick={() => handleCopyToClipboard(item.content, item.id)}
-                    className="px-3 py-1 text-xs bg-gray-100 text-gray-500 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition-colors flex items-center space-x-2"
-                  >
-                    {copySuccessMap[item.id] ? (
-                      <span className="text-green-500">Copied!</span>
-                    ) : (
-                      <>
-                        <Copy className="w-3 h-3" />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
 
-                  {/* Rewrite Button */}
+
+                <div className="flex items-center justify-center mt-1 space-x-2"> 
+                  
+                  {/* Added space-x-2 for gap between buttons */}
+
+                  
+
+                  {/*------------------- Start all the social media buttons --------------------*/}
+
+
+                 <TooltipHelp  text = "⚡Rewrite for LinkedIn">
+              <button
+                
+                onClick={() => {
+                    //console.log('Clicked LinkedIn. item.id:', item.id, 'char_length:', '700');
+                    handleHookPostV2(item, '700')}}
+                disabled={loadingProcess === `${item.id}_700`|| isHooksLoading || hooksError !== null}
+               
+                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
+              >
+                
+                {loadingProcess === `${item.id}_700` ? (
+                <>
+                {
+                //console.log('Loading LinkedIn, loadingProcess:', loadingProcess, 'Expected:', `${item.id}_700`)
+                }
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  
+                </>  
+                ) : (
+              <>
+                {/*console.log('Not Loading LinkedIn, loadingProcess:', loadingProcess, 'Expected:', `${item.id}_700`)*/}
+                <img src={LinkedInLogo} className="w-3 h-3" />
+                </>
+                 )}
+                <span className="text-xs">LinkedIn</span>
+              </button>
+             </TooltipHelp>
+
+
+            <TooltipHelp  text = "⚡Rewrite for Bluesky">
+              <button
+                onClick={() => handleHookPostV2(item, '300')}
+                disabled={loadingProcess === `${item.id}_300`|| isHooksLoading || hooksError !== null} 
+                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
+              >
+                
+                
+                {loadingProcess === `${item.id}_300` ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  
+                  </>
+                ) : (
+
+                <img src={BlueskyLogo} className="w-3 h-3" />
+                
+                 )}
+                <span className="text-xs">Bluesky</span>
+              </button>
+             </TooltipHelp>
+
+            <TooltipHelp  text = "⚡Rewrite for Twitter">
+              <button
+                onClick={() => handleHookPostV2(item, '280')}
+                disabled={loadingProcess === `${item.id}_280`|| isHooksLoading || hooksError !== null}
+                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
+              >
+                
+                {loadingProcess === `${item.id}_280` ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  
+                  </>
+                ) : (
+                <img src={XLogo} className="w-3 h-3" />
+                
+                 )}
+                <span className="text-xs">Twitter</span>
+              </button>
+             </TooltipHelp> 
+
+            {/*------------------- End all the social media buttons ------------------------*/}
+
+
+                  {/* Rewrite Button 
                   <button
-                    onClick={() => handleRewrite(item)}
+                    onClick={() =>{ 
+                      console.log('Clicked LinkedIn. item.id:', item.id, 'char_length:', '700')
+                      handleRewrite(item)}}
+                    
                     disabled={rewritingItemId === item.id}
                     className="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
                   >
@@ -169,31 +319,20 @@ export function ContentCalendarModal({
                       </>
                     )}
                   </button>
+
+                  */}
+
+                  {/*--- End Re-Write Button */}
+
+
+
+                  
                 </div>
               </div>
             ))
           )}
         </div>
 
-        {/* Global Copy All Button - adjusted styling for consistency if desired, or remove if not needed */}
-        {/* If you want the "Copy All" button to persist at the bottom, keep this div 
-        <div className="absolute bottom-4 left-4 flex space-x-2">
-          <button
-            onClick={() => {
-              const allContent = contentItems.map(item => item.content).join('\n\n'); // Copy only content
-              handleCopyToClipboard(allContent, 'all'); // Use a unique ID like 'all' for global copy
-            }}
-            className="flex items-center space-x-2 px-3 py-1 bg-gray-100 text-gray-500 rounded-full hover:bg-blue-50 hover:text-blue-500 transition-colors"
-          >
-            <Copy className="w-4 h-4" />
-            <span>Copy All</span>
-          </button>
-          {copySuccessMap['all'] && ( // Check for 'all' ID success
-            <span className="ml-2 text-xs text-green-500">Copied!</span>
-          )}
-        </div>
-      */}
-      
       </div>
     </div>
   );
