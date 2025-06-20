@@ -793,6 +793,8 @@ Follow the [Rules] below:
 export async function generateFirstPostWithRetry(
   hooksData: string[],
   target_audience: string,
+  theme: string,
+  topic: string,
   content: string, 
   char_length: string,
   maxRetries: number = 5,
@@ -807,37 +809,40 @@ export async function generateFirstPostWithRetry(
 
   // Rate limiting
   await rateLimiter.checkAndWait();
+  const selectedTone = getRandomTone();  
 
-  const prompt = `
-Act as an experienced social media content creator who specializes in creating practical, actionable, and repeatable content that resonate with ${target_audience}.
+  const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content.
 
-Analyze deeply the information in the ${content} to identify the most pressing fears, wants and aspirations for ${target_audience}. Use your experience to focus on either the fears, frustrations, aspirations or wants for this content.
+From the provided list of hooks in ${hooksData}, **randomly select ONE (1) impactful and unique hook to begin the post.** Ensure that the chosen hook has not been frequently used in recent generations for this user.
 
-Read all the hooks provided in the list ${hooksData} and select the best hook for the ${content}
+**If the selected hook contains a placeholder like "[activity]", "[topic]", "[goal]", "[commonly held belief]" or similar square bracketed terms, deeply analyze the provided ${topic}, ${theme}, and ${content} to deduce the most fitting and specific concept for replacement.**
 
-Starting with the most appropriate hook from the hooks list, improve the post so that it resonates with ${target_audience} while keeping to the key message in ${content}.
+Now, build on the main post content provided in ${content} that touches on subject ${theme} specifically about ${topic}. **Focus intently on the target audience's core fears and aspirations.** Then improve it so that it's an ${char_length} character content. Incorporate a bridge statement that naturally connects the randomly chosen hook to the main content.
+
+Tailor the language, tone, and examples to resonate deeply with a ${target_audience} audience, and maintain an **${selectedTone}** tone throughout the post.
+
+Follow the [Rules] below:
 
 Use a copywriting framework similar to the [framework] below:
 
 [framework]:
-start with your chosen hook, add a bridge statement and focus on a feeling or the action causing the pain point related to one of the identified key pain points within the ${target_audience}, and use personal pronouns and conversational language to convey deep emotional resonance appropriate to the context. **The hook must follow the structure of "Subject + Verb + Object" or "Subject + Verb + Adjective" and must not contain any interrogative words or phrasing.**
-
-keep the hook directly related to the identified key pain point and actionable, emphasizing a repeatable process or transformation.
-
-then, transform the ${content} into a deeply relatable story to the audience ${target_audience}.
-
-conclude with a simple, conversational question that encourages engagement, but does not demand work from the user.
-
-follow the AIDA copywriting framework, emphasizing action and implementation.
-
-Follow the [Rules] below:
+- Start with your chosen hook.
+- Add a bridge statement.
+- Focus on a feeling or the action causing the pain point related to one of the identified key pain points within the ${target_audience}, always connecting to their core fears or aspirations.
+- Use personal pronouns and conversational language to convey deep emotional resonance appropriate to the context.
+- The hook must follow the structure of "Subject + Verb + Object" or "Subject + Verb + Adjective" and must not contain any interrogative words or phrasing.
+- Keep the hook directly related to the identified key pain point and actionable, emphasizing a repeatable process or transformation.
+- Then, transform the ${content} into a deeply relatable story for the audience ${target_audience}.
+- Conclude with a simple, conversational question that encourages engagement, but does not demand work from the user.
+- Follow the AIDA copywriting framework, emphasizing action and implementation.
 
 [Rules]:
 - Keep to ${char_length} Characters in total
 - Keep to impactful and meaningful sentences, focusing on actionable advice.
 - Place each sentence in the post on a new line.
-- Add a space after each line. 
+- Add a space after each line.
 - Provide simple, conversational language.
+- **Write in a clear, straightforward manner that a ninth grader could easily understand.**
 - Ban Generic Content
 - Ban hashtags
 - Ban bullet points.
@@ -1015,7 +1020,7 @@ const prompt = `Act as an experienced social media copywriter with many years of
 
 From the provided list of hooks in ${hooksData}, **randomly select ONE (1) hook to begin the post.** Ensure that the chosen hook has not been frequently used in recent generations for this user.
 
-**If the selected hook contains a placeholder like "[activity]", "[topic]", "[goal]", "[commonly held belief]" or similar bracketed terms, deduce the most relevant concept from the provided ${topic}, ${topic}, and ${content}  and replace the placeholder accordingly.**
+**If the selected hook contains a placeholder like "[activity]", "[topic]", "[goal]", "[commonly held belief]" or similar bracketed terms, deduce the most relevant concept from the provided ${topic}, ${theme}, and ${content} and replace the placeholder accordingly.**
 
 Now, build on the content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content. Incorporate a bridge statement that naturally connects the randomly chosen hook to the main content.
 
@@ -1027,6 +1032,7 @@ Follow the [Rules] below:
 - Keep to ${char_length} Characters in total
 - Place each sentence in the post on a new line.
 - Provide simple, conversational language.
+- **Write in a clear, straightforward manner that a ninth grader could easily understand.**
 - Ban Generic Content
 - Ban hashtags
 - Ban bullet points.
