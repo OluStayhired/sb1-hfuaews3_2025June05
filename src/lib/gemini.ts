@@ -113,6 +113,32 @@ export async function generateContent(prompt: string): Promise<GeminiResponse> {
   }
 }
 
+const toneOptions = [
+  'optimistic',
+  'thought-provoking',
+  'action-oriented',
+  'empathetic',
+  'witty',
+  'authoritative',
+  'inspirational',
+  'bold',
+  'concise'
+  // Add more as desired
+];
+
+const getRandomTone = (excludeTones: string[] = []) => {
+  const availableTones = toneOptions.filter(tone => !excludeTones.includes(tone));
+  if (availableTones.length === 0) {
+    // Fallback: if all tones are excluded (e.g., if you later implement tracking
+    // and all tones are in `excludeTones`), reset or pick from the full list.
+    // For now, this branch won't be hit with `getRandomTone()`
+    return toneOptions[Math.floor(Math.random() * toneOptions.length)];
+  }
+  const randomIndex = Math.floor(Math.random() * availableTones.length);
+  return availableTones[randomIndex];
+};
+
+
 const hooks = `
 - Want [Target audience goal/desire] This is how [my service/product/community] can help you: 
 - What [beneficial outcome] looks like in [specific situation]. 
@@ -626,6 +652,9 @@ export async function generateListPost(theme: string, topic: string, target_audi
   //console.log('topic : ', topic);
   //console.log('content : ', content);
   //console.log('audience : ', target_audience);
+
+
+  
   // More structured prompt to prevent recursion
   const prompt = `
 Act as an experienced social media content creator who specializes in creating practical, actionable, and repeatable content strategies about ${theme}.
@@ -977,28 +1006,37 @@ export async function generateHookPostV2(
     return cached.response;
   }
 
-  // Rate limiting
-  await rateLimiter.checkAndWait();
+// Rate limiting
+await rateLimiter.checkAndWait();
 
-const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content. Read the hooks in ${hooksData} and select the best hook for the ${content}, build on this content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content utilizing one of the hooks in ${hooksData} into the content. for the hook, create a bridge statement that naturally connects the hook to the content. follow these rules in [Rules]
+const selectedTone = getRandomTone();  
 
-Follow the [Rules] below:  
+const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content.
 
-[Rules]: 
-- Keep to ${char_length} Characters in total 
-- Place each sentence in the post on a new line. 
-- Provide simple, conversational language. 
-- Ban Generic Content 
-- Ban hashtags 
-- Ban bullet points. 
-- Keep it natural  
+From the provided list of hooks in ${hooksData}, **randomly select ONE (1) hook to begin the post.** Ensure that the chosen hook has not been frequently used in recent generations for this user.
+
+**If the selected hook contains a placeholder like "[activity]", "[topic]", "[goal]", "[commonly held belief]" or similar bracketed terms, deduce the most relevant concept from the provided ${topic}, ${topic}, and ${content}  and replace the placeholder accordingly.**
+
+Now, build on the content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content. Incorporate a bridge statement that naturally connects the randomly chosen hook to the main content.
+
+**Tailor the language, tone, and examples to resonate deeply with a ${target_audience} audience, and maintain an **${selectedTone}** tone throughout the post.**
+
+Follow the [Rules] below:
+
+[Rules]:
+- Keep to ${char_length} Characters in total
+- Place each sentence in the post on a new line.
+- Provide simple, conversational language.
+- Ban Generic Content
+- Ban hashtags
+- Ban bullet points.
+- Keep it natural
 - Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
 - Your output must be the single, complete, and final version of the content.
 - Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
 - Do NOT use numbered lists or headings to present multiple content options.
-
-Ensure that:
-* There is a space between each sentence for readability
+- Ensure that:
+  * There is a space between each sentence for readability
   `;
 
    let currentRetry = 0;
@@ -1216,3 +1254,128 @@ Act as an experienced Researcher with a deep knowledge of identifying pain point
 }
 
 // -------- End enhance target audience ------------- //
+
+// ------- Start Generate Calendar With Retry With Hooks ------------ //
+export async function generateCalendarWithHooksRetry(
+  hooksData: string[],
+  calendar_info: string, 
+  startDayofWeek: string, 
+  calendarDays: number,
+  maxRetries: number = 5,
+  initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+  
+  // Check cache
+  const cacheKey = JSON.stringify({ calendar_info, startDayofWeek, calendarDays });
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log('Returning calendar from cache.');
+    return cached.response;
+  }
+
+const getWeekday = (date: Date): string => {
+  return date.toLocaleDateString('en-US', { weekday: 'long' });
+};
+
+  console.log('startDayofWeek :', {startDayofWeek});
+  
+  // Rate limiting
+  //await rateLimiter.checkAndWait();
+
+  // More structured prompt to prevent recursion
+  const prompt = `
+   Act as an experienced social media content marketer with 10 years experience, create a ${calendarDays}-day content calendar based on this information: ${calendar_info}
+
+This content calendar MUST start with the day of the week as ${startDayofWeek}.    
+
+    Requirements:
+    1. Create exactly ${calendarDays} days of content, starting with the first day's day_of_week being "${startDayofWeek}".
+    2. Focus on the target audience's pain points
+    3. Ensure each day has a unique theme
+    4. Keep topics concise and actionable
+    5. Include clear calls to action
+    6. Limit response to one complete table
+    7. Do not include any follow-up questions or suggestions
+    8. Notes provide context or tips
+    9. Content is engaging and platform appropriate
+    10. Remove hashtags and generic content 
+
+Generate a ${calendarDays}-day content calendar in valid JSON format. 
+The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".
+Provide the output as a JSON array with exactly ${calendarDays} objects each containing:
+    {
+      "day":(number 1-${calendarDays}),
+      "day_of_week": (full day name e.g. "Monday"),
+      "theme": (theme for the day),
+      "topic": (specific topic),
+      "content": (actual post content),
+      "call_to_action": (specific CTA),
+      "notes": (additional notes or tips)
+      
+    }
+
+Example of the first object in the JSON array:
+    {
+      "day": 1,
+      "day_of_week": "${startDayofWeek}",
+      "theme": "...",
+      "topic": "...",
+      "content": "...",
+      "call_to_action": "...",
+      "notes": "..."
+    }    
+
+Ensure that:
+
+* All string values (day_of_week, theme, topic, content, call_to_action, notes) are enclosed in double quotes.
+
+* Any special characters within string values (e.g., forward slashes / , backslashes and [ and ] should be properly escaped to prevent JSON parsing errors.
+
+* Specifically, square brackets [ and ] should be escaped as \[ and \].
+  `;
+
+  let currentRetry = 0;
+  let delayTime = initialDelayMs;
+
+  while (currentRetry < maxRetries) {
+    try {
+      await rateLimiter.checkAndWait();
+
+      //const response = await model.generateContent(prompt);
+      
+      const response = await generateContent(prompt);
+      
+      calendarCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
+
+      return response;
+
+    } catch (error: any) {
+      const isRetryableError =
+        error.status === 503 ||
+        error.status === 429 ||
+        (error.message && (error.message.includes('503') || error.message.includes('429')));
+      const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+        currentRetry++;
+        console.warn(
+          `Gemini API call failed (Error: ${error.status || error.message}). ` +
+          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+        );
+        await sleep(delayTime);
+        delayTime *= 2;
+        delayTime = delayTime * (1 + Math.random() * 0.2);
+        delayTime = Math.min(delayTime, 30000);
+      } else {
+        console.error(`Calendar generation failed after ${currentRetry} retries:`, error);
+        throw new Error(`Failed to generate calendar: ${error.message || 'Unknown error occurred.'}`);
+      }
+    }
+  }
+
+  throw new Error("Max retries exhausted for calendar generation (wait 5 mins and try again).");
+}
+// ------- End Generate Calendar With Retry With Hooks ------------ //

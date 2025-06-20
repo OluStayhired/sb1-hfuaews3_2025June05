@@ -22,6 +22,7 @@ import { TooltipHelp } from '../utils/TooltipHelp';
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { useNavigate } from 'react-router-dom';
 import { BulkAddToCalendarModal } from './BulkAddToCalendarModal'; 
+import { TypingEffect } from './TypingEffect'; 
 import { useHooks } from '/src/context/HooksContext';
 
 
@@ -82,9 +83,11 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const navigate = useNavigate();
   const [loadingCharLength, setLoadingCharLength] = useState<number | null>(null);
   const [isBulkAddToCalendarModalOpen, setIsBulkAddToCalendarModalOpen] = useState(false);
-  //const [hooksData, setHooksData] = useState<string[]>([]);
-  //const [isHooksLoading, setIsHooksLoading] = useState(false); // New loading state for hooks
-  //const [hooksError, setHooksError] = useState<string | null>(null); // New error state for hooks
+// New state for TypingEffect
+  const [showTypingEffect, setShowTypingEffect] = useState(false);
+  const [typingContentId, setTypingContentId] = useState<string | null>(null); // To track which content item is typing
+  const [currentTypingText, setCurrentTypingText] = useState(''); // The text currently being typed
+
 
   //const today = new Date();
 
@@ -236,150 +239,6 @@ const handleConnectLinkedIn = () => {
     }
   }, [userEmail, calendarName]);
 
-
-  // --- Remove USeEffect & Use Hooks Start of fixed useEffect for fetching hooks ---
-  {/*
-  useEffect(() => {
-    const fetchHooks = async () => {
-      // Removed the userEmail check here
-      setIsHooksLoading(true);
-      setHooksError(null);
-
-      const hardcodedHooksString = `
-        - Want [Target audience goal/desire] This is how [my service/product/community] can help you:
-        - What [beneficial outcome] looks like in [specific situation].
-        - Looking to [benefit] without [hassle]?
-        - The [X] worst [topic] mistakes you can make.
-        - I can't believe this [tactic/tip/strategy] actually works!
-        - How [person/brand] [action] and how we can do the same!
-        - I'm tired of hearing about [trend].
-        - What's your biggest challenge with [activity]?
-        - How [person/brand] went from [situation] to [results].
-        - What are your thoughts on [topic/trend]?
-        - [X] strategies to [goal].
-        - I [feeling] when I saw the results my clients/customers got from [activity]!
-        - Wow! I can't believe the impact my [product, service, etc.] has had on [target audience].
-        - [Achievement]. If I could start from scratch, here's what I'd do differently.
-        - Don't [take action] until you read this!
-        - Don't fall for it - [X] myths about [topic].
-        - The [Number] trends that are shaking up the [topic] industry!
-        - Here are [X] mistakes I made when [activity].
-        - Success story from one of my [niche clients] who [specific goal].
-        - [X] reasons why [topic] is [adjective].
-        - Tired of [problem]? Try this.
-        - I don't believe in [commonly held belief].
-        - Don't let anyone tell you [X].
-        - Improve your [topic/skill] with one simple tactic
-        - Stop [activity]. It doesn't work.
-        - I don't think [activity] is worth the effort.
-        - If you want to [desired result] try this. (Guaranteed results!)
-        - The most underestimated [topic] strategy!
-        - [X] things I wish I knew before [activity]:
-        - I never expected [result]. Here's the full story.
-        - Don't make this [topic] mistake when trying to [outcome].
-        - The [adjective] moment I realized [topic/goal].
-        - What do you think is the biggest misconception about [topic/trend]?
-        - [X] signs that it's time to [take action].
-        - The truth behind [topic] - busting the most common myths.
-        - The most important skill for [life situation].
-        - Don't get fooled - not everything you hear about [topic] is true.
-        - [Failure]. Here's what I learned.
-        - How I [achieved goal] In [specific time period].
-        - Trying to [outcome] in [difficulty]?
-        - Top [X] reasons why [topic] is not working for you.
-        - You won't believe these [number] statistics about [topic].
-        - I guarantee that if you do this, you’ll [desired result].
-        - How to make [topic] work for you.
-        - [Achievement], here's what I learned about [segment]
-        - Don't take my word for it - [insert social proof]. Here's how they did it:
-        - [Activity] is overrated.
-        - How [activity] is holding you back in [situation].
-        - [Statistics]. Here's what this means for your business.
-        - They said it couldn't be done, but [insert what was accomplished].
-        - What's your best tip for [activity]? I'll start:
-        - Special discount offer: Get [name of the product/service] for [discounted price] TODAY!
-        - [X] [adjective] Ways To Overcome [issue].
-        - The one lesson I learned when [action].
-        - Do you think [topic] is [X]? Think again!
-        - Hurry! [name of the product/service] sale ends soon!
-        - Do you want a [name/topic] template for free?
-        - The [X] trends in [topic] that you need to watch out for.
-        - Get [name of the product/service] now and be a part of [something special]
-        - Make [outcome] happen in [time].
-        - I [action/decision] and it changed everything.
-        - Top [number] lessons from [person/brand] to [action].
-        - I use this [name/topic] template to get [results]
-        - [Activity] is way better than [activity].
-        - [X] simple ways to [action].
-        - What [target audience] MUST consider before [action].
-        - Here's why every [target audience] should care about [topic].
-        - How to use [resource] for maximum [outcome].
-        - [X] [topic] stats that'll blow your mind!
-        - What no one tells you about [topic].
-        - If you are [target audience] looking to [outcome], this post is for you!
-        - The most [adjective] thing that happened when I tried [strategy/tactic].
-        - You won't believe what [target audience] are saying about [product, service, etc.]!
-        - How to [action] without sacrificing [activity].
-        - [X] [topic] mistakes you MUST avoid at all costs!
-        - [Customer Review]
-        - Try this next time when you [scenario]:
-        - How to [skill] like a [expert].
-        - How to [outcome] with little to no [resource].
-        - Why I stopped [activity].
-        - Here's why [topic] isn't working for you.
-        - Crazy results my clients/customers got from [activity]:
-        - [X] reasons you're not [actioning].
-        - So many [target audience] get this wrong… Here’s the truth.
-        - [X] Hacks To [outcome].
-        - The truth about [trend].
-        - The SECRET to [desired outcome].
-        - The [topic] Bible: The most important things you need to know.
-        - Why [topic] is essential for [target audience].
-        - Get [name of the product/service] now and join the thousands of [target audience] who have achieved [result].
-        - If you’re serious about [goal], you must do this!
-        - Reminder: [opposite of limiting belief].
-        - The [Number] BIGGEST trends to look out for in the [topic] industry.
-        - [X] signs that you need to [action].
-        - Why [topic] is the hottest trend of [year].
-        - The Definitive Guide To [topic].
-        - I tried [strategy/tactic/approach], and here's what happened.
-        - [Number] signs that [topic/trend] is changing rapidly.
-        - The Ultimate [topic] Cheat Sheet.
-        - How to [outcome] the RIGHT way!
-        - The [topic or action] guide that'll [outcome].
-        - Did you know that [statistics]?
-        - [X] things I wish someone told me about [topic/goal].`;
-
-      try {
-        const { data, error } = await supabase
-          .from('content_hooks')
-          .select('hooks');
-
-        if (error && error.code !== 'PGRST116') {
-          throw error;
-        }
-
-        if (data && Array.isArray(data) && data.length > 0) {
-          const fetchedHooks: string[] = data
-            .map(record => record.hooks)
-            .filter(hook => typeof hook === 'string' && hook.trim().length > 0);
-          setHooksData(fetchedHooks);
-        } else {
-          console.warn('No hooks found in database or data is empty. Using hardcoded hooks as fallback.');
-          setHooksData(hardcodedHooksString.split('\n').map(s => s.trim()).filter(s => s.length > 0));
-        }
-      } catch (err: any) {
-        console.error('Error fetching hooks:', err);
-        setHooksError(`Failed to load hooks: ${err.message}`);
-        setHooksData(hardcodedHooksString.split('\n').map(s => s.trim()).filter(s => s.length > 0));
-      } finally {
-        setIsHooksLoading(false);
-      }
-    };
-
-    fetchHooks();
-  }, []); // Empty dependency array means it runs only once on mount
-*/}
   
   const handleBackToCalendarList = () => {
     console.log("handleBackToCalendarList called");
@@ -496,6 +355,12 @@ const handleHookPostV2 = async (content: CalendarContent, char_length: string) =
   
   try {
     //setIsImproving(content.id);
+    
+    //add typing effect state management here
+    setTypingContentId(content.id); // Set the ID of the content item that will be typing
+    setCurrentTypingText(''); // Clear previous text for typing effect
+    setShowTypingEffect(true); // Activate the typing effect
+
     setLoadingCharLength(uniqueKey);
     
     // Generate improved content
@@ -511,6 +376,13 @@ const handleHookPostV2 = async (content: CalendarContent, char_length: string) =
     //console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error);
+
+    //Add new state variable sets here
+     // 3. API call is complete, hide spinner and prepare for typing effect
+    setLoadingCharLength(null); // Hide the spinner
+    setCurrentTypingText(improvedContent.text); // Set the text to be typed
+    setTypingContentId(content.id);             // Indicate which item is typing
+    setShowTypingEffect(true); 
 
     // Update in Supabase
     const { error: updateError } = await supabase
@@ -532,11 +404,21 @@ const handleHookPostV2 = async (content: CalendarContent, char_length: string) =
       )
     );
 
+    // Set the text for the TypingEffect component to start typing
+    setCurrentTypingText(improvedContent.text);
+
   } catch (err) {
     console.error('Error improving content:', err);
     // Could add error state/toast here
-  } finally {
+
+    //moved set charlength here
     setLoadingCharLength(null);
+    
+    setShowTypingEffect(false); // Hide typing effect on error
+    setTypingContentId(null);
+    setCurrentTypingText(''); // Clear typing text
+  } finally {
+    //setLoadingCharLength(null);
   }
 };    
 
@@ -1047,9 +929,23 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
             <p className={`pt-12 p-1 bg-gray-50 hover:bg-gray-100 rounded-md text-xs text-left text-gray-500 mb-8 whitespace-pre-wrap break-words leading-relaxed relative self-stretch ${
   isImproving === content.id ? 'opacity-50' : ''
 }`} >
-      {formatContentText(content.content).map((sentence, index) => (
+     {/* Conditional rendering for TypingEffect */}
+      {showTypingEffect && typingContentId === content.id ? (
+        <TypingEffect
+          text={currentTypingText}
+          speed={10} // Adjust typing speed as needed
+          onComplete={() => {
+            setShowTypingEffect(false);
+            setTypingContentId(null);
+            setCurrentTypingText(''); // Clear typing text after completion
+          }}
+        />
+      ) : (  
+        
+  // Display the full content directly if not currently typing for this item   
+  formatContentText(content.content).map((sentence, index) => (
     <p key={index} className="leading-relaxed mb-3">{sentence}</p>
-      ))}         
+      )))}         
     {isImproving === content.id && (
   <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
       <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
