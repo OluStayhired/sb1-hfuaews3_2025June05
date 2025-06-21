@@ -76,17 +76,20 @@ function LandingPage() {
 
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-32">
         <div className="text-center">
-          <h1 className="text-6xl font-bold leading-tight mb-3">
-            <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">Customer focused content</span>
+          <h1 className="text-7xl font-bold leading-tight mb-3">
+            <p>
+              <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">
+                Growth focused Content<br/>
+              </span>
+            </p>
           </h1>
 
         <p className="text-3xl text-gray-700 font-semibold mb-6"> {/* Reduced size, lighter gray, semibold */}
-    Scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes
+    Crafted & Scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes
       </p>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-            Our intelligent social media automation tool leverages your website's insights <br/>
-             to deliver content that speaks directly to your ideal customer's fears <br/> 
-            and aspirations on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
+            We use insights from your website to deliver social media content <br/> that drive inquiries from your ideal customers <br/>
+         on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
           </p>
           <div className="space-x-4 flex items-center mx-auto w-fit">
             <button
