@@ -76,11 +76,13 @@ function LandingPage() {
 
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-32">
         <div className="text-center">
-          <h1 className="text-6xl font-bold text-gray-900 leading-tight mb-3">
-            Customer <> <span className="text-blue-600">focused</span> content </> 
+          <h1 className="text-6xl font-bold leading-tight mb-3">
+            <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">Customer focused content</span>
           </h1>
 
-        <p className="text-4xl text-gray-900 font-bold mb-6">scheduled <> <span className="text-gray-900 underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span></> in minutes</p>
+        <p className="text-3xl text-gray-700 font-semibold mb-6"> {/* Reduced size, lighter gray, semibold */}
+    Scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes
+      </p>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
             Our intelligent social media automation tool leverages your website's insights <br/>
              to deliver content that speaks directly to your ideal customer's fears <br/> 
