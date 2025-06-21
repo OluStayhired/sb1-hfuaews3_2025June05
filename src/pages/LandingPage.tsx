@@ -76,20 +76,15 @@ function LandingPage() {
 
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-32">
         <div className="text-center">
-          {/*<h1 className="text-6xl font-bold text-gray-900 leading-tight mb-6">
-            Create Social Media Posts<br />on Autopilot
-          </h1>*/}
-          <h1 className="text-7xl font-bold text-gray-900 leading-tight mb-3">
-            Get <> <span className="text-blue-600">instant</span> </> content ideas
+          <h1 className="text-6xl font-bold text-gray-900 leading-tight mb-3">
+            Customer <> <span className="text-blue-600">focused</span> content </> 
           </h1>
 
-        {/*<p className="text-3xl text-gray-900 font-bold mb-6">Overcome <> <span className="text-gray-900 underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>writer's block</span></> on Social Media</p>*/}
-        <p className="text-3xl text-gray-900 font-bold mb-6">Build your <> <span className="text-gray-900 underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>Personal Brand</span></> on Autopilot</p>
+        <p className="text-4xl text-gray-900 font-bold mb-6">scheduled <> <span className="text-gray-900 underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span></> in minutes</p>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-            Stop struggling for inspiration, unlock 14 days of content in minutes!  <br/>
-            Write engaging posts to grow on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
-             {/*<img src={LinkedInSolidLogo} alt="LinkedIn" className="inline-block w-4 h-4" />*/} 
-            {/*<img src={BlueskyLogo} alt="Bluesky" className="inline-block w-4 h-4" />*/}
+            Our intelligent social media automation tool leverages your website's insights <br/>
+             to deliver content that speaks directly to your ideal customer's fears <br/> 
+            and aspirations on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
           </p>
           <div className="space-x-4 flex items-center mx-auto w-fit">
             <button
@@ -216,9 +211,8 @@ function LandingPage() {
         <p className="order-2 sm:order-1">&copy; 2024 soSavvy.app All rights reserved.</p> {/* Order for mobile */}
         <div className="flex space-x-6 order-1 sm:order-2"> 
           {/* Order for mobile */}
-          <span>Made with ❤️ for founders and creators building their personal brands with purpose</span>
-          <a href="https://bsky.app/profile/oluadedeji.bsky.social" className="text-blue-500 hover:text-blue-600">
-            @oluadedeji.bsky.social
+          <span>Made with ❤️ for founders and creators building their personal brand with purpose</span>
+            <a href="https://bsky.app/profile/oluadedeji.bsky.social" className="text-blue-500 hover:text-blue-600">@oluadedeji.bsky.social
           </a>
         </div>
       </div>
