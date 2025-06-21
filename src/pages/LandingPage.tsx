@@ -87,8 +87,8 @@ function LandingPage() {
         <p className="text-3xl text-gray-700 font-semibold mb-6"> {/* Reduced size, lighter gray, semibold */}
     Crafted & Scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes
       </p>
-      <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-            We use insights from your website to deliver social media content <br/> that drive inquiries from your ideal customers on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
+      <p className="text-lg text-gray-600 mb-10 max-w-3xl mx-auto">
+            We use insights from your website to deliver targeted social media posts and strategies <br/> that drive inquiries from your ideal customers on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
           </p>
           <div className="space-x-4 flex items-center mx-auto w-fit">
             <button
