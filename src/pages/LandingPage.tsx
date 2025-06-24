@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase, 
-  Bot, 
+  Bot, CheckCircle,
   Timer, 
   Zap, 
   Lightbulb, Sparkles, CircleDollarSign } from 'lucide-react';
@@ -82,14 +82,14 @@ function LandingPage() {
         <div className="text-center">
           <h1 className="text-7xl font-bold leading-tight mb-3">
             <p>
-              <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text mb-4">
-                Boost inbound leads <br/> <p className="text-5xl text-gray-300 leading-tight"> on LinkedIn, Twitter & Bluesky </p>
+              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text mb-4">
+                Let customers find you <br/> <p className="text-5xl text-gray-400 leading-tight"> on LinkedIn, Twitter & Bluesky </p>
               </span>
             </p>
           </h1>
 
         <p className="text-xl text-gray-700 font-semibold mb-6"> {/* Reduced size, lighter gray, semibold */}
-    Get months of customer-focused content crafted & scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes
+    Grow inbound leads with months of customer-focused content <br/>crafted & scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes
       </p>
           {/*
           <p className="text-lg text-gray-600 mb-10 max-w-3xl mx-auto">
@@ -131,19 +131,48 @@ function LandingPage() {
 
         {/*End Social Media Icons*/}
 
-
    {/* Start New Interactive Section */}
-        <section className="mt-24 text-center">
+        {/*<section className="mt-24 text-center">
           <div className="inline-flex items-center space-x-3 mb-6">
-            {/*<div className="p-3 bg-blue-100 rounded-full">
-              <Lightbulb className="w-6 h-6 text-blue-600" />
-            </div>*/}
+
             <h2 className="text-4xl font-bold text-gray-900">
               Attracting your ideal customers <br/> on social media is tough 😏
             </h2>
           </div>
+          */}
+
+        {/* Start Video Section for SoSavvy */}
+        <section className="mt-24 text-center">
+  <h2 className="text-4xl font-bold text-gray-900 mb-12">
+    See SoSavvy in Action
+  </h2>
+  <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
+    <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+      <iframe
+        id="js_video_iframe"
+        //src="https://jumpshare.com/embed/JczEALhFpAdfd3hEB0ai?autoplay=1" // Added ?autoplay=1
+        src="https://jumpshare.com/v/JczEALhFpAdfd3hEB0ai"
+        frameBorder="0"
+        allow="autoplay; fullscreen; picture-in-picture" // Added autoplay to allow attribute
+        allowFullScreen
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+      ></iframe>
+    </div>
+  </div>
+</section>
+{/* End Video Section for SoSavvy */}
+
+        
+        <section className="mt-24 text-center">
+          <div className="inline-flex items-center border-8 border-red-200 space-x-2 px-3 py-2 bg-red-400 text-white rounded-full text-lg mb-6">
+            <Sparkles className="w-4 h-4" />
+                <span>Here's the Problem</span>
+          </div>
+            <h2 className="text-4xl font-bold text-gray-900">
+                Attracting your ideal customers <br/> on social media is tough 😏
+            </h2>
           <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
-            Many founders have tried to crack the code, unfortunately it leads to the same roadblocks:
+            Many founders have tried to crack the code, unfortunately they hit the same roadblocks:
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -207,24 +236,31 @@ function LandingPage() {
         {/* End New Interactive Section */}
 
       {/* Start New Gradient Section */}
-        <section className="mt-24 py-16 rounded-3xl bg-gradient-to-r from-blue-100 via-white to-white text-gray-900 text-center rounded-xl">
+        <section className="mt-24 text-center">
+          <div className="inline-flex items-center border-8 border-green-200 space-x-2 px-3 py-2 bg-green-400 text-white rounded-full text-lg mb-6">
+            <Sparkles className="w-4 h-4" />
+                <span>We have the Solution!</span>
+          </div>
+        </section>
+        
+        <section className="mt-2 py-16 rounded-3xl bg-gradient-to-r from-blue-100 via-white to-white text-gray-900 text-center rounded-xl">
     <div className="max-w-4xl mx-auto px-6">
 
         {/* Sparkles Icon - Centered at the very top */}
         <div className="flex justify-center mb-6"> {/* Added mb-6 for spacing below the icon */}
             <div className="p-3 bg-blue-400 bg-opacity-20 rounded-full">
-                <Sparkles className="w-6 h-6 text-blue-500" />
+                <CheckCircle className="w-8 h-8 text-blue-500" />
             </div>
         </div>
 
         {/* Headline (H2) - Now stands alone, centered by parent text-center */}
         <h2 className="text-4xl font-bold mb-6"> {/* Added mb-6 for spacing below the headline */}
-            Create social media content that <br/>consistently attracts 💰 paying customers 
+            Create problem-focused content that <br/>consistently attracts 💰 paying customers 
         </h2>
 
         {/* Paragraph (P) - Centered by parent text-center */}
         <p className="text-xl font-light opacity-90 max-w-2xl mx-auto">
-            SoSavvy crafts compelling, problem-focused social media content that <br/> resonates with your customers and generates inquiries on AutoPilot
+            SoSavvy crafts compelling, ICP-aligned social media content that <br/> resonates with your customers and generates inquiries on AutoPilot
         </p>
 
     </div>
@@ -272,7 +308,7 @@ function LandingPage() {
         />
       </div>
       <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-200 flex flex-col items-center text-center">
-        <h3 className="text-xl font-semibold text-gray-900 mb-3"><span className="text-gray-300">Step 2</span> <br/>You get a Content Calendar</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-3"><span className="text-gray-300">Step 2</span> <br/>We Create Content Calendars</h3>
         <p className="text-gray-600 text-sm">
           We create your social media content strategy based specifically on your goals, then we develop a 2-week campaign and content calendar around it.
         </p>
@@ -300,10 +336,16 @@ function LandingPage() {
 </section>
 {/* End How it Works Section */}
 
+<section className="mt-24 text-center">
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
+            <Sparkles className="w-4 h-4" />
+                <span>SoSavvy's Key Features</span>
+          </div>
+        </section>
 
 {/* Start New Gradient Section with picture on the right */}
 
-<section className="relative rounded-3xl mt-24 py-16 bg-gradient-to-r from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">
+<section className="relative rounded-3xl mt-2 py-16 bg-gradient-to-r from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">
 
     <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
         {/* Text Content (Left Side) - This div defines its own width */}
@@ -340,7 +382,7 @@ function LandingPage() {
     <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
         <div className="md:w-2/5 text-left ml-auto">
             <h2 className="text-4xl font-bold mb-6">
-                Create Powerful Content Strategies That Drive Results
+                Create Powerful Content Strategies That Build Trust
             </h2>
             <p className="text-xl font-light opacity-90 max-w-lg">
                 Stop random acts of content. Build strategic campaigns that ensure every post addresses customer pain and guides them to your solution.
@@ -413,7 +455,8 @@ function LandingPage() {
 
 {/* End New Gradient Section with picture on the left */}           
 
-<section className="relative mt-24 py-16 bg-gradient-to-b from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">
+        {/*<section className="relative mt-24 py-16 bg-gradient-to-b from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">*/}
+        <section className="relative mt-24 py-16 bg-gradient-to-b from-blue-500 via-blue-400 to-white text-gray-900 rounded-xl overflow-hidden">
     {/*
         1. Gradient from top to bottom (`bg-gradient-to-b`)
         2. `overflow-hidden` is crucial to ensure the image's "break out" is clipped neatly at the rounded-xl corners.
@@ -422,18 +465,18 @@ function LandingPage() {
     <div className="max-w-4xl mx-auto px-6 text-center z-10 relative">
         {/* Sparkles Icon (Maintained positioning from previous iteration) */}
         <div className="flex justify-center mb-6">
-            <div className="p-3 bg-blue-400 bg-opacity-20 rounded-full">
-                <Sparkles className="w-6 h-6 text-blue-500" />
+            <div className="p-3 bg-blue-50 bg-opacity-20 rounded-full">
+                <Sparkles className="w-8 h-8 text-blue-200" />
             </div>
         </div>
 
         {/* Main Title */}
-        <h2 className="text-4xl md:text-6xl font-bold leading-tight mb-8">
+        <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-8">
             Ready to get paying customers with content that writes itself?
         </h2>
 
         {/* Secondary Title / Subsection */}
-        <p className="text-xl md:text-2xl font-light text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-xl md:text-2xl font-light text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed text-white">
             Let's turn your website into a powerful customer magnet. We'll take you from guesswork to leads in minutes. It's the intelligent way to connect with your ideal audience, without sounding salesy or spammy.
         </p>
 
