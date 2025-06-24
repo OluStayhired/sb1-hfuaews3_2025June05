@@ -144,7 +144,7 @@ function LandingPage() {
 {/* Start Video Section for SoSavvy */}
         <section className="mt-24 text-center">
         <h2 className="text-4xl font-bold text-gray-900 mb-12">
-          See SoSavvy in Action
+          See SoSavvy in Action 🔥
         </h2>
         <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
           {/* Outer div for responsive aspect ratio (16:9 - 56.25%) */}
