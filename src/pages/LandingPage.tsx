@@ -141,25 +141,25 @@ function LandingPage() {
           </div>
           */}
 
-        {/* Start Video Section for SoSavvy */}
+{/* Start Video Section for SoSavvy */}
         <section className="mt-24 text-center">
-  <h2 className="text-4xl font-bold text-gray-900 mb-12">
-    See SoSavvy in Action
-  </h2>
-  <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
-    <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
-      <iframe
-        id="js_video_iframe"
-        //src="https://jumpshare.com/embed/JczEALhFpAdfd3hEB0ai?autoplay=1" // Added ?autoplay=1
-        src="https://jumpshare.com/v/JczEALhFpAdfd3hEB0ai"
-        frameBorder="0"
-        allow="autoplay; fullscreen; picture-in-picture" // Added autoplay to allow attribute
-        allowFullScreen
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-      ></iframe>
-    </div>
-  </div>
-</section>
+        <h2 className="text-4xl font-bold text-gray-900 mb-12">
+          See SoSavvy in Action
+        </h2>
+        <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
+          {/* Outer div for responsive aspect ratio (16:9 - 56.25%) */}
+          <div style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
+            <iframe
+              src="https://player.vimeo.com/video/1096029698?badge=0&autopause=0&player_id=0&app_id=58479"
+              frameBorder="0"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-share" // Ensure `encrypted-media` is included for broader compatibility
+              allowFullScreen
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+              title="Latest_SoSavvy_Video_Design"
+            ></iframe>
+          </div>
+        </div>
+      </section>
 {/* End Video Section for SoSavvy */}
 
         
