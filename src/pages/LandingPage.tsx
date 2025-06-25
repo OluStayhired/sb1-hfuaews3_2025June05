@@ -361,6 +361,28 @@ function LandingPage() {
                 Analyze your website to uncover what truly drives your ideal customers, surface their pains and aspirations for laser-focused content.
             </p>
         </div>
+
+      {/*------------------- Start Buttons -------------------------------- */}
+        <div className="flex space-x-4 mt-4 justify-start"> {/* mb-16 for spacing before the image */}
+             <button
+                onClick={handleEmailLogin}
+                className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+            Login with Email
+          </button>
+          
+          <button
+            onClick={handleGoogleLogin}
+            className="flex px-4 py-3 bg-white border border-whit flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
+          >
+            
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>
+            Join with Google
+              </span>
+          </button>
+        </div>
+      {/*---------------- End Buttons -------------*/}
         
     </div>
 
@@ -446,7 +468,32 @@ function LandingPage() {
             <p className="text-xl font-light opacity-90 max-w-lg">
                Publish effortlessly. Automatically schedule strategic posts across LinkedIn, X, and Bluesky, freeing you to focus on your business as inquiries roll in.
             </p>
+
+          
         </div>
+
+      {/*------------------- Start Buttons -------------------------------- */}
+        <div className="flex space-x-4 mt-4 justify-end"> {/* mb-16 for spacing before the image */}
+             <button
+                onClick={handleEmailLogin}
+                className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+            Login with Email
+          </button>
+          
+          <button
+            onClick={handleGoogleLogin}
+            className="flex px-4 py-3 bg-white border border-whit flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
+          >
+            
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>
+            Join with Google
+              </span>
+          </button>
+        </div>
+      {/*---------------- End Buttons -------------*/}
+      
     </div>
 
     <img
