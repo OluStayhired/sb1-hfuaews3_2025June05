@@ -1022,7 +1022,7 @@ From the provided list of hooks in ${hooksData}, **randomly select ONE (1) hook 
 
 **If the selected hook contains a placeholder like "[activity]", "[topic]", "[goal]", "[commonly held belief]" or similar bracketed terms, deduce the most relevant concept from the provided ${topic}, ${theme}, and ${content} and replace the placeholder accordingly.**
 
-Now, build on the content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content. Incorporate a bridge statement that naturally connects the randomly chosen hook to the main content.
+Now, build on the content idea ${content} that touches on subject ${theme} specifically about ${topic} and improve it so that it's an ${char_length} character content. 
 
 **Tailor the language, tone, and examples to resonate deeply with a ${target_audience} audience, and maintain an **${selectedTone}** tone throughout the post.**
 
@@ -1183,7 +1183,7 @@ Ensure that:
 // ------- Start generate enhance target audience ------------- //
 export async function generateTargetAudience(
     target_audience: string,
-    char_length: string = 500,
+    char_length: string = "500",
     maxRetries: number = 5,
     initialDelayMs: number = 1000
 ): Promise<GeminiResponse> {
