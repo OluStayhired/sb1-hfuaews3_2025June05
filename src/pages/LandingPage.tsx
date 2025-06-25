@@ -577,7 +577,118 @@ function LandingPage() {
             alt="SoSavvy Dashboard Screenshot"
             className="w-full max-w-5xl h-[300px] md:h-[400px] lg:h-[500px] object-cover rounded-lg mx-auto mt-8 block"
         />
-</section>        
+</section> 
+
+        <section className="mt-24 text-center">
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-4">
+            <Sparkles className="w-4 h-4" />
+                <span>An Easy Pricing Plan</span>
+          </div>
+        </section>
+
+        <section className="mt-2 py-16 bg-white text-gray-900 rounded-xl overflow-hidden text-center">
+  <div className="max-w-6xl mx-auto px-6"> {/* Increased max-width for wider layout */}
+    <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+      Simple Pricing, Powerful Results 🚀
+    </h2>
+    <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+      Unlock all of SoSavvy's features and start converting your audience into paying customers.
+    </p>
+
+    {/* Main pricing card container with right-to-left gradient */}
+    <div className="bg-gradient-to-r from-blue-500 to-blue-300 p-8 rounded-xl shadow-xl text-white">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"> {/* Grid for horizontal spread */}
+        {/* Left Column: Pricing and CTA */}
+        <div className="text-center md:text-right md:pr-8 md:border-r md:border-blue-400"> {/* Added border-r for visual separation */}
+          <h3 className="text-3xl font-semibold mb-4">All-in-One Content Writer</h3>
+          <div className="flex items-baseline justify-center md:justify-end mb-6">
+            <span className="text-9xl text-center font-extrabold">$25</span> {/* Larger font for price */}
+            <span className="text-2xl font-medium">/month</span>
+          </div>
+          <p className="text-lg mb-8 opacity-90">No more wasting your time posting for LIKES.</p>
+          {/*          
+          <button
+            onClick={handleEmailLogin} 
+            className="w-full md:w-auto px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-md"
+          >
+            Start Your Free Trial
+          </button>
+*/}
+
+           {/* Buttons */}
+        <div className="flex justify-end space-x-4 mb-16"> {/* mb-16 for spacing before the image */}
+             <button
+            onClick={handleEmailLogin}
+            className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Login with Email
+          </button>
+          
+          <button
+            onClick={handleGoogleLogin}
+            className="flex px-4 py-3 bg-white border border-whit flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
+          >
+            
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>
+            Join with Google
+              </span>
+          </button>
+        </div>
+          
+        </div>
+
+        {/* Right Column: Features List */}
+        <div className="text-left md:pl-8">
+          <h4 className="text-2xl font-semibold mb-4">What's Included:</h4>
+          <ul className="space-y-3">
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Website Analysis for Customer Insights</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>AI-Powered Content Generation</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Strategic 14-Day Content Calendars</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Multi-Platform Scheduling (LinkedIn, X, Bluesky)</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Automated Post Publishing</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Draft Management & Editing</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Timezone-Aware Scheduling</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Performance Analytics Dashboard</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Intuitive User Interface</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Dedicated Customer Support</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
         {/* Start Feature Section */}
         {/*
