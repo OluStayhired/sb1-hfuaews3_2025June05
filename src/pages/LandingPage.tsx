@@ -4,7 +4,7 @@ import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase,
   Bot, CheckCircle,
   Timer, 
   Zap, 
-  Lightbulb, Sparkles, CircleDollarSign } from 'lucide-react';
+  Lightbulb, Sparkles, CircleDollarSign, Star } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { AuthModal } from '../components/AuthModal';
 import BlueskyLogo from '../images/bluesky-logo.svg';
@@ -580,14 +580,166 @@ function LandingPage() {
         />
 </section> 
 
+                {/*----------------------Start Testimonials Section--------------------*/}
+
+<section className="mt-24 text-center">
+  <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
+    <Sparkles className="w-4 h-4" />
+    <span>What Our Customers Say</span>
+  </div>
+  <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+    Hear From Founders & Creators Like You
+  </h2>
+  <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+    SoSavvy is helping entrepreneurs transform their social media presence into a lead-generating machine.
+  </p>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+    {/* Testimonial 1 */}
+    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow text-left">
+      <div className="flex items-center mb-4">
+        <div className="relative mr-4">
+          <img
+            src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            alt="John Doe Avatar"
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+            <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-5 h-5" />
+          </div>
+        </div>
+        <div>
+          <p className="font-semibold text-gray-900">John Doe</p>
+          <p className="text-sm text-gray-600">CEO at InnovateCo</p>
+        </div>
+      </div>
+      <div className="flex mb-3">
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+      </div>
+      <p className="text-base text-gray-800 mb-4">
+        "SoSavvy transformed our LinkedIn strategy! We're getting more qualified leads than ever before, and the content is always on point. A game-changer for our business."
+      </p>
+      <a href="https://www.innovateco.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        innovateco.com
+      </a>
+    </div>
+
+    {/* Testimonial 2 */}
+    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow text-left">
+      <div className="flex items-center mb-4">
+        <div className="relative mr-4">
+          <img
+            src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            alt="Jane Smith Avatar"
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+            <img src={XLogo} alt="Twitter" className="w-5 h-5" />
+          </div>
+        </div>
+        <div>
+          <p className="font-semibold text-gray-900">Jane Smith</p>
+          <p className="text-sm text-gray-600">Founder of CreativeHub</p>
+        </div>
+      </div>
+      <div className="flex mb-3">
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+      </div>
+      <p className="text-base text-gray-800 mb-4">
+        "As a solo founder, I barely had time for social media. SoSavvy's content calendar and automated posting saved me hours and significantly boosted my Twitter engagement!"
+      </p>
+      <a href="https://www.creativehub.co" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        creativehub.co
+      </a>
+    </div>
+
+    {/* Testimonial 3 */}
+    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow text-left">
+      <div className="flex items-center mb-4">
+        <div className="relative mr-4">
+          <img
+            src="https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            alt="Michael Brown Avatar"
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+            <img src={BlueskyLogo} alt="Bluesky" className="w-5 h-5" />
+          </div>
+        </div>
+        <div>
+          <p className="font-semibold text-gray-900">Michael Brown</p>
+          <p className="text-sm text-gray-600">Marketing Lead at GrowthLabs</p>
+        </div>
+      </div>
+      <div className="flex mb-3">
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+      </div>
+      <p className="text-base text-gray-800 mb-4">
+        "The AI-generated content is surprisingly human-like and relevant. Our Bluesky presence has never been stronger, and we're seeing real conversations start from our posts."
+      </p>
+      <a href="https://www.growthlabs.io" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        growthlabs.io
+      </a>
+    </div>
+
+    {/* Testimonial 4 */}
+    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow text-left">
+      <div className="flex items-center mb-4">
+        <div className="relative mr-4">
+          <img
+            src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            alt="David Wilson Avatar"
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+            <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-5 h-5" />
+          </div>
+        </div>
+        <div>
+          <p className="font-semibold text-gray-900">David Wilson</p>
+          <p className="text-sm text-gray-600">Product Manager at TechSolutions</p>
+        </div>
+      </div>
+      <div className="flex mb-3">
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+      </div>
+      <p className="text-base text-gray-800 mb-4">
+        "SoSavvy's insights into our target audience are invaluable. We're now crafting messages that truly resonate, leading to a significant uptick in demo requests from LinkedIn. Highly recommend!"
+      </p>
+      <a href="https://www.techsolutions.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        techsolutions.com
+      </a>
+    </div>
+  </div>
+</section>
+
+
+
+        {/*---------------------End Testimonials Section -------------------------*/}
+
         <section className="mt-24 text-center">
-          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-4">
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg">
             <Sparkles className="w-4 h-4" />
                 <span>An Easy Pricing Plan</span>
           </div>
         </section>
-
-        <section className="mt-2 py-16 bg-white text-gray-900 rounded-xl overflow-hidden text-center">
+        <section className=" py-16 bg-white text-gray-900 rounded-xl overflow-hidden text-center">
   <div className="max-w-6xl mx-auto px-6"> {/* Increased max-width for wider layout */}
     <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
       Simple Pricing, Powerful Results 🚀
