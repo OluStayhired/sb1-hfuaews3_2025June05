@@ -704,8 +704,8 @@ function LandingPage() {
       <div className="flex items-center mb-4">
         <div className="relative mr-4">
           <img
-            src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-            alt="John Doe Avatar"
+            src="https://i.imghippo.com/files/cGvb7319MV.jpg"
+            alt="Jonathan Hillis"
             className="w-16 h-16 rounded-full object-cover"
           />
           <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
@@ -713,8 +713,8 @@ function LandingPage() {
           </div>
         </div>
         <div>
-          <p className="font-semibold text-gray-900">John Doe</p>
-          <p className="text-sm text-gray-600">CEO at InnovateCo</p>
+          <p className="font-semibold text-gray-900">Jonathan Hillis</p>
+          <p className="text-sm text-gray-600">CEO at Tenure</p>
         </div>
       </div>
       <div className="flex mb-3">
@@ -725,10 +725,10 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        "SoSavvy transformed our LinkedIn strategy! We're getting more qualified leads than ever before, and the content is always on point. A game-changer for our business."
+        SoSavvy made it so easy for me to create and turn content ideas into scheduled posts. Its ability to craft customer inspired content on autopilot has been a total time-saver
       </p>
-      <a href="https://www.innovateco.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
-        innovateco.com
+      <a href="https://www.tenurefi.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        tenurefi.com
       </a>
     </div>
 
@@ -737,17 +737,17 @@ function LandingPage() {
       <div className="flex items-center mb-4">
         <div className="relative mr-4">
           <img
-            src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-            alt="Jane Smith Avatar"
+            src="https://i.imghippo.com/files/mcUX9191eo.jpg"
+            alt="Julia Yuvchenko Avatar"
             className="w-16 h-16 rounded-full object-cover"
           />
           <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-            <img src={XLogo} alt="Twitter" className="w-5 h-5" />
+            <img src={LinkedInSolidLogo} alt="Twitter" className="w-5 h-5" />
           </div>
         </div>
         <div>
-          <p className="font-semibold text-gray-900">Jane Smith</p>
-          <p className="text-sm text-gray-600">Founder of CreativeHub</p>
+          <p className="font-semibold text-gray-900">Julia Yuvchenko</p>
+          <p className="text-sm text-gray-600">Founder of ContentFarm</p>
         </div>
       </div>
       <div className="flex mb-3">
@@ -758,10 +758,10 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        "As a solo founder, I barely had time for social media. SoSavvy's content calendar and automated posting saved me hours and significantly boosted my Twitter engagement!"
+        As a busy founder, SoSavvy is a game-changer. Its clean design makes it very easy to generate content calendars in no time. Also love the AI rewriting tool for improving my content!
       </p>
-      <a href="https://www.creativehub.co" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
-        creativehub.co
+      <a href="http://contentfarm.club" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        contentfarm.club
       </a>
     </div>
 
@@ -770,17 +770,17 @@ function LandingPage() {
       <div className="flex items-center mb-4">
         <div className="relative mr-4">
           <img
-            src="https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-            alt="Michael Brown Avatar"
+            src="https://i.imghippo.com/files/beBY1349jQo.jpg"
+            alt="Eric Rafat Avatar"
             className="w-16 h-16 rounded-full object-cover"
           />
           <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-            <img src={BlueskyLogo} alt="Bluesky" className="w-5 h-5" />
+            <img src={LinkedInSolidLogo} alt="Bluesky" className="w-5 h-5" />
           </div>
         </div>
         <div>
-          <p className="font-semibold text-gray-900">Michael Brown</p>
-          <p className="text-sm text-gray-600">Marketing Lead at GrowthLabs</p>
+          <p className="font-semibold text-gray-900">Eric Rafat</p>
+          <p className="text-sm text-gray-600">CEO at Foundersbeta</p>
         </div>
       </div>
       <div className="flex mb-3">
@@ -791,10 +791,10 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        "The AI-generated content is surprisingly human-like and relevant. Our Bluesky presence has never been stronger, and we're seeing real conversations start from our posts."
+        SoSavvy has taken the guesswork out of content planning, helping me to focus on what matters, growing my startup. Perfect for organic and consistent growth across platforms.
       </p>
-      <a href="https://www.growthlabs.io" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
-        growthlabs.io
+      <a href="https://www.foundersbeta.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        foundersbeta.com
       </a>
     </div>
 
@@ -804,7 +804,7 @@ function LandingPage() {
         <div className="relative mr-4">
           <img
             src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-            alt="David Wilson Avatar"
+            alt="Eric Rafat Avatar"
             className="w-16 h-16 rounded-full object-cover"
           />
           <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
@@ -824,7 +824,7 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        "SoSavvy's insights into our target audience are invaluable. We're now crafting messages that truly resonate, leading to a significant uptick in demo requests from LinkedIn. Highly recommend!"
+        "oSavvy's insights into our target audience are invaluable. We're now crafting messages that truly resonate, leading to a significant uptick in demo requests from LinkedIn. Highly recommend!
       </p>
       <a href="https://www.techsolutions.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
         techsolutions.com
@@ -857,7 +857,7 @@ function LandingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"> {/* Grid for horizontal spread */}
         {/* Left Column: Pricing and CTA */}
         <div className="text-center md:text-right md:pr-8 md:border-r md:border-blue-400"> {/* Added border-r for visual separation */}
-          <h3 className="text-3xl font-semibold mb-4">All-in-One Content Writer</h3>
+          <h3 className="text-3xl  font-semibold mb-4">All-in-One Content Writer</h3>
           <div className="flex items-baseline justify-center md:justify-end mb-6">
             <span className="text-9xl text-center font-extrabold">$25</span> {/* Larger font for price */}
             <span className="text-2xl font-medium">/month</span>
