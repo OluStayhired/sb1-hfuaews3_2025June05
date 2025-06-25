@@ -143,9 +143,12 @@ function LandingPage() {
 
 {/* Start Video Section for SoSavvy */}
         <section className="mt-24 text-center">
-        <h2 className="text-4xl font-bold text-gray-900 mb-12">
-          See SoSavvy in Action 🔥
+        <h2 className="text-4xl font-bold text-gray-900 mb-2">
+          See SoSavvy in Action 👇
         </h2>
+        <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+            Unlock weeks of website-powered, customer-focused content in minutes
+          </p>
         <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
           {/* Outer div for responsive aspect ratio (16:9 - 56.25%) */}
           <div style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
@@ -270,7 +273,7 @@ function LandingPage() {
 {/* Start How it Works Section */}
 <section className="mt-32 text-center">
   <h2 className="text-4xl font-bold text-gray-900 mb-4">
-    Here's how SoSavvy works <br/>in 3 easy steps ✅
+    Here's how SoSavvy works <br/>in 3 easy steps 🔥
   </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
     Audience Analysis . Content Strategy . Scheduled Posts
@@ -352,10 +355,10 @@ function LandingPage() {
         {/* It no longer needs to be part of a flex row with the image div */}
         <div className="md:w-2/5 text-left">
             <h2 className="text-4xl font-bold mb-6">
-                Pinpoint Your Audience's Deepest Desires & Fears
+                Target your customer's deepest desires & fears
             </h2>
             <p className="text-xl font-light opacity-90 max-w-lg">
-                Analyze your website to uncover what truly drives your ideal customers, pinpointing their pains and aspirations for laser-focused content.
+                Analyze your website to uncover what truly drives your ideal customers, surface their pains and aspirations for laser-focused content.
             </p>
         </div>
         
@@ -382,7 +385,7 @@ function LandingPage() {
     <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
         <div className="md:w-2/5 text-left ml-auto">
             <h2 className="text-4xl font-bold mb-6">
-                Create Powerful Content Strategies That Build Trust
+                Create effective content strategies in seconds
             </h2>
             <p className="text-xl font-light opacity-90 max-w-lg">
                 Stop random acts of content. Build strategic campaigns that ensure every post addresses customer pain and guides them to your solution.
@@ -409,7 +412,7 @@ function LandingPage() {
         {/* It no longer needs to be part of a flex row with the image div */}
         <div className="md:w-2/5 text-left">
             <h2 className="text-4xl font-bold mb-6">
-                Generate Posts That Actually Connect & Convert
+              Publish relatable posts that actually convert
             </h2>
             <p className="text-xl font-light opacity-90 max-w-lg">
                 Forget generic AI. Create non-salesy, human-sounding social content that builds authority and sparks curiosity, driving direct inquiries.
@@ -435,7 +438,7 @@ function LandingPage() {
     <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
         <div className="md:w-2/5 text-left ml-auto">
             <h2 className="text-4xl font-bold mb-6">
-                Schedule Across Platforms & Watch Your Inquiries Grow
+              Schedule content across platforms with no effort
             </h2>
             <p className="text-xl font-light opacity-90 max-w-lg">
                Publish effortlessly. Automatically schedule strategic posts across LinkedIn, X, and Bluesky, freeing you to focus on your business as inquiries roll in.
