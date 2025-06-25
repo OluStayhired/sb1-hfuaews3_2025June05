@@ -132,15 +132,119 @@ function LandingPage() {
 
         {/*End Social Media Icons*/}
 
-   {/* Start New Interactive Section */}
-        {/*<section className="mt-24 text-center">
-          <div className="inline-flex items-center space-x-3 mb-6">
 
-            <h2 className="text-4xl font-bold text-gray-900">
-              Attracting your ideal customers <br/> on social media is tough 😏
-            </h2>
-          </div>
-          */}
+        
+{/*----------- start mini testimonials -----------------------------*/}
+
+
+
+<section className="mt-24 text-center">
+  <h2 className="text-3xl font-bold text-gray-900 mb-8">
+    Quick Glimpse of Success 🏆
+  </h2>
+  <div className="flex items-center justify-center flex-wrap gap-4 mb-6">
+    {/* Mini Testimonial 1 */}
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/beBY1349jQo.jpg"
+          alt="Eric Rafat"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Eric Rafat</p>
+        <p className="text-sm text-gray-800">"Takes the guesswork out of content planning!"</p>
+      </div>
+    </div>
+
+    {/* Mini Testimonial 2 */}
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/mcUX9191eo.jpg"
+          alt="Julia Yuvchenko"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={LinkedInSolidLogo} alt="Twitter" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Julia Yuvchenko</p>
+        <p className="text-sm text-gray-800">"The AI suggestions have 10x my content!"</p>
+      </div>
+    </div>
+
+    {/* Mini Testimonial 3 */}
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/qLzj4161JaA.jpg"
+          alt="Ericka Bates"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={LinkedInSolidLogo} alt="Bluesky" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Ericka Bates</p>
+        <p className="text-sm text-gray-800">"SoSavvy has improved my personal brand!"</p>
+      </div>
+    </div>
+
+    {/* Mini Testimonial 4 */}
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/cGvb7319MV.jpg"
+          alt="Jonathan Hillis"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Jonathan Hillis</p>
+        <p className="text-sm text-gray-800">"Awesome for staying consistent on LinkedIn!"</p> 
+      </div>
+    </div>
+        {/* Mini Testimonial 5 */}
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/wQ7409qJU.jpg"
+          alt="Travis Street"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={BlueskyLogo} alt="LinkedIn" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Travis Street</p>
+        <p className="text-sm text-gray-800">"Amazing tool for creating focused posts!"</p>
+      </div>
+    </div>
+  </div>
+
+  {/* Single 5-star rating below all testimonials */}
+  <div className="flex justify-center mt-4">
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+  </div>
+</section>
+
+
+        {/*------------end mini testimonials -------------------------------*/}
 
 {/* Start Video Section for SoSavvy */}
         <section className="mt-24 text-center">
@@ -241,7 +345,7 @@ function LandingPage() {
 
       {/* Start New Gradient Section */}
         <section className="mt-24 text-center">
-          <div className="inline-flex items-center border-8 border-green-200 space-x-2 px-3 py-2 bg-green-400 text-white rounded-full text-lg mb-6">
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-blue-400 text-white rounded-full text-lg mb-6">
             <Sparkles className="w-4 h-4" />
                 <span>We have the Solution!</span>
           </div>
