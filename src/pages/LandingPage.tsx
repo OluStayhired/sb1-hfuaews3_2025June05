@@ -370,7 +370,8 @@ function LandingPage() {
         //src="https://i.imghippo.com/files/dkS9428wc.png"
       //src="https://i.imghippo.com/files/izzL3120irk.png"
       //src="https://i.imghippo.com/files/uVLX9405hI.png"
-      src="https://i.imghippo.com/files/iFBa7252Dco.png"
+      //src="https://i.imghippo.com/files/iFBa7252Dco.png"
+      src="https://i.imghippo.com/files/aSkU4676wcg.png"
         alt="SoSavvy Product Screenshot"
         className="absolute right-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
     />
@@ -424,7 +425,9 @@ function LandingPage() {
     {/* This image is explicitly set to be taller than the content area */}
     <img
         //src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-      src="https://i.imghippo.com/files/wqZ3613rvk.png"
+      //src="https://i.imghippo.com/files/wqZ3613rvk.png"
+      src="https://i.imghippo.com/files/FN9394Xsg.png"
+      
         alt="SoSavvy Product Screenshot"
         className="absolute right-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
     />
@@ -450,7 +453,8 @@ function LandingPage() {
         //src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
         //src="https://i.imghippo.com/files/ijJO2182eb.png"
       //src="https://i.imghippo.com/files/bIU5522mbo.png"
-      src="https://i.imghippo.com/files/sSZR7904Vo.png"
+      //src="https://i.imghippo.com/files/sSZR7904Vo.png"
+      src="https://i.imghippo.com/files/aabl7885uD.png"
         alt="SoSavvy Product Screenshot"
         className="absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl transform "
     />
@@ -487,14 +491,14 @@ function LandingPage() {
         <div className="flex justify-center space-x-4 mb-16"> {/* mb-16 for spacing before the image */}
              <button
             onClick={handleEmailLogin}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Login with Email
           </button>
           
           <button
             onClick={handleGoogleLogin}
-            className="flex px-4 py-2 bg-white border border-blue-600 flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
+            className="flex px-4 py-3 bg-white border border-whit flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
           >
             
             <img src={googleLogo} alt="Google" className="w-5 h-5" />
@@ -521,9 +525,10 @@ function LandingPage() {
     </div>
           <img
             //src="https://placehold.co/1200x500/E0E7FF/000000?text=SoSavvy+Dashboard+Screenshot"
-            src="https://i.imghippo.com/files/Lp8140co.png"
+            //src="https://i.imghippo.com/files/Lp8140co.png"
+            src="https://i.imghippo.com/files/hjBw8272m.png"
             alt="SoSavvy Dashboard Screenshot"
-            className="w-full max-w-5xl h-[300px] md:h-[400px] lg:h-[500px] object-cover rounded-lg shadow-xl mx-auto mt-8 block"
+            className="w-full max-w-5xl h-[300px] md:h-[400px] lg:h-[500px] object-cover rounded-lg mx-auto mt-8 block"
         />
 </section>        
 
