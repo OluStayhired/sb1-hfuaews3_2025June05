@@ -1016,7 +1016,7 @@ await rateLimiter.checkAndWait();
 
 const selectedTone = getRandomTone();  
 
-const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content.
+const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks to draw your audience in and make them want to read and enjoy your content.
 
 From the provided list of hooks in ${hooksData}, **randomly select ONE (1) hook to begin the post.** Ensure that the chosen hook has not been frequently used in recent generations for this user.
 
