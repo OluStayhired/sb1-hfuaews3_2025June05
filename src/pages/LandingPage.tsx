@@ -12,6 +12,7 @@ import LinkedInLogo from '../images/linkedin-logo.svg';
 import LinkedInSolidLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import googleLogo from '../images/google-logo-48.svg';
+import { TooltipExtended } from '/src/utils/TooltipExtended';
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -642,17 +643,25 @@ function LandingPage() {
         <div className="text-left md:pl-8">
           <h4 className="text-2xl font-semibold mb-4">What's Included:</h4>
           <ul className="space-y-3">
+           
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>14-Day High-Value Content Calendars</span>
+               <TooltipExtended text="⚡ Get a full, 14-day calendar of strategic posts, planned around your insights and goals. Never wonder what to post next – it's already done and optimized for impact.">
+              <span className="underline decoration-white decoration-2 cursor-pointer">14-Day High-Value Content Calendars</span>
+              </TooltipExtended>  
+            </li>
+                            
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <TooltipExtended text="⚡ SoSavvy analyzes your website's content, services, and offerings to pinpoint your ideal customer's pains, desires, and the exact language they use. No more guesswork about what matters.">
+              <span className="underline decoration-white decoration-2 cursor-pointer">Deep Customer & Niche Insights</span>
+              </TooltipExtended>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Deep Customer & Niche Insights</span>
-            </li>
-            <li className="flex items-center">
-              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Human-Like Content Creation</span>
+              <TooltipExtended text="⚡ Go beyond generic. Our intelligent AI crafts non-salesy, compelling posts that truly sound like you, directly addressing your audience's needs and building genuine connection.">
+              <span className="underline decoration-white decoration-2 cursor-pointer">Human-Like Content Creation</span>
+              </TooltipExtended>
             </li>
 
             <li className="flex items-center">
@@ -665,11 +674,15 @@ function LandingPage() {
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Flexible Content Editor & Drafts</span>
+              <TooltipExtended text="⚡Maintain full control. Review, refine, and edit any generated post before it goes live, ensuring every message aligns perfectly with your brand voice.">
+              <span className="underline decoration-white decoration-2 cursor-pointer">Flexible Content Editor & Drafts</span>
+              </TooltipExtended>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Timezone-Aware Scheduling</span>
+               <TooltipExtended text="⚡Ensure your content reaches your audience when they're most active, wherever they are in the world. SoSavvy intelligently schedules posts for maximum visibility across different timezones.">
+              <span className="underline decoration-white decoration-2 cursor-pointer">Timezone-Aware Scheduling</span>
+               </TooltipExtended>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
