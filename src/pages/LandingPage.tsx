@@ -644,19 +644,20 @@ function LandingPage() {
           <ul className="space-y-3">
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Website Analysis for Customer Insights</span>
+              <span>14-Day High-Value Content Calendars</span>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>AI-Powered Content Generation</span>
+              <span>Deep Customer & Niche Insights</span>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Strategic 14-Day Content Calendars</span>
+              <span>Human-Like Content Creation</span>
             </li>
+
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Multi-Platform Scheduling (LinkedIn, X, Bluesky)</span>
+              <span>Seamless Cross-Platform Scheduling</span>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
@@ -664,19 +665,11 @@ function LandingPage() {
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Draft Management & Editing</span>
+              <span>Flexible Content Editor & Drafts</span>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
               <span>Timezone-Aware Scheduling</span>
-            </li>
-            <li className="flex items-center">
-              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Performance Analytics Dashboard</span>
-            </li>
-            <li className="flex items-center">
-              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <span>Intuitive User Interface</span>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
