@@ -140,7 +140,7 @@ function LandingPage() {
 
 <section className="mt-24 text-center">
   <h2 className="text-3xl font-bold text-gray-900 mb-8">
-    Quick Glimpse of Success 🏆
+    Why Founders & Creators Love SoSavvy ❤️
   </h2>
   <div className="flex items-center justify-center flex-wrap gap-4 mb-6">
     {/* Mini Testimonial 1 */}
@@ -249,7 +249,7 @@ function LandingPage() {
 {/* Start Video Section for SoSavvy */}
         <section className="mt-24 text-center">
         <h2 className="text-4xl font-bold text-gray-900 mb-2">
-          See SoSavvy in Action 👇
+          Content Planning on Steroids 👇
         </h2>
         <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
             Unlock weeks of website-powered, customer-focused content in minutes
@@ -725,7 +725,7 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        SoSavvy made it so easy for me to create and turn content ideas into scheduled posts. Its ability to craft customer inspired content on autopilot has been a total time-saver
+        SoSavvy made it so easy for me to create and turn content ideas into scheduled posts. Creating customer focused content is not easy, SoSavvy has been a total time-saver
       </p>
       <a href="https://www.tenurefi.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
         tenurefi.com
@@ -791,7 +791,7 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        SoSavvy has taken the guesswork out of content planning, helping me to focus on what matters, growing my startup. It's perfect for organic and consistent growth across platforms.
+        SoSavvy has taken the guesswork out of content planning, now I can focus on what matters, growing my startup. It's perfect for organic and consistent growth across platforms.
       </p>
       <a href="https://www.foundersbeta.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
         foundersbeta.com
@@ -824,7 +824,7 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        Awesome product Olu, SoSavvy delivers relatable content that resonates with my target audience. Amazing that it learns from my website and delivers weeks of content in seconds!  
+        Awesome product Olu, SoSavvy delivers relatable content that resonates with my target audience. Super cool, it checks out my website and delivers weeks of content in seconds!  
       </p>
       <a href="https://www.travisstreet.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
         travisstreet.com
