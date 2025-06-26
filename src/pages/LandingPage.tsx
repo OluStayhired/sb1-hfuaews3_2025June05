@@ -144,7 +144,8 @@ function LandingPage() {
   </h2>
   <div className="flex items-center justify-center flex-wrap gap-4 mb-6">
     {/* Mini Testimonial 1 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
+      hover:border-blue-300 transition-all group">
       <div className="relative">
         <img
           src="https://i.imghippo.com/files/beBY1349jQo.jpg"
@@ -162,7 +163,8 @@ function LandingPage() {
     </div>
 
     {/* Mini Testimonial 2 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
+      hover:border-blue-300 transition-all group rounded-full shadow-sm ">
       <div className="relative">
         <img
           src="https://i.imghippo.com/files/mcUX9191eo.jpg"
@@ -180,7 +182,8 @@ function LandingPage() {
     </div>
 
     {/* Mini Testimonial 3 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
+      hover:border-blue-300 transition-all group rounded-full shadow-sm ">
       <div className="relative">
         <img
           src="https://i.imghippo.com/files/qLzj4161JaA.jpg"
@@ -198,7 +201,7 @@ function LandingPage() {
     </div>
 
     {/* Mini Testimonial 4 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+    <div className="inline-flex items-center space-x-3 px-6 py-3 rounded-full shadow-sm bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm hover:border-blue-300 transition-all group">
       <div className="relative">
         <img
           src="https://i.imghippo.com/files/cGvb7319MV.jpg"
@@ -215,7 +218,8 @@ function LandingPage() {
       </div>
     </div>
         {/* Mini Testimonial 5 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-blue-50 rounded-full shadow-sm border border-blue-100">
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
+      hover:border-blue-300 transition-all group rounded-full shadow-sm">
       <div className="relative">
         <img
           src="https://i.imghippo.com/files/wQ7409qJU.jpg"
