@@ -528,7 +528,8 @@ function LandingPage() {
     <img
         //src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
       //src="https://i.imghippo.com/files/SK2495CM.png"
-      src="https://i.imghippo.com/files/rEj2038XOY.png"
+      //src="https://i.imghippo.com/files/rEj2038XOY.png"
+      src="https://i.imghippo.com/files/ZsdT4458qo.png"
         alt="SoSavvy Product Screenshot"
         className="absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl transform"
     />
