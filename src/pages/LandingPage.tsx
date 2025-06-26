@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase, 
+import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase, Plus, Minus,
   Bot, CheckCircle,
   Timer, 
   Zap, 
@@ -847,7 +847,8 @@ function LandingPage() {
                 <span>An Easy Pricing Plan</span>
           </div>
         </section>
-        <section className=" py-16 bg-white text-gray-900 rounded-xl overflow-hidden text-center">
+        
+<section className=" py-16 bg-white text-gray-900 rounded-xl overflow-hidden text-center">
   <div className="max-w-6xl mx-auto px-6"> {/* Increased max-width for wider layout */}
     <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
       Simple Pricing, Powerful Results 🚀
@@ -954,6 +955,183 @@ function LandingPage() {
     </div>
   </div>
 </section>
+
+  {/*----------------------------- End of the Pricing Section ----------------------------------*/}
+
+  {/*------------------------------start of the FAQ Section -------------------------------------*/}    
+
+<section className="mt-24 text-center">
+  <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
+    <Sparkles className="w-4 h-4" />
+    <span>Frequently Asked Questions</span>
+  </div>
+  <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+    Have Questions? 🤔
+  </h2>
+  <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+   Learn how SoSavvy can transform your social media strategy.
+  </p>
+
+  {/*     
+<section className="mt-32 text-center">
+  <h2 className="text-4xl font-bold text-gray-900 mb-4">
+    Frequently Asked Questions
+  </h2>
+  <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+    Have questions? We've got answers. Find out more about how SoSavvy can transform your social media strategy.
+  </p>
+*/}
+  <div className="max-w-3xl mx-auto space-y-4 text-left">
+    {/* FAQ Item 1 */}
+   <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+  <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
+    My social media content often feels generic. How does SoSavvy ensure it truly connects with my specific audience?
+    <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 hidden group-open:block transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+      </svg>
+    </div>
+  </summary>
+  <div class="px-5 pb-5 text-gray-700">
+    <p>We go deep to understand your customers' specific pains and desires, then craft content that speaks directly to them. This creates that "aha!" moment, building trust and ensuring your message resonates, rather than getting lost in the noise. It's about turning passive scrollers into engaged prospects.</p>
+  </div>
+</details>
+
+
+    {/* FAQ Item 2 */}
+     <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+  <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
+     I spend too much time creating social media content. How does SoSavvy save me time?
+    <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 hidden group-open:block transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+      </svg>
+    </div>
+  </summary>
+  <div class="px-5 pb-5 text-gray-700">
+    <p>SoSavvy drastically cuts down your content creation time by crafting and scheduling months of customer-focused content for you in minutes. You'll free up hours currently spent brainstorming, writing, and posting, letting you focus on core business growth.</p>
+  </div>
+</details>
+
+    {/* FAQ Item 3 */}
+     <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+  <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
+    How will SoSavvy help me generate actual leads, not just likes?
+    <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 hidden group-open:block transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+      </svg>
+    </div>
+  </summary>
+  <div class="px-5 pb-5 text-gray-700">
+    <p>Our content is designed specifically to drive inbound leads, not just vanity metrics. By deeply understanding your customers' needs and positioning your solution effectively, we create content that motivates prospects to take action – whether that's booking a meeting, sending an inquiry, or making a purchase. We focus on content that fills your sales pipeline.</p>
+  </div>
+</details>
+
+     {/* FAQ Item 4 */}
+    <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+  <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
+    I struggle with consistent posting. How does SoSavvy ensure my social media presence remains active?
+    <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 hidden group-open:block transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+      </svg>
+    </div>
+  </summary>
+  <div class="px-5 pb-5 text-gray-700">
+    <p>SoSavvy tackles inconsistency head-on by providing months of pre-scheduled, high-quality content. This ensures your brand maintains a steady, authoritative presence across platforms like LinkedIn, Twitter, and Bluesky, keeping you top-of-mind with your audience and positively impacting algorithm visibility.</p>
+  </div>
+</details>
+
+     {/* FAQ Item 5 */}
+     <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"> 
+  <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
+    Is this solution only for large companies, or does it work for startups and smaller teams too?
+    <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 hidden group-open:block transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+      </svg>
+    </div>
+  </summary>
+  <div class="px-5 pb-5 text-gray-700">
+    <p>SoSavvy is designed to empower founders, marketers, and small teams who are resource-constrained but ambitious. Our solution provides the strategic, high-quality content capabilities typically reserved for larger companies, allowing you to compete effectively and scale your inbound lead generation without needing a huge in-house content team.</p>
+  </div>
+</details>
+
+     {/* FAQ Item 6 */}
+     <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+  <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
+    How does SoSavvy understand my specific business and customer pain points to create effective content?
+    <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 hidden group-open:block transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+      </svg>
+    </div>
+  </summary>
+  <div class="px-5 pb-5 text-gray-700">
+    <p>We start with a focused onboarding process to deeply understand your unique value proposition, target audience, and their core challenges. Our process is built around extracting those specific pain points, ensuring every piece of content we craft directly addresses what your customers care about most, leading to genuine connections and inquiries.</p>
+  </div>
+</details>
+
+     {/* FAQ Item 7 */}
+    <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+  <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
+    What kind of results can I expect from using SoSavvy?
+    <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 hidden group-open:block transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+      </svg>
+    </div>
+  </summary>
+  <div class="px-5 pb-5 text-gray-700">
+    <p>You can expect to grow inbound leads more efficiently by consistently publishing customer-focused content that actually converts. This means a more engaged audience, a healthier sales pipeline, and a reduced reliance on manual, high-effort outbound methods. Ultimately, it frees you to focus on closing deals and scaling your business.</p>
+  </div>
+</details>
+
+     {/* FAQ Item 8 */}
+     <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+  <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
+    How quickly can I get started and see my content live?
+    <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <svg class="absolute inset-0 w-6 h-6 text-blue-500 hidden group-open:block transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+      </svg>
+    </div>
+  </summary>
+  <div class="px-5 pb-5 text-gray-700">
+    <p>SoSavvy is designed for speed and efficiency. Once onboarded, we can get months of crafted and scheduled customer-focused content ready for you in minutes, allowing you to launch or refresh your social media strategy almost immediately and start seeing an impact on your lead generation efforts very quickly.</p>
+  </div>
+</details>
+    
+  </div>
+</section>
+
+
+  {/*------------------------------- end of the FAQ Section --------------------------------------*/}        
 
 
         {/* Start Feature Section */}
