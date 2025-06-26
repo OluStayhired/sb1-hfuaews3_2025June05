@@ -813,7 +813,7 @@ function LandingPage() {
         </div>
         <div>
           <p className="font-semibold text-gray-900">Travis Street</p>
-          <p className="text-sm text-gray-600">Founder at Product Now</p>
+          <p className="text-sm text-gray-600">Technology Consultant</p>
         </div>
       </div>
       <div className="flex mb-3">
@@ -826,8 +826,8 @@ function LandingPage() {
       <p className="text-base text-gray-800 mb-4">
         Awesome product Olu, SoSavvy delivers relatable content that resonates with my target audience. Amazing that it learns from my website and delivers weeks of content in seconds!  
       </p>
-      <a href="https://www.product.now" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
-        product.now
+      <a href="https://www.travisstreet.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        travisstreet.com
       </a>
     </div>
   </div>
