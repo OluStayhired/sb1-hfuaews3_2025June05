@@ -84,7 +84,7 @@ function LandingPage() {
           <h1 className="text-7xl font-bold leading-tight mb-3">
             <p>
               <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text mb-4">
-                Let customers find you <br/> <p className="text-5xl text-gray-400 leading-tight"> on LinkedIn, Twitter & Bluesky </p>
+                Stop Guessing Content <br/> <p className="text-5xl text-gray-400 leading-tight"> on LinkedIn, Twitter & Bluesky </p>
               </span>
             </p>
           </h1>
