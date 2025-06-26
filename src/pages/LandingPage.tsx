@@ -1132,7 +1132,40 @@ function LandingPage() {
 </section>
 
 
-  {/*------------------------------- end of the FAQ Section --------------------------------------*/}        
+  {/*------------------------------- end of the FAQ Section --------------------------------------*/}       
+
+
+  {/* ------------------------------ Start Final Call to Action Section --------------------------*/}    
+
+<section class="mt-24 py-16 bg-gradient-to-b from-blue-500 via-blue-400 to-white text-gray-900 text-center rounded-xl">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-white text-4xl md:text-6xl font-bold leading-tight mb-8">
+      Stop Wasting Hours on Average Content
+    </h2>
+    <p class="text-white text-xl md:text-2xl font-light text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed">
+      Start Creating Today With SoSavvy ✨
+    </p>
+    <div class="flex justify-center space-x-4">
+      <button
+        onClick={handleEmailLogin}
+        class="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+      >
+        Login with Email
+      </button>
+      <button
+        onClick={handleGoogleLogin}
+        class="flex px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 text-lg font-semibold rounded-lg hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+      >
+        <img src={googleLogo} alt="Google" class="w-5 h-5" />
+        <span>Join with Google</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+
+
+  {/*---------------------------------End Final Call to Action Section-----------------------------*/}      
 
 
         {/* Start Feature Section */}
