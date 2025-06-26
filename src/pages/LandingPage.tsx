@@ -791,7 +791,7 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        SoSavvy has taken the guesswork out of content planning, helping me to focus on what matters, growing my startup. Perfect for organic and consistent growth across platforms.
+        SoSavvy has taken the guesswork out of content planning, helping me to focus on what matters, growing my startup. It's perfect for organic and consistent growth across platforms.
       </p>
       <a href="https://www.foundersbeta.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
         foundersbeta.com
@@ -803,7 +803,7 @@ function LandingPage() {
       <div className="flex items-center mb-4">
         <div className="relative mr-4">
           <img
-            src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            src="https://i.imghippo.com/files/wQ7409qJU.jpg"
             alt="Eric Rafat Avatar"
             className="w-16 h-16 rounded-full object-cover"
           />
@@ -812,8 +812,8 @@ function LandingPage() {
           </div>
         </div>
         <div>
-          <p className="font-semibold text-gray-900">David Wilson</p>
-          <p className="text-sm text-gray-600">Product Manager at TechSolutions</p>
+          <p className="font-semibold text-gray-900">Travis Street</p>
+          <p className="text-sm text-gray-600">Founder at Product Now</p>
         </div>
       </div>
       <div className="flex mb-3">
@@ -824,10 +824,10 @@ function LandingPage() {
         <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
       </div>
       <p className="text-base text-gray-800 mb-4">
-        "oSavvy's insights into our target audience are invaluable. We're now crafting messages that truly resonate, leading to a significant uptick in demo requests from LinkedIn. Highly recommend!
+        Awesome product Olu, SoSavvy delivers relatable content that resonates with my target audience. Amazing that it learns from my website and delivers weeks of content in seconds!  
       </p>
-      <a href="https://www.techsolutions.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
-        techsolutions.com
+      <a href="https://www.product.now" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        product.now
       </a>
     </div>
   </div>
