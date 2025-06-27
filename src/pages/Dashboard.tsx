@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { CalendarCheck, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target } from 'lucide-react';
+import { CalendarCheck, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target, Combine, PlusCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ComposePosts from '../components/ComposePosts';
 import ManageSchedule from '../components/ManageSchedule';
@@ -146,6 +146,7 @@ useEffect(() => {
   
   const menuItems = [
     //{ icon: <Clock className="w-5 h-5" />, label: 'Create Schedule', path: 'schedule' },
+    //{ icon: <Megaphone className="w-4 h-4" />, label: 'Create Campaign', path: 'campaign/createcalendarform' },
     { icon: <Megaphone className="w-4 h-4" />, label: 'Create Campaign', path: 'campaign' },
     { icon: <UserPlus className="w-4 h-4" />, label: 'Connect Accounts', path: 'accounts' },
     { icon: <Clock className="w-4 h-4" />, label: 'Add Schedule', path: 'slots' },
@@ -839,13 +840,19 @@ const isLinkedInAuthenticated = !!linkedinUser;
 )} 
 
           <div className="p-4 border-b border-gray-200">
-            <h3 className="text-sm font-medium text-gray-500 mb-3">Social Channels</h3>
+        <div className="flex items-center space-x-2 mb-3"> {/* Added flex, items-center, space-x-2 */}
+        
+          <span className="bg-blue-50 px-3 py-3 rounded-full p-1 text-blue-500"><PlusCircle className="h-5 w-5"/></span>
+            <h3 className="text-lg font-medium text-blue-500 m-0 p-0">Channels</h3> 
+        
+        </div>
+            
             <div className="space-y-2">
               <button
                 onClick={handleBlueskyButtonClick}
                 className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
                   <img src={BlueskyLogo} alt="Bluesky" className="w-3.5 h-3.5" />
                 </div>
                 <span>Connect Bluesky</span>
@@ -855,7 +862,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
                 onClick={handleLinkedInButtonClick}
                 className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
                   <img src={LinkedInLogo} alt="LinkedIn" className="w-3.5 h-3.5" />
                 </div>
                 <span>Connect LinkedIn</span>
@@ -865,7 +872,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
                 onClick={handleTwitterButtonClick}
                 className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
                   <img src={XLogo} alt="LinkedIn" className="w-3.5 h-3.5" />
                 </div>
                 <span>Connect Twitter/X</span>
@@ -919,6 +926,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
             <Route path="slots" element={<ManageScheduleSlots />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="onboarding-success" element={<OnboardSuccessPage />} />
+            <Route path="campaign/createcalendarform" element={<CreateCalendarForm />} />
             
             {/*Default Route Shown Below*/}
             
