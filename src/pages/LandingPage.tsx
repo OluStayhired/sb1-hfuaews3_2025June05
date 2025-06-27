@@ -8,8 +8,10 @@ import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase, P
 import { useAuth } from '../context/AuthContext';
 import { AuthModal } from '../components/AuthModal';
 import BlueskyLogo from '../images/bluesky-logo.svg';
+import BlueskyLogoWhite from '../images/bluesky-logo-white.svg';
 import LinkedInLogo from '../images/linkedin-logo.svg';
 import LinkedInSolidLogo from '../images/linkedin-solid-logo.svg';
+import LinkedInSolidLogoWhite from '../images/linkedin-solid-logo-white.svg';
 import XLogo from '../images/x-logo.svg';
 import googleLogo from '../images/google-logo-48.svg';
 import { TooltipExtended } from '/src/utils/TooltipExtended';
@@ -132,7 +134,7 @@ function LandingPage() {
               <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
                 Stop <br className="sm:hidden" /> {/* This is the key change! */}
       Guessing What to Post <br/> <p className="block font-semibold sm:font-bold text-xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-400 leading-tight mt-1 sm:mt-1"> 
-        on LinkedIn and Twitter(X) </p>
+        on X and LinkedIn (Bluesky too) </p>
               </span>
             </p>
           </h1>
@@ -162,140 +164,22 @@ function LandingPage() {
 
         {/*Start Social Media Icons*/}
           <div className="flex justify-center items-center space-x-8 mt-8">
-            <div className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
-              <img src={BlueskyLogo} alt="Bluesky" className="w-8 h-8 rounded-lg" />
+            <div className="flex items-center border-8 border-gray-100 p-3 bg-gray-900 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
+              <img src={BlueskyLogoWhite} alt="Bluesky" className="w-9 h-9 rounded-lg" />
             </div>
-            <div className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
-              <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-8 h-8 rounded-lg" />
+            <div className="flex items-center border-8 border-gray-100 p-3 bg-gray-900 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
+              <img src={LinkedInSolidLogoWhite} alt="LinkedIn" className="w-9 h-9 rounded-lg" />
             </div>
 
             {/*<div className="flex items-center p-2 bg-blue-100 hover:bg-gray-200 space-x-2 text-blue-700 rounded-tl-xl rounded-br-xl">*/}
-            <div className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
-              <img src={XLogo} alt="Twitter" className="w-8 h-8 rounded-lg" />
+            <div className="flex items-center border-8 border-gray-100 p-3 bg-gray-900 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
+              <img src={XLogo} alt="Twitter" className="w-9 h-9 rounded-lg" />
             </div>
           </div>
 
         {/*End Social Media Icons*/}
 
-
-        
-{/*----------- start mini testimonials -----------------------------*/}
-
-
-
-<section className="mt-24 text-center">
-  <h2 className="text-3xl font-bold text-gray-900 mb-8">
-    Why Founders & Creators Love SoSavvy ❤️
-  </h2>
-  <div className="flex items-center justify-center flex-wrap gap-4 mb-6">
-    {/* Mini Testimonial 1 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
-      hover:border-blue-300 transition-all group">
-      <div className="relative">
-        <img
-          src="https://i.imghippo.com/files/beBY1349jQo.jpg"
-          alt="Eric Rafat"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-          <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-3 h-3" />
-        </div>
-      </div>
-      <div>
-        <p className="font-semibold text-left text-gray-900">Eric Rafat</p>
-        <p className="text-sm text-left text-gray-800">"Takes the guesswork out of content planning!"</p>
-      </div>
-    </div>
-
-    {/* Mini Testimonial 2 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
-      hover:border-blue-300 transition-all group rounded-full shadow-sm ">
-      <div className="relative">
-        <img
-          src="https://i.imghippo.com/files/mcUX9191eo.jpg"
-          alt="Julia Yuvchenko"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-          <img src={LinkedInSolidLogo} alt="Twitter" className="w-3 h-3" />
-        </div>
-      </div>
-      <div>
-        <p className="font-semibold text-left text-gray-900">Julia Yuvchenko</p>
-        <p className="text-sm text-left text-gray-800">"The AI suggestions have 10x my content!"</p>
-      </div>
-    </div>
-
-    {/* Mini Testimonial 3 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
-      hover:border-blue-300 transition-all group rounded-full shadow-sm ">
-      <div className="relative">
-        <img
-          src="https://i.imghippo.com/files/qLzj4161JaA.jpg"
-          alt="Ericka Bates"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-          <img src={LinkedInSolidLogo} alt="Bluesky" className="w-3 h-3" />
-        </div>
-      </div>
-      <div>
-        <p className="font-semibold text-left text-gray-900">Ericka Bates</p>
-        <p className="text-sm text-left text-gray-800">"SoSavvy has improved my personal brand!"</p>
-      </div>
-    </div>
-
-    {/* Mini Testimonial 4 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 rounded-full shadow-sm bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm hover:border-blue-300 transition-all group">
-      <div className="relative">
-        <img
-          src="https://i.imghippo.com/files/cGvb7319MV.jpg"
-          alt="Jonathan Hillis"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-          <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-3 h-3" />
-        </div>
-      </div>
-      <div>
-        <p className="font-semibold text-left text-gray-900">Jonathan Hillis</p>
-        <p className="text-sm text-left text-gray-800">"Awesome for staying consistent on LinkedIn!"</p> 
-      </div>
-    </div>
-        {/* Mini Testimonial 5 */}
-    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
-      hover:border-blue-300 transition-all group rounded-full shadow-sm">
-      <div className="relative">
-        <img
-          src="https://i.imghippo.com/files/wQ7409qJU.jpg"
-          alt="Travis Street"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-          <img src={BlueskyLogo} alt="LinkedIn" className="w-3 h-3" />
-        </div>
-      </div>
-      <div>
-        <p className="font-semibold text-left text-gray-900">Travis Street</p>
-        <p className="text-sm text-left text-gray-800">"Amazing tool for creating focused posts!"</p>
-      </div>
-    </div>
-  </div>
-
-  {/* Single 5-star rating below all testimonials */}
-  <div className="flex justify-center mt-4">
-    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-  </div>
-</section>
-
-
-        {/*------------end mini testimonials -------------------------------*/}
-
-{/* Start Video Section for SoSavvy */}
+{/*----------------- Start Video Section for SoSavvy ----------------------- */}
         <section className="mt-24 text-center">
         <h2 className="text-4xl font-bold text-gray-900 mb-2">
           Content Planning on Steroids 👇
@@ -317,7 +201,137 @@ function LandingPage() {
           </div>
         </div>
       </section>
-{/* End Video Section for SoSavvy */}
+{/*-------------------------- End Video Section for SoSavvy -------------------------------- */}
+        
+{/*----------- start mini testimonials -----------------------------*/}
+
+
+
+<section className="mt-24 text-center">
+  <h2 className="text-3xl font-bold text-gray-900 mb-8">
+    Why Founders & Creators Love SoSavvy ❤️
+  </h2>
+  <div className="flex items-center justify-center flex-wrap gap-4 mb-6">
+    {/* Mini Testimonial 1 */}
+    <a href="#testimonial" className="no-underline">
+    <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-2xl sm:rounded-full shadow-sm 
+      hover:border-blue-300 transition-all group">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/beBY1349jQo.jpg"
+          alt="Eric Rafat"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Eric Rafat </p>
+        <p className="sm:hidden font-normal text-xs text-left text-gray-500">CEO at Foundersbeta</p>
+        <p className="text-sm text-left text-gray-800">"SoSavvy takes the guesswork out of content planning!"</p>
+      </div>
+    
+    </div>
+      </a>
+
+    {/* Mini Testimonial 2 */}
+    <a href="#testimonial" className="no-underline">
+    <div className="hidden sm:inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm hover:border-blue-300 transition-all group rounded-full shadow-sm ">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/mcUX9191eo.jpg"
+          alt="Julia Yuvchenko"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={LinkedInSolidLogo} alt="Twitter" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Julia Yuvchenko</p>
+        <p className="text-sm text-left text-gray-800">"The AI suggestions have 10x my content!"</p>
+      </div>
+    </div>
+    </a>
+
+    {/* Mini Testimonial 3 */}
+    <a href="#testimonial" className="no-underline">
+    <div className="hidden sm:inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
+      hover:border-blue-300 transition-all group rounded-full shadow-sm ">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/qLzj4161JaA.jpg"
+          alt="Ericka Bates"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={LinkedInSolidLogo} alt="Bluesky" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Ericka Bates</p>
+        <p className="text-sm text-left text-gray-800">"SoSavvy has improved my personal brand!"</p>
+      </div>
+    </div>
+    </a>
+
+    {/* Mini Testimonial 4 */}
+    <a href="#testimonial" className="no-underline">
+    <div className="hidden sm:inline-flex items-center space-x-3 px-6 py-3 rounded-full shadow-sm bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm hover:border-blue-300 transition-all group">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/cGvb7319MV.jpg"
+          alt="Jonathan Hillis"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Jonathan Hillis</p>
+        <p className="text-sm text-left text-gray-800">"Awesome for staying consistent on LinkedIn!"</p> 
+      </div>
+    </div>
+    </a>
+        {/* Mini Testimonial 5 */}
+    <a href="#testimonial" className="no-underline">
+    <div className="hidden sm:inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm 
+      hover:border-blue-300 transition-all group rounded-full shadow-sm">
+      <div className="relative">
+        <img
+          src="https://i.imghippo.com/files/wQ7409qJU.jpg"
+          alt="Travis Street"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+          <img src={BlueskyLogo} alt="LinkedIn" className="w-3 h-3" />
+        </div>
+      </div>
+      <div>
+        <p className="font-semibold text-left text-gray-900">Travis Street</p>
+        <p className="text-sm text-left text-gray-800">"Amazing tool for creating focused posts!"</p>
+      </div>
+    </div>
+    </a>
+  </div>
+  
+
+  {/* Single 5-star rating below all testimonials */}
+  <div className="flex justify-center mt-4">
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+  </div>
+</section>
+
+
+        {/*------------end mini testimonials -------------------------------*/}
+
+
 
         
         <section className="mt-24 text-center">
@@ -901,9 +915,9 @@ function LandingPage() {
         />
 </section> 
 
-                {/*----------------------Start Testimonials Section--------------------*/}
+{/*----------------------Start Testimonials Section--------------------*/}
 
-<section className="mt-24 text-center">
+<section id="testimonial" className="mt-24 text-center">
   <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
     <Sparkles className="w-4 h-4" />
     <span>What Our Customers Say</span>
@@ -916,7 +930,41 @@ function LandingPage() {
   </p>
 
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-    {/* Testimonial 1 */}
+   {/* Testimonial 1 */}
+    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow text-left">
+      <div className="flex items-center mb-4">
+        <div className="relative mr-4">
+          <img
+            src="https://i.imghippo.com/files/beBY1349jQo.jpg"
+            alt="Eric Rafat Avatar"
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+            <img src={LinkedInSolidLogo} alt="Bluesky" className="w-5 h-5" />
+          </div>
+        </div>
+        <div>
+          <p className="font-semibold text-gray-900">Eric Rafat</p>
+          <p className="text-sm text-gray-600">CEO at Foundersbeta</p>
+        </div>
+      </div>
+      <div className="flex mb-3">
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+      </div>
+      <p className="text-base text-gray-800 mb-4">
+        SoSavvy has taken the guesswork out of content planning, now I can focus on what matters, growing my startup. It's perfect for organic and consistent growth across platforms.
+      </p>
+      <a href="https://www.foundersbeta.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+        foundersbeta.com
+      </a>
+    </div>
+
+    
+    {/* Testimonial 2 */}
     <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow text-left">
       <div className="flex items-center mb-4">
         <div className="relative mr-4">
@@ -949,7 +997,7 @@ function LandingPage() {
       </a>
     </div>
 
-    {/* Testimonial 2 */}
+    {/* Testimonial 3 */}
     <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow text-left">
       <div className="flex items-center mb-4">
         <div className="relative mr-4">
@@ -979,39 +1027,6 @@ function LandingPage() {
       </p>
       <a href="http://contentfarm.club" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
         contentfarm.club
-      </a>
-    </div>
-
-    {/* Testimonial 3 */}
-    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow text-left">
-      <div className="flex items-center mb-4">
-        <div className="relative mr-4">
-          <img
-            src="https://i.imghippo.com/files/beBY1349jQo.jpg"
-            alt="Eric Rafat Avatar"
-            className="w-16 h-16 rounded-full object-cover"
-          />
-          <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-            <img src={LinkedInSolidLogo} alt="Bluesky" className="w-5 h-5" />
-          </div>
-        </div>
-        <div>
-          <p className="font-semibold text-gray-900">Eric Rafat</p>
-          <p className="text-sm text-gray-600">CEO at Foundersbeta</p>
-        </div>
-      </div>
-      <div className="flex mb-3">
-        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-      </div>
-      <p className="text-base text-gray-800 mb-4">
-        SoSavvy has taken the guesswork out of content planning, now I can focus on what matters, growing my startup. It's perfect for organic and consistent growth across platforms.
-      </p>
-      <a href="https://www.foundersbeta.com" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
-        foundersbeta.com
       </a>
     </div>
 
@@ -1050,9 +1065,7 @@ function LandingPage() {
   </div>
 </section>
 
-
-
-        {/*---------------------End Testimonials Section -------------------------*/}
+{/*---------------------End Testimonials Section -------------------------*/}
 
         <section className="mt-24 text-center">
           <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg">
