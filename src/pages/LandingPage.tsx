@@ -412,7 +412,7 @@ function LandingPage() {
 
         {/* Headline (H2) - Now stands alone, centered by parent text-center */}
         <h2 className="text-4xl font-bold mb-6"> {/* Added mb-6 for spacing below the headline */}
-            Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content to <br/>consistently attract paying customers💰  
+            Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content that <br/>connects with paying customers💰  
         </h2>
 
         {/* Paragraph (P) - Centered by parent text-center */}
@@ -1341,10 +1341,10 @@ function LandingPage() {
 <section class="mt-24 py-16 bg-gradient-to-b from-blue-500 via-blue-400 to-white text-gray-900 text-center rounded-xl">
   <div class="max-w-4xl mx-auto px-6">
     <h2 class="text-white text-4xl md:text-6xl font-bold leading-tight mb-8">
-      Stop Wasting Hours on Average Content
+      Stop wasting your time on random acts of content
     </h2>
     <p class="text-white text-xl md:text-2xl font-light text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed">
-      Start Creating Today With SoSavvy ✨
+      Start Creating With Purpose on SoSavvy 🚀
     </p>
 
         {/* Buttons */}
