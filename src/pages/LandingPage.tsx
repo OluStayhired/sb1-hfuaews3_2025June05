@@ -134,7 +134,7 @@ function LandingPage() {
               <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
                 Stop <br className="sm:hidden" /> {/* This is the key change! */}
       Guessing What to Post <br/> <p className="block font-semibold sm:font-bold text-xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-400 leading-tight mt-1 sm:mt-1"> 
-        on X and LinkedIn (Bluesky too) </p>
+        on X and LinkedIn <br className="sm:hidden" /> (Bluesky too) </p>
               </span>
             </p>
           </h1>
