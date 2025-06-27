@@ -62,15 +62,8 @@ function LandingPage() {
         {/*  <div className="hidden flex space-x-2 space-x-4 sm:space-y-0 sm:space-x-2">*/}
         <div className="hidden sm:flex items-center space-x-4">
           <button
-            onClick={handleEmailLogin}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Login with Email
-          </button>
-          
-          <button
             onClick={handleGoogleLogin}
-            className="flex px-4 py-2 bg-white border border-blue-600 flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
+            className="flex px-4 py-2 bg-white border border-gray-200 flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
           >
             
             <img src={googleLogo} alt="Google" className="w-5 h-5" />
@@ -78,6 +71,16 @@ function LandingPage() {
             Join with Google
               </span>
           </button>
+
+          
+          <button
+            onClick={handleEmailLogin}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Login with Email
+          </button>
+          
+
           
         </div>
         
@@ -100,13 +103,7 @@ function LandingPage() {
       {/* This part of the code is generally correct for the overlay. */}
       {isMobileMenuOpen && (
         <div className="sm:hidden fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-4 py-6"> 
-          <button
-            onClick={handleEmailLogin}
-            className="w-11/12 max-w-sm px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:text-lg"
-          >
-            Login with Email
-          </button>
-          <button
+            <button
             onClick={handleGoogleLogin}
             className="w-11/12 max-w-sm flex px-4 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:text-lg" 
           >
@@ -121,6 +118,14 @@ function LandingPage() {
           >
             <X className="h-6 w-6" />
           </button>
+          
+          <button
+            onClick={handleEmailLogin}
+            className="w-11/12 max-w-sm px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:text-lg"
+          >
+            Login with Email
+          </button>
+        
         </div>
       )}
         
@@ -145,13 +150,8 @@ function LandingPage() {
             crafted & scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes 🔥
       </p>
 
-  <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center mx-auto w-fit"> {/* Adjusted button layout for mobile */}
-    <button
-      onClick={handleEmailLogin}
-      className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl sm:px-8 sm:py-4 sm:text-lg"
-    >
-      Login with Email
-    </button>
+  <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center mx-auto w-fit"> 
+    {/* Adjusted button layout for mobile */}
 
     <button
       onClick={handleGoogleLogin}
@@ -159,6 +159,14 @@ function LandingPage() {
       <img src={googleLogo} alt="Google" className="w-5 h-5" />
       <span>Join with Google</span>
     </button>
+    <button
+      onClick={handleEmailLogin}
+      className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl sm:px-8 sm:py-4 sm:text-lg"
+    >
+      Login with Email
+    </button>
+
+
   </div>
 </div>
 
@@ -534,19 +542,21 @@ function LandingPage() {
           {/* Buttons (Desktop Version: visible from md breakpoint up) */}
           {/* These buttons appear after text on desktop */}
           <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
-            <button
-              onClick={handleEmailLogin}
-              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
-            >
-              Login with Email
-            </button>
-            <button
+                        <button
               onClick={handleGoogleLogin}
               className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
             >
               <img src={googleLogo} alt="Google" className="w-5 h-5" />
               <span>Join with Google</span>
             </button>
+            
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
+            </button>
+
           </div>
         </div>
 
@@ -581,18 +591,20 @@ function LandingPage() {
       {/* These buttons appear after the mobile image */}
       <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
         <button
-          onClick={handleEmailLogin}
-          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
-        >
-          Login with Email
-        </button>
-        <button
           onClick={handleGoogleLogin}
           className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
         >
           <img src={googleLogo} alt="Google" className="w-5 h-5" />
           <span>Join with Google</span>
         </button>
+        
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
+        </button>
+
       </div>
 
     </section> 
@@ -663,19 +675,21 @@ function LandingPage() {
       {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* These buttons appear after the mobile image */}
       <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
-        <button
-          onClick={handleEmailLogin}
-          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
-        >
-          Login with Email
-        </button>
-        <button
+          <button
           onClick={handleGoogleLogin}
           className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
         >
           <img src={googleLogo} alt="Google" className="w-5 h-5" />
           <span>Join with Google</span>
         </button>
+        
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
+        </button>
+
       </div>
 
     </section>    
@@ -702,18 +716,20 @@ function LandingPage() {
           {/* These buttons appear after text on desktop */}
           <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
             <button
-              onClick={handleEmailLogin}
-              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
-            >
-              Login with Email
-            </button>
-            <button
               onClick={handleGoogleLogin}
               className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
             >
               <img src={googleLogo} alt="Google" className="w-5 h-5" />
               <span>Join with Google</span>
             </button>
+            
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
+            </button>
+
           </div>
         </div>
 
@@ -747,12 +763,7 @@ function LandingPage() {
       {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* These buttons appear after the mobile image */}
       <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
-        <button
-          onClick={handleEmailLogin}
-          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
-        >
-          Login with Email
-        </button>
+
         <button
           onClick={handleGoogleLogin}
           className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
@@ -760,6 +771,14 @@ function LandingPage() {
           <img src={googleLogo} alt="Google" className="w-5 h-5" />
           <span>Join with Google</span>
         </button>
+        
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
+        </button>
+
       </div>
 
     </section> 
@@ -831,18 +850,20 @@ function LandingPage() {
       {/* These buttons appear after the mobile image */}
       <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
         <button
-          onClick={handleEmailLogin}
-          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
-        >
-          Login with Email
-        </button>
-        <button
           onClick={handleGoogleLogin}
           className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
         >
           <img src={googleLogo} alt="Google" className="w-5 h-5" />
           <span>Join with Google</span>
         </button>
+        
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
+        </button>
+
       </div>
 
     </section>    
@@ -876,19 +897,22 @@ function LandingPage() {
         {/* Buttons */}
       <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> {/* Added flex-col, space-y-4 for mobile; sm:flex-row, sm:space-x-4, sm:space-y-0 for desktop */}
           <button
-            onClick={handleEmailLogin}
-            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
-          >
-            Login with Email
-          </button>
-
-          <button
             onClick={handleGoogleLogin}
             className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
           >
             <img src={googleLogo} alt="Google" className="w-5 h-5" />
             <span>Join with Google</span>
           </button>
+
+        
+          <button
+            onClick={handleEmailLogin}
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
+          >
+            Login with Email
+          </button>
+
+
         </div>
 
         {/* Image - Centered and "unconstrained" */}
@@ -1098,19 +1122,21 @@ function LandingPage() {
           {/* Buttons */}
       <div className="flex flex-col sm:flex-row sm:justify-end justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> 
           <button
-            onClick={handleEmailLogin}
-            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base"
-          >
-            Login with Email
-          </button>
-
-          <button
             onClick={handleGoogleLogin}
             className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
           >
             <img src={googleLogo} alt="Google" className="w-5 h-5" />
             <span>Join with Google</span>
           </button>
+        
+          <button
+            onClick={handleEmailLogin}
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base"
+          >
+            Login with Email
+          </button>
+
+
         </div>
       
         </div>
@@ -1363,19 +1389,21 @@ function LandingPage() {
         {/* Buttons */}
       <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> {/* Added flex-col, space-y-4 for mobile; sm:flex-row, sm:space-x-4, sm:space-y-0 for desktop */}
           <button
-            onClick={handleEmailLogin}
-            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
-          >
-            Login with Email
-          </button>
-
-          <button
             onClick={handleGoogleLogin}
             className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
           >
             <img src={googleLogo} alt="Google" className="w-5 h-5" />
             <span>Join with Google</span>
           </button>
+        
+          <button
+            onClick={handleEmailLogin}
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
+          >
+            Login with Email
+          </button>
+
+
         </div>
    
   </div>
