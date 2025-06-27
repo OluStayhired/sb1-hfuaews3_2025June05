@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase, Plus, Minus,
-  Bot, CheckCircle,
+import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase, Plus, Minus,Menu,
+  Bot, CheckCircle,X,
   Timer, 
   Zap, 
   Lightbulb, Sparkles, CircleDollarSign, Star } from 'lucide-react';
@@ -20,6 +20,7 @@ function LandingPage() {
   const { signIn } = useAuth();
   const { signInWithGoogle } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   //const handleLogin = async () => {
     //console.log('handleLogin called');
@@ -45,19 +46,19 @@ function LandingPage() {
 
   
   return (
-    //<div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <div className="min-h-screen bg-white">
-      <nav className="px-6 py-4 flex items-center justify-between">
+      <nav className="px-4 py-3 flex items-center justify-between sm:px-6 sm:py-4">
         <div className="flex items-center space-x-2">
-          
-          {/*<div className="bg-blue-600 rounded-tl-xl rounded-br-xl p-2 rotate-180">*/}
 
-         <div className="bg-blue-600 rounded-full p-2 rotate-180">
-            <PenTool className="h-9 w-9 fill-white stroke-blue-600" />
+         <div className="bg-blue-600 rounded-full p-1.5 rotate-180 sm:p-2">
+            <PenTool className="h-7 w-7 fill-white stroke-blue-600 sm:h-9 sm:w-9" />
           </div>
-          <span className="text-2xl  font-bold text-black">SoSavvy</span>
+          <span className="text-2xl  font-bold text-black sm:text-2xl">SoSavvy</span>
         </div>
-        <div className="flex space-x-2 space-x-4">
+        
+        {/*Desktop Navigation Buttons */}
+        {/*  <div className="hidden flex space-x-2 space-x-4 sm:space-y-0 sm:space-x-2">*/}
+        <div className="hidden sm:flex items-center space-x-4">
           <button
             onClick={handleEmailLogin}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -77,43 +78,87 @@ function LandingPage() {
           </button>
           
         </div>
+        
+     {/* Mobile Menu Button (Hamburger) (Visible on mobile, hidden on sm and up) */}
+      <div className="sm:hidden">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
+          aria-label="Toggle navigation"
+        >
+          {isMobileMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
+        </button>
+      </div>
+
+ {/* Mobile Menu Overlay */}
+      {/* This part of the code is generally correct for the overlay. */}
+      {isMobileMenuOpen && (
+        <div className="sm:hidden fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-4 py-6"> 
+          <button
+            onClick={handleEmailLogin}
+            className="w-11/12 max-w-sm px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:text-lg"
+          >
+            Login with Email
+          </button>
+          <button
+            onClick={handleGoogleLogin}
+            className="w-11/12 max-w-sm flex px-4 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:text-lg" 
+          >
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>Join with Google</span>
+          </button>
+          {/* Close button within the overlay */}
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="absolute top-4 right-4 p-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
+            aria-label="Close navigation"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+      )}
+        
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 pt-20 pb-32">
-        <div className="text-center">
-          <h1 className="text-7xl font-bold leading-tight mb-3">
+        <div className="text-center px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-16 md:py-20 lg:py-24">
+          {/*start alternative header */}
+            <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold mb-2 sm:mb-3"> 
             <p>
-              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text mb-4">
-                Stop Guessing Content <br/> <p className="text-5xl text-gray-400 leading-tight"> on LinkedIn, Twitter & Bluesky </p>
+              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
+                Stop <br className="sm:hidden" /> {/* This is the key change! */}
+      Guessing What to Post <br/> <p className="block font-semibold sm:font-bold text-xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-400 leading-tight mt-1 sm:mt-1"> 
+        on LinkedIn and Twitter(X) </p>
               </span>
             </p>
           </h1>
-
-        <p className="text-xl text-gray-700 font-semibold mb-6"> {/* Reduced size, lighter gray, semibold */}
-    Grow inbound leads with months of customer-focused content <br/>crafted & scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes
+          {/*end alternative header*/}
+          
+        <p className="text-base sm:text-lg md:text-xl text-gray-700 sm:font-semibold font-normal mb-8 sm:mb-10">
+            Grow inbound leads with months of customer-focused content <br className="hidden sm:inline" />
+            crafted & scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes 🔥
       </p>
-          {/*
-          <p className="text-lg text-gray-600 mb-10 max-w-3xl mx-auto">
-            We use insights from your website to deliver targeted social media posts and strategies <br/> that drive inquiries from your ideal customers on <strong className="text-blue-500">Twitter</strong>, <strong className="text-blue-500">LinkedIn</strong> and <strong className="text-blue-500">Bluesky</strong> 
-          </p>*/}
-          <div className="space-x-4 flex items-center mx-auto w-fit">
-            <button
-              onClick={handleEmailLogin}
-              className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
-            >
-              Login with Email
-            </button>
 
-            <button
-                  onClick={handleGoogleLogin}
-                  className="flex px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 text-lg font-semibold rounded-lg hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
-                >
-                <img src={googleLogo} alt="Google" className="w-5 h-5" />
-                <span>Join with Google</span>
-            </button>
+  <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center mx-auto w-fit"> {/* Adjusted button layout for mobile */}
+    <button
+      onClick={handleEmailLogin}
+      className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl sm:px-8 sm:py-4 sm:text-lg"
+    >
+      Login with Email
+    </button>
 
-          </div>
-        </div>
+    <button
+      onClick={handleGoogleLogin}
+      className="w-full sm:w-auto flex px-6 py-3 bg-white text-blue-600 border-2 border-blue-600 text-base font-semibold rounded-lg hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl items-center justify-center space-x-2 sm:px-8 sm:py-4 sm:text-lg">
+      <img src={googleLogo} alt="Google" className="w-5 h-5" />
+      <span>Join with Google</span>
+    </button>
+  </div>
+</div>
 
         {/*Start Social Media Icons*/}
           <div className="flex justify-center items-center space-x-8 mt-8">
@@ -158,7 +203,7 @@ function LandingPage() {
       </div>
       <div>
         <p className="font-semibold text-left text-gray-900">Eric Rafat</p>
-        <p className="text-sm text-gray-800">"Takes the guesswork out of content planning!"</p>
+        <p className="text-sm text-left text-gray-800">"Takes the guesswork out of content planning!"</p>
       </div>
     </div>
 
@@ -177,7 +222,7 @@ function LandingPage() {
       </div>
       <div>
         <p className="font-semibold text-left text-gray-900">Julia Yuvchenko</p>
-        <p className="text-sm text-gray-800">"The AI suggestions have 10x my content!"</p>
+        <p className="text-sm text-left text-gray-800">"The AI suggestions have 10x my content!"</p>
       </div>
     </div>
 
@@ -196,7 +241,7 @@ function LandingPage() {
       </div>
       <div>
         <p className="font-semibold text-left text-gray-900">Ericka Bates</p>
-        <p className="text-sm text-gray-800">"SoSavvy has improved my personal brand!"</p>
+        <p className="text-sm text-left text-gray-800">"SoSavvy has improved my personal brand!"</p>
       </div>
     </div>
 
@@ -214,7 +259,7 @@ function LandingPage() {
       </div>
       <div>
         <p className="font-semibold text-left text-gray-900">Jonathan Hillis</p>
-        <p className="text-sm text-gray-800">"Awesome for staying consistent on LinkedIn!"</p> 
+        <p className="text-sm text-left text-gray-800">"Awesome for staying consistent on LinkedIn!"</p> 
       </div>
     </div>
         {/* Mini Testimonial 5 */}
@@ -232,7 +277,7 @@ function LandingPage() {
       </div>
       <div>
         <p className="font-semibold text-left text-gray-900">Travis Street</p>
-        <p className="text-sm text-gray-800">"Amazing tool for creating focused posts!"</p>
+        <p className="text-sm text-left text-gray-800">"Amazing tool for creating focused posts!"</p>
       </div>
     </div>
   </div>
@@ -367,7 +412,7 @@ function LandingPage() {
 
         {/* Headline (H2) - Now stands alone, centered by parent text-center */}
         <h2 className="text-4xl font-bold mb-6"> {/* Added mb-6 for spacing below the headline */}
-            Create problem-focused content that <br/>consistently attracts 💰 paying customers 
+            Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content to <br/>consistently attract paying customers💰  
         </h2>
 
         {/* Paragraph (P) - Centered by parent text-center */}
@@ -396,6 +441,7 @@ function LandingPage() {
         <img
           //src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
           //src="https://i.imghippo.com/files/sWbH6697Do.png"
+          //src="https://i.imghippo.com/files/Ong5596H.png"
           src="https://i.imghippo.com/files/dL4344ps.png"
           alt="Website Analysis Screenshot"
           className="w-full h-full object-cover rounded-lg" 
@@ -455,173 +501,341 @@ function LandingPage() {
                 <span>SoSavvy's Key Features</span>
           </div>
         </section>
-
-{/* Start New Gradient Section with picture on the right */}
-
-<section className="relative rounded-3xl mt-2 py-16 bg-gradient-to-r from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">
-
-    <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
-        {/* Text Content (Left Side) - This div defines its own width */}
-        {/* It no longer needs to be part of a flex row with the image div */}
-        <div className="md:w-2/5 text-left">
-            <h2 className="text-4xl font-bold mb-6">
-                Target your customer's deepest desires & fears
-            </h2>
-            <p className="text-xl font-light opacity-90 max-w-lg">
-                Analyze your website to uncover what truly drives your ideal customers, surface their pains and aspirations for laser-focused content.
-            </p>
-        </div>
-
-      {/*------------------- Start Buttons -------------------------------- */}
-        <div className="flex space-x-4 mt-4 justify-start"> {/* mb-16 for spacing before the image */}
-             <button
-                onClick={handleEmailLogin}
-                className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-            Login with Email
-          </button>
-          
-          <button
-            onClick={handleGoogleLogin}
-            className="flex px-4 py-3 bg-white border border-whit flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
-          >
-            
-            <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>
-            Join with Google
-              </span>
-          </button>
-        </div>
-      {/*---------------- End Buttons -------------*/}
         
-    </div>
+{/* Start New Gradient Section with picture on the right */}
+        
+  <section className="relative rounded-3xl mt-8 py-8 sm:mt-24 sm:py-24 bg-gradient-to-r from-blue-100 via-white to-white text-gray-900 overflow-hidden px-4 sm:px-6">
+      {/* Main Content Wrapper - Holds text and desktop buttons, also acts as reference for absolute image */}
+      <div className="max-w-6xl mx-auto relative z-10 md:flex md:items-center md:justify-between md:space-x-8">
 
-    {/* This image is explicitly set to be taller than the content area */}
-    <img
-        //src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-        //src="https://i.imghippo.com/files/dkS9428wc.png"
-      //src="https://i.imghippo.com/files/izzL3120irk.png"
-      //src="https://i.imghippo.com/files/uVLX9405hI.png"
-      //src="https://i.imghippo.com/files/iFBa7252Dco.png"
-      src="https://i.imghippo.com/files/aSkU4676wcg.png"
+        {/* Text Content (Left Side on Desktop, Top on Mobile) */}
+        <div className="md:w-2/5 text-center md:text-left"> {/* Added text-center for mobile */}
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight"> {/* Responsive text size */}
+            Target your customer's deepest desires & fears
+          </h2>
+          <p className="text-base sm:text-lg font-light opacity-90 max-w-lg mx-auto md:mx-0"> {/* Responsive text size, mx-auto for mobile center */}
+            Analyze your website to uncover what truly drives your ideal customers, surface their pains and aspirations for laser-focused content.
+          </p>
+
+          {/* Buttons (Desktop Version: visible from md breakpoint up) */}
+          {/* These buttons appear after text on desktop */}
+          <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
+            </button>
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+            >
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              <span>Join with Google</span>
+            </button>
+          </div>
+        </div>
+
+        {/* This div helps create space on desktop if image is absolute and not taking up flex space */}
+        {/* On mobile, this will be hidden */}
+        <div className="hidden md:block md:w-3/5 lg:w-1/2">
+            {/* This div serves as a placeholder to push text left if needed */}
+        </div>
+
+      </div> {/* End max-w-6xl mx-auto div */}
+
+      {/* Image (Desktop Version: Absolute, visible from md breakpoint up) */}
+      {/* Object-contain ensures it won't crop, but might have letterboxing if aspect ratio doesn't match container */}
+      <img
+        src="https://i.imghippo.com/files/aSkU4676wcg.png"
         alt="SoSavvy Product Screenshot"
-        className="absolute right-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
-    />
-</section>
+        //className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-contain rounded-xl z-0" 
+          className="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
+      />
+
+      {/* Image (Mobile Version: In-flow, visible below md breakpoint) */}
+      {/* This image appears after text on mobile, is larger, and uses object-contain to prevent cropping */}
+      <div className="md:hidden mt-8 flex justify-center"> {/* mt-8 for spacing after text content */}
+  <img
+    src="https://i.imghippo.com/files/XzVz8015w.png"
+    alt="SoSavvy Product Screenshot"
+    className="w-full h-auto shadow-md max-w-full sm:max-w-2xl md:max-w-3xl rounded-xl z-0 object-cover" // Changed max-w, and strongly recommend object-contain
+  />
+</div>
+
+      {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
+      {/* These buttons appear after the mobile image */}
+      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
+        </button>
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+        >
+          <img src={googleLogo} alt="Google" className="w-5 h-5" />
+          <span>Join with Google</span>
+        </button>
+      </div>
+
+    </section> 
         
 {/* End New Gradient Section with picture on the right */}
+
+{/* Start New Gradient Section with picture on the left */}      
         
+    <section className="relative rounded-3xl mt-8 py-8 sm:mt-24 sm:py-24 md:py-32 bg-gradient-to-l from-blue-100 via-white to-white text-gray-900 overflow-hidden px-4 sm:px-6">
 
-{/* Start New Gradient Section with picture on the left */}        
+      {/* Main Content Wrapper - On desktop, positions text to the right */}
+      {/* This div effectively holds the content that aligns to the right on desktop */}
+      <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row md:justify-end md:items-center">
 
-<section className="relative rounded-3xl mt-24 py-16 bg-gradient-to-l from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">
-    <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
-        <div className="md:w-2/5 text-left ml-auto">
-            <h2 className="text-4xl font-bold mb-6">
-                Create effective content strategies in seconds
-            </h2>
-            <p className="text-xl font-light opacity-90 max-w-lg">
-                Stop random acts of content. Build strategic campaigns that ensure every post addresses customer pain and guides them to your solution.
-            </p>
+        {/* Text Content (Right on Desktop, Top on Mobile) */}
+        {/* mx-auto for mobile centering, md:mx-0 removes it for desktop, md:w-2/5 for desktop width */}
+        <div className="md:w-2/5 text-center md:text-left mx-auto md:mx-0">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight">
+            Create effective content strategies in seconds
+          </h2>
+          <p className="text-base sm:text-lg font-light opacity-90 max-w-lg mx-auto md:mx-0">
+            Stop random acts of content. Build strategic campaigns that ensure every post addresses customer pain and guides them to your solution.
+          </p>
+
+          {/* Buttons (Desktop Version: visible from md breakpoint up) */}
+          {/* These buttons appear after text on desktop, aligned left with text */}
+          {/* disabling alternate buttons
+          <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
+            </button>
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+            >
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              <span>Join with Google</span>
+            </button>
+          </div>
+          */}
         </div>
-    </div>
 
-    <img
-        //src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-      //src="https://i.imghippo.com/files/SK2495CM.png"
-      //src="https://i.imghippo.com/files/rEj2038XOY.png"
-      src="https://i.imghippo.com/files/ZsdT4458qo.png"
+        {/* No explicit placeholder div is needed here. md:justify-end on the parent handles the right alignment of the text content. */}
+
+      </div> {/* End max-w-6xl mx-auto div */}
+
+      {/* Image (Desktop Version: Absolute to left, visible from md breakpoint up) */}
+      <img
+        src="https://i.imghippo.com/files/ZsdT4458qo.png"
         alt="SoSavvy Product Screenshot"
-        className="absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl transform"
-    />
-</section>
+        //className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-contain rounded-xl z-0"
+          className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
+      />
 
-{/* End New Gradient Section with picture on the left */}        
+      {/* Image (Mobile Version: In-flow, visible below md breakpoint) */}
+      {/* This image appears after text on mobile, is larger, and uses object-contain to prevent cropping */}
+      <div className="md:hidden mt-8 flex justify-center"> {/* mt-8 for spacing after text content */}
+        <img
+          src="https://i.imghippo.com/files/JZk5353JQA.png"
+          alt="SoSavvy Product Screenshot"
+          className="w-full h-auto max-w-full rounded-xl z-0 object-contain" // max-w-full to make it as wide as possible
+        />
+      </div>
+
+      {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
+      {/* These buttons appear after the mobile image */}
+      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
+        </button>
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+        >
+          <img src={googleLogo} alt="Google" className="w-5 h-5" />
+          <span>Join with Google</span>
+        </button>
+      </div>
+
+    </section>    
+
+{/* End New Gradient Section with picture on the left */}            
+              
 
 {/* Start New Gradient Section with picture on the right */}
-
-<section className="relative rounded-3xl mt-24 py-16 bg-gradient-to-r from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">
-
-    <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
-        {/* It no longer needs to be part of a flex row with the image div */}
-        <div className="md:w-2/5 text-left">
-            <h2 className="text-4xl font-bold mb-6">
-              Publish relatable posts that actually convert
-            </h2>
-            <p className="text-xl font-light opacity-90 max-w-lg">
-                Forget generic AI. Create non-salesy, human-sounding social content that builds authority and sparks curiosity, driving direct inquiries.
-            </p>
-        </div>
         
-    </div>
+  <section className="relative rounded-3xl mt-8 py-8 sm:mt-24 sm:py-24 bg-gradient-to-r from-blue-100 via-white to-white text-gray-900 overflow-hidden px-4 sm:px-6">
+      {/* Main Content Wrapper - Holds text and desktop buttons, also acts as reference for absolute image */}
+      <div className="max-w-6xl mx-auto relative z-10 md:flex md:items-center md:justify-between md:space-x-8">
 
-    {/* This image is explicitly set to be taller than the content area */}
-    <img
-        //src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-      //src="https://i.imghippo.com/files/wqZ3613rvk.png"
-      src="https://i.imghippo.com/files/FN9394Xsg.png"
-      
+        {/* Text Content (Left Side on Desktop, Top on Mobile) */}
+        <div className="md:w-2/5 text-center md:text-left">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight"> 
+            Publish relatable posts that actually convert
+          </h2>
+          <p className="text-base sm:text-lg font-light opacity-90 max-w-lg mx-auto md:mx-0"> 
+           Forget generic AI. Create non-salesy, human-sounding social content that builds authority and sparks curiosity, driving direct inquiries.
+          </p>
+
+          {/* Buttons (Desktop Version: visible from md breakpoint up) */}
+          {/* These buttons appear after text on desktop */}
+          <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
+            </button>
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+            >
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              <span>Join with Google</span>
+            </button>
+          </div>
+        </div>
+
+        {/* This div helps create space on desktop if image is absolute and not taking up flex space */}
+        {/* On mobile, this will be hidden */}
+        <div className="hidden md:block md:w-3/5 lg:w-1/2">
+            {/* This div serves as a placeholder to push text left if needed */}
+        </div>
+
+      </div> {/* End max-w-6xl mx-auto div */}
+
+      {/* Image (Desktop Version: Absolute, visible from md breakpoint up) */}
+      {/* Object-contain ensures it won't crop, but might have letterboxing if aspect ratio doesn't match container */}
+      <img
+        src="https://i.imghippo.com/files/FN9394Xsg.png"
         alt="SoSavvy Product Screenshot"
-        className="absolute right-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
-    />
-</section>
+        //className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-contain rounded-xl z-0" 
+          className="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
+      />
+
+      {/* Image (Mobile Version: In-flow, visible below md breakpoint) */}
+      {/* This image appears after text on mobile, is larger, and uses object-contain to prevent cropping */}
+      <div className="md:hidden mt-8 flex justify-center"> {/* mt-8 for spacing after text content */}
+  <img
+    src="https://i.imghippo.com/files/Wfta6982BA.png"
+    alt="SoSavvy Product Screenshot"
+    className="w-full h-auto shadow-md max-w-full sm:max-w-2xl md:max-w-3xl rounded-xl z-0 object-cover" // Changed max-w, and strongly recommend object-contain
+  />
+</div>
+
+      {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
+      {/* These buttons appear after the mobile image */}
+      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
+        </button>
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+        >
+          <img src={googleLogo} alt="Google" className="w-5 h-5" />
+          <span>Join with Google</span>
+        </button>
+      </div>
+
+    </section> 
         
-{/* End New Gradient Section with picture on the right */}      
+{/* End New Gradient Section with picture on the right */}
 
-{/* Start New Gradient Section with picture on the left */}        
+{/* Start New Gradient Section with picture on the left */}      
+        
+    <section className="relative rounded-3xl mt-8 py-8 sm:mt-24 sm:py-24 md:py-32 bg-gradient-to-l from-blue-100 via-white to-white text-gray-900 overflow-hidden px-4 sm:px-6">
 
-<section className="relative rounded-3xl mt-24 py-16 bg-gradient-to-l from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">
-    <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
-        <div className="md:w-2/5 text-left ml-auto">
-            <h2 className="text-4xl font-bold mb-6">
-              Schedule content across platforms with no effort
-            </h2>
-            <p className="text-xl font-light opacity-90 max-w-lg">
-               Publish effortlessly. Automatically schedule strategic posts across LinkedIn, X, and Bluesky, freeing you to focus on your business as inquiries roll in.
-            </p>
+      {/* Main Content Wrapper - On desktop, positions text to the right */}
+      {/* This div effectively holds the content that aligns to the right on desktop */}
+      <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row md:justify-end md:items-center">
 
-          
+        {/* Text Content (Right on Desktop, Top on Mobile) */}
+        {/* mx-auto for mobile centering, md:mx-0 removes it for desktop, md:w-2/5 for desktop width */}
+        <div className="md:w-2/5 text-center md:text-left mx-auto md:mx-0">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight">
+            Schedule content across platforms with no effort
+          </h2>
+          <p className="text-base sm:text-lg font-light opacity-90 max-w-lg mx-auto md:mx-0">
+            Publish effortlessly. Automatically schedule strategic posts across LinkedIn, X, and Bluesky, freeing you to focus on your business as inquiries roll in.
+          </p>
+
+          {/* Buttons (Desktop Version: visible from md breakpoint up) */}
+          {/* These buttons appear after text on desktop, aligned left with text */}
+          {/* disabling alternate buttons
+          <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
+            </button>
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+            >
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              <span>Join with Google</span>
+            </button>
+          </div>
+          */}
         </div>
 
-      {/*------------------- Start Buttons -------------------------------- */}
-        <div className="flex space-x-4 mt-4 justify-end"> {/* mb-16 for spacing before the image */}
-             <button
-                onClick={handleEmailLogin}
-                className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-            Login with Email
-          </button>
-          
-          <button
-            onClick={handleGoogleLogin}
-            className="flex px-4 py-3 bg-white border border-whit flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
-          >
+        {/* No explicit placeholder div is needed here. md:justify-end on the parent handles the right alignment of the text content. */}
+
+      </div> {/* End max-w-6xl mx-auto div */}
+
+      {/* Image (Desktop Version: Absolute to left, visible from md breakpoint up) */}
+      <img
+        src="https://i.imghippo.com/files/aabl7885uD.png"
+        alt="SoSavvy Product Screenshot"
+        //className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-contain rounded-xl z-0"
+          className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
+      />
+
+      {/* Image (Mobile Version: In-flow, visible below md breakpoint) */}
+      {/* This image appears after text on mobile, is larger, and uses object-contain to prevent cropping */}
+      <div className="md:hidden mt-8 flex justify-center"> {/* mt-8 for spacing after text content */}
+        <img
+          src="https://i.imghippo.com/files/pRPI1002zk.png"
+          alt="SoSavvy Product Screenshot"
+          className="w-full h-auto max-w-full rounded-xl z-0 object-contain" // max-w-full to make it as wide as possible
+        />
+      </div>
+
+      {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
+      {/* These buttons appear after the mobile image */}
+      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
+        </button>
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+        >
+          <img src={googleLogo} alt="Google" className="w-5 h-5" />
+          <span>Join with Google</span>
+        </button>
+      </div>
+
+    </section>    
+
+{/* End New Gradient Section with picture on the left */}    
             
-            <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>
-            Join with Google
-              </span>
-          </button>
-        </div>
-      {/*---------------- End Buttons -------------*/}
-      
-    </div>
-
-    <img
-        //src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-        //src="https://i.imghippo.com/files/ijJO2182eb.png"
-      //src="https://i.imghippo.com/files/bIU5522mbo.png"
-      //src="https://i.imghippo.com/files/sSZR7904Vo.png"
-      src="https://i.imghippo.com/files/aabl7885uD.png"
-        alt="SoSavvy Product Screenshot"
-        className="absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl transform "
-    />
-</section>
-
-{/* End New Gradient Section with picture on the left */}           
-
-        {/*<section className="relative mt-24 py-16 bg-gradient-to-b from-blue-100 via-white to-white text-gray-900 rounded-xl overflow-hidden">*/}
-        <section className="relative mt-24 py-16 bg-gradient-to-b from-blue-500 via-blue-400 to-white text-gray-900 rounded-xl overflow-hidden">
+  <section className="relative mt-24 py-16 bg-gradient-to-b from-blue-500 via-blue-400 to-white text-gray-900 rounded-xl overflow-hidden">
     {/*
         1. Gradient from top to bottom (`bg-gradient-to-b`)
         2. `overflow-hidden` is crucial to ensure the image's "break out" is clipped neatly at the rounded-xl corners.
@@ -646,23 +860,20 @@ function LandingPage() {
         </p>
 
         {/* Buttons */}
-        <div className="flex justify-center space-x-4 mb-16"> {/* mb-16 for spacing before the image */}
-             <button
+      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> {/* Added flex-col, space-y-4 for mobile; sm:flex-row, sm:space-x-4, sm:space-y-0 for desktop */}
+          <button
             onClick={handleEmailLogin}
-            className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
           >
             Login with Email
           </button>
-          
+
           <button
             onClick={handleGoogleLogin}
-            className="flex px-4 py-3 bg-white border border-whit flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
+            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
           >
-            
             <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>
-            Join with Google
-              </span>
+            <span>Join with Google</span>
           </button>
         </div>
 
@@ -686,7 +897,7 @@ function LandingPage() {
             //src="https://i.imghippo.com/files/Lp8140co.png"
             src="https://i.imghippo.com/files/hjBw8272m.png"
             alt="SoSavvy Dashboard Screenshot"
-            className="w-full max-w-5xl h-[300px] md:h-[400px] lg:h-[500px] object-cover rounded-lg mx-auto mt-8 block"
+            className="hidden sm:block w-full max-w-5xl h-[300px] md:h-[400px] lg:h-[500px] object-cover rounded-lg mx-auto mt-8 block"
         />
 </section> 
 
@@ -864,42 +1075,31 @@ function LandingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"> {/* Grid for horizontal spread */}
         {/* Left Column: Pricing and CTA */}
         <div className="text-center md:text-right md:pr-8 md:border-r md:border-blue-400"> {/* Added border-r for visual separation */}
-          <h3 className="text-3xl  font-semibold mb-4">All-in-One Content Writer</h3>
+          <h3 className="text-3xl font-semibold mb-4">All-in-One Content Writer</h3>
           <div className="flex items-baseline justify-center md:justify-end mb-6">
-            <span className="text-9xl text-center font-extrabold">$25</span> {/* Larger font for price */}
+            <span className="text-6xl sm:text-9xl text-center font-extrabold">$25</span> {/* Larger font for price */}
             <span className="text-2xl font-medium">/month</span>
           </div>
           <p className="text-lg mb-8 opacity-90">No more wasting your time posting for LIKES.</p>
-          {/*          
-          <button
-            onClick={handleEmailLogin} 
-            className="w-full md:w-auto px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-md"
-          >
-            Start Your Free Trial
-          </button>
-*/}
 
-           {/* Buttons */}
-        <div className="flex justify-end space-x-4 mb-16"> {/* mb-16 for spacing before the image */}
-             <button
+          {/* Buttons */}
+      <div className="flex flex-col sm:flex-row sm:justify-end justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> 
+          <button
             onClick={handleEmailLogin}
-            className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base"
           >
             Login with Email
           </button>
-          
+
           <button
             onClick={handleGoogleLogin}
-            className="flex px-4 py-3 bg-white border border-whit flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
+            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
           >
-            
             <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>
-            Join with Google
-              </span>
+            <span>Join with Google</span>
           </button>
         </div>
-          
+      
         </div>
 
         {/* Right Column: Features List */}
@@ -1146,21 +1346,25 @@ function LandingPage() {
     <p class="text-white text-xl md:text-2xl font-light text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed">
       Start Creating Today With SoSavvy ✨
     </p>
-    <div class="flex justify-center space-x-4">
-      <button
-        onClick={handleEmailLogin}
-        class="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
-      >
-        Login with Email
-      </button>
-      <button
-        onClick={handleGoogleLogin}
-        class="flex px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 text-lg font-semibold rounded-lg hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
-      >
-        <img src={googleLogo} alt="Google" class="w-5 h-5" />
-        <span>Join with Google</span>
-      </button>
-    </div>
+
+        {/* Buttons */}
+      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> {/* Added flex-col, space-y-4 for mobile; sm:flex-row, sm:space-x-4, sm:space-y-0 for desktop */}
+          <button
+            onClick={handleEmailLogin}
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
+          >
+            Login with Email
+          </button>
+
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
+          >
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>Join with Google</span>
+          </button>
+        </div>
+   
   </div>
 </section>
 
