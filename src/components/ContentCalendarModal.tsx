@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, Lightbulb, X, Sparkles, Copy, Loader2, PlusCircle } from 'lucide-react';
-import { generateListPost, generateHookPost, generateHookPostV2} from '../lib/gemini';
+import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3} from '../lib/gemini';
 import { useNavigate, Navigate } from 'react-router-dom';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -129,6 +129,49 @@ const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
     setLoadingProcess(null);
   }
 };    
+
+
+const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
+
+  //console.log('itemid: ', item.id)
+  //console.log('char_length: ', char_length)
+
+  const uniqueKey = `${item.id}_${char_length}`;
+  setLoadingProcess(uniqueKey);
+
+  //console.log('loadingProcess:  ', loadingProcess)
+  //console.log('uniqueKey:  ', uniqueKey)
+  
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  
+  try {
+    const improvedContent = await generateHookPostV3(
+      //hooksData,
+      item.theme,
+      item.topic,
+      item.target_audience || '', // Add target_audience to interface if not present
+      item.content,
+      char_length
+    );
+
+    //console.log('executing the Hook Posts Here')
+
+    if (improvedContent.error) throw new Error(improvedContent.error)
+      else {
+        onRewriteContent(improvedContent.text);
+      }
+
+  } catch (err) {
+    console.error('Error improving content:', err);
+    // Could add error state/toast here
+  } finally {
+    //setRewritingItemId(null);
+    //setLoadingCharLength(null);
+    //setLoadingLinkedIn(false)
+    setLoadingProcess(null);
+  }
+};    
+   
  
 
   const handleCreateCampaign = () => {
@@ -228,7 +271,7 @@ const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
                 
                 onClick={() => {
                     //console.log('Clicked LinkedIn. item.id:', item.id, 'char_length:', '700');
-                    handleHookPostV2(item, '700')}}
+                    handleHookPostV3(item, '700')}}
                 disabled={loadingProcess === `${item.id}_700`|| isHooksLoading || hooksError !== null}
                
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
@@ -255,7 +298,7 @@ const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
 
             <TooltipHelp  text = "⚡Rewrite for Bluesky">
               <button
-                onClick={() => handleHookPostV2(item, '300')}
+                onClick={() => handleHookPostV3(item, '300')}
                 disabled={loadingProcess === `${item.id}_300`|| isHooksLoading || hooksError !== null} 
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
@@ -277,7 +320,7 @@ const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
 
             <TooltipHelp  text = "⚡Rewrite for Twitter">
               <button
-                onClick={() => handleHookPostV2(item, '280')}
+                onClick={() => handleHookPostV3(item, '280')}
                 disabled={loadingProcess === `${item.id}_280`|| isHooksLoading || hooksError !== null}
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >

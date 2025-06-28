@@ -244,6 +244,36 @@ const hooks = `
 - Did you know that [statistics]? 
 - [X] things I wish someone told me about [topic/goal].`
 
+// --- Define hook archetypes and helper function here (as shown above) ---
+const hookArchetypes = [
+    {
+        name: "Problem-Solution Hook",
+        description: "Start by vividly describing a common pain point or challenge faced by the target audience related to the topic, then hint at a desirable solution or outcome that the post will explore. Make it relatable."
+    },
+    {
+        name: "Intriguing Question Hook",
+        description: "Pose a thought-provoking, open-ended question that directly relates to the topic or a core aspect of the content, compelling the reader to seek the answer. Ensure the question creates curiosity."
+    },
+    {
+        name: "Counter-Intuitive/Myth-Busting Hook",
+        description: "Begin with a statement that challenges a commonly held belief, presents a surprising fact, or reveals a hidden truth about the topic that will immediately grab attention and make the reader question their assumptions."
+    },
+    {
+        name: "Benefit-Driven Hook",
+        description: "Immediately state a clear, tangible benefit, advantage, or transformation the target audience can expect to gain by understanding or applying the information in the post. Focus on a strong positive outcome."
+    },
+    {
+        name: "Curiosity Gap Hook",
+        description: "Create a sense of suspense or an unanswered question that makes the reader instinctively want to know 'what happened next?' or 'how did they do it?'. Open a loop that the post will close."
+    }
+];
+
+function getRandomHookArchetype(): { name: string; description: string } {
+    const randomIndex = Math.floor(Math.random() * hookArchetypes.length);
+    return hookArchetypes[randomIndex];
+}
+// --- End of hook archetype definitions ---
+
 export async function improveComment(comment: string): Promise<GeminiResponse> {
   const prompt = `Improve this comment to make it more engaging while maintaining its core message:
     "${comment}"
@@ -1090,6 +1120,121 @@ Follow the [Rules] below:
   throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
 }
 
+//------- start generateHooksPostV3 without HooksData -------------//
+
+export async function generateHookPostV3(
+    theme: string,
+    topic: string,
+    target_audience: string,
+    content: string,
+    char_length: string,
+    maxRetries: number = 5,
+    initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+
+  // Choose a random hook 
+  const chosenHookArchetype = getRandomHookArchetype();
+  
+    // Cache key now depends only on inputs that define the desired output
+    const cacheKey = JSON.stringify({ target_audience, content, theme, topic, char_length });
+    const cached = calendarCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        return cached.response;
+    }
+
+    // Rate limiting
+    await rateLimiter.checkAndWait();
+
+    const selectedTone = getRandomTone(); // Ensure this function correctly returns a valid tone string
+
+    // The refined prompt that guides the LLM to create its own hook
+const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in crafting highly engaging hooks that immediately capture attention and make the audience eager to read the full post.
+
+**Your primary task is to generate a single, complete social media post.** This post MUST begin with a compelling, original hook that is seamlessly integrated.
+
+**Based on the provided content idea (${content}), subject (${theme}), and specific topic (${topic}), generate a unique and effective hook.**
+
+**Crucially, the hook MUST be generated using the following archetype description:**
+
+**Archetype: ${chosenHookArchetype.name}**
+**Description: ${chosenHookArchetype.description.replace('target audience', target_audience).replace('topic', topic).replace('content', content)}**
+
+**The hook should:**
+- Be the very first sentence of your output.
+- Be concise (ideally 1-2 sentences).
+- Directly relevant to the ${topic}, ${theme}, and ${content}.
+- Be designed to stop the scroll and encourage further reading.
+- NOT contain bracketed placeholders like "[activity]" or "[goal]". You must deduce and integrate the relevant concepts directly.
+
+After generating the hook, seamlessly transition into and build upon the content idea "${content}" that touches on subject "${theme}" specifically about "${topic}". Improve it so that the total output (hook + body) is an ${char_length} character content.
+
+**Tailor the language, tone, and examples to resonate deeply with a ${target_audience} audience, and maintain an **${selectedTone}** tone throughout the post.**
+
+Follow the [Rules] below:
+
+[Rules]:
+- Keep to ${char_length} Characters in total (including the hook).
+- Place each sentence in the post on a new line.
+- Provide simple, conversational language.
+- **Write in a clear, straightforward manner that a ninth grader could easily understand.**
+- Ban Generic Content.
+- Ban hashtags.
+- Ban bullet points.
+- Keep it natural and engaging.
+- Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
+- Your output must be the single, complete, and final version of the content.
+- Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
+- Do NOT use numbered lists or headings to present multiple content options.
+- Ensure that:
+    * There is a space between each sentence for readability.
+    * The first sentence is the generated hook.
+`;
+
+   let currentRetry = 0;
+  let delayTime = initialDelayMs;
+
+  while (currentRetry < maxRetries) {
+    try {
+      await rateLimiter.checkAndWait();
+
+      //const response = await model.generateContent(prompt);
+      
+      const response = await generateContent(prompt);
+      
+      calendarCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
+
+      return response;
+
+    } catch (error: any) {
+      const isRetryableError =
+        error.status === 503 ||
+        error.status === 429 ||
+        (error.message && (error.message.includes('503') || error.message.includes('429')));
+      const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+        currentRetry++;
+        console.warn(
+          `Gemini API call failed (Error: ${error.status || error.message}). ` +
+          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+        );
+        await sleep(delayTime);
+        delayTime *= 2;
+        delayTime = delayTime * (1 + Math.random() * 0.2);
+        delayTime = Math.min(delayTime, 30000);
+      } else {
+        console.error(`Post generation failed after ${currentRetry} retries:`, error);
+        throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+      }
+    }
+  }
+
+  throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}
+
 //------- start generate name and description for campaign -------- //
 
 export async function generateCampaignName(
@@ -1198,15 +1343,13 @@ export async function generateTargetAudience(
   await rateLimiter.checkAndWait();
 
 const prompt = `
-
-
 Act as an experienced Researcher with a deep knowledge of identifying pain points for ${target_audience}. You want to append to the existing challenges faced by ${target_audience} exactly the style already used. Deduce from their current struggle based on your insights and knowlegde determine 2 other highly critical problems they struggle with as a result of the listed struggle. Follow the rules below
 
 [Rules]: 
 
 - Keep to ${char_length} Characters in total 
 - Use simple language an 8th grader would understand
-- integrate your answer with existing ${target_audience}
+- Append your answer to existing ${target_audience}
 - Ban Generic Content 
 - Provide ONE (1) final content piece to include ${target_audience}
 - Do NOT offer variations or alternative options.
