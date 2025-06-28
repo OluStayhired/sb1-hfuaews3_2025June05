@@ -214,9 +214,9 @@ function LandingPage() {
           {/*start alternative header */}
             <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold mb-2 sm:mb-3"> 
             <p>
-              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
-                Stop <br className="sm:hidden" /> {/* This is the key change! */}
-      Guessing What to Post <br/> <p className="block font-semibold sm:font-bold text-xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-400 leading-tight mt-1 sm:mt-1"> 
+            <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
+                Go from Content <br className="sm:hidden" /> {/* This is the key change! */}
+      to Clients <br/> <p className="block font-semibold sm:font-bold text-xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-400 leading-tight mt-1 sm:mt-1"> 
         on X and LinkedIn <br className="sm:hidden" /> (Bluesky too) </p>
               </span>
             </p>
