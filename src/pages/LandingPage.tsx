@@ -49,7 +49,7 @@ function LandingPage() {
   
   return (
       <div className="min-h-screen bg-white">
-      <nav className="px-4 py-3 flex items-center justify-between sm:px-6 sm:py-4">
+        <nav className="px-4 py-3 flex items-center justify-between sm:px-6 sm:py-4">
         <div className="flex items-center space-x-2">
 
          <div className="bg-blue-600 rounded-full p-1.5 rotate-180 sm:p-2">
@@ -60,7 +60,48 @@ function LandingPage() {
         
         {/*Desktop Navigation Buttons */}
         {/*  <div className="hidden flex space-x-2 space-x-4 sm:space-y-0 sm:space-x-2">*/}
+
+      
+
+          
         <div className="hidden sm:flex items-center space-x-4">
+          <div className="items-center justify-center space-x-2">
+              <button
+            onClick={() => {
+              window.location.href = '#how_it_works';
+              }}
+              className="px-4 py-2 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+>
+            How it works
+          </button> 
+
+             <button
+            onClick={() => {
+              window.location.href = '#key_features';
+              }}
+              className="px-4 py-2 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+>
+            Features
+          </button> 
+
+          <button
+            onClick={() => {
+              window.location.href = '#testimonial';
+              }}
+              className="px-4 py-2 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+>
+            Testimonials
+          </button> 
+
+           <button
+            onClick={() => {
+              window.location.href = '#pricing';
+              }}
+              className="px-4 py-2 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+>
+            Pricing
+          </button> 
+      </div> 
           <button
             onClick={handleGoogleLogin}
             className="flex px-4 py-2 bg-white border border-gray-200 flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
@@ -103,6 +144,43 @@ function LandingPage() {
       {/* This part of the code is generally correct for the overlay. */}
       {isMobileMenuOpen && (
         <div className="sm:hidden fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-4 py-6"> 
+
+          <button
+            onClick={() => {
+              window.location.href = '#how_it_works';
+              setIsMobileMenuOpen(false);           
+              }}
+              className="w-11/12 max-w-sm px-4 py-3 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+            >
+            How it works
+          </button>
+          <button
+            onClick={() => {
+              window.location.href = '#key_features';
+              setIsMobileMenuOpen(false);           
+              }}
+              className="w-11/12 max-w-sm px-4 py-3 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+            >
+            Features
+          </button>
+          <button
+            onClick={() => {
+              window.location.href = '#testimonial';
+              setIsMobileMenuOpen(false);           
+              }}
+              className="w-11/12 max-w-sm px-4 py-3 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+            >
+            Testimonials
+          </button>
+          <button
+            onClick={() => {
+              window.location.href = '#pricing';
+              setIsMobileMenuOpen(false);           
+              }}
+              className="w-11/12 max-w-sm px-4 py-3 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+            >
+            Pricing
+          </button>
             <button
             onClick={handleGoogleLogin}
             className="w-11/12 max-w-sm flex px-4 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:text-lg" 
@@ -446,10 +524,17 @@ function LandingPage() {
 </section>
         {/* End New Gradient Section */}
 
+<section id="how_it_works" className="mt-24 text-center">
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
+            <Sparkles className="w-4 h-4" />
+                <span>How it Works</span>
+          </div>
+        </section>        
+
 {/* Start How it Works Section */}
-<section className="mt-32 text-center">
+<section className="mt-8 text-center">
   <h2 className="text-4xl font-bold text-gray-900 mb-4">
-    Here's how SoSavvy works <br/>in 3 easy steps 🔥
+    Go from random posts to  <br/>consistent content in 3 easy steps 🔥
   </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
     Audience Analysis . Content Strategy . Scheduled Posts
@@ -517,7 +602,7 @@ function LandingPage() {
 </section>
 {/* End How it Works Section */}
 
-<section className="mt-24 text-center">
+<section id="key_features" className="mt-24 text-center">
           <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
             <Sparkles className="w-4 h-4" />
                 <span>SoSavvy's Key Features</span>
@@ -1091,7 +1176,7 @@ function LandingPage() {
 
 {/*---------------------End Testimonials Section -------------------------*/}
 
-        <section className="mt-24 text-center">
+        <section id="pricing" className="mt-24 text-center">
           <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg">
             <Sparkles className="w-4 h-4" />
                 <span>An Easy Pricing Plan</span>
