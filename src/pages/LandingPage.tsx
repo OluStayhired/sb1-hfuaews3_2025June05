@@ -534,7 +534,7 @@ function LandingPage() {
 {/* Start How it Works Section */}
 <section className="mt-8 text-center">
   <h2 className="text-4xl font-bold text-gray-900 mb-4">
-    Go from random posts to  <br/>consistent content in 3 easy steps 🔥
+    Go from invisible efforts to  <br/>regular inquiries in 3 easy steps 🔥
   </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
     Audience Analysis . Content Strategy . Scheduled Posts
