@@ -214,7 +214,7 @@ function LandingPage() {
           {/*start alternative header */}
             <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold mb-2 sm:mb-3"> 
             <p>
-            <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
+              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
                 Go from Content <br className="sm:hidden" /> {/* This is the key change! */}
       to Clients <br/> <p className="block font-semibold sm:font-bold text-xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-400 leading-tight mt-1 sm:mt-1"> 
         on X and LinkedIn <br className="sm:hidden" /> (Bluesky too) </p>
@@ -267,10 +267,10 @@ function LandingPage() {
 
 {/*----------------- Start Video Section for SoSavvy ----------------------- */}
         <section className="mt-24 text-center">
-        <h2 className="text-4xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2">
           Content Planning on Steroids 👇
         </h2>
-        <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+        <p className="text-sm sm:text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
             Unlock weeks of website-powered, customer-focused content in minutes
           </p>
         <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
@@ -294,8 +294,8 @@ function LandingPage() {
 
 
 <section className="mt-24 text-center">
-  <h2 className="text-3xl font-bold text-gray-900 mb-8">
-    Why Founders & Creators Love SoSavvy ❤️
+  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8">
+    Why Founders & Creators Love SoSavvy❤️
   </h2>
   <div className="flex items-center justify-center flex-wrap gap-4 mb-6">
     {/* Mini Testimonial 1 */}
@@ -425,8 +425,8 @@ function LandingPage() {
             <Sparkles className="w-4 h-4" />
                 <span>Here's the Problem</span>
           </div>
-            <h2 className="text-4xl font-bold text-gray-900">
-                Attracting your ideal customers <br/> on social media is tough 😏
+            <h2 className="text-2xl sm:text-4xl font-bold text-gray-900">
+                Attracting customers <br/> on social media is tough 😏
             </h2>
           <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
             Many founders have tried to crack the code, unfortunately they hit the same roadblocks:
@@ -511,7 +511,7 @@ function LandingPage() {
         </div>
 
         {/* Headline (H2) - Now stands alone, centered by parent text-center */}
-        <h2 className="text-4xl font-bold mb-6"> {/* Added mb-6 for spacing below the headline */}
+        <h2 className="text-2xl sm:text-4xl font-bold mb-6"> {/* Added mb-6 for spacing below the headline */}
             Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content that <br/>connects with paying customers💰  
         </h2>
 
@@ -533,7 +533,7 @@ function LandingPage() {
 
 {/* Start How it Works Section */}
 <section className="mt-8 text-center">
-  <h2 className="text-4xl font-bold text-gray-900 mb-4">
+  <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">
     Go from invisible efforts to  <br/>regular inquiries in 3 easy steps 🔥
   </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
@@ -617,7 +617,7 @@ function LandingPage() {
 
         {/* Text Content (Left Side on Desktop, Top on Mobile) */}
         <div className="md:w-2/5 text-center md:text-left"> {/* Added text-center for mobile */}
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight"> {/* Responsive text size */}
+          <h2 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight"> {/* Responsive text size */}
             Target your customer's deepest desires & fears
           </h2>
           <p className="text-base sm:text-lg font-light opacity-90 max-w-lg mx-auto md:mx-0"> {/* Responsive text size, mx-auto for mobile center */}
@@ -707,7 +707,7 @@ function LandingPage() {
         {/* Text Content (Right on Desktop, Top on Mobile) */}
         {/* mx-auto for mobile centering, md:mx-0 removes it for desktop, md:w-2/5 for desktop width */}
         <div className="md:w-2/5 text-center md:text-left mx-auto md:mx-0">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight">
+          <h2 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight">
             Create effective content strategies in seconds
           </h2>
           <p className="text-base sm:text-lg font-light opacity-90 max-w-lg mx-auto md:mx-0">
@@ -790,7 +790,7 @@ function LandingPage() {
 
         {/* Text Content (Left Side on Desktop, Top on Mobile) */}
         <div className="md:w-2/5 text-center md:text-left">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight"> 
+          <h2 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight"> 
             Publish relatable posts that actually convert
           </h2>
           <p className="text-base sm:text-lg font-light opacity-90 max-w-lg mx-auto md:mx-0"> 
@@ -881,7 +881,7 @@ function LandingPage() {
         {/* Text Content (Right on Desktop, Top on Mobile) */}
         {/* mx-auto for mobile centering, md:mx-0 removes it for desktop, md:w-2/5 for desktop width */}
         <div className="md:w-2/5 text-center md:text-left mx-auto md:mx-0">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight">
+          <h2 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight">
             Schedule content across platforms with no effort
           </h2>
           <p className="text-base sm:text-lg font-light opacity-90 max-w-lg mx-auto md:mx-0">
@@ -970,7 +970,7 @@ function LandingPage() {
         </div>
 
         {/* Main Title */}
-        <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-8">
+        <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-8">
             Ready to get paying customers with content that writes itself?
         </h2>
 
@@ -1031,7 +1031,7 @@ function LandingPage() {
     <Sparkles className="w-4 h-4" />
     <span>What Our Customers Say</span>
   </div>
-  <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+  <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4">
     Hear From Founders & Creators Like You
   </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
@@ -1185,7 +1185,7 @@ function LandingPage() {
         
 <section className=" py-16 bg-white text-gray-900 rounded-xl overflow-hidden text-center">
   <div className="max-w-6xl mx-auto px-6"> {/* Increased max-width for wider layout */}
-    <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+    <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4">
       Simple Pricing, Powerful Results 🚀
     </h2>
     <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
@@ -1197,7 +1197,7 @@ function LandingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"> {/* Grid for horizontal spread */}
         {/* Left Column: Pricing and CTA */}
         <div className="text-center md:text-right md:pr-8 md:border-r md:border-blue-400"> {/* Added border-r for visual separation */}
-          <h3 className="text-3xl font-semibold mb-4">All-in-One Content Writer</h3>
+          <h3 className="text-2xl sm:text-3xl font-semibold mb-4">All-in-One Content Writer</h3>
           <div className="flex items-baseline justify-center md:justify-end mb-6">
             <span className="text-6xl sm:text-9xl text-center font-extrabold">$25</span> {/* Larger font for price */}
             <span className="text-2xl font-medium">/month</span>
@@ -1291,7 +1291,7 @@ function LandingPage() {
     <Sparkles className="w-4 h-4" />
     <span>Frequently Asked Questions</span>
   </div>
-  <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+  <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4">
     Have Questions? 🤔
   </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
@@ -1464,10 +1464,10 @@ function LandingPage() {
 
 <section class="mt-24 py-16 bg-gradient-to-b from-blue-500 via-blue-400 to-white text-gray-900 text-center rounded-xl">
   <div class="max-w-4xl mx-auto px-6">
-    <h2 class="text-white text-4xl md:text-6xl font-bold leading-tight mb-8">
+    <h2 class="text-2xl text-white sm:text-4xl md:text-6xl font-bold leading-tight mb-8">
       Stop wasting your time on random acts of content
     </h2>
-    <p class="text-white text-xl md:text-2xl font-light text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed">
+    <p class="text-white text-md sm:text-xl md:text-2xl font-light text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed">
       Start Creating With Purpose on SoSavvy 🚀
     </p>
 
