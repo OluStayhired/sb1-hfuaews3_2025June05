@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Calendar, Check, Loader2, AlertCircle, ChevronDown } from 'lucide-react';
 import { supabase } from '../lib/supabase'; // Ensure this path is correct
 import { format, parse } from 'date-fns';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 interface PostData {
     id: string;
@@ -55,9 +56,8 @@ export function ReschedulePostModal({
         }
     }, [isOpen, selectedDate, scheduledTime]);
 
-    
-    const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    
+  const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     // Effect for handling click outside date picker
     useEffect(() => {
         if (!isDatePickerOpen) return;
@@ -148,6 +148,7 @@ export function ReschedulePostModal({
                 updated_at: new Date().toISOString(),
                 // Ensure schedule_status is true when rescheduling
                 schedule_status: true,
+                sent_post: false,
             };
 
             const { error } = await supabase
