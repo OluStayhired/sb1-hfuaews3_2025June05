@@ -429,7 +429,7 @@ function LandingPage() {
                 Attracting customers <br/> on social media is tough 😏
             </h2>
           <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
-            Many founders have tried to crack the code, unfortunately they hit the same roadblocks:
+            Many founders have tried to crack the code, unfortunately many have hit the same issues:
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -1035,7 +1035,7 @@ function LandingPage() {
     Hear From Founders & Creators Like You
   </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
-    SoSavvy is helping entrepreneurs transform their social media presence into a lead-generating machine.
+    SoSavvy is helping entrepreneurs transform their social media presence into a pipeline building machine.
   </p>
 
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
