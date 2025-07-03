@@ -265,6 +265,44 @@ const hookArchetypes = [
     {
         name: "Curiosity Gap Hook",
         description: "Create a sense of suspense or an unanswered question that makes the reader instinctively want to know 'what happened next?' or 'how did they do it?'. Open a loop that the post will close."
+    },
+      // Newly Suggested Archetypes
+    {
+        name: "Personal Journey/Vulnerability Hook",
+        description: "Start by sharing a relatable personal experience, a past mistake, a significant challenge overcome, or a key lesson learned related to the topic. Emphasize authenticity, vulnerability, or a surprising personal insight that resonates with the target audience's own journey."
+    },
+    {
+        name: "Social Proof/Credibility Hook",
+        description: "Begin with a compelling statistic, a powerful client testimonial, a success story, or evidence that validates a claim related to the topic. Focus on demonstrating tangible results or widespread acceptance from reliable sources (clients, data, experts) to build immediate trust and interest for the target audience."
+    },
+    {
+        name: "Urgent Warning/Mistake Prevention Hook",
+        description: "Start by issuing a direct warning or highlighting a common, critical mistake the target audience might be making or about to make related to the topic. Emphasize potential pitfalls, misconceptions, or actions to avoid, creating a sense of urgency to learn the correct path."
+    },
+    {
+        name: "Trend/Future-Gazing Hook",
+        description: "Open by identifying a current or emerging trend, a significant shift, or a future prediction related to the topic. Frame it in a way that positions the reader as either someone who needs to be aware of this change or someone who can leverage it for future advantage."
+    },
+    {
+        name: "Direct Offer/Call-to-Action Hook",
+        description: "Immediately present a clear, compelling offer, a free resource, a limited-time opportunity, or a direct call for the target audience to take a specific action. Focus on a clear value proposition and a sense of urgency or exclusivity where appropriate."
+    }
+  ,
+    {
+        name: "Comparison/Contrast Hook",
+        description: "Start by drawing a direct comparison or stark contrast between two related ideas, approaches, or states (e.g., 'old vs new,' 'this vs that,' 'common vs effective'). Highlight the difference or the implied superiority of one over the other to pique the target audience's interest and signify a valuable distinction."
+    },
+    {
+        name: "Practical Resource/Shortcut Hook",
+        description: "Open by offering a direct, actionable resource, a proven checklist, a template, a specific number of methods, or a 'shortcut' that promises to help the target audience achieve a desired outcome efficiently. Emphasize ease of use, practicality, and immediate applicability."
+    },
+    {
+        name: "Authority Challenge/Controversial Stance Hook",
+        description: "Begin with a bold, provocative, or contrarian statement that directly challenges a widely accepted belief, a current trend, or a common practice in the industry. Aim to spark debate, differentiate your viewpoint, and position your content as a disruptive or thought-leading perspective for the target audience."
+    },
+    {
+    name: "Performance/Results Showcase Hook",
+    description: "Start by presenting a striking quantifiable result, an impressive achievement, or a significant milestone (e.g., revenue generated, traffic growth, specific numbers). This demonstrates clear success related to the topic, immediately catching the target audience's eye and making them want to understand 'how'."
     }
 ];
 
