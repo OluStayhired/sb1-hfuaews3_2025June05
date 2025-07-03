@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Send, Calendar, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles } from 'lucide-react';
+import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -15,11 +15,12 @@ import { MoreTwitterAccounts } from './MoreTwitterAccounts';
 import { MoreLinkedInAccounts } from './MoreLinkedInAccounts'; 
 import { useBlueskyStore } from '/src/store/blueskyStore';
 import { format, parse } from 'date-fns';
-import { SchedulePostModal } from '/src/components/SchedulePostModal';
+import { ScheduleDraftPost } from '/src/components/ScheduleDraftPost';
 import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
-import { improveComment } from '../lib/gemini';
+import { improveComment, generateHookPostV3 } from '../lib/gemini';
 import { useLocation } from 'react-router-dom';
+
 
 
 interface SocialAccount {
@@ -28,6 +29,12 @@ interface SocialAccount {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
+}
+
+interface ScheduledPostData {
+  content_date: string; // ISO date string from database
+  content_time: string; // HH:mm:ss string from database
+  // Add other properties you might want to display
 }
 
 function ComposePosts() {
@@ -49,7 +56,17 @@ function ComposePosts() {
   const [isDraftPostModalOpen, setIsDraftPostModalOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingLinkedIn, setIsGeneratingLinkedIn] = useState(false);
   const [campaignContent, setCampaignContent] = useState<Array<{ theme: string; topic: string; content: string }> | null>(null);
+  const [isSchedulingPost, setIsSchedulingPost] = useState(false);
+  const [selectedDateForModal, setSelectedDateForModal] = useState(new Date()); // New state for modal date
+  const [selectedTimeForModal, setSelectedTimeForModal] = useState(format(new Date(), 'HH:mm')); // New state for modal time
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationDetails, setNotificationDetails] = useState<{ date: Date; time: string } | null>(null);
+  const [isDraftSuccessModalOpen, setIsDraftSuccessModalOpen] = useState(false);
+
 
   const [max_length, setMaxLength] = useState(300);
 
@@ -733,15 +750,22 @@ if (!activeAccountId) {
       }
 
       setContent('');
-      // TODO: Show a success message notification (e.g., "Draft saved!")
+     // --- NEW: Trigger the draft success notification ---
+    // 1. Show the notification
+    setIsDraftSuccessModalOpen(true);
 
-    } catch (err) {
-      console.error('handleSaveDraft: Error saving draft:', err);
-      // TODO: Show an error message to the user
-    } finally {
-      setIsPosting(false);
-    }
-  };
+    // 2. Set a timeout to hide the notification after 3 seconds
+    setTimeout(() => {
+      setIsDraftSuccessModalOpen(false);
+    }, 3000); // Notification will be visible for 3 seconds
+
+  } catch (err) {
+    console.error('handleSaveDraft: Error saving draft:', err);
+    // You can add logic here to display an error message to the user if needed
+  } finally {
+    setIsPosting(false); // Ensure the loading state is reset
+  }
+};
   
    //handle to populate the text area
 
@@ -796,6 +820,49 @@ const handleGenerateContent = async () => {
     setIsGenerating(false);
   }
 };
+
+// New handleSchedulePost function
+const handleSchedulePost = () => {
+  if (!activeAccountId || !content.trim()) {
+    // Optionally show an error or prevent action if content/account is missing
+    return;
+  }
+  setSelectedDateForModal(new Date()); // Set current date
+  setSelectedTimeForModal(format(new Date(), 'HH:mm')); // Set current time
+  setIsScheduleModalOpen(true);
+  setIsSchedulingPost(true); // Indicate that scheduling process has started
+  setIsSuccessModalOpen(false);
+  setNotificationDetails(null);
+};
+
+// Callback for successful scheduling from the modal
+const onModalScheduleSuccess = (newPost: any) => {
+  setContent('');
+  setIsScheduleModalOpen(false);
+  setIsSchedulingPost(false);
+
+  setIsSuccessModalOpen(true);
+
+  setNotificationDetails({
+    date: new Date(newPost.content_date),
+    time: newPost.content_time.substring(0, 5)
+  });
+
+  setTimeout(() => {
+    setIsSuccessModalOpen(false);
+    setNotificationDetails(null);
+  }, 3000);
+};  
+
+// Callback for errors during scheduling from the modal
+const onModalScheduleError = (error: any) => {
+  console.error('Error scheduling post from modal:', error);
+  setIsScheduleModalOpen(false);
+  setIsSchedulingPost(false);
+  // Optionally, show an error message to the user
+};  
+  
+
 
   return (
     <div className="p-8">
@@ -998,12 +1065,49 @@ const handleGenerateContent = async () => {
                     {isGenerating ? (
                         <Loader2 className="w-3 h-3 animate-spin" />
                           ) : (
-                        <TooltipHelp text="AI Rewrite ⚡">
+                        <TooltipHelp text="⚡ Quick Rewrite">
                         <Sparkles className="w-3 h-3" />
                         </TooltipHelp>
                           )}
                     </button>
                 {/*End Add AI Button*/}
+
+                {/*start linkedin button */}
+
+                {/*
+                <button
+                  type="button"
+                    onClick={handleGenerateContent}
+                    disabled={isGenerating || !activeAccountId || !content.trim() || isPosting}
+                    // Remove the outer conditional rendering for the button itself
+                  className={`
+                              absolute right-10 top-2 p-1 rounded-md shadow-md
+                              transition duration-200 flex items-center space-x-1
+                            ${
+                        content.trim() // If content exists, apply active styles
+                          ? 'bg-gray-100 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600'
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                            }
+                      ${
+                        (isGenerating || !activeAccountId || !content.trim() || isPosting)
+                          ? 'opacity-70' // Reduce opacity when disabled by any condition
+                          : ''
+                        }
+                      `}
+                      >
+                    {isGenerating ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                        <TooltipHelp text="⚡ Adapt for LinkedIn">
+                                      <>
+                
+                <img src={LinkedInLogo} className="w-3 h-3" />
+                </>
+                        </TooltipHelp>
+                          )}
+                    </button>
+              */}
+                    
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <div className="text-sm text-gray-500">
@@ -1011,10 +1115,11 @@ const handleGenerateContent = async () => {
                   </div>
 
                   <div className="flex items-center mt-4 pt-4 space-x-2">
+
                   <button
                     type="submit"
                     disabled={!activeAccountId || !content.trim() || isPosting}
-                      className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center space-x-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      className="px-4 py-2 bg-gray-100 text-sm text-gray-500 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2 disabled:bg-gray-50 disabled:cursor-not-allowed disabled:text-gray-300"
                     onClick={handleSaveDraft}
                   >
                     {isPosting ? (
@@ -1029,12 +1134,32 @@ const handleGenerateContent = async () => {
                       </>
                     )}
                   </button>
-                        
+            
+                   <button
+                    type="button" // Changed to type="button" to prevent form submission
+                    disabled={!activeAccountId || !content.trim() || isSchedulingPost}
+                      className="px-4 py-2 text-sm bg-white border border-gray-300 text-gray-500 rounded-lg hover:bg-gray-100 transition-colors flex items-center space-x-2 disabled:bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    onClick={handleSchedulePost}
+                  >
+                    {isSchedulingPost ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Scheduling Post...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CalendarPlus className="w-4 h-4" />
+                        <span>Schedule Post</span>
+                      </>
+                    )}
+                  </button>
+
+                    
                   <button
                     key={activeAccount?.id || 'no-account'}
                     type="submit"
                     disabled={!activeAccountId || !content.trim() || isPosting}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2 disabled:bg-blue-300 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-blue-500 text-sm text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2 disabled:bg-blue-300 disabled:cursor-not-allowed"
                   >
                     {isPosting ? (
                       <>
@@ -1125,6 +1250,49 @@ const handleGenerateContent = async () => {
           onClose={() => setIsDraftPostModalOpen(false)}
           onContinueDraft={handleContinueDraft}
          />
+
+        {/* SchedulePostModal Integration */}
+      <ScheduleDraftPost
+          isOpen={isScheduleModalOpen}
+          onClose={() => {
+              setIsScheduleModalOpen(false);
+              setIsSchedulingPost(false); // Reset scheduling state on close
+          }}
+          selectedDate={selectedDateForModal}
+          selectedTime={selectedTimeForModal}
+          initialContent={content} // Pass current content
+          onSchedule={onModalScheduleSuccess}
+          onScheduleError={onModalScheduleError}
+      />
+
+      {/* --- RENDER THE SUCCESS POP-UP NOTIFICATION --- */}
+      {isSuccessModalOpen && notificationDetails && ( // Use the renamed state here
+        <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg border border-green-100 p-4 flex items-center space-x-3 animate-fade-in z-[9999]">
+          <div className="bg-green-100 rounded-full p-2">
+            <Check className="w-5 h-5 text-green-500" />
+          </div>
+          <div>
+            <p className="font-medium text-gray-900">Post Scheduled Successfully</p>
+            <p className="text-sm text-gray-500">
+              Your post will be published on {format(notificationDetails.date, 'MMM d')} at {notificationDetails.time}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {isDraftSuccessModalOpen ? (
+  <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg border border-green-100 p-4 flex items-center space-x-3 animate-fade-in z-[9999]">
+    <div className="bg-green-100 rounded-full p-2">
+      <Check className="w-5 h-5 text-green-500" />
+    </div>
+    <div>
+      <p className="font-medium text-gray-900">Draft Saved Successfully</p>
+      <p className="text-sm text-gray-500">
+        Click view drafts to edit and rewrite your drafts
+      </p>
+    </div>
+  </div>
+) : null}
            
     </div>
   );
