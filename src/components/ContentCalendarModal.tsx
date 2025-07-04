@@ -280,7 +280,7 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
                 {loadingProcess === `${item.id}_700` ? (
                 <>
                 {
-                //console.log('Loading LinkedIn, loadingProcess:', loadingProcess, 'Expected:', `${item.id}_700`)
+                
                 }
                   <Loader2 className="w-3 h-3 animate-spin" />
                   
@@ -339,35 +339,6 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
              </TooltipHelp> 
 
             {/*------------------- End all the social media buttons ------------------------*/}
-
-
-                  {/* Rewrite Button 
-                  <button
-                    onClick={() =>{ 
-                      console.log('Clicked LinkedIn. item.id:', item.id, 'char_length:', '700')
-                      handleRewrite(item)}}
-                    
-                    disabled={rewritingItemId === item.id}
-                    className="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
-                  >
-                    {rewritingItemId === item.id ? (
-                      <>
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                        <span>Rewriting...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-3 h-3" />
-                        <span>Rewrite</span>
-                      </>
-                    )}
-                  </button>
-
-                  */}
-
-                  {/*--- End Re-Write Button */}
-
-
 
                   
                 </div>

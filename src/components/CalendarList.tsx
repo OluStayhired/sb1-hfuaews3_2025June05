@@ -413,11 +413,12 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 onClick={() => onSelectCalendar?.(calendar.calendar_name)}
                 className="hover:bg-gray-50 cursor-pointer"
               >
-                <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-900">
-                
+                <td className="px-4 py-4 whitespace-wrap text-xs text-gray-900">
+                  {/*<TooltipExtended text={`⚡${calendar.calendar_name}`}>*/}
                   <span className="whitespace-wrap">
                    {truncateText(calendar.calendar_name,50)}
                    </span> 
+                  {/*</TooltipExtended>*/}
                 
                 </td>
                 

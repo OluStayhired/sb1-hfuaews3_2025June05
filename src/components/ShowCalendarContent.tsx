@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { format, parseISO } from 'date-fns';
-import { startOfWeek, endOfWeek, addWeeks, isWithinInterval } from 'date-fns';
+//import { format, parseISO } from 'date-fns';
+import { format, parseISO, addWeeks, addDays, isWithinInterval, differenceInDays, startOfWeek, endOfWeek } from 'date-fns';
+//import { startOfWeek, endOfWeek, addWeeks, isWithinInterval } from 'date-fns';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
-import { Calendar, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart } from 'lucide-react';
+import { Calendar, Check, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3 } from '../lib/gemini';
 import { ContentModal } from './ContentModal';
 import { AddToCalendarModal } from './AddToCalendarModal'
@@ -87,6 +88,14 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [showTypingEffect, setShowTypingEffect] = useState(false);
   const [typingContentId, setTypingContentId] = useState<string | null>(null); // To track which content item is typing
   const [currentTypingText, setCurrentTypingText] = useState(''); // The text currently being typed
+
+  // New state for calendar end date and days left
+  const [calendarEndDate, setCalendarEndDate] = useState<Date | null>(null);
+  const [currentCalendarDaysLeft, setCurrentCalendarDaysLeft] = useState<number | null>(null);
+
+  const [isCopySuccessModalOpen, setIsCopySuccessModalOpen] = useState(false);
+
+
 
 
   //const today = new Date();
@@ -228,6 +237,45 @@ const handleConnectLinkedIn = () => {
       setLoading(false);
     }
   };
+
+   // New useEffect to fetch calendar end date and calculate days left
+  useEffect(() => {
+    const fetchCalendarDetails = async () => {
+      if (!calendarName || !userEmail) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('calendar_questions')
+          .select('end_date')
+          .eq('calendar_name', calendarName)
+          .eq('email', userEmail)
+          .single();
+
+        if (error) {
+          console.error('Error fetching calendar end date:', error);
+          setCalendarEndDate(null);
+          setCurrentCalendarDaysLeft(null);
+          return;
+        }
+
+        if (data?.end_date) {
+          const endDate = parseISO(data.end_date);
+          setCalendarEndDate(endDate);
+          const daysLeft = differenceInDays(endDate, new Date());
+          setCurrentCalendarDaysLeft(daysLeft);
+        } else {
+          setCalendarEndDate(null);
+          setCurrentCalendarDaysLeft(null);
+        }
+      } catch (err) {
+        console.error('Unexpected error fetching calendar details:', err);
+        setCalendarEndDate(null);
+        setCurrentCalendarDaysLeft(null);
+      }
+    };
+
+    fetchCalendarDetails();
+  }, [calendarName, userEmail]);
 
     const handleBulkScheduleSuccess = () => {
     fetchCalendarContent(); // Refresh the calendar content
@@ -666,7 +714,161 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
                     }
                   
       }  
-  
+
+
+  //----------------------- Copy Entire Content Campaign -----------------------------//
+
+    const handleDuplicateCalendar = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.email || !session?.user?.id) {
+        throw new Error('No authenticated user found');
+      }
+
+      // 1. Fetch Original Calendar Details
+      const { data: originalCalendar, error: originalCalendarError } = await supabase
+        .from('calendar_questions')
+        .select('*')
+        .eq('calendar_name', calendarName)
+        .eq('email', userEmail)
+        .single();
+
+      if (originalCalendarError || !originalCalendar) {
+        throw new Error('Original calendar not found or database error.');
+      }
+
+      // 2. Generate New Calendar Name
+      let newCalendarName = `${calendarName} - copy`;
+      let copyIndex = 1;
+      let nameExists = true;
+
+      while (nameExists) {
+        const { data: existingCopies, error: checkError } = await supabase
+          .from('calendar_questions')
+          .select('calendar_name')
+          .eq('calendar_name', newCalendarName)
+          .eq('email', userEmail);
+
+        if (checkError) throw checkError;
+
+        if (existingCopies && existingCopies.length > 0) {
+          copyIndex++;
+          newCalendarName = `${calendarName} - copy ${copyIndex}`;
+        } else {
+          nameExists = false;
+        }
+      }
+
+      // 3. Determine New Dates
+      const newStartDate = new Date(); // Today's date
+      const originalStartDate = parseISO(originalCalendar.start_date);
+      const originalEndDate = parseISO(originalCalendar.end_date);
+      const originalDurationDays = differenceInDays(originalEndDate, originalStartDate);
+      const newEndDate = addDays(newStartDate, originalDurationDays);
+
+      // 4. Insert New Calendar Record
+      const { data: newCalendarRecord, error: newCalendarError } = await supabase
+        .from('calendar_questions')
+        .insert({
+          email: userEmail,
+          user_id: session.user.id,
+          calendar_name: newCalendarName,
+          calendar_description: originalCalendar.calendar_description,
+          target_audience: originalCalendar.target_audience,
+          social_goals: originalCalendar.social_goals,
+          core_services: originalCalendar.core_services,
+          start_date: format(newStartDate, 'yyyy-MM-dd'),
+          end_date: format(newEndDate, 'yyyy-MM-dd'),
+          active: true, // New copy is active by default
+          deleted: false, // New copy is not deleted
+          created_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (newCalendarError || !newCalendarRecord) {
+        throw new Error('Failed to create new calendar record.');
+      }
+
+      // 5. Fetch Original Content Records
+      const { data: originalContent, error: originalContentError } = await supabase
+        .from('content_calendar')
+        .select('*')
+        .eq('calendar_name', calendarName)
+        .eq('email', userEmail);
+
+      if (originalContentError || !originalContent) {
+        throw new Error('Failed to fetch original content records.');
+      }
+
+      // 6. Prepare New Content Records
+      const newContentRecords = originalContent.map(item => {
+        const dayOffset = differenceInDays(parseISO(item.content_date), originalStartDate);
+        const newContentDate = addDays(newStartDate, dayOffset);
+        const newDayOfWeek = format(newContentDate, 'EEEE');
+
+        return {
+          email: userEmail,
+          user_id: session.user.id,
+          calendar_name: newCalendarName, // Assign new calendar name
+          description: item.description,
+          user_handle: item.user_handle,
+          user_display_name: item.user_display_name,
+          day: item.day,
+          day_of_week: newDayOfWeek, // Recalculate day of week
+          theme: item.theme,
+          topic: item.topic,
+          call_to_action: item.call_to_action,
+          notes: item.notes,
+          content: item.content,
+          content_date: format(newContentDate, 'yyyy-MM-dd'), // Assign new content date
+          created_at: new Date().toISOString(), // Set new creation timestamp
+          updated_at: new Date().toISOString(),
+        };
+      });
+
+      // 7. Insert New Content Records (Batch Insert)
+      const { error: newContentError } = await supabase
+        .from('content_calendar')
+        .insert(newContentRecords);
+
+      if (newContentError) {
+        throw new Error('Failed to insert new content records.');
+      }
+
+      // 8. Success Feedback and UI Refresh
+      //alert(`Calendar "${newCalendarName}" and its content duplicated successfully!`);
+      // Assuming these functions are available to refresh the UI
+      // You might need to pass them as props from the parent (ViewCalendars.tsx)
+      // or use a global state management solution.
+      if (typeof fetchCalendarList === 'function') fetchCalendarList();
+      if (typeof fetchCalendarContent === 'function') fetchCalendarContent();
+
+        // a. Show the notification
+      setIsCopySuccessModalOpen(true);
+
+      // b. Set a timeout to hide the notification after 3 seconds
+    setTimeout(() => {
+      setIsCopySuccessModalOpen(false);
+    }, 3000); // Notification will be visible for 3 seconds
+
+    } catch (err: any) {
+      console.error('Error duplicating calendar:', err.message);
+      setError(`Failed to duplicate calendar: ${err.message}`);
+      alert(`Error duplicating calendar: ${err.message}`); // Simple alert for now
+    } finally {
+      setLoading(false);
+    }
+  };
+
+// --- Logic to determine the tooltip message ---
+  const duplicateTooltipText =
+    currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0
+      ? `⚡Duplicate once expired - ${currentCalendarDaysLeft} Day${currentCalendarDaysLeft === 1 ? '' : 's'}`
+      : '⚡Duplicate Calendar'; // Original message when enabled or no days left
 
   if (loading) {
     return (
@@ -814,6 +1016,24 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
     Schedule All
   </button>          
 </TooltipHelp>
+  
+  
+{/* New Duplicate Button */}
+
+<TooltipHelp text={duplicateTooltipText}>
+            <button
+              onClick={handleDuplicateCalendar}
+              // Disable if currentCalendarDaysLeft is greater than 0
+              disabled={currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0}
+              className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ml-2
+                       bg-gray-100 text-gray-600 hover:bg-gray-200 ${
+                         currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0 ? 'opacity-50 cursor-not-allowed' : ''
+                       }`}
+            >
+              <Copy className="h-4 w-4 mr-2" />
+              Duplicate
+            </button>
+          </TooltipHelp>
 </div>        
         
 </div>
@@ -1151,7 +1371,25 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
                   calendarName={calendarName}
                   //onScheduleSuccess={handleBulkScheduleSuccess} 
             />
+
+{isCopySuccessModalOpen ? (
+  <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg border border-green-100 p-4 flex items-center space-x-3 animate-fade-in z-[9999]">
+    <div className="bg-green-100 rounded-full p-2">
+      <Check className="w-5 h-5 text-green-500" />
     </div>
+    <div>
+      <p className="font-medium text-gray-900">Calendar Created Successfully</p>
+      <p className="text-sm text-gray-500">
+        Calendar has now been activated and ready to go! 
+      </p>
+    </div>
+  </div>
+) : null}     
+
+      
+    </div>
+
+
       
   );
 }
