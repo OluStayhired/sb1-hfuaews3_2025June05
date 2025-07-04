@@ -512,7 +512,7 @@ function LandingPage() {
 
         {/* Headline (H2) - Now stands alone, centered by parent text-center */}
         <h2 className="text-2xl sm:text-4xl font-bold mb-6"> {/* Added mb-6 for spacing below the headline */}
-            Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content that <br/>connects with paying customers💰  
+            Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content that <br/>connects with your customers' pain 😩  
         </h2>
 
         {/* Paragraph (P) - Centered by parent text-center */}
@@ -534,7 +534,7 @@ function LandingPage() {
 {/* Start How it Works Section */}
 <section className="mt-8 text-center">
   <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">
-    Go from invisible efforts to  <br/>regular inquiries in 3 easy steps 🔥
+    Turn invisible efforts into  <br/>regular inquiries in 3 easy steps 🔥
   </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
     Audience Analysis . Content Strategy . Scheduled Posts
@@ -971,7 +971,7 @@ function LandingPage() {
 
         {/* Main Title */}
         <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-8">
-            Ready to get paying customers with content that writes itself?
+            Ready to get paying customers with content that writes itself?💰
         </h2>
 
         {/* Secondary Title / Subsection */}
