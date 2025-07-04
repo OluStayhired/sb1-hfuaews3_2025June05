@@ -512,7 +512,7 @@ function LandingPage() {
 
         {/* Headline (H2) - Now stands alone, centered by parent text-center */}
         <h2 className="text-2xl sm:text-4xl font-bold mb-6"> {/* Added mb-6 for spacing below the headline */}
-            Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content that <br/>connects with your customers' pain 😩  
+            Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content that <br/>connects with your customers' pain 😊  
         </h2>
 
         {/* Paragraph (P) - Centered by parent text-center */}
