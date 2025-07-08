@@ -417,7 +417,7 @@ const handleViewCalendarList = () => {
                   </div>
                   <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
                   {/*<p className="text-gray-400 mb-4 text-sm"> Adapt it for LinkedIn, Twitter or Bluesky </p>*/}
-                  <p className="text-gray-400 mb-4 text-sm"> Add a website you want the campaign to build from </p>
+                  <p className="text-gray-400 mb-4 text-sm"> <p className="text-gray-400 mb-4 text-sm">Use a website to kickstart your campaign (optional)</p> </p>
 
 
               <div className="relative mb-3">
