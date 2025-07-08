@@ -1043,7 +1043,7 @@ const getWeekday = (date: Date): string => {
     </button>
   </TooltipExtended>
 ) : (
-//<TooltipExtended text="⚡ You're almost done! Let's review your answers">
+//<TooltipExtended text="⚡ You're almost done! Let's review your  answers">
   <button
     type="submit"
     disabled={loading || (step === 2 && formData.selectedGoals.length !== 3)}
