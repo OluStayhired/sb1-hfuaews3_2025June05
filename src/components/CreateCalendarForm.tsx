@@ -10,6 +10,7 @@ import { CreateCalendarProgressModal } from './CreateCalendarProgressModal';
 import { addDays } from 'date-fns';
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { CompanyInsightsResponse } from '../lib/firecrawl';
 
 //import { useDebounce } from '/src/hooks/useDebounce';
 
@@ -24,14 +25,15 @@ interface FormData {
 }
 
 interface CreateCalendarFormProps {
-   onSuccess: (campaignName: string) => void;
-  // Add user info from auth store
+  onSuccess: (campaignName: string) => void;
   email?: string;
-  //userDisplayName?: string;
   onClose?: () => void; // Add this prop
+  // NEW: Optional props for website-generated insights
+  webProblem?: string;
+  webAudience?: string;
 }
 
-export function CreateCalendarForm({ onSuccess, email,userHandle,userDisplayName, onClose }: CreateCalendarFormProps) {
+export function CreateCalendarForm({ onSuccess, email,userHandle,userDisplayName, onClose, webProblem, webAudience }: CreateCalendarFormProps) {
   //const { user } = useAuthStore();
     const { user } = useAuth();
    // Use props if available, fallback to auth store
@@ -66,6 +68,7 @@ const [showProgressModal, setShowProgressModal] = useState(false);
   const [isGeneratingAudience, setIsGeneratingAudience] = useState(false);
   const [isGeneratingBrand, setIsGeneratingBrand] = useState(false);
   const [isGeneratingCommunity, setIsGeneratingCommunity] = useState(false);
+  
 
 // Modify the success handler in CreateCalendarForm
 const handleSuccess = (campaignName: string) => {
@@ -78,7 +81,7 @@ const handleSuccess = (campaignName: string) => {
 //const campaign_theme = "founder brand building"  
 
 
-
+  {/*
   useEffect(() => {
     async function fetchAndSetUserPreferences() {
  
@@ -129,7 +132,45 @@ const handleSuccess = (campaignName: string) => {
 
     fetchAndSetUserPreferences();
 }, []);
+Original Working Version */}
 
+  useEffect(() => {
+    async function fetchAndSetUserPreferences() {
+      if (!user?.email || !user?.id) {
+        console.warn("User email or ID not found, skipping user preferences fetch.");
+        setFormData(prev => ({
+            ...prev,
+            targetAudience: webAudience || '',
+            coreServices: webProblem || '',
+        }));
+        return;
+      }
+
+      const { data: productTierDataFromDb, error: productTierError } = await supabase
+        .from('user_preferences')
+        .select('calendar_days, product_tier, target_audience, problem')
+        .eq('email', user.email)
+        .eq('user_id', user.id)
+        .single();
+
+      if (productTierError) {
+        console.error("Error fetching user preferences:", productTierError);
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        targetAudience: webAudience !== undefined ? webAudience : (productTierDataFromDb?.target_audience || ''),
+        coreServices: webProblem !== undefined ? webProblem : (productTierDataFromDb?.problem || ''),
+      }));
+
+      if (productTierDataFromDb) {
+        setCalendarDays(productTierDataFromDb.calendar_days || 14);
+        setProductTier(productTierDataFromDb.product_tier || 'Standard');
+      }
+    }
+
+    fetchAndSetUserPreferences();
+  }, [user?.id, user?.email, webProblem, webAudience]);
 
   useEffect(() => {
     const fetchUserEmail = async () => {
@@ -357,15 +398,6 @@ const handleGenerateCalendarName = async (campaign_theme: string) => {
     console.error("Generated data is not in the expected array format:", generatedData);
     setError("Failed to parse campaign name/description. Unexpected data format.");
 }
-      
-        // Assuming the response.text is a JSON string like { "title": "...", "description": "..." }
-       // const generatedData = JSON.parse(response.text);
-
-        //setFormData(prev => ({
-          //  ...prev,
-            //calendarName: generatedData.title || '',
-          //  calendarDescription: generatedData.description || ''
-        //}));
 
     } catch (err: any) {
         console.error('Error generating campaign name/description:', err);

@@ -15,6 +15,8 @@ import { format } from 'date-fns';
 import { ShowCalendarContent } from './ShowCalendarContent';
 import { CalendarList } from './CalendarList';
 import { CampaignSuccessfulModal } from './CampaignSuccessfulModal'
+import { TooltipExtended } from '../utils/TooltipExtended';
+import { getCompanyProblemAndAudience, CompanyInsightsResponse } from '../lib/firecrawl';
 
 
 interface ViewCalendarProps {
@@ -101,6 +103,9 @@ export function ViewCalendars({ onCreateCalendarClick }: ViewCalendarProps) {
   const [createdCampaignName, setCreatedCampaignName] = useState('');
   const [selectedCalendar, setSelectedCalendar] = useState<string | null>(null);
   const [showCampaignList, setShowCampaignList] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Used for async operations like Firecrawl/Gemini calls
+  const [companyWebsite, setCompanyWebsite] = useState('');
+  const [insights, setInsights] = useState<CompanyInsightsResponse | null>(null);
 
 
 // function to determine email for use in the component
@@ -143,11 +148,54 @@ useEffect(() => {
     fetchCalendarContent(); 
   }
 }, [currentUserEmail]);
-  
+
+const handleDiscoverAudience = async (): Promise<boolean> => { 
+  if (!companyWebsite) {
+    setError('Please enter a company website URL.');
+    return false; // Indicate failure due to validation
+  }
+
+  setIsLoading(true); // Use isLoading for all async operations
+  setInsights(null); // Clear previous insights
+  setError(null); // Clear previous errors
+
+  try {
+    const result = await getCompanyProblemAndAudience(companyWebsite);
+    setInsights(result); // This will trigger the useEffect to advance the slide and pre-fill fields
+    return true; // Indicate success
+  } catch (err) {
+    console.error('Error fetching company insights:', err);
+    setError(`Failed to get insights: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    return false; // Indicate failure due to API error
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+const handleCreateCalendarClick = async () => {
+  console.log('Create Campaign button clicked in ViewCalendars!');
+
+  setError(null);
+
+  if (companyWebsite) {
+    const insightsFetchedSuccessfully = await handleDiscoverAudience();
+    if (insightsFetchedSuccessfully) {
+      setIsCreateCalendarFormOpen(true);
+    } else {
+      console.log("Create Calendar Form not opened because company insights could not be retrieved.");
+    }
+  } else {
+    setIsCreateCalendarFormOpen(true);
+    setInsights(null);
+  }
+};  
+
+  {/* Old version of the Create Calendar Click
   const handleCreateCalendarClick = () => {
     console.log('Create Campaign button clicked in ViewCalendars!');
     setIsCreateCalendarFormOpen(true);
   };
+  */}
 
   const handleCloseCreateCalendarForm = () => {
     setIsCreateCalendarFormOpen(false);
@@ -368,15 +416,37 @@ const handleViewCalendarList = () => {
                     <CalendarPlus className="w-12 h-12 font-light text-blue-500" />
                   </div>
                   <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
-                  <p className="text-gray-400 mb-4 text-sm"> Adapt it for LinkedIn, Twitter or Bluesky </p>
+                  {/*<p className="text-gray-400 mb-4 text-sm"> Adapt it for LinkedIn, Twitter or Bluesky </p>*/}
+                  <p className="text-gray-400 mb-4 text-sm"> Add a website you want the campaign to build from </p>
+
+
+              <div className="relative mb-3">
+                {/*<label htmlFor="companyWebsite" className="block text-sm font-medium text-gray-700 mb-1">Your company website</label>*/}
+                <input
+                  id="companyWebsite"
+                  type="url"
+                  value={companyWebsite}
+                  onChange={(e) => setCompanyWebsite(e.target.value)}
+                  placeholder="Website URL (optional)"
+                  className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 py-2 border hover:border hover:border-blue-300 border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 mb-3"
+                  disabled={isLoading}
+                />
+              </div>
+
+            <TooltipExtended text="⚡Generate from website (optional), or create manually.">
                   <button
                     onClick={handleCreateCalendarClick}
+                    disabled={!companyWebsite || isLoading}
                     className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                   >
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      ) : (
                     <PlusCircle className="w-5 h-5 mr-2" />
-                    <span>Create Campaign</span>
+                  )}
+                    <span>{isLoading ? "Analyzing Website..." : "Create Campaign"}</span>
                   </button>
-
+            </TooltipExtended>
               
                 </>
               ) : null} 
@@ -399,6 +469,10 @@ const handleViewCalendarList = () => {
                           fetchCalendarContent(); 
                             }}
                           onClose={handleCloseCreateCalendarForm}
+
+                           // Pass the web-generated insights here
+                          webProblem={insights ? insights.Problem : undefined} 
+                          webAudience={insights ? insights.Audience : undefined}
                         />
                   </div>
                 </div>
