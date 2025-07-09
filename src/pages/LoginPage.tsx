@@ -1,7 +1,7 @@
 // src/pages/new_LandingPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Zap, Users, Rocket, Mail, Lock, ArrowRight, CheckCircle, UserCircle } from 'lucide-react';
+import { Sparkles, Zap, Users, Rocket, Mail, Lock, ArrowRight,ArrowLeft, CheckCircle, UserCircle } from 'lucide-react';
 import { CalendarCheck, Calendar, PenSquare, Clock, PenTool, Briefcase, Plus, Minus,Menu,
   Bot, X, Timer, Lightbulb, CircleDollarSign, Star } from 'lucide-react';
 import GoogleLogo from '../images/google-logo.svg'; // Assuming you have this asset
@@ -36,7 +36,8 @@ function LoginPage() {
     //console.log('Google Sign In clicked (no functionality)');
     // No actual functionality
   //};
-
+const homepageUrl = "/";
+  
 const handleGoogleLogin = async () => {
   try {
     await signInWithGoogle(); // This would be the new function from AuthContext
@@ -107,8 +108,23 @@ const handleSubmit = async (e: React.FormEvent) => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-6xl w-full bg-white rounded-xl shadow-lg overflow-hidden flex flex-col lg:flex-row">
 
+
+
         {/* Left Column: Benefits & Testimonial */}
         <div className="hidden sm:block lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-blue-500 to-blue-700 text-white">
+
+    <a
+          href={homepageUrl} // This will trigger a full page reload to the root URL
+          className="flex space-x-2 items-center text-left text-sm font-semibold mb-8
+                     no-underline hover:no-underline text-white
+                     transition-colors duration-200"
+        >          
+              <span className="flex grow space-x-2 items-center text-left text-sm font-semibold">
+                <ArrowLeft className="w-3.5 h-3.5"/>
+                <span> Back Home</span>
+              </span>
+    </a>
+          
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-4 leading-tight">
             Effortless content that converts
@@ -137,7 +153,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           {/* Mini Testimonial */}
           <div className="mt-auto pt-8 border-t border-white border-opacity-30">
             <p className="text-lg italic mb-4">
-            "SoSavvy has revolutionized how I plan and publish content today. The time-saved is an instant win for my startup!"
+              "SoSavvy has revolutionized how I plan and publish content today. The time-saved is an instant win for my startup!"
             </p>
             <div className="flex items-center space-x-4">
               <div className="relative">
