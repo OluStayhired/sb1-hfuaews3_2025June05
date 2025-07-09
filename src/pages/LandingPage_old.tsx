@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase, Plus, Minus,Menu,
-  Bot, CheckCircle,X, Send, ArrowRight,
+  Bot, CheckCircle,X,
   Timer, 
   Zap, 
   Lightbulb, Sparkles, CircleDollarSign, Star } from 'lucide-react';
@@ -24,6 +24,10 @@ function LandingPage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  //const handleLogin = async () => {
+    //console.log('handleLogin called');
+    //await signIn();
+  //};
 
   const handleGoogleLogin = async () => {
   try {
@@ -33,16 +37,6 @@ function LandingPage() {
   }
 };
 
-//const loginUrl = "https://dapper-dragon-cd4c40.netlify.app/login"; 
-
-const loginUrl = "/login";   
-
-const handleGetStartedClick = () => {
-    // This will trigger a full page reload to the specified URL.
-    window.location.href = loginUrl;
-  };
-
-  
   const handleEmailLogin = () => {
     setIsAuthModalOpen(true);
   };
@@ -54,7 +48,7 @@ const handleGetStartedClick = () => {
 
   
   return (
-      <div id="top_page" className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white">
         <nav className="px-4 py-3 flex items-center justify-between sm:px-6 sm:py-4">
         <div className="flex items-center space-x-2">
 
@@ -99,15 +93,6 @@ const handleGetStartedClick = () => {
             Testimonials
           </button> 
 
-          <button
-            onClick={() => {
-              window.location.href = '#FAQ';
-              }}
-              className="px-4 py-2 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
->
-            FAQ
-          </button> 
-
            <button
             onClick={() => {
               window.location.href = '#pricing';
@@ -117,17 +102,23 @@ const handleGetStartedClick = () => {
             Pricing
           </button> 
       </div> 
-  
-          
           <button
-            onClick={handleGetStartedClick}
-            className="group flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors              
-            shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 "
+            onClick={handleGoogleLogin}
+            className="flex px-4 py-2 bg-white border border-gray-200 flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
           >
             
-           <span>Get Started</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>
+            Join with Google
+              </span>
+          </button>
+
+          
+          <button
+            onClick={handleEmailLogin}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Login with Email
           </button>
           
 
@@ -181,17 +172,6 @@ const handleGetStartedClick = () => {
             >
             Testimonials
           </button>
-
-          <button
-            onClick={() => {
-              window.location.href = '#FAQ';
-              setIsMobileMenuOpen(false);           
-              }}
-              className="w-11/12 max-w-sm px-4 py-3 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
-            >
-            FAQ
-          </button>
-          
           <button
             onClick={() => {
               window.location.href = '#pricing';
@@ -201,8 +181,13 @@ const handleGetStartedClick = () => {
             >
             Pricing
           </button>
-
-          
+            <button
+            onClick={handleGoogleLogin}
+            className="w-11/12 max-w-sm flex px-4 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:text-lg" 
+          >
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>Join with Google</span>
+          </button>
           {/* Close button within the overlay */}
           <button
             onClick={() => setIsMobileMenuOpen(false)}
@@ -213,13 +198,10 @@ const handleGetStartedClick = () => {
           </button>
           
           <button
-            //onClick={handleEmailLogin}
-            onClick={handleGetStartedClick}
-            className="group flex items-center justify-center space-x-2 w-11/12 max-w-sm px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:text-lg"
+            onClick={handleEmailLogin}
+            className="w-11/12 max-w-sm px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:text-lg"
           >
-           
-           <span>Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            Login with Email
           </button>
         
         </div>
@@ -249,27 +231,19 @@ const handleGetStartedClick = () => {
   <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center mx-auto w-fit"> 
     {/* Adjusted button layout for mobile */}
 
-    {/*
     <button
       onClick={handleGoogleLogin}
       className="w-full sm:w-auto flex px-6 py-3 bg-white text-blue-600 border-2 border-blue-600 text-base font-semibold rounded-lg hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl items-center justify-center space-x-2 sm:px-8 sm:py-4 sm:text-lg">
       <img src={googleLogo} alt="Google" className="w-5 h-5" />
       <span>Join with Google</span>
     </button>
-    */}
-    
-<button
-  //onClick={handleEmailLogin}
-  onClick={handleGetStartedClick}
-  className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors
-             shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 
-             sm:px-8 sm:py-4 sm:text-lg"
->
-           
-           <span>Get Started</span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-</button>
+    <button
+      onClick={handleEmailLogin}
+      className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl sm:px-8 sm:py-4 sm:text-lg"
+    >
+      Login with Email
+    </button>
+
 
   </div>
 </div>
@@ -447,13 +421,8 @@ const handleGetStartedClick = () => {
 
         
         <section className="mt-24 text-center">
-          <div className="inline-flex items-center border-8 border-red-200 space-x-2 px-3 py-2 bg-red-400 text-white rounded-full text-lg mb-6 cursor-pointer"      
-            onClick={() => {
-              window.location.href = '#top_page';
-              setIsMobileMenuOpen(false);           
-              }}>
-              
-                <Sparkles className="w-4 h-4" />
+          <div className="inline-flex items-center border-8 border-red-200 space-x-2 px-3 py-2 bg-red-400 text-white rounded-full text-lg mb-6">
+            <Sparkles className="w-4 h-4" />
                 <span>Here's the Problem</span>
           </div>
             <h2 className="text-2xl sm:text-4xl font-bold text-gray-900">
@@ -525,13 +494,7 @@ const handleGetStartedClick = () => {
 
       {/* Start New Gradient Section */}
         <section className="mt-24 text-center">
-          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-blue-400 text-white rounded-full text-lg mb-6 cursor-pointer"
-                 
-            onClick={() => {
-              window.location.href = '#top_page';
-              setIsMobileMenuOpen(false);           
-              }}
-            >
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-blue-400 text-white rounded-full text-lg mb-6">
             <Sparkles className="w-4 h-4" />
                 <span>We have the Solution!</span>
           </div>
@@ -562,14 +525,7 @@ const handleGetStartedClick = () => {
         {/* End New Gradient Section */}
 
 <section id="how_it_works" className="mt-24 text-center">
-          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6 cursor-pointer"
-                 
-            onClick={() => {
-              window.location.href = '#top_page';
-              setIsMobileMenuOpen(false);           
-              }}
-            >
-            
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
             <Sparkles className="w-4 h-4" />
                 <span>How it Works</span>
           </div>
@@ -577,10 +533,9 @@ const handleGetStartedClick = () => {
 
 {/* Start How it Works Section */}
 <section className="mt-8 text-center">
-<h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">
-  Turn your invisible efforts <br className="sm:hidden"/> into <br className="hidden sm:block"/>regular inquiries in <br className="sm:hidden"/> 3 easy steps 🔥
-</h2>
-  
+  <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">
+    Turn your invisible efforts into  <br/>regular inquiries in 3 easy steps 🔥
+  </h2>
   <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
     Audience Analysis . Content Strategy . Scheduled Posts
   </p>
@@ -591,6 +546,9 @@ const handleGetStartedClick = () => {
       {/* Image - fully separated from the text card below */}
       <div className="w-full h-48 mb-6"> {/* Added mb-6 for spacing between image and text card */}
         <img
+          //src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          //src="https://i.imghippo.com/files/sWbH6697Do.png"
+          //src="https://i.imghippo.com/files/Ong5596H.png"
           src="https://i.imghippo.com/files/dL4344ps.png"
           alt="Website Analysis Screenshot"
           className="w-full h-full object-cover rounded-lg" 
@@ -609,6 +567,7 @@ const handleGetStartedClick = () => {
     <div>
       <div className="w-full h-48 mb-6">
         <img
+          //src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
           src="https://i.imghippo.com/files/dE6647lM.png"
           alt="Content Calendar Screenshot"
           className="w-full h-full object-cover rounded-lg"
@@ -644,13 +603,7 @@ const handleGetStartedClick = () => {
 {/* End How it Works Section */}
 
 <section id="key_features" className="mt-24 text-center">
-          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6 cursor-pointer"
-                 
-            onClick={() => {
-              window.location.href = '#top_page';
-              setIsMobileMenuOpen(false);           
-              }}
-            >
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
             <Sparkles className="w-4 h-4" />
                 <span>SoSavvy's Key Features</span>
           </div>
@@ -674,18 +627,19 @@ const handleGetStartedClick = () => {
           {/* Buttons (Desktop Version: visible from md breakpoint up) */}
           {/* These buttons appear after text on desktop */}
           <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
-      
-            <button
-              //onClick={handleEmailLogin}
-              onClick={handleGetStartedClick}
-              className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
-                           shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 
-              "
+                        <button
+              onClick={handleGoogleLogin}
+              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
             >
-               
-               <span>Get Started</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              <span>Join with Google</span>
+            </button>
+            
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
             </button>
 
           </div>
@@ -721,19 +675,19 @@ const handleGetStartedClick = () => {
       {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* These buttons appear after the mobile image */}
       <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
-
-    
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+        >
+          <img src={googleLogo} alt="Google" className="w-5 h-5" />
+          <span>Join with Google</span>
+        </button>
         
         <button
-          //onClick={handleEmailLogin}
-          onClick={handleGetStartedClick}
-          className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
-                       shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 "
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
         >
-          
-           <span>Get Started</span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          Login with Email
         </button>
 
       </div>
@@ -760,6 +714,25 @@ const handleGetStartedClick = () => {
             Stop random acts of content. Build strategic campaigns that ensure every post addresses customer pain and guides them to your solution.
           </p>
 
+          {/* Buttons (Desktop Version: visible from md breakpoint up) */}
+          {/* These buttons appear after text on desktop, aligned left with text */}
+          {/* disabling alternate buttons
+          <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
+            </button>
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+            >
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              <span>Join with Google</span>
+            </button>
+          </div>
+          */}
         </div>
 
         {/* No explicit placeholder div is needed here. md:justify-end on the parent handles the right alignment of the text content. */}
@@ -770,7 +743,8 @@ const handleGetStartedClick = () => {
       <img
         src="https://i.imghippo.com/files/ZsdT4458qo.png"
         alt="SoSavvy Product Screenshot"
-        className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
+        //className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-contain rounded-xl z-0"
+          className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
       />
 
       {/* Image (Mobile Version: In-flow, visible below md breakpoint) */}
@@ -785,18 +759,20 @@ const handleGetStartedClick = () => {
 
       {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* These buttons appear after the mobile image */}
-      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> 
-
-        <button
-          //onClick={handleEmailLogin}
-          onClick={handleGetStartedClick}
-          className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
-                       shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 "
+      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
+          <button
+          onClick={handleGoogleLogin}
+          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
         >
-            
-           <span>Get Started</span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          <img src={googleLogo} alt="Google" className="w-5 h-5" />
+          <span>Join with Google</span>
+        </button>
+        
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
         </button>
 
       </div>
@@ -824,17 +800,19 @@ const handleGetStartedClick = () => {
           {/* Buttons (Desktop Version: visible from md breakpoint up) */}
           {/* These buttons appear after text on desktop */}
           <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
-
             <button
-              //onClick={handleEmailLogin}
-              onClick={handleGetStartedClick}
-              className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
-                           shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 "
+              onClick={handleGoogleLogin}
+              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
             >
-             
-               <span>Get Started</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              <span>Join with Google</span>
+            </button>
+            
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
             </button>
 
           </div>
@@ -871,17 +849,19 @@ const handleGetStartedClick = () => {
       {/* These buttons appear after the mobile image */}
       <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
 
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+        >
+          <img src={googleLogo} alt="Google" className="w-5 h-5" />
+          <span>Join with Google</span>
+        </button>
         
         <button
-          //onClick={handleEmailLogin}
-          onClick={handleGetStartedClick}
-          className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
-                       shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 "
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
         >
-          
-           <span>Get Started</span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          Login with Email
         </button>
 
       </div>
@@ -908,9 +888,28 @@ const handleGetStartedClick = () => {
             Publish effortlessly. Automatically schedule strategic posts across LinkedIn, X, and Bluesky, freeing you to focus on your business as inquiries roll in.
           </p>
 
-  
+          {/* Buttons (Desktop Version: visible from md breakpoint up) */}
+          {/* These buttons appear after text on desktop, aligned left with text */}
+          {/* disabling alternate buttons
+          <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
+            <button
+              onClick={handleEmailLogin}
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+            >
+              Login with Email
+            </button>
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
+            >
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              <span>Join with Google</span>
+            </button>
+          </div>
+          */}
         </div>
 
+        {/* No explicit placeholder div is needed here. md:justify-end on the parent handles the right alignment of the text content. */}
 
       </div> {/* End max-w-6xl mx-auto div */}
 
@@ -924,7 +923,7 @@ const handleGetStartedClick = () => {
 
       {/* Image (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* This image appears after text on mobile, is larger, and uses object-contain to prevent cropping */}
-      <div className="md:hidden mt-8 flex justify-center"> 
+      <div className="md:hidden mt-8 flex justify-center"> {/* mt-8 for spacing after text content */}
         <img
           src="https://i.imghippo.com/files/pRPI1002zk.png"
           alt="SoSavvy Product Screenshot"
@@ -934,19 +933,20 @@ const handleGetStartedClick = () => {
 
       {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* These buttons appear after the mobile image */}
-      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> 
-        {/* mt-6 for spacing after image */}
+      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
         <button
-          //onClick={handleEmailLogin}
-          onClick={handleGetStartedClick}
-          className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
-                       shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 
-          "
+          onClick={handleGoogleLogin}
+          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
         >
-          
-           <span>Get Started</span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          <img src={googleLogo} alt="Google" className="w-5 h-5" />
+          <span>Join with Google</span>
+        </button>
+        
+        <button
+          onClick={handleEmailLogin}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
+        >
+          Login with Email
         </button>
 
       </div>
@@ -956,6 +956,10 @@ const handleGetStartedClick = () => {
 {/* End New Gradient Section with picture on the left */}    
             
   <section className="relative mt-24 py-16 bg-gradient-to-b from-blue-500 via-blue-400 to-white text-gray-900 rounded-xl overflow-hidden">
+    {/*
+        1. Gradient from top to bottom (`bg-gradient-to-b`)
+        2. `overflow-hidden` is crucial to ensure the image's "break out" is clipped neatly at the rounded-xl corners.
+    */}
 
     <div className="max-w-4xl mx-auto px-6 text-center z-10 relative">
         {/* Sparkles Icon (Maintained positioning from previous iteration) */}
@@ -976,26 +980,44 @@ const handleGetStartedClick = () => {
         </p>
 
         {/* Buttons */}
-      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16">       
+      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> {/* Added flex-col, space-y-4 for mobile; sm:flex-row, sm:space-x-4, sm:space-y-0 for desktop */}
           <button
-            //onClick={handleEmailLogin}
-            onClick={handleGetStartedClick}
-            className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
-            shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 " // Adjusted mobile button size/text for consistency
+            onClick={handleGoogleLogin}
+            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
           >
-            
-           <span>Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>Join with Google</span>
+          </button>
+
+        
+          <button
+            onClick={handleEmailLogin}
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
+          >
+            Login with Email
           </button>
 
 
         </div>
 
         {/* Image - Centered and "unconstrained" */}
+        {/*
+            - `relative` parent is the <section>
+            - `mx-auto` for horizontal centering
+            - `px-6` for left/right padding on the image itself.
+            - `w-full max-w-5xl`: Image takes full width up to 5xl, scaling responsively.
+            - `h-[300px] md:h-[400px] lg:h-[500px]`: Defines a substantial height, approximately 1/3 to 1/2 of typical section height.
+              This height will make it visually prominent.
+            - `object-cover` and `rounded-lg shadow-xl` for style.
+            - `mt-8`: Adds space above the image.
+            - `block`: Ensures it behaves like a block element for `mx-auto` to work.
+            - No bottom padding means it can appear to sit flush with the bottom of the section.
+        */}
 
     </div>
           <img
+            //src="https://placehold.co/1200x500/E0E7FF/000000?text=SoSavvy+Dashboard+Screenshot"
+            //src="https://i.imghippo.com/files/Lp8140co.png"
             src="https://i.imghippo.com/files/hjBw8272m.png"
             alt="SoSavvy Dashboard Screenshot"
             className="hidden sm:block w-full max-w-5xl h-[300px] md:h-[400px] lg:h-[500px] object-cover rounded-lg mx-auto mt-8 block"
@@ -1005,15 +1027,7 @@ const handleGetStartedClick = () => {
 {/*----------------------Start Testimonials Section--------------------*/}
 
 <section id="testimonial" className="mt-24 text-center">
-  <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6 cursor-pointer"
-
-         
-            onClick={() => {
-              window.location.href = '#top_page';
-              setIsMobileMenuOpen(false);           
-              }}
-    >
-    
+  <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
     <Sparkles className="w-4 h-4" />
     <span>What Our Customers Say</span>
   </div>
@@ -1163,13 +1177,7 @@ const handleGetStartedClick = () => {
 {/*---------------------End Testimonials Section -------------------------*/}
 
         <section id="pricing" className="mt-24 text-center">
-          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg cursor-pointer"
-                 
-            onClick={() => {
-              window.location.href = '#top_page';
-              setIsMobileMenuOpen(false);           
-              }}
-            >
+          <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg">
             <Sparkles className="w-4 h-4" />
                 <span>An Easy Pricing Plan</span>
           </div>
@@ -1197,19 +1205,20 @@ const handleGetStartedClick = () => {
           <p className="text-lg mb-8 opacity-90">No more wasting your time posting for LIKES.</p>
 
           {/* Buttons */}
-      <div className="flex flex-col sm:flex-row sm:mr-24 sm:justify-end justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> 
-
+      <div className="flex flex-col sm:flex-row sm:justify-end justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> 
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
+          >
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>Join with Google</span>
+          </button>
         
           <button
-            //onClick={handleEmailLogin}
-            onClick={handleGetStartedClick}
-            className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
-                         shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 "
+            onClick={handleEmailLogin}
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base"
           >
-            
-           <span>Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            Login with Email
           </button>
 
 
@@ -1277,14 +1286,8 @@ const handleGetStartedClick = () => {
 
   {/*------------------------------start of the FAQ Section -------------------------------------*/}    
 
-<section id="FAQ" className="mt-24 text-center">
-  <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6 cursor-pointer"
-         
-            onClick={() => {
-              window.location.href = '#top_page';
-              setIsMobileMenuOpen(false);           
-              }}
-    >
+<section className="mt-24 text-center">
+  <div className="inline-flex items-center border-8 border-blue-200 space-x-2 px-3 py-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 text-white rounded-full text-lg mb-6">
     <Sparkles className="w-4 h-4" />
     <span>Frequently Asked Questions</span>
   </div>
@@ -1295,6 +1298,15 @@ const handleGetStartedClick = () => {
    Learn how SoSavvy can transform your social media strategy.
   </p>
 
+  {/*     
+<section className="mt-32 text-center">
+  <h2 className="text-4xl font-bold text-gray-900 mb-4">
+    Frequently Asked Questions
+  </h2>
+  <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+    Have questions? We've got answers. Find out more about how SoSavvy can transform your social media strategy.
+  </p>
+*/}
   <div className="max-w-3xl mx-auto space-y-4 text-left">
     {/* FAQ Item 1 */}
    <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -1318,7 +1330,7 @@ const handleGetStartedClick = () => {
     {/* FAQ Item 2 */}
      <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
   <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
-    I spend too much time creating social media content. How does SoSavvy save me time?
+     I spend too much time creating social media content. How does SoSavvy save me time?
     <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
       <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -1336,7 +1348,7 @@ const handleGetStartedClick = () => {
     {/* FAQ Item 3 */}
      <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
   <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
-   How will SoSavvy help me generate actual leads, not just likes?
+    How will SoSavvy help me generate actual leads, not just likes?
     <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
       <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -1354,7 +1366,7 @@ const handleGetStartedClick = () => {
      {/* FAQ Item 4 */}
     <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
   <summary class="flex items-center justify-between p-5 cursor-pointer font-semibold text-lg text-gray-800 hover:bg-gray-50 transition-colors">
-   I struggle with consistent posting. How does SoSavvy ensure my social media presence remains active?
+    I struggle with consistent posting. How does SoSavvy ensure my social media presence remains active?
     <div class="relative w-6 h-6 rounded-full items-center p-2 justify-center"> 
       <svg class="absolute inset-0 w-6 h-6 text-blue-500 group-open:hidden transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -1460,17 +1472,20 @@ const handleGetStartedClick = () => {
     </p>
 
         {/* Buttons */}
-      <div className="flex flex-col sm:mr-10  sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> 
+      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> {/* Added flex-col, space-y-4 for mobile; sm:flex-row, sm:space-x-4, sm:space-y-0 for desktop */}
           <button
-            //onClick={handleEmailLogin}
-            onClick={handleGetStartedClick}
-            className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
-                         shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 " // Adjusted mobile button size/text for consistency
+            onClick={handleGoogleLogin}
+            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
           >
-            
-           <span>Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            <img src={googleLogo} alt="Google" className="w-5 h-5" />
+            <span>Join with Google</span>
+          </button>
+        
+          <button
+            onClick={handleEmailLogin}
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
+          >
+            Login with Email
           </button>
 
 
@@ -1484,7 +1499,31 @@ const handleGetStartedClick = () => {
   {/*---------------------------------End Final Call to Action Section-----------------------------*/}      
 
 
-      
+        {/* Start Feature Section */}
+        {/*
+        <div className="mt-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <FeatureCard
+            icon={<PenSquare className="h-8 w-8 text-blue-500" />}
+            title="Compose Posts"
+            description="Create engaging content for your social media channels"
+          />
+          <FeatureCard
+            icon={<Clock className="h-8 w-8 text-blue-500" />}
+            title="Create Schedule"
+            description="Plan and schedule your posts for optimal engagement"
+          />
+          <FeatureCard
+            icon={<Calendar className="h-8 w-8 text-blue-500" />}
+            title="View Calendars"
+            description="Visualize your content calendar across platforms"
+          />
+          <FeatureCard
+            icon={<Users className="h-8 w-8 text-blue-500" />}
+            title="Access Accounts"
+            description="Manage all your social media accounts in one place"
+          />
+        </div>
+*/}
         {/* Start Footer - Full Foot Breakdown */}
 
 <footer className="mt-24 border-t border-gray-300 text-left">
@@ -1496,6 +1535,12 @@ const handleGetStartedClick = () => {
               <div className="inline-flex bg-blue-600 rounded-full p-2 rotate-180">
                 <PenTool className="h-9 w-9 fill-white stroke-blue-600" />
               </div>
+        {/*
+        <div className="flex  items-center space-x-2">
+          <img src={klaowtIcon} alt="Klaowt Icon in-App" className="w-9 h-9 bg-blue-200 p-1.5 rounded-full" />
+          <span className="font-bold text-xl">Klaowt</span>
+        </div>
+        */}
         
         <p className="text-sm text-gray-600">
           The smart solution for audience builders on Bluesky <img src={BlueskyLogo} alt="Bluesky" className="inline-block w-3 h-3 align-middle" /> LinkedIn <img src={LinkedInSolidLogo} alt="LinkedIn" className="inline-block w-3 h-3 align-middle" /> and Twitter <img src={XLogo} alt="Twitter" className="inline-block w-3 h-3 align-middle" />
@@ -1507,10 +1552,10 @@ const handleGetStartedClick = () => {
       <div>
         <h3 className="font-semibold mb-4">Product</h3>
         <ul className="space-y-2 text-sm text-gray-600">
-          <li> <a href="#key_features" className="no-underline hover:text-blue-400 transition-colors">Features</a></li>
-          <li> <a href="#pricing" className="no-underline hover:text-blue-400 transition-colors">Pricing</a></li>
-          <li> <a href="#testimonial" className="no-underline hover:text-blue-400 transition-colors">Testimonials</a></li>
-          <li className="text-gray-400">Roadmap <em>(soon)</em></li>
+          <li>Features</li>
+          <li>Pricing</li>
+          <li>Beta Access</li>
+          <li>Roadmap</li>
         </ul>
       </div>
 
@@ -1518,10 +1563,10 @@ const handleGetStartedClick = () => {
       <div>
         <h3 className="font-semibold mb-4">Resources</h3>
         <ul className="space-y-2 text-sm text-gray-600">
-          <li className="text-gray-400">Blog <em>(soon)</em></li>
-          <li className="text-gray-400">Docs <em>(soon)</em></li>
-          <li className="text-gray-400">Support <em>(soon)</em></li>
-          <li> <a href="#FAQ" className="no-underline hover:text-blue-400 transition-colors">FAQ</a></li>
+          <li>Blog</li>
+          <li>Documentation</li>
+          <li>Support</li>
+          <li>FAQ</li>
         </ul>
       </div>
 
@@ -1530,12 +1575,11 @@ const handleGetStartedClick = () => {
         <h3 className="font-semibold mb-4">Legal</h3>
         <ul className="space-y-2 text-sm text-gray-600">
           <li>
-            <a href="/privacy.html" className="flex items-center gap-3 hover:text-blue-400 transition-colors">Privacy Policy</a>      
+            <a href="/privacy.html" className="flex items-center gap-3 hover:text-blue-400 transition-colors">Privacy Policy</a>
+          
           </li>
-          <li>
-              <a href="/terms.html" className="flex items-center gap-3 hover:text-blue-400 transition-colors">Terms of Service</a>
-          </li>
-              <a href="/cookie.html" className="flex items-center gap-3 hover:text-blue-400 transition-colors">Cookie Policy</a>
+          <li>Terms of Service</li>
+          <li>Cookie Policy</li>
         </ul>
       </div>
     </div>
@@ -1554,8 +1598,38 @@ const handleGetStartedClick = () => {
     </div>
   </div>
 </footer>
-</main>
-        
+
+        {/*    
+        <div className="mt-32 text-center">
+          <h2 className="text-2xl font-semibold text-blue-900 mb-8">Supported Platforms</h2>
+          <div className="flex justify-center items-center space-x-8">
+            <div className="flex items-center p-2 bg-gray-50 hover:bg-gray-100 space-x-2 text-blue-700 rounded-tl-xl rounded-br-xl">
+              <img src={BlueskyLogo} alt="Bluesky" className="w-12 h-12 rounded-lg" />
+            </div>
+            <div className="flex items-center p-2 bg-gray-50 hover:bg-gray-100 space-x-2 text-blue-700 rounded-tl-xl rounded-br-xl">
+              <img src={LinkedInSolidLogo} alt="LinkedIn" className="w-12 h-12 rounded-lg" />
+            </div>
+          </div>
+        </div>
+        */}
+     
+      </main>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={handleCloseAuthModal}
+        //onClose={() => setIsAuthModalOpen(false)}
+      />
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+      <div className="mb-4">{icon}</div>
+      <h3 className="text-xl font-semibold text-blue-900 mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
     </div>
   );
 }
