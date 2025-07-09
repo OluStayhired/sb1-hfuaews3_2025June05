@@ -152,7 +152,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           {/* Mini Testimonial */}
           <div className="mt-auto pt-8 border-t border-white border-opacity-30">
-            <p className="text-lg italic mb-4">
+            <p className="text-lg italic text-sm mb-4">
               "SoSavvy has revolutionized how I plan and publish content today. The time-saved is an instant win for my startup!"
             </p>
             <div className="flex items-center space-x-4">
