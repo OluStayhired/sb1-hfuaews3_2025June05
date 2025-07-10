@@ -322,7 +322,7 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
               <button
                 onClick={() => handleHookPostV3(item, '280')}
                 disabled={loadingProcess === `${item.id}_280`|| isHooksLoading || hooksError !== null}
-                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
+                className="p-1 bg-gradient-to-r from-blue-50  to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
                 
                 {loadingProcess === `${item.id}_280` ? (
