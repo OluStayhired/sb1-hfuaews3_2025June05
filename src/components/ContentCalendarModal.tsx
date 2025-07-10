@@ -318,7 +318,7 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
               </button>
              </TooltipHelp>
 
-            <TooltipHelp  text = "⚡Rewrite for Twitter">
+             <TooltipHelp  text = "⚡Rewrite for X">
               <button
                 onClick={() => handleHookPostV3(item, '280')}
                 disabled={loadingProcess === `${item.id}_280`|| isHooksLoading || hooksError !== null}
