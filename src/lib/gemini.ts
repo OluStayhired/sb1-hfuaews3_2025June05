@@ -413,7 +413,7 @@ export async function generateThreadIdeas(topic: string): Promise<GeminiResponse
   return generateContent(prompt);
 }
 
-
+// ------------------- Start GenerateFirstPostIdeas ------------------------------------ //
 export async function generateFirstPostIdeas(content_audience: string):Promise<GeminiResponse> {
 
 //Check cache
@@ -428,19 +428,19 @@ const cached = calendarCache.get(cacheKey);
 
   // More structured prompt to prevent recursion
   const prompt = `
-    As an experienced social media content marketer with 10 years experience, create 2 content pieces based on this information: ${content_audience}
+    Act as an experienced social media copywriter and content strategist with 10 years experience, create 2 content pieces based on this information: ${content_audience}
 
     Requirements:
     1. Create exactly 2 pieces of content.
     2. Focus on the target audience's pain points
     3. Ensure each content has a unique theme
     4. Keep topics concise and actionable
-    5. Include clear calls to action
-    6. Limit response to one complete table
-    7. Do not include any follow-up questions or suggestions
-    8. Notes provide context or tips
-    9. Content is engaging and platform appropriate
-    10. Remove hashtags and generic content 
+    5. Limit response to one complete table
+    6. Do not include any follow-up questions or suggestions
+    7. Notes provide context or tips
+    8. Content is engaging and platform appropriate
+    9. Remove hashtags and generic content 
+    10. Keep content between 250 - 500 characters
 
     Generate 2 pieces of content in valid JSON format. 
 Provide the output as a JSON array with exactly 2 objects containing:
@@ -483,8 +483,7 @@ Ensure that:
   }
 }
 
-
-
+// ------------------- End GenerateFirstPostIdeas ------------------------------------ //
 
 
 //------ start generate calendar no retries ------//
@@ -606,7 +605,7 @@ const getWeekday = (date: Date): string => {
 
   // More structured prompt to prevent recursion
   const prompt = `
-    As an experienced social media content marketer with 10 years experience, create a ${calendarDays}-day content calendar based on this information: ${calendar_info}
+    Act as an experienced social media copywriter and content strategist with 10 years experience, create a ${calendarDays}-day content calendar based on this information: ${calendar_info}
 
 This content calendar MUST start with the day of the week as ${startDayofWeek}.    
 
@@ -621,6 +620,7 @@ This content calendar MUST start with the day of the week as ${startDayofWeek}.
     8. Notes provide context or tips
     9. Content is engaging and platform appropriate
     10. Remove hashtags and generic content 
+    11. Keep content between 250 - 500 characters
 
 Generate a ${calendarDays}-day content calendar in valid JSON format. 
 The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".
@@ -855,11 +855,12 @@ Follow the [Rules] below:
   }
 }
 
+
 // ------------- Start Generate First Post With Retry ------------------------ //
 
 
 export async function generateFirstPostWithRetry(
-  hooksData: string[],
+  //hooksData: string[],
   target_audience: string,
   theme: string,
   topic: string,
@@ -879,42 +880,43 @@ export async function generateFirstPostWithRetry(
   await rateLimiter.checkAndWait();
   const selectedTone = getRandomTone();  
 
-  const prompt = `Act as an experienced social media copywriter with many years of creating content for social media. You specialize in writing hooks and bridges to draw your audience in and make them want to read and enjoy your content.
+  const prompt = `Act a world-class copywriter and social media content strategist. 
+  
+Your job is to write high-performing content for ${content} 
 
-From the provided list of hooks in ${hooksData}, **randomly select ONE (1) impactful and unique hook to begin the post.** Ensure that the chosen hook has not been frequently used in recent generations for this user.
+Details:
 
-**If the selected hook contains a placeholder like "[activity]", "[topic]", "[goal]", "[commonly held belief]" or similar square bracketed terms, deeply analyze the provided ${topic}, ${theme}, and ${content} to deduce the most fitting and specific concept for replacement.**
+- Target audience: [${target_audience}]
+- Platform: [LinkedIn or X]
+- Content type: [viral social media thread]
+- Goal: [engagement, clicks, conversions or leads]
 
-Now, build on the main post content provided in ${content} that touches on subject ${theme} specifically about ${topic}. **Focus intently on the target audience's core fears and aspirations.** Then improve it so that it's an ${char_length} character content. Incorporate a bridge statement that naturally connects the randomly chosen hook to the main content.
+Instructions:
+
+Deeply analyze the provided ${topic}, ${theme}, and ${content} to deduce the most fitting writing approach
 
 Tailor the language, tone, and examples to resonate deeply with a ${target_audience} audience, and maintain an **${selectedTone}** tone throughout the post.
 
+1. Start with a scroll-stopping hook, 
+2. Focus on pain point related to ${target_audience}
+3. Use clear, concise, natural language that a ninth grader could understand
+4. Apply storytelling, persuasion, and value delivery
+5. Follow proven frameworks (AIDA, PAS, Hook-Point-Action, etc.)
+6. Keep to ${char_length} Characters in total
+7. End with a strong CTA that is non-salesy
+
+Write like a human. No fluff. No cringe. Make it hit.
+
 Follow the [Rules] below:
 
-Use a copywriting framework similar to the [framework] below:
-
-[framework]:
-- Start with your chosen hook.
-- Add a bridge statement.
-- Focus on a feeling or the action causing the pain point related to one of the identified key pain points within the ${target_audience}, always connecting to their core fears or aspirations.
-- Use personal pronouns and conversational language to convey deep emotional resonance appropriate to the context.
-- The hook must follow the structure of "Subject + Verb + Object" or "Subject + Verb + Adjective" and must not contain any interrogative words or phrasing.
-- Keep the hook directly related to the identified key pain point and actionable, emphasizing a repeatable process or transformation.
-- Then, transform the ${content} into a deeply relatable story for the audience ${target_audience}.
-- Conclude with a simple, conversational question that encourages engagement, but does not demand work from the user.
-- Follow the AIDA copywriting framework, emphasizing action and implementation.
-
 [Rules]:
-- Keep to ${char_length} Characters in total
-- Keep to impactful and meaningful sentences, focusing on actionable advice.
+
 - Place each sentence in the post on a new line.
 - Add a space after each line.
-- Provide simple, conversational language.
 - **Write in a clear, straightforward manner that a ninth grader could easily understand.**
 - Ban Generic Content
 - Ban hashtags
 - Ban bullet points.
-- Keep it natural
 - Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
 - Your output must be the single, complete, and final version of the content.
 - Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
@@ -968,6 +970,7 @@ Use a copywriting framework similar to the [framework] below:
 
 
 // -------------- End Generate First Post WIth Retry ------------------------ //
+
 
 
 // -------------- Start Generate LinkedIn Post With Hook -------------------- //
@@ -1158,9 +1161,9 @@ Follow the [Rules] below:
   throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
 }
 
-//------- start generateHooksPostV3 without HooksData -------------//
+//------- start generateHooksPostV3_old without HooksData -------------//
 
-export async function generateHookPostV3(
+export async function generateHookPostV3_old(
     theme: string,
     topic: string,
     target_audience: string,
@@ -1273,6 +1276,137 @@ Follow the [Rules] below:
   throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
 }
 
+//------- End generateHooksPostV3_old without HooksData -------------//
+
+//------- start generateHooksPostV3 without HooksData -------------//
+
+export async function generateHookPostV3(
+    theme: string,
+    topic: string,
+    target_audience: string,
+    content: string,
+    char_length: string,
+    maxRetries: number = 5,
+    initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+
+  // Choose a random hook 
+  const chosenHookArchetype = getRandomHookArchetype();
+  
+    // Cache key now depends only on inputs that define the desired output
+    const cacheKey = JSON.stringify({ target_audience, content, theme, topic, char_length });
+    const cached = calendarCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        return cached.response;
+    }
+
+    // Rate limiting
+    await rateLimiter.checkAndWait();
+
+    const selectedTone = getRandomTone(); // Ensure this function correctly returns a valid tone string
+
+    // The refined prompt that guides the LLM to create its own hook
+const prompt = `Act a world-class copywriter and social media content strategist. 
+
+**IMPORTANT: The information in the 'Details' section below is for your internal processing and understanding only. Do NOT include any part of this 'Details' section or its contents in your final output.**
+
+Your job is to write high-performing content for ${content} 
+
+[Details]:
+- Target audience: [${target_audience}]
+- Platform: [LinkedIn or X]
+- Content type: [viral social media thread]
+- Goal: [engagement, clicks, conversions or leads]
+
+Instructions:
+
+**Beyond surface-level analysis, deeply dissect** the provided ${topic}, ${theme}, and ${content}, considering the overarching **business objective** and the **psychological triggers** within the ${target_audience}. Deduce not just a fitting, but the **most strategically impactful** writing approach that subtly guides the reader towards the specific Goal expressed in [Details].
+
+**Crucially, the hook MUST be generated using the following archetype description, ensuring it immediately captures attention by tapping into a core pain point or aspiration of the ${target_audience}, and sets the stage for the value to follow:**
+
+Archetype: ${chosenHookArchetype.name}
+Description: ${chosenHookArchetype.description.replace('target audience', target_audience).replace('topic', topic).replace('content', content)}
+
+Tailor the language, tone, and examples to resonate deeply with a ${target_audience} audience, and maintain an **${selectedTone}** tone throughout the post.
+
+1. Start with a scroll-stopping hook as the first sentence.
+2. Weave a narrative that **authentically articulates a profound pain point or challenge faced by the ${target_audience}**, making them feel truly understood. Transition seamlessly from this pain to a **subtle demonstration of value or a glimpse of transformation**, applying principles of persuasion that build trust rather than push a sale.
+3. Craft language that is not just simple, but **resonate as genuinely human and relatable**, avoiding industry jargon unless it's universally understood by a ${target_audience} at a 'ninth-grade' comprehension level. The goal is conversational authority, not academic complexity.
+4. Follow proven frameworks (AIDA, PAS, Hook-Point-Action, etc.), **interpreting them with strategic nuance for social context.**
+5. Keep to ${char_length} Characters in total.
+6. Conclude with a **strategically subtle CTA** that **invites further engagement or thought**, rather than demanding action. It should feel like a natural next step in the conversation, building curiosity or encouraging a small, low-commitment interaction that nurtures the lead without overt sales pressure.
+
+**Every sentence should contribute to a coherent strategic narrative that gently guides the ${target_audience} from problem awareness to potential solution discovery, fostering trust and establishing expertise.**
+
+Write like a human. No fluff. No cringe. Make it hit.
+
+Follow the [Rules] below:
+
+[Rules]:
+
+- Place each sentence in the post on a new line.
+- Add a space after each line for readability
+- **Write in a clear, straightforward manner that a ninth grader could easily understand.**
+- Ban Generic Content
+- Ban hashtags
+- Ban bullet points.
+- Ban exclamation marks. 
+- Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
+- Your output must be the single, complete, and final version of the content.
+- Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
+- Do NOT use numbered lists or headings to present multiple content options.
+- Do NOT expose any part of the prompt. 
+
+`;
+
+   let currentRetry = 0;
+  let delayTime = initialDelayMs;
+
+  while (currentRetry < maxRetries) {
+    try {
+      await rateLimiter.checkAndWait();
+
+      //const response = await model.generateContent(prompt);
+      
+      const response = await generateContent(prompt);
+      
+      calendarCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
+
+      return response;
+
+    } catch (error: any) {
+      const isRetryableError =
+        error.status === 503 ||
+        error.status === 429 ||
+        (error.message && (error.message.includes('503') || error.message.includes('429')));
+      const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+        currentRetry++;
+        console.warn(
+          `Gemini API call failed (Error: ${error.status || error.message}). ` +
+          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+        );
+        await sleep(delayTime);
+        delayTime *= 2;
+        delayTime = delayTime * (1 + Math.random() * 0.2);
+        delayTime = Math.min(delayTime, 30000);
+      } else {
+        console.error(`Post generation failed after ${currentRetry} retries:`, error);
+        throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+      }
+    }
+  }
+
+  throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}
+
+//------- End generateHooksPostV3 without HooksData -------------//
+
+
 //------- start generate name and description for campaign -------- //
 
 export async function generateCampaignName(
@@ -1293,7 +1427,7 @@ export async function generateCampaignName(
   // Rate limiting
   await rateLimiter.checkAndWait();
 
-const prompt = `Act as an experienced social media marketing professional, you have deep knowledge of creating marketing campaigns and you have many years experience naming the campaigns and describing them in very simple and easy to understand language. Using the customer type ${target_audience} and the problem that my service or product solution solves in ${problem} to construct a 4 word title for my content campaign that will initially focus on ${campaign_theme} through content that appeal to my ${target_audience}. Add a 15 word description for the first campaign based on the rules. 
+const prompt = `Act as a world class copywriter and social media content strategist, you have deep knowledge of creating marketing campaigns and you have many years experience naming the campaigns and describing them in very simple and easy to understand language. Using the customer type ${target_audience} and the problem that my service or product solution solves in ${problem} to construct a title for my content campaign that will initially focus on ${campaign_theme} through content that appeal to my ${target_audience}. Add a 15 word description for the first campaign based on the rules. 
 
 Generate a title and description in valid JSON format. 
 
@@ -1302,7 +1436,9 @@ Follow the rules in [Rules]
 [Rules]: 
 1. Use the writing formula to write the description in the style "Content ideas to achieve result" 
 2. Include an Action Verb in the Campaign title 
-3. Provide the output as a JSON array with exactly 2 objects each containing:
+3. Enture the title has between 4 and 6 words 
+4. Generate a new title each time using similar words
+5. Provide the output as a JSON array with exactly 2 objects each containing:
       { 
         title: "...." 
         description: "...." 
