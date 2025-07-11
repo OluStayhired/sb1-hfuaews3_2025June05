@@ -1436,8 +1436,8 @@ Follow the rules in [Rules]
 [Rules]: 
 1. Use the writing formula to write the description in the style "Content ideas to achieve result" 
 2. Include an Action Verb in the Campaign title 
-3. Enture the title has between 4 and 6 words 
-4. Generate a new title each time using similar words
+3. **Ensure the Campaign title has between 4 and 6 words** 
+4. **Generate a new Campaign title each time using similar words**
 5. Provide the output as a JSON array with exactly 2 objects each containing:
       { 
         title: "...." 
