@@ -186,6 +186,7 @@ const handleConnectTwitter = async () => {
       'users.read',
       'tweet.write', 
       'offline.access', // Required to get a refresh token for long-term access
+      'media.write',
       // Add other scopes as needed based on Twitter API docs
     ];
     const scopeParam = encodeURIComponent(twitterScopes.join(' ')); 
