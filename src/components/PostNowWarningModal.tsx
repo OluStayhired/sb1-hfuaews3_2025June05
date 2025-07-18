@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { AlertTriangle, X, Send, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { BskyAgent } from '@atproto/api';
+import { BskyAgent, BlobRef } from '@atproto/api';
+//import { BskyAgent } from '@atproto/api';
 
 interface SocialAccount {
     id: string;
@@ -28,6 +29,7 @@ interface PostData {
     content_date: string;
     content_time: string;
     timezone?: string | null;
+    photo_url?: string | null;
     schedule_status: boolean;
     sent_post: boolean;
     posted_at?: string | null;
@@ -61,7 +63,47 @@ export function PostNowWarningModal({ 
 
   const VITE_LINKEDIN_POSTER_URL = import.meta.env.VITE_LINKEDIN_POSTER_URL;
   const VITE_TWITTER_POSTER_URL = import.meta.env.VITE_TWITTER_POSTER_URL;
+  const VITE_LINKEDIN_PHOTO_POSTER_URL = import.meta.env.VITE_LINKEDIN_PHOTO_POSTER_URL;
+  const VITE_TWITTER_PHOTO_POSTER_URL = import.meta.env.VITE_TWITTER_PHOTO_POSTER_URL;
 
+// Helper to upload image
+const uploadImageToBlueskyFrontend = async (agent: BskyAgent, photoUrl: string, altText: string): Promise<BlobRef | null> => {
+    console.log('Frontend: Starting Bluesky image upload for URL:', photoUrl);
+
+    // Fetch the image from the Supabase Storage URL
+    // Assuming photoUrl is already a direct public URL from Supabase Storage
+    const imageFetchResponse = await fetch(photoUrl);
+    if (!imageFetchResponse.ok) {
+        const errorText = await imageFetchResponse.text();
+        console.error('Frontend: Failed to fetch image from Supabase storage:', imageFetchResponse.status, imageFetchResponse.statusText, errorText);
+        throw new Error(`Failed to fetch image from Supabase: ${imageFetchResponse.status} ${imageFetchResponse.statusText}`);
+    }
+
+    const imageBlob = await imageFetchResponse.blob();
+    const fetchedContentType = imageFetchResponse.headers.get('Content-Type') || 'application/octet-stream';
+    console.log('Frontend: Fetched image Content-Type:', fetchedContentType);
+
+    // Convert Blob to Uint8Array, which BskyAgent.uploadBlob typically expects
+    const arrayBuffer = await imageBlob.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    console.log('Frontend: Uploading image blob to Bluesky...');
+    try {
+        const uploadResult = await agent.uploadBlob(uint8Array, { encoding: fetchedContentType });
+
+        if (uploadResult?.data?.blob) {
+            console.log('Frontend: Image uploaded successfully to Bluesky. BlobRef:', uploadResult.data.blob);
+            return uploadResult.data.blob;
+        } else {
+            console.error('Frontend: BlobRef not found in Bluesky upload response:', uploadResult);
+            throw new Error("BlobRef not received from Bluesky media upload.");
+        }
+    } catch (uploadError: any) {
+        console.error('Frontend: Error during Bluesky blob upload:', uploadError);
+        throw new Error(`Failed to upload image to Bluesky: ${uploadError.message || 'Unknown error'}`);
+    }
+};
+  
 // Helper to fetch post details
 const fetchPostDetails = useCallback(async (id: string): Promise<PostData | null> => {
     try {
@@ -150,6 +192,49 @@ const handlePostOnLinkedIn = useCallback(async (id: string): Promise<boolean> =>
     }
 }, [VITE_LINKEDIN_POSTER_URL]);
 
+// Posting PHOTOS on LinkedIn via Edge Function
+const handlePhotoPostOnLinkedIn = useCallback(async (id: string): Promise<boolean> => {
+    console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', id);
+    setIsPosting(true);
+    setError(null);
+
+    if (!VITE_LINKEDIN_PHOTO_POSTER_URL) {
+        console.error('handlePhotoPostOnLinkedIn: LinkedIn poster Edge Function URL not configured.');
+        setError('LinkedIn posting service is not configured.');
+        setIsPosting(false);
+        return false;
+    }
+
+    try {
+        const response = await fetch(VITE_LINKEDIN_PHOTO_POSTER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ postId: id }),
+        });
+
+        console.log('handlePhotoPostOnLinkedIn: Edge Function response status:', response.status);
+        const responseBody = await response.json().catch(() => null);
+        console.log('handlePhotoPostOnLinkedIn: Edge Function response body:', responseBody);
+
+        if (!response.ok) {
+            console.error('handlePhotoPostOnLinkedIn: Edge Function reported an error:', response.status, responseBody || response.statusText);
+            const errorMessage = responseBody?.error || responseBody?.message || response.statusText || 'Failed to post to LinkedIn.';
+            setError(`Posting failed: ${errorMessage}`);
+            return false;
+        }
+
+        console.log('handlePhotoPostOnLinkedIn: Edge Function indicates success/handled.');
+        return true;
+
+    } catch (err) {
+        console.error('handlePhotoPostOnLinkedIn: Network or unexpected error calling Edge Function:', err);
+        setError(err instanceof Error ? err.message : 'Failed to connect to posting service.');
+        return false;
+    } finally {
+        setIsPosting(false);
+    }
+}, [VITE_LINKEDIN_PHOTO_POSTER_URL]);  
+
 // Posting to Twitter via Edge Function
 const handlePostOnTwitter = useCallback(async (id: string): Promise<boolean> => {
     console.log('handlePostOnTwitter: Triggering Edge Function for postId:', id);
@@ -199,6 +284,56 @@ const handlePostOnTwitter = useCallback(async (id: string): Promise<boolean> => 
         setIsPosting(false);
     }
 }, [VITE_TWITTER_POSTER_URL]);
+
+// Posting to Twitter via Edge Function
+const handlePhotoPostOnTwitter = useCallback(async (id: string): Promise<boolean> => {
+    console.log('handlePhotoPostOnTwitter: Triggering Edge Function for postId:', id);
+    setIsPosting(true);
+    setError(null);
+
+    if (!VITE_TWITTER_PHOTO_POSTER_URL) {
+        console.error('handlePhotoPostOnTwitter: Twitter poster Edge Function URL not configured.');
+        setError('Twitter posting service is not configured.');
+        setIsPosting(false);
+        return false;
+    }
+
+    try {
+        const response = await fetch(VITE_TWITTER_PHOTO_POSTER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ postId: id }),
+        });
+
+        console.log('handlePhotoPostOnTwitter: Edge Function response status:', response.status);
+        let responseBody = null;
+        try {
+            responseBody = await response.json();
+            console.log('handlePhotoPostOnTwitter: Edge Function response body:', responseBody);
+        } catch (jsonParseError) {
+            console.error('handlePhotoPostOnTwitter: Failed to parse Edge Function response body as JSON:', jsonParseError);
+            setError('Received unexpected response from posting service.');
+            return false;
+        }
+
+        if (!response.ok) {
+            console.error('handlePhotoPostOnTwitter: Edge Function reported an error:', response.status, responseBody || response.statusText);
+            const errorMessage = responseBody?.error || responseBody?.message || response.statusText || 'Failed to post to Twitter.';
+            setError(`Posting failed: ${errorMessage}`);
+            return false;
+        }
+
+        console.log('handlePhotoPostOnTwitter: Edge Function indicates success/handled.');
+        return true;
+
+    } catch (err) {
+        console.error('handlePhotoPostOnTwitter: Network or unexpected error calling Edge Function:', err);
+        setError(err instanceof Error ? err.message : 'Failed to connect to posting service.');
+        return false;
+    } finally {
+        setIsPosting(false);
+    }
+}, [VITE_TWITTER_PHOTO_POSTER_URL]);  
 
 // Posting to Bluesky directly
 const handlePostOnBluesky = useCallback(async (id: string): Promise<boolean> => {
@@ -273,6 +408,134 @@ const handlePostOnBluesky = useCallback(async (id: string): Promise<boolean> => 
     }
 }, [fetchPostDetails, updatePostStatus]);
 
+// handle post photo on Bluesky
+// --- New handle for posting photos and text to Bluesky ---
+const handlePostPhotoOnBluesky = useCallback(async (id: string): Promise<boolean> => {
+    console.log('handlePostPhotoOnBluesky: Attempting frontend post for postId:', id);
+    // Assuming setIsPosting and setError are defined in your component's scope
+    setIsPosting(true);
+    setError(null);
+
+    // fetchPostDetails must return the photo_url column
+    const post = await fetchPostDetails(id);
+    if (!post) {
+        setError('Could not fetch post details for Bluesky.');
+        setIsPosting(false);
+        return false;
+    }
+
+    // Basic validation for required post data
+    if (!post.full_content || !post.user_handle || !post.user_id) {
+        setError("Missing post content, user handle, or user ID for Bluesky.");
+        setIsPosting(false);
+        return false;
+    }
+
+    try {
+        // Fetch Bluesky account credentials from Supabase
+        const { data: account, error: accountError } = await supabase
+            .from('social_channels')
+            .select('handle, app_password')
+            .eq('user_id', post.user_id)
+            .eq('social_channel', 'Bluesky')
+            .eq('handle', post.user_handle)
+            .single();
+
+        if (accountError || !account || !account.app_password) {
+            console.error('handlePostPhotoOnBluesky: Error fetching Bluesky account or missing app password:', accountError);
+            setError('Could not find connected Bluesky account or missing password.');
+            return false;
+        }
+
+        // Initialize Bluesky Agent and log in
+        const agent = new BskyAgent({ service: 'https://bsky.social' });
+        await agent.login({
+            identifier: account.handle,
+            password: account.app_password,
+        });
+        console.log('handlePostPhotoOnBluesky: Login successful.');
+
+        let imageBlobRef: BlobRef | null = null;
+
+        // --- Conditional Logic for Photo Upload ---
+        if (post.photo_url) {
+            console.log('handlePostPhotoOnBluesky: Photo URL found, attempting image upload.');
+            try {
+                // Use the new helper function for image upload
+                // Using full_content as alt text for now; consider a dedicated alt_text column in your DB
+                imageBlobRef = await uploadImageToBlueskyFrontend(agent, post.photo_url, post.full_content || 'An image related to the post');
+            } catch (imgUploadError: any) {
+                console.error('handlePostPhotoOnBluesky: Image upload failed:', imgUploadError);
+                setError(`Image upload failed: ${imgUploadError.message}`);
+                // If image upload fails, mark the post as failed and stop
+                await updatePostStatus(id, {
+                    schedule_status: false,
+                    sent_post: false,
+                    posted_at: null,
+                    social_post_id: null,
+                    error_message: `Bluesky image upload failed: ${imgUploadError.message}`,
+                });
+                return false; // Exit if image upload fails
+            }
+        } else {
+            console.log('handlePostPhotoOnBluesky: No photo_url found, proceeding with text-only post.');
+        }
+
+        // Prepare the post payload for Bluesky
+        const postPayload: { text: string; embed?: any } = { text: post.full_content };
+
+        if (imageBlobRef) {
+            // If an image was successfully uploaded, add the embed object to the payload
+            postPayload.embed = {
+                $type: 'app.bsky.embed.images',
+                images: [
+                    {
+                        image: imageBlobRef,
+                        alt: post.full_content || 'An image related to the post', // Alt text for accessibility
+                    },
+                ],
+            };
+            console.log('handlePostPhotoOnBluesky: Including image embed in post payload.');
+        }
+
+        // Post to Bluesky
+        console.log('handlePostPhotoOnBluesky: Posting to Bluesky...');
+        const postResult = await agent.post(postPayload);
+        console.log('handlePostPhotoOnBluesky: Bluesky API post result:', postResult);
+
+        // Update post status in Supabase after successful Bluesky post
+        await updatePostStatus(id, {
+            schedule_status: false,
+            sent_post: true,
+            posted_at: new Date().toISOString(),
+            social_post_id: postResult.uri, // Bluesky uses URI as the post identifier
+            error_message: null,
+        });
+
+        return true; // Indicate success
+
+    } catch (err: any) {
+        // Catch-all for any errors during the Bluesky posting process (login, actual post)
+        console.error('handlePostPhotoOnBluesky: Error during Bluesky post API call:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to post to Bluesky';
+        setError(errorMessage);
+
+        // Update post status in Supabase to reflect failure
+        await updatePostStatus(id, {
+            schedule_status: false,
+            sent_post: false,
+            posted_at: null,
+            social_post_id: null,
+            error_message: `Bluesky post failed: ${errorMessage}`,
+        });
+
+        return false; // Indicate failure
+    } finally {
+        // Always set isPosting to false when done
+        setIsPosting(false);
+    }
+}, [fetchPostDetails, updatePostStatus, setIsPosting, setError]); // Ensure all dependencies are listed  
+
 // Main dispatcher function triggered by the button
 const handlePostNow = useCallback(async () => {
      if (!postId || !socialChannel) {
@@ -290,15 +553,18 @@ const handlePostNow = useCallback(async () => {
         switch (socialChannel) {
             case 'LinkedIn':
                 console.log('handlePostNow: Dispatching to LinkedIn handler');
-                postSuccessful = await handlePostOnLinkedIn(postId);
+                //postSuccessful = await handlePostOnLinkedIn(postId);
+                postSuccessful = await handlePhotoPostOnLinkedIn(postId);
                 break;
             case 'Twitter':
                 console.log('handlePostNow: Dispatching to Twitter handler');
-                postSuccessful = await handlePostOnTwitter(postId);
+                //postSuccessful = await handlePostOnTwitter(postId);
+                postSuccessful = await handlePhotoPostOnTwitter(postId);
                 break;
             case 'Bluesky':
                 console.log('handlePostNow: Dispatching to Bluesky handler');
-                postSuccessful = await handlePostOnBluesky(postId);
+                //postSuccessful = await handlePostOnBluesky(postId);
+                postSuccessful = await handlePostPhotoOnBluesky(postId);
                 break;
             default:
                 console.error('handlePostNow: Unknown social channel:', socialChannel);
@@ -324,7 +590,7 @@ const handlePostNow = useCallback(async () => {
         setSuccess(false);
         onClose(false);
     }
-}, [postId, socialChannel, handlePostOnLinkedIn, handlePostOnTwitter, handlePostOnBluesky, onClose]);
+}, [postId, socialChannel, handlePhotoPostOnLinkedIn, handlePostOnTwitter, handlePostOnBluesky, onClose]);
 
 
   if (!isOpen) return null;

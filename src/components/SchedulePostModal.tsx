@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { X, Clock, Calendar, CalendarPlus, Check, Loader2, ChevronRight, ChevronLeft, Megaphone, AlertCircle, Sparkles, Info, ArrowRight, UserPlus, Edit2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Clock, Calendar, CalendarPlus, Check, Loader2, ChevronRight, ChevronLeft, Megaphone, AlertCircle, Sparkles, Info, ArrowRight, UserPlus, Edit2, ImagePlus, PlusCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -10,6 +10,8 @@ import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { useNavigate } from 'react-router-dom';
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { uploadImageGetUrl } from '../utils/UploadImageGetUrl';
+import { deletePostImage } from '../utils/DeletePostImage';
 
 interface SchedulePostModalProps {
   isOpen: boolean;
@@ -61,6 +63,13 @@ export function SchedulePostModal({ isOpen, onClose, selectedDate, selectedTime,
   const [campaignStartDate, setCampaignStartDate] = useState<Date | null>(null);
   const [max_length, setMaxLength] = useState(300);
    const navigate = useNavigate();
+  const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string | null>(null);
+   // Ref for the hidden file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  // State to track which post is currently uploading an image
+  const [uploadingImageId, setUploadingImageId] = useState<string | null>(null);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+
 
   const [selectedCalendarObject, setSelectedCalendarObject] = useState<{
   calendar_name: string;
@@ -103,43 +112,6 @@ const getSelectedChannelTimezone = () => {
       }
     }
   }, [selectedChannel, socialChannels]);  
-
-
-{/* deprecated validateAndSetTime  
-const validateAndSetTime = (date: Date, timeString: string, setTimeError: React.Dispatch<React.SetStateAction<string | null>>, setScheduledTime: React.Dispatch<React.SetStateAction<string>>) => {
-  // Clear any previous errors
-  setTimeError(null);
-
-   
-  
-  // Parse the time string (format: HH:mm)
-  const [hours, minutes] = timeString.split(':').map(Number);
-  
-  // Create a new date object with the selected date and time
-  const scheduledDateTime = new Date(date);
-  scheduledDateTime.setHours(hours, minutes, 0, 0);
-  
-  // Get current date and time
-  const now = new Date();
-  
-  // Check if the date is today and the time has already passed
-  if (
-    date.getDate() === now.getDate() &&
-    date.getMonth() === now.getMonth() &&
-    date.getFullYear() === now.getFullYear() &&
-    scheduledDateTime < now
-  ) {
-    // Time has passed for today, show error message
-    setTimeError(`Cannot schedule for ${timeString} as this time has already passed today.`);
-    return false;
-  }
-  
-  // Time is valid, set it
-  setScheduledTime(timeString);
-  return true;
-};
-  
-*/}
 
 // --- UPDATED validateAndSetTime FUNCTION ---
 const validateAndSetTime = (
@@ -391,6 +363,78 @@ const handleUpdateToStartDate = () => {
     setCampaignDateMismatch(false);
   }
 };
+
+//----------------- Start Image Functions ----------------------------//
+
+
+// Function to trigger the hidden file input
+const handleAddImage = () => {
+   console.log('handleAddImage called. fileInputRef.current:', fileInputRef.current);
+  if (fileInputRef.current) {
+    fileInputRef.current.click();
+  }
+};
+
+// Function to handle file selection and upload
+const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  // Assuming you have a way to get the current user's ID
+  const { data: { session } } = await supabase.auth.getSession();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    console.error('User not authenticated. Cannot upload image.');
+    // Optionally show an error message to the user
+    return;
+  }
+
+  setUploadingImageId('uploading'); // Set a generic ID for loading state
+  try {
+    const imageUrl = await uploadImageGetUrl(file, userId);
+    setUploadedPhotoUrl(imageUrl);
+    console.log('Image uploaded successfully:', imageUrl);
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    // Optionally show an error message to the user
+    setUploadedPhotoUrl(null);
+  } finally {
+    setUploadingImageId(null);
+    // Clear the file input value to allow re-uploading the same file if needed
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
+};
+
+// Function to remove the uploaded image
+const handleRemoveImage = async () => {
+  if (!uploadedPhotoUrl) return;
+
+  setDeletingImageId('deleting'); // Set a generic ID for loading state
+  try {
+    // Extract the file path from the URL
+    // Assuming URL format: https://<project_id>.supabase.co/storage/v1/object/public/user-post-images/<user_id>/<file_name>
+    const urlParts = uploadedPhotoUrl.split('user-post-images/');
+    const filePath = urlParts.length > 1 ? urlParts[1] : '';
+
+    if (filePath) {
+      await deletePostImage(filePath);
+      setUploadedPhotoUrl(null);
+      console.log('Image removed successfully.');
+    } else {
+      console.error('Could not determine file path from URL:', uploadedPhotoUrl);
+    }
+  } catch (error) {
+    console.error('Error removing image:', error);
+    // Optionally show an error message to the user
+  } finally {
+    setDeletingImageId(null);
+  }
+};  
+
+//------------------ End Image Functions ----------------------------//  
   
   const handleSave = async () => {
     // Don't proceed if there's a time error
@@ -471,9 +515,10 @@ const handleUpdateToStartDate = () => {
       topic: selectedTopic  || null,
       theme: selectedTheme  || null,
       content_date: format(selectedDate, 'yyyy-MM-dd'),
-      //content_time: formattedTime,
+      sent_post: false,
       content_time: formattedTimeForDatabase,
       target_timezone: targetTimezone,
+      photo_url: uploadedPhotoUrl,
       created_at: new Date().toISOString()
     };
 
@@ -725,9 +770,10 @@ const renderContentStep = () => (
             </div> 
         );
 
+  {/*
  const renderScheduleStep = () => (
 <div className="space-y-6">
-    {/* Schedule Time */}
+    // Schedule Time
     <div>
       <div className="flex space-x-2 items-center">
          <span className="bg-blue-50 rounded-full p-1 mb-2">
@@ -758,7 +804,7 @@ const renderContentStep = () => (
       
                 </div>
 
-   {/* Error message */}
+   // Error message 
 <div className={`flex items-center space-x-2 ${
   timeError ? 'bg-red-50 border border-red-200' : 'hidden'
 } rounded-md p-2`}>
@@ -770,13 +816,156 @@ const renderContentStep = () => (
   )}
 </div>
 
-             {/* Preview section */}
+             // Preview section 
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-gray-700 mb-2">Post Preview</h3>
              <p className="text-sm text-gray-600">{postContent}</p>
           </div>
         </div>
        ); 
+*/}
+
+    const renderScheduleStep = () => (
+        <div className="space-y-6">
+            {/* Schedule Time */}
+            <div>
+                <div className="flex space-x-2 items-center">
+                    <span className="bg-blue-50 rounded-full p-1 mb-2">
+                        <CalendarPlus className="w-4 h-4 text-blue-500"/>
+                    </span>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">
+                        Schedule Time
+                    </label>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2 px-4 py-2 bg-gray-50 rounded-lg">
+                        <Calendar className="w-4 h-4 text-gray-500" />
+                        <span className="text-xs text-gray-700">
+                            {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                        </span>
+                    </div>
+                    <input
+                        type="time"
+                        value={scheduledTime}
+                        onChange={handleTimeChange}
+                        className={`px-4 py-2 border ${timeError ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                    />
+                </div>
+            </div>
+
+            {/* Error message */}
+            <div className={`flex items-center space-x-2 ${
+                timeError ? 'bg-red-50 border border-red-200' : 'hidden'} rounded-md p-2`}>
+                {timeError && <AlertCircle className="text-red-300 w-5 h-5"/>}
+                {timeError && (
+                    <div className="mt-1 text-sm text-red-500">
+                        {timeError}
+                    </div>
+                )}
+            </div>
+   
+            {/* NEW: Add Image Button */}
+          <div className="flex space-x-2 items-center">
+                    <span className="bg-blue-50 rounded-full p-1">
+                        <ImagePlus className="w-4 h-4 text-blue-500"/>
+                    </span>
+                    <label className="block text-xs font-medium text-gray-700">
+                        Add Photo 
+                    </label>
+                </div>
+          
+          <div className="items-center flex space-x-2">
+             {uploadedPhotoUrl ? (
+                // State 1: Image is uploaded
+                <div className="relative w-24 h-24 group">
+                    <img
+                        src={uploadedPhotoUrl}
+                        alt="Uploaded post image"
+                        className="w-full h-full object-cover rounded-md shadow-sm cursor-pointer border border-gray-200"
+                        title="Click to view image"
+                    />
+                    <button
+                        onClick={handleRemoveImage}
+                        disabled={deletingImageId === 'deleting'}
+                        className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        title="Remove image"
+                    >
+                        {deletingImageId === 'deleting' ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <X className="w-4 h-4" />
+                        )}
+                    </button>
+
+
+                  
+                </div>
+            ) : (
+                // State 2: No image, show "Add Image" button
+                <button 
+                  onClick={handleAddImage}
+                  disabled={uploadingImageId === 'uploading'}
+                  className="flex p-2 space-x-2 justify-center bg-blue-50 rounded-lg border border-blue-200 hover:border-blue-300"
+                >
+                    <span className="space-x-2 justify-center flex">
+                        {uploadingImageId === 'uploading' ? (
+                            <Loader2 className="w-4 h-4 animate-spin text-blue-500"/>
+                        ) : (
+                            <PlusCircle className="w-4 h-4 text-blue-500"/>
+                        )}
+                        <span className="block items-center text-xs font-normal text-blue-500">
+                            {uploadingImageId === 'uploading' ? 'Uploading...' : 'Click to Add Image'}
+                        </span>
+                    </span>    
+                </button>
+            )}
+
+          {/* Hidden file input */}
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="image/*" // Accept only image files
+            />
+            
+          </div>
+
+          {/*
+            <div className="relative w-6 h-6 flex items-center justify-center"> 
+            {uploadedPhotoUrl ? (
+                // State 1: Image is uploaded
+                <img
+                    src={uploadedPhotoUrl}
+                    alt="Uploaded post image"
+                    className="w-full h-full object-cover rounded-md shadow-sm cursor-pointer border border-gray-200"
+                    onClick={onImageClick} // Make the image clickable
+                    onError={onImageError} // Handle image loading errors
+                    title="Click to view image"
+                />
+            ) : (
+                // State 2: No image, show "Add Image" button
+                <button
+                    //onClick={onAddImageClick}
+                    className="w-full h-full justify-start flex items-start rounded-md bg-gray-50 text-blue-300 hover:bg-gray-100 hover:text-gray-500 transition-colors shadow-sm border border-gray-100"
+                    //title="Add Image to Post"
+                >
+                    <ImagePlus className="w-4 h-4 text-gray-500" /> 
+                        
+                </button>
+            )}
+        </div>
+          */}
+
+            {/* Preview section */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Post Preview</h3>
+                <p className="text-sm text-gray-600">{postContent}</p>
+            </div>
+
+        </div>
+    );  
+       
 
 // Replace existing action buttons with:
 const renderActionButtons = () => (
@@ -875,7 +1064,7 @@ const renderActionButtons = () => (
             {isSuccess ? (
               // **Render ONLY the success message content when isSuccess is true**
               // We'll use the styling you defined in SuccessNotification but render it inline here
-              <div className="flex items-center space-x-3 p-4"> {/* Adjust padding as needed */}
+              <div className="flex items-center space-x-3 p-4 z-[1000000]"> {/* Adjust padding as needed */}
                 <div className="bg-green-100 rounded-full p-2">
                   <Check className="w-5 h-5 text-green-500" />
                 </div>

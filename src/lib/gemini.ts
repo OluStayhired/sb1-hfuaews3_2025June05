@@ -577,7 +577,7 @@ Ensure that:
 //------ end generate calendar no retries ------//
 
 
-//------ start generate calendar with retries ------//
+//------ start generate calendar with retries (active) ------//
 export async function generateCalendarWithRetry(
   calendar_info: string, 
   startDayofWeek: string, 
@@ -605,7 +605,11 @@ const getWeekday = (date: Date): string => {
 
   // More structured prompt to prevent recursion
   const prompt = `
-    Act as an experienced social media copywriter and content strategist with 10 years experience, create a ${calendarDays}-day content calendar based on this information: ${calendar_info}
+    Act as a world class social media copywriter and content strategist with 10 years experience. 
+    
+    Your job is to write high-performing content for ${calendar_info}
+    
+    Create a ${calendarDays}-day content calendar based on this information: ${calendar_info}
 
 This content calendar MUST start with the day of the week as ${startDayofWeek}.    
 
@@ -620,7 +624,7 @@ This content calendar MUST start with the day of the week as ${startDayofWeek}.
     8. Notes provide context or tips
     9. Content is engaging and platform appropriate
     10. Remove hashtags and generic content 
-    11. Keep content between 250 - 500 characters
+    11. Keep content to 400 characters
 
 Generate a ${calendarDays}-day content calendar in valid JSON format. 
 The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".
@@ -715,13 +719,6 @@ export async function generateListPost(theme: string, topic: string, target_audi
 
   // Rate limiting
   await rateLimiter.checkAndWait();
-
-  //console.log('theme : ', theme);
-  //console.log('topic : ', topic);
-  //console.log('content : ', content);
-  //console.log('audience : ', target_audience);
-
-
   
   // More structured prompt to prevent recursion
   const prompt = `
@@ -1622,6 +1619,8 @@ This content calendar MUST start with the day of the week as ${startDayofWeek}.
     8. Notes provide context or tips
     9. Content is engaging and platform appropriate
     10. Remove hashtags and generic content 
+    11. Place each sentence in the post on a new line.
+    12. Add a space after each line for readability
 
 Generate a ${calendarDays}-day content calendar in valid JSON format. 
 The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".

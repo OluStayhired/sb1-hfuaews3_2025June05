@@ -392,6 +392,7 @@ useEffect(() => {
         theme: content.theme,
         topic: content.topic,
         target_audience: content.target_audience,
+        photo_url: content.photo_url,
         content_date: format(selectedDate, 'yyyy-MM-dd'),
         content_time: formattedTimeForDatabase,
         target_timezone: targetTimezone,

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { format, addDays, parseISO } from 'date-fns';
-import { Plus, Clock, ChevronLeft, ChevronRight, Trash2, SquarePen, Send, PlusCircle, Calendar, List, CalendarClock } from 'lucide-react';
+import { Plus, Clock, ChevronLeft, ChevronRight, Trash2, SquarePen, Send, PlusCircle, Calendar, List, CalendarClock, X, Loader2, ImagePlus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { ReschedulePostModal } from '/src/components/ReschedulePostModal';
 import { SchedulePostModal } from '/src/components/SchedulePostModal';
@@ -18,6 +18,8 @@ import { PostNowWarningModal } from './PostNowWarningModal';
 import { TimezoneSelectorModal } from './TimezoneSelectorModal';
 import { formatInTimeZone, zonedTimeToUtc } from 'date-fns-tz';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { uploadImageGetUrl } from '../utils/UploadImageGetUrl';
+import { deletePostImage } from '../utils/DeletePostImage';
 
 
 // Add new interfaces for post data
@@ -31,6 +33,7 @@ interface PostData {
   user_display_name: string | null;
   avatar_url?: string | null;
   content_time: string;
+  photo_url?: string | null;
   target_timezone?: string;
   social_channels?: {
     avatar_url: string | null;
@@ -97,6 +100,13 @@ function ManageSchedule() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
   const [selectedPostForReschedule, setSelectedPostForReschedule] = useState<PostData | null>(null);
+
+    // Ref for the hidden file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const currentPostIdRef = useRef<string | null>(null);
+  // State to track which post is currently uploading an image
+  const [uploadingImageId, setUploadingImageId] = useState<string | null>(null);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
 
   //LinkedIn VITE
   const VITE_LINKEDIN_POSTER_URL = import.meta.env.VITE_LINKEDIN_POSTER_URL;
@@ -472,6 +482,7 @@ const generateTimeSlots = (timesHHmm: string[]) => {
           user_display_name,
           content_date,
           content_time,
+          photo_url,
           schedule_status,
           draft_status,
           sent_post
@@ -841,6 +852,157 @@ const handleConnectLinkedInClick = () => {
 };
   
 //console.log("Schedules State:", schedules);
+
+//------------------------ Start handle upload image to attach to post ------------------ //
+
+// New handleUploadImage function
+const handleUploadImage = (post: PostData) => {
+  currentPostIdRef.current = post.id;
+  fileInputRef.current?.click(); // Programmatically click the hidden file input
+};
+
+
+// New handleFileChange function
+const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  const postId = currentPostIdRef.current;
+
+  if (!file || !postId) {
+    console.error('No file selected or postId is missing.');
+    return;
+  }
+
+  setUploadingImageId(postId); // Set loading state for this specific post
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id; // Get the current authenticated user's ID
+
+    if (!userId) {
+      console.error('User not authenticated. Cannot upload image.');
+      // Optionally, show an error message to the user
+      return;
+    }
+
+    const imageUrl = await uploadImageGetUrl(file, userId); // Call the upload utility
+
+    // Update the photo_url column for the specific post in Supabase
+    const { error: updateError } = await supabase
+      .from('user_post_schedule')
+      .update({ photo_url: imageUrl })
+      .eq('id', postId);
+
+    if (updateError) {
+      console.error('Error updating photo_url in database:', updateError);
+      // Optionally, show an error message to the user
+    } else {
+      console.log('Image uploaded and URL updated successfully:', imageUrl);
+      // Refresh the schedule data to display the new image
+      fetchUserSchedule();
+    }
+  } catch (error) {
+    console.error('Error during image upload process:', error);
+    // Optionally, show a user-friendly error message
+  } finally {
+    setUploadingImageId(null); // Clear loading state
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Clear the file input value
+    }
+    currentPostIdRef.current = null; // Clear the stored postId
+  }
+};
+
+//------------------------ End handle upload image to attach to post --------------------//  
+
+//------------------------ start handle delete photo ----------------------------//
+
+// New handleDeleteImage function
+const handleDeleteImage = async (postId: string) => {
+  if (!postId) {
+    console.error('Post ID is missing for image deletion.');
+    return;
+  }
+
+  setDeletingImageId(postId); // Set loading state for this specific post
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id || !session?.user?.email) { // Ensure email is available for security check
+      throw new Error('User not authenticated or email not available.');
+    }
+    const userEmail = session.user.email;
+
+    // First, fetch the current photo_url for the given postId and verify ownership
+    const { data: postData, error: fetchError } = await supabase
+      .from('user_post_schedule')
+      .select('photo_url, user_email') // Select photo_url and user_email for verification
+      .eq('id', postId)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching post data for image deletion:', fetchError);
+      throw new Error('Failed to retrieve post details for image deletion.');
+    }
+
+    if (!postData) {
+      console.warn(`Post with ID ${postId} not found.`);
+      return; // Post not found, nothing to delete
+    }
+
+    // Security check: Ensure the post belongs to the authenticated user
+    if (postData.user_email !== userEmail) {
+        console.error('Unauthorized attempt to delete image for a post not owned by the user.');
+        throw new Error('Unauthorized: You can only delete images from your own posts.');
+    }
+
+    // No need to check postData.photo_url here before updating database,
+    // as the goal is to ensure it's null regardless of its current state.
+    // Also, removed all storage deletion logic as requested.
+
+    // Update the user_post_schedule table, setting photo_url to null
+    const { error: updateError } = await supabase
+      .from('user_post_schedule')
+      .update({ photo_url: null, updated_at: new Date().toISOString() })
+      .eq('id', postId) // Match by post ID
+      .eq('user_email', userEmail); // Crucial security check: Match by user's email
+
+    if (updateError) {
+      console.error('Error updating photo_url to null in Supabase:', updateError);
+      throw new Error('Failed to remove image URL from database.');
+    }
+
+    // Optimistically update the local state using setSchedules
+    setSchedules(prevSchedules =>
+        prevSchedules.map(day => ({
+            ...day,
+            slots: day.slots.map(slot => ({
+                ...slot,
+                scheduledPosts: slot.scheduledPosts.map(scheduledPost => {
+                    if (scheduledPost.id === postId) {
+                        // Found the post, update its photo_url to null
+                        return {
+                            ...scheduledPost,
+                            photo_url: null
+                        };
+                    }
+                    return scheduledPost; // Return unchanged post if not the target
+                })
+            }))
+        }))
+    );
+
+    console.log(`Image URL removed from database for post ID: ${postId}.`);
+
+  } catch (err) {
+    console.error('Error during image URL deletion process:', err);
+    // Here you would typically show a user-friendly error message (e.g., a toast notification)
+  } finally {
+    setDeletingImageId(null); // Clear loading state
+  }
+};
+ 
+//----------------------- end handle delete photo ------------------------------//  
+  
   
   if (isLoading) {
     return (
@@ -983,6 +1145,15 @@ const handleConnectLinkedInClick = () => {
   
                       </div>
 
+<input
+  type="file"
+  ref={fileInputRef}
+  onChange={handleFileChange}
+  accept="image/*" // Only allow image files
+  style={{ display: 'none' }} // Hide the input
+/>
+
+
                   {slot.scheduledPosts && slot.scheduledPosts.length > 0 ? (
                     slot.scheduledPosts.map((scheduledPost) => (
                         <div 
@@ -1021,6 +1192,7 @@ const handleConnectLinkedInClick = () => {
                             <PlusCircle className="w-3 h-3" />
                             <span>New Post</span>
                           </button>
+                  
                     <TooltipHelp text="Post now">
                     <button
                         onClick={() => {
@@ -1035,6 +1207,21 @@ const handleConnectLinkedInClick = () => {
                     </button>
 
                     </TooltipHelp>  
+
+              <TooltipHelp text="Add image">
+                    <button
+                      onClick={() => handleUploadImage(scheduledPost)} // Call with postId
+                      disabled={uploadingImageId === scheduledPost.id}
+                      className="p-1 flex-1 items-center rounded-md text-gray-500 bg-gray-50 hover:text-purple-700 hover:bg-purple-100 transition-colors"
+                       //title="Post Now"
+                     >
+                        {uploadingImageId === scheduledPost.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin" /> // Show spinner while uploading
+                          ) : (
+                          <ImagePlus className="w-3 h-3" />
+                            )}
+                          </button>
+                  </TooltipHelp>
                   
                   <TooltipHelp text="Reschedule post">
                     <button
@@ -1101,14 +1288,100 @@ const handleConnectLinkedInClick = () => {
                     </div>
                   {/* End - New Displayed Time */}
                                  
-                            {/* Post Content */}                           
+             {/*---------------------  Post Content ------------------------------------*/}      
+                    {/*
                             <div className={`mt-6 text-sm ${day.isDisabledDay ? 'text-gray-300' : 'text-gray-900'}`}>  
                               
                               <p className="line-clamp-1"> 
-                                {/*slot.scheduledPost.content*/}
+                           
                                 {truncateText(scheduledPost.content,60)}
                               </p>
                             </div>  
+                      */}
+
+{/* Post Content 
+<div className={`mt-6 text-sm ${day.isDisabledDay ? 'text-gray-300' : 'text-gray-900'}`}>
+  <p className="line-clamp-1">
+    {truncateText(scheduledPost.content, 60)}
+  </p>
+
+
+  {scheduledPost.photo_url && (
+    <div className="flex items-center mt-1"> 
+     
+      <img
+        //src={`${scheduledPost.photo_url}&width=32&height=32&fit=cover`} // Supabase transformation for a tiny thumbnail
+        src={`${scheduledPost.photo_url}`} 
+        alt="Attached"
+        className="w-16 h-16 shadow-md rounded-lg object-cover border border-gray-200 mr-1" // w-8/h-8 are 32x32px
+        title="Image attached" // Tooltip on hover
+      />
+    </div>
+  )}
+</div>
+*/}          
+
+
+{/* Post Content */}
+<div className={`mt-6 text-sm ${day.isDisabledDay ? 'text-gray-300' : 'text-gray-900'}`}>
+  <p className="line-clamp-1">
+    {truncateText(scheduledPost.content, 60)}
+  </p>
+
+  {/* REWRITTEN: Image thumbnail/indicator with delete on hover */}
+  {scheduledPost.photo_url && (
+    <div className="
+        relative mt-1 group
+        w-24 h-24 shadow-md rounded-lg border border-gray-200
+        overflow-hidden cursor-pointer
+    "> {/* Parent div acts as the group, with fixed size */}
+      <img
+        src={`${scheduledPost.photo_url}`}
+        alt="Attached"
+        className="
+            w-full h-full object-cover
+            transition-opacity duration-300
+            group-hover:opacity-50
+        " // Image becomes semi-transparent on hover
+        title="Image attached" // Tooltip on hover
+      />
+
+      {/* Delete button overlay */}
+      <div
+        className="
+          absolute inset-0
+          flex items-center justify-center
+          bg-black bg-opacity-50
+          opacity-0
+          group-hover:opacity-100
+          transition-opacity duration-300
+          rounded-lg
+          p-1
+        "
+      >
+        <button
+          type="button"
+          onClick={() => handleDeleteImage(scheduledPost.id)} // Call with postId
+          className="relative
+            bg-red-600 text-white px-2 py-1 rounded-md
+            hover:bg-red-700 transition-colors
+            text-xs font-semibold
+            flex items-center justify-center
+            disabled:opacity-50 disabled:cursor-not-allowed
+          "
+          disabled={deletingImageId === scheduledPost.id} // Disable if this post's image is being deleted
+        >
+          {deletingImageId === scheduledPost.id ? (
+                <Loader2 className="w-3 h-3 animate-spin mr-1" />
+            ) : (
+                <Trash2 className="w-3 h-3 mr-1" /> // Use an X icon for delete
+            )}
+          Delete
+        </button>
+      </div>
+    </div>
+  )}
+</div>                    
 
                           {/* Add gray line divider here */}
                           <div className="mt-4 border-t border-gray-100"></div>

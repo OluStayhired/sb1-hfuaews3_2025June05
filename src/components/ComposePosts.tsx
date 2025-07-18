@@ -20,6 +20,7 @@ import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
 import { improveComment, generateHookPostV3 } from '../lib/gemini';
 import { useLocation } from 'react-router-dom';
+import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
 
 
 
@@ -58,6 +59,7 @@ function ComposePosts() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingLinkedIn, setIsGeneratingLinkedIn] = useState(false);
   const [campaignContent, setCampaignContent] = useState<Array<{ theme: string; topic: string; content: string }> | null>(null);
+  const { processedContent, facets } = generateBlueskyFacetsForLinks(content);
   const [isSchedulingPost, setIsSchedulingPost] = useState(false);
   const [selectedDateForModal, setSelectedDateForModal] = useState(new Date()); // New state for modal date
   const [selectedTimeForModal, setSelectedTimeForModal] = useState(format(new Date(), 'HH:mm')); // New state for modal time
@@ -344,7 +346,8 @@ useEffect(() => {
       console.error('Failed to login to Bluesky');
       return false;
     }
-    
+
+    {/*
     // Post the content
     const postResult = await agent.post({
       text: content,
@@ -353,6 +356,15 @@ useEffect(() => {
       // facets: [], // For mentions, links, etc.
       // embed: {}, // For images, quotes, etc.
     });
+    */}
+
+    const postResult = await agent.post({
+        text: processedContent, // Use the processedContent
+        facets: facets.length > 0 ? facets : undefined, // Conditionally include facets if any were generated
+        // You can add additional parameters like:
+        // langs: ['en'],
+        // embed: {}, // For images, quotes, etc.
+      });
     
     // Update the last_login time in the database
     await supabase
@@ -1280,7 +1292,7 @@ const onModalScheduleError = (error: any) => {
         </div>
       )}
 
-      {isDraftSuccessModalOpen ? (
+{isDraftSuccessModalOpen ? (
   <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg border border-green-100 p-4 flex items-center space-x-3 animate-fade-in z-[9999]">
     <div className="bg-green-100 rounded-full p-2">
       <Check className="w-5 h-5 text-green-500" />

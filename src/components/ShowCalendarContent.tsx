@@ -1,14 +1,12 @@
 // src/components/ShowCalendarContent.tsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
-//import { format, parseISO } from 'date-fns';
 import { format, parseISO, addWeeks, addDays, isWithinInterval, differenceInDays, startOfWeek, endOfWeek } from 'date-fns';
-//import { startOfWeek, endOfWeek, addWeeks, isWithinInterval } from 'date-fns';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
-import { Calendar, Check, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine } from 'lucide-react';
+import { Calendar, Check, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine, ImagePlus } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3 } from '../lib/gemini';
 import { ContentModal } from './ContentModal';
 import { AddToCalendarModal } from './AddToCalendarModal'
@@ -25,6 +23,8 @@ import { useNavigate } from 'react-router-dom';
 import { BulkAddToCalendarModal } from './BulkAddToCalendarModal'; 
 import { TypingEffect } from './TypingEffect'; 
 import { useHooks } from '/src/context/HooksContext';
+import { uploadImageGetUrl } from '../utils/UploadImageGetUrl';
+import { deletePostImage } from '../utils/DeletePostImage';
 
 
 interface ShowCalendarContentProps {
@@ -47,6 +47,7 @@ interface CalendarContent {
   updated_at: string;
   content_date: Date;
   target_audience?: string;
+  photo_url?: string | null; 
 }
 
 interface ContentScore {
@@ -94,6 +95,12 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [currentCalendarDaysLeft, setCurrentCalendarDaysLeft] = useState<number | null>(null);
 
   const [isCopySuccessModalOpen, setIsCopySuccessModalOpen] = useState(false);
+
+  // Ref for the hidden file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  // State to track which post is currently uploading an image
+  const [uploadingImageId, setUploadingImageId] = useState<string | null>(null);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
 
 
 
@@ -715,8 +722,136 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
                   
       }  
 
+//------------------------ Start handle upload image to attach to post ------------------ //
 
-  //----------------------- Copy Entire Content Campaign -----------------------------//
+// New handleUploadImage function
+const handleUploadImage = async (content: CalendarContent) => {
+  // Check for connected social accounts first
+  const socials = await checkConnectedSocials();
+
+  if (!socials || (!socials.bluesky && !socials.linkedin && !socials.twitter)) {
+    setShowNoSocialModal(true);
+    return;
+  }
+
+  setUploadingImageId(content.id); // Set loading state for this specific post
+  fileInputRef.current?.click(); // Trigger the hidden file input click
+};
+
+// New handleFileChange function
+const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (!file || !uploadingImageId) {
+    setUploadingImageId(null); // Clear loading state if no file or no active upload
+    return;
+  }
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      throw new Error('User not authenticated.');
+    }
+
+    // Upload image and get URL
+    const imageUrl = await uploadImageGetUrl(file, session.user.id);
+
+    // Update the content_calendar table with the new photo_url
+    const { error: updateError } = await supabase
+      .from('content_calendar')
+      .update({ photo_url: imageUrl, updated_at: new Date().toISOString() })
+      .eq('id', uploadingImageId);
+
+    if (updateError) {
+      console.error('Error updating photo_url in Supabase:', updateError);
+      throw new Error('Failed to save image URL to database.');
+    }
+
+    // Optimistically update the local state
+    setCalendarContent(prev =>
+      prev.map(item =>
+        item.id === uploadingImageId ? { ...item, photo_url: imageUrl } : item
+      )
+    );
+
+    console.log('Image uploaded and URL saved:', imageUrl);
+
+  } catch (err) {
+    console.error('Error during image upload process:', err);
+    // Handle error (e.g., show a toast notification)
+  } finally {
+    setUploadingImageId(null); // Clear loading state
+    // Reset the file input value to allow selecting the same file again if needed
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
+};
+
+
+//------------------------ End handle upload image to attach to post --------------------//  
+
+//------------------------ start handle delete photo ----------------------------//
+
+// New handleDeleteImage function
+const handleDeleteImage = async (content: CalendarContent) => {
+  if (!content.photo_url) {
+    console.warn('No image URL found for this post to delete.');
+    return;
+  }
+
+  setDeletingImageId(content.id); // Set loading state for this specific post
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      throw new Error('User not authenticated.');
+    }
+
+    // Extract the file path from the public URL
+    // Assuming the public URL format is: https://<supabase_url>/storage/v1/object/public/user-post-images/user_id/filename.jpg
+    // And deletePostImage expects: user_id/filename.jpg
+    const urlParts = content.photo_url.split('/public/user-post-images/');
+    if (urlParts.length < 2) {
+      throw new Error('Invalid image URL format for deletion.');
+    }
+    const filePath = urlParts[1]; // This should be 'user_id/filename.jpg'
+
+    // Delete the image from Supabase storage
+    await deletePostImage(filePath);
+
+    // Update the content_calendar table, setting photo_url to null
+    const { error: updateError } = await supabase
+      .from('content_calendar')
+      .update({ photo_url: null, updated_at: new Date().toISOString() })
+      .eq('id', content.id);
+
+    if (updateError) {
+      console.error('Error updating photo_url to null in Supabase:', updateError);
+      throw new Error('Failed to remove image URL from database.');
+    }
+
+    // Optimistically update the local state
+    setCalendarContent(prev =>
+      prev.map(item =>
+        item.id === content.id ? { ...item, photo_url: null } : item
+      )
+    );
+
+    console.log('Image deleted and URL removed from database.');
+
+  } catch (err) {
+    console.error('Error during image deletion process:', err);
+    // Handle error (e.g., show a toast notification)
+  } finally {
+    setDeletingImageId(null); // Clear loading state
+  }
+};
+ 
+//----------------------- end handle delete photo ------------------------------//  
+
+  
+
+  //----------------------- Start Copy Entire Content Campaign -----------------------------//
 
     const handleDuplicateCalendar = async () => {
     try {
@@ -825,6 +960,7 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
           notes: item.notes,
           content: item.content,
           content_date: format(newContentDate, 'yyyy-MM-dd'), // Assign new content date
+          photo_url: item.photo_url, // Include photo_url in duplicated content
           created_at: new Date().toISOString(), // Set new creation timestamp
           updated_at: new Date().toISOString(),
         };
@@ -1057,6 +1193,17 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
       {/* Content Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
+ {/*---- start added image Hidden file input ------ */}
+ <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+        accept="image/*" // Only allow image files
+      />        
+{/*---- end added image Hidden file input ------*/}
+
+        
  {showCampaignInfo && filteredContent.length === 0 && ( // Only show if showCampaignInfo is true AND there's no actual content yet
         <CampaignInfoCard
           key="campaign-info-card-setup" // It's important to give a unique key
@@ -1284,6 +1431,21 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
               </button>
     </TooltipHelp>
 
+     <TooltipHelp  text = "Add Image">
+               <button
+                    onClick={() => handleUploadImage(content)} // Call the new handleUploadImage function
+                    disabled={uploadingImageId === content.id} // Disable if this post is uploading
+              className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 hover:text-gray-300 transition-colors"
+          >
+                  {uploadingImageId === content.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <ImagePlus className="w-3 h-3" />
+                      )}
+                 
+              </button>
+    </TooltipHelp>
+
     <TooltipHelp  text = {`Content Score ${Math.round(calculateContentScore(content.content).totalScore)}%`} >
               <button
                   className={`inline-flex items-center px-1 py-1 bg-gray-100 ${getScoreColor(calculateContentScore(content.content).totalScore)} rounded-md hover:bg-gray-100 transition-colors group relative`}
@@ -1294,6 +1456,54 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
       </TooltipHelp>
             </div>  
         </p>
+
+   {/* ----------------- Start Display the image if photo_url exists --------------- */}
+        {/*content.photo_url && (
+          <div className="mt-4">
+            <img src={content.photo_url} alt="Post attachment" className="max-w-full h-auto rounded-md" />
+          </div>
+        )*/}
+  {/* ----------------- Start Display the image if photo_url exists --------------- */}
+{content.photo_url && (
+  <div className="mt-4 group relative w-full h-auto max-w-sm mx-auto">
+    <img
+      src={content.photo_url}
+      alt="Post attachment"
+      className="max-w-full h-auto rounded-md transition-opacity duration-300 group-hover:opacity-50"
+    />
+
+    <div
+      className="
+        absolute inset-0
+        flex items-center justify-center
+        bg-black bg-opacity-50
+        opacity-0
+        group-hover:opacity-100
+        transition-opacity duration-300
+        rounded-md
+      "
+    >
+      <button
+        type="button"
+        //onClick={handleDeleteImage}
+        onClick={() => handleDeleteImage(content)}
+        className="
+          bg-red-600 text-white px-4 py-2 rounded-lg
+          hover:bg-red-700 transition-colors
+          text-sm font-semibold
+        "
+        // disabled={deletingImage}
+      >
+        Delete Photo
+      </button>
+    </div>
+  </div>
+)}
+    
+{/* ---------------- End Added Display Image if photo_url exists ----------------- */}
+
+
+  
       </div>
             
     <div className="absolute bottom-2 left-2 flex items-center space-x-2 ml-1">

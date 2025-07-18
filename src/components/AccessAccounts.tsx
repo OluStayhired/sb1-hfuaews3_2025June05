@@ -815,7 +815,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
               <h2 className="text-xl font-semibold text-gray-900">Connected Accounts</h2>
            </div>
           
-          <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3">
                   
             </div>
          </div>
@@ -852,7 +852,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                   <TooltipHelp text="Change Timezone (soon) 😊">
                     <button 
                       //onClick={() => handleTimezoneOpenModal(blueskyUser.handle)} 
-                      className="flex items-center px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
+                      className="flex items-center px-2 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
                       <Clock className="w-3.5 h-3.5 mr-1" />
                       <span className="mr-1">Timezone: </span>
                       {blueskyUser.timezone}
@@ -860,7 +860,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                   </TooltipHelp>
               
                   )}
-                  <span className="flex items-center px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                  <span className="flex items-center px-2 py-1 bg-green-100 text-green-700 rounded-full text-sm">
                     <Zap className="w-3.5 h-3.5 mr-1" />
                     <span className="mr-1">Connected </span>
                   </span>
@@ -953,7 +953,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                   <TooltipHelp text="Change Timezone (soon) 😊">
                     <button 
                       //onClick={() => handleTimezoneOpenModal(linkedinUser.handle)} 
-                      className="flex items-center px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
+                      className="flex items-center px-2 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
                       <Clock className="w-3.5 h-3.5 mr-1" />
                       <span className="mr-1">Timezone: </span>
                       {linkedinUser.timezone}
@@ -1050,7 +1050,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                   <TooltipHelp text="Change Timezone (soon) 😊">
                     <button 
                       //onClick={() => handleTimezoneOpenModal(twitterUser.handle)} 
-                      className="flex items-center px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
+                      className="flex items-center px-2 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
                       <Clock className="w-3.5 h-3.5 mr-1" />
                       <span className="mr-1">Timezone: </span>
                       {twitterUser.timezone}
@@ -1067,7 +1067,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     onClick={handleDisconnectTwitter}
                     disabled={twitterLoading || disconnectingTwitterAccount === twitterUser.handle}
                     className="p-2 text-green-700 hover:text-red-500 bg-green-100 rounded-full hover:bg-red-100 transition-colors disabled:opacity-50"
-                    title="Disconnect"
+                    //title="Disconnect"
                   >
                     {twitterLoading || disconnectingTwitterAccount === twitterUser.handle ? (
                       <Loader2 className="w-5 h-5 animate-spin" />

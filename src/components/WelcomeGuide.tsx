@@ -265,7 +265,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
 
 
 // ----------- Start UseEffect to Fectch Hooks ---------------- //  
-
+  {/*
 useEffect(() => {
     const fetchHooks = async () => {
 
@@ -325,7 +325,8 @@ useEffect(() => {
     fetchHooks();
   }, []); // No dependency on email Re-fetch if userEmail changes  
 
-
+*/}
+  
 //   -------- Start HandleForceClose ---------------  //
 
 const handleForceClose = async () => {
@@ -656,7 +657,7 @@ const handleGenerateContent = async () => {
     
     // 3. Call generateFirstPost with the appropriate parameters
     const generatedPostResponse = await generateFirstPostWithRetry(
-      hooksData,
+      //hooksData,
       selectedIdeaData.target_audience,
       selectedIdeaData.content,
       charLength

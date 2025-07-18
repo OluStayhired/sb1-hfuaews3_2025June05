@@ -32,6 +32,7 @@ interface PostData {
   schedule_status?: boolean; 
   sent_post?: boolean;  
   draft_status?: boolean;
+  photo_url?: string | null;
   social_channels?: {
     avatar_url: string | null;
     handle: string;
@@ -401,7 +402,8 @@ const isTimeSlotInactive = (dayOfWeek: string, timeSlot: string, scheduleData: a
           content_time,
           schedule_status,
           draft_status,
-          sent_post
+          sent_post,
+          photo_url
         `)
         .eq('user_email', session.user.email);
 
@@ -861,6 +863,8 @@ const handleEmptySlotClick = (date: Date, time: string) => {
                   key={post.id} 
                   className={`group relative ${isPostSlotDisabled ? 'opacity-50' : ''}`}
             >
+
+{/*------------------------- Start Content Section ---------------------------- */}        
               <div className={`flex items-center space-x-2 p-1 ${
                 post.sent_post
                      ? 'bg-green-50 hover:bg-green-100'
@@ -917,8 +921,25 @@ const handleEmptySlotClick = (date: Date, time: string) => {
                   } truncate`}>
                       {post.content}
                   </p>
+                   {/* NEW: Subtle Image thumbnail/indicator for post.photo_url */}
+                {post.photo_url && (
+                    <div className="flex items-center mt-1"> {/* Small margin top for separation */}
+                        <img
+                            src={post.photo_url}
+                            alt="Attached image"
+                            className={`w-4 h-4 rounded object-cover mr-1 ${ // Small, rounded, object-cover
+                                isPostSlotDisabled ? 'opacity-50' : '' // Subtle opacity for disabled slots
+                            }`}
+                            title="Image attached to post" // Tooltip on hover
+                        />
+                        <span className={`text-xs ${isPostSlotDisabled ? 'text-gray-400' : 'text-gray-500'}`}>
+                            Image attached
+                        </span>
+                    </div>
+                )}
               </div>
             </div>
+{/*------------------------- End Content Section ---------------------------- */}                      
       
             {/* Action buttons - only show if not disabled */}
             {!isPostSlotDisabled && (

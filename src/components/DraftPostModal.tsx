@@ -34,6 +34,108 @@ export function DraftPostModal({ isOpen, onClose, onContinueDraft }: DraftPostMo
   const [totalDraftCount, setTotalDraftCount] = useState(0); // New state variable
   const navigate = useNavigate();
 
+const fetchDraftPosts = useCallback(async () => {
+        try {
+            setIsLoading(true); // Set loading state when fetching
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.user?.email || !session?.user?.id) {
+                console.warn('No user session found to fetch drafts.');
+                setDraftPosts({}); // Clear drafts if no session
+                setTotalDraftCount(0);
+                return;
+            }
+
+            // Query 1: Fetch draft posts
+            const { data: draftsData, error: fetchError } = await supabase
+                .from('user_post_draft')
+                .select('*') // Select all columns from user_post_draft
+                .eq('user_email', session.user.email)
+                .eq('draft_status', true)
+                .order('created_at', { ascending: false });
+
+            if (fetchError) throw fetchError;
+
+            if (!draftsData || draftsData.length === 0) {
+                setDraftPosts({});
+                setTotalDraftCount(0);
+                setError(null);
+                setIsLoading(false);
+                return;
+            }
+
+            // Extract unique user_id and social_channel pairs from drafts
+            const uniqueUserIds = Array.from(new Set(draftsData.map(d => d.user_id)));
+            const uniqueSocialChannels = Array.from(new Set(draftsData.map(d => d.social_channel)));
+
+            let socialChannelsData: any[] = [];
+            if (uniqueUserIds.length > 0 && uniqueSocialChannels.length > 0) {
+                // Query 2: Fetch social_channels data for the relevant accounts
+                const { data: fetchedChannels, error: channelsError } = await supabase
+                    .from('social_channels')
+                    .select('user_id, social_channel, avatar_url, display_name, handle') // Select necessary fields
+                    .eq('email', session.user.email) // Filter by user's email for security
+                    .in('user_id', uniqueUserIds)
+                    .in('social_channel', uniqueSocialChannels);
+
+                if (channelsError) {
+                    console.error('Error fetching social channels:', channelsError);
+                    // Log the error, but proceed, meaning some drafts might not get avatar/display_name
+                }
+                socialChannelsData = fetchedChannels || [];
+            }
+
+            // Create a lookup map for social channel details
+            const socialChannelLookup = new Map<string, { avatar_url: string | null; display_name: string | null; handle: string | null }>();
+            socialChannelsData.forEach(channel => {
+                socialChannelLookup.set(`${channel.user_id}_${channel.social_channel}`, {
+                    avatar_url: channel.avatar_url,
+                    display_name: channel.display_name,
+                    handle: channel.handle
+                });
+            });
+
+            // Enrich draft posts with social channel details
+            const enrichedDrafts = draftsData.map(draft => {
+                const lookupKey = `${draft.user_id}_${draft.social_channel}`;
+                const channelInfo = socialChannelLookup.get(lookupKey);
+                return {
+                    ...draft,
+                    // Prioritize social_channels data if available, otherwise use draft's own data
+                    avatar_url: channelInfo?.avatar_url || draft.avatar_url,
+                    user_display_name: channelInfo?.display_name || draft.user_display_name,
+                    user_handle: channelInfo?.handle || draft.user_handle // Ensure handle is also updated if needed
+                };
+            });
+
+            // Group enriched drafts by social channel
+            const groupedDrafts: { [key: string]: DraftPost[] } = enrichedDrafts.reduce((acc, post) => {
+                const channel = post.social_channel;
+                if (!acc[channel]) {
+                    acc[channel] = [];
+                }
+                acc[channel].push(post);
+                return acc;
+            }, {});
+
+            setDraftPosts(groupedDrafts);
+
+            let count = 0;
+            for (const channel in groupedDrafts) {
+                count += groupedDrafts[channel].length;
+            }
+            setTotalDraftCount(count);
+            setError(null);
+        } catch (err: any) {
+            console.error('Error fetching draft posts:', err);
+            setError('Failed to load draft posts');
+            setDraftPosts({});
+            setTotalDraftCount(0);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+  
+  {/*  Old fetchDraftPost
    const fetchDraftPosts = useCallback(async () => {
         try {
             setIsLoading(true); // Set loading state when fetching
@@ -80,6 +182,8 @@ export function DraftPostModal({ isOpen, onClose, onContinueDraft }: DraftPostMo
             setIsLoading(false); // Reset loading state regardless of success or failure
         }
     }, []);
+
+  */}
 
       useEffect(() => {
         // Assuming `isOpen` is a prop or state that determines when the draft section is visible/active
