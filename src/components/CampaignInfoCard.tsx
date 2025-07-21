@@ -27,7 +27,7 @@ export function CampaignInfoCard({ campaignName, onCreateNewCampaign }: Campaign
       <div className="bg-blue-50 p-2 rounded-full">
       <AlertCircle className="text-blue-500 h-8 w-8"/>
         </div>
-      <h3 className="text-lg font-semibold text-gray-700 mb-2">Campaign Completed!</h3>
+      <h3 className="text-lg font-semibold text-gray-700 mb-2">Campaign Expired!</h3>
       <p className="text-sm text-gray-500 mb-4">
         {/*Looks like you haven't set up the details for "{campaignName}" yet.
         Define your social goals, target audience, and end date to get started!*/}

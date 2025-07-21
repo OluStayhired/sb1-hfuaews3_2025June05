@@ -101,8 +101,18 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   // State to track which post is currently uploading an image
   const [uploadingImageId, setUploadingImageId] = useState<string | null>(null);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+  const [showCampaignExpiredCard, setShowCampaignExpiredCard] = useState(false);
 
 
+  // Re-run this effect when currentCalendarDaysLeft changes
+  //useEffect(() => {
+    //if (currentCalendarDaysLeft !== null && currentCalendarDaysLeft < 0) {
+      //setShowCampaignInfoModal(true);
+    //} else {
+      //setShowCampaignInfoModal(false);
+    //}
+  //}, [currentCalendarDaysLeft]); 
+  
 
 
   //const today = new Date();
@@ -310,6 +320,13 @@ const handleConnectLinkedIn = () => {
 };
 
 const handleImproveContentAI = async (content: CalendarContent) => {
+   // Check if the campaign is expired
+    if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
+    return; // Stop execution, do not proceed with LLM call
+  }
+  
   try {
     setIsImproving(content.id);
     
@@ -479,6 +496,13 @@ const handleHookPostV2 = async (content: CalendarContent, char_length: string) =
 
 
 const handleHookPostV3 = async (content: CalendarContent, char_length: string) => {
+
+      // Check if the campaign is expired
+    if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
+    return; // Stop execution, do not proceed with LLM call
+  }
 
   const uniqueKey = `${content.id}_${char_length}`;
   
@@ -683,6 +707,13 @@ const handleCloseBulkAddToCalendarModal = () => {
 
 const handleEditCampaignPost = async (content: CalendarContent) => {
 
+  // Check if the campaign is expired
+    if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
+    return; // Stop execution, do not proceed with LLM call
+  }
+
   // Check for connected social accounts first
     const socials = await checkConnectedSocials();
   
@@ -700,6 +731,15 @@ const handleEditCampaignPost = async (content: CalendarContent) => {
 }  
 
 const handleCopyCampaignPost = async (content: CalendarContent) => {
+
+     // Check if the campaign is expired
+    if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
+    return; // Stop execution, do not proceed with LLM call
+  }
+  
+  
  // Check for connected social accounts first
     const socials = await checkConnectedSocials();
   
@@ -708,7 +748,7 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
     setShowNoSocialModal(true);
     return;
     }
-  
+
         try {
               const sentences = formatContentText(content.content);
               const formattedContentForClipboard = sentences.join('\n\n');
@@ -725,7 +765,7 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
 //------------------------ Start handle upload image to attach to post ------------------ //
 
 // New handleUploadImage function
-const handleUploadImage = async (content: CalendarContent) => {
+  {/*const handleUploadImage = async (content: CalendarContent) => {
   // Check for connected social accounts first
   const socials = await checkConnectedSocials();
 
@@ -736,9 +776,95 @@ const handleUploadImage = async (content: CalendarContent) => {
 
   setUploadingImageId(content.id); // Set loading state for this specific post
   fileInputRef.current?.click(); // Trigger the hidden file input click
+};*/}
+
+// New handleUploadImage function
+const handleUploadImage = async (content: CalendarContent) => {
+
+   // Check if the campaign is expired
+    if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
+    return; // Stop execution, do not proceed with LLM call
+  }
+  
+  const socials = await checkConnectedSocials();
+
+  if (!socials || (!socials.bluesky && !socials.linkedin && !socials.twitter)) {
+    setShowNoSocialModal(true);
+    return;
+  }
+
+  setUploadingImageId(content.id);
+
+  const fileInput = fileInputRef.current;
+  if (!fileInput) {
+    setUploadingImageId(null);
+    return;
+  }
+
+  const currentPostIdForUpload = content.id;
+
+  const handleWindowFocusBack = () => {
+    setTimeout(() => {
+      if (uploadingImageId === currentPostIdForUpload) {
+        setUploadingImageId(null);
+        if (fileInput) {
+          fileInput.value = '';
+        }
+      }
+      window.removeEventListener('focus', handleWindowFocusBack);
+    }, 100);
+  };
+
+  window.addEventListener('focus', handleWindowFocusBack);
+
+  fileInput.click();
 };
 
 // New handleFileChange function
+const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (!file || !uploadingImageId) {
+    setUploadingImageId(null);
+    return;
+  }
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      throw new Error('User not authenticated.');
+    }
+
+    const imageUrl = await uploadImageGetUrl(file, session.user.id);
+
+    const { error: updateError } = await supabase
+      .from('content_calendar')
+      .update({ photo_url: imageUrl, updated_at: new Date().toISOString() })
+      .eq('id', uploadingImageId);
+
+    if (updateError) {
+      throw new Error('Failed to save image URL to database.');
+    }
+
+    setCalendarContent(prev =>
+      prev.map(item =>
+        item.id === uploadingImageId ? { ...item, photo_url: imageUrl } : item
+      )
+    );
+
+  } catch (err) {
+    setUploadingImageId(null);
+  } finally {
+    setUploadingImageId(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
+};  
+
+// Old handleFileChange function
+  {/*  
 const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0];
   if (!file || !uploadingImageId) {
@@ -786,7 +912,7 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     }
   }
 };
-
+*/}
 
 //------------------------ End handle upload image to attach to post --------------------//  
 
@@ -1212,7 +1338,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
         />
       )}
 
-        
+{/*       
 {showCampaignInfo && filteredContent.length === 0 && (
       <CampaignInfoModal
           isOpen={showCampaignInfoModal}
@@ -1221,6 +1347,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
           //onCreateNewCampaign={handleCreateNewCampaignFromModal}
       />
   )}
+  */}
           
         
         {filteredContent.map((content) => (
@@ -1582,6 +1709,8 @@ const handleDeleteImage = async (content: CalendarContent) => {
                   //onScheduleSuccess={handleBulkScheduleSuccess} 
             />
 
+
+
 {isCopySuccessModalOpen ? (
   <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg border border-green-100 p-4 flex items-center space-x-3 animate-fade-in z-[9999]">
     <div className="bg-green-100 rounded-full p-2">
@@ -1596,6 +1725,23 @@ const handleDeleteImage = async (content: CalendarContent) => {
   </div>
 ) : null}     
 
+    {/*currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0 && (
+      <CampaignInfoModal
+          isOpen={showCampaignInfoModal}
+          onClose={handleCloseCampaignInfoModal}
+          campaignName={calendarName}
+          //onCreateNewCampaign={handleCreateNewCampaignFromModal}
+      />   
+      )*/}
+
+{showCampaignInfo && filteredContent.length === 0 || (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) && (
+      <CampaignInfoModal
+          isOpen={showCampaignInfoModal}
+          onClose={handleCloseCampaignInfoModal}
+          campaignName={calendarName}
+          //onCreateNewCampaign={handleCreateNewCampaignFromModal}
+      />
+  )}
       
     </div>
 

@@ -556,6 +556,29 @@ const handleRemoveImage = async () => {
   };
 
 const hasActiveCalendars = calendars.length > 0;  
+
+  {/*
+const tooltipMessage = activeAccount // First, check if activeAccount exists
+  ? (channel.social_channel === 'Bluesky'
+    ? "⚡ 300 Chars for Bluesky"
+    : channel.social_channel === 'Twitter' || channel.social_channel === 'X' // Handle both 'Twitter' and 'X'
+      ? "⚡ 280 Chars for Free Twitter (X)"
+      : channel.social_channel === 'LinkedIn'
+        ? "⚡ Up to 3000 Chars for LinkedIn"
+        : "⚡ Character limit varies by platform (Unknown Channel)" // Default for known activeAccount but unrecognized channel
+    )
+  : "Select a social account to see details.";  
+*/}
+  
+const tooltipMessage =
+  socialChannels.social_channel === 'Bluesky'
+    ? "⚡ 300 Chars for Bluesky"
+    : socialChannels.social_channel === 'Twitter' || socialChannels.social_channel === 'X'
+      ? "⚡ 280 Chars for Free Twitter (X)"
+      : socialChannels.social_channel === 'LinkedIn'
+        ? "⚡ Up to 3000 Chars for LinkedIn"
+        : "⚡ Character limit varies by platform"; 
+  // This becomes the fallback for undefined activeAccount  
   
 const renderContentStep = () => (
 <div className="space-y-6" style={{
@@ -758,11 +781,15 @@ const renderContentStep = () => (
 
                     
                   <div className="flex justify-end mt-1">
+
+             <TooltipHelp text={tooltipMessage}>     
                     <span className={`text-xs ${
-                      postContent.length > max_length ? 'text-red-500' : 'text-gray-500'
+                      postContent.length > max_length  ? 'text-red-500 bg-red-50 rounded-full p-2' : 'text-green-500 bg-green-50 rounded-full p-2'
                     }`}>
-                      {postContent.length}/{max_length}
-                    </span>
+                      {postContent.length}/{max_length} Characters
+                    </span>      
+             </TooltipHelp>
+                    
                   </div>
                 </div>
                 </>              
@@ -770,60 +797,6 @@ const renderContentStep = () => (
             </div> 
         );
 
-  {/*
- const renderScheduleStep = () => (
-<div className="space-y-6">
-    // Schedule Time
-    <div>
-      <div className="flex space-x-2 items-center">
-         <span className="bg-blue-50 rounded-full p-1 mb-2">
-           <CalendarPlus className="w-4 h-4 text-blue-500"/>
-         </span>  
-            <label className="block text-xs font-medium text-gray-700 mb-2">
-                Schedule Time
-            </label>
-        </div>
-        <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 px-4 py-2 bg-gray-50 rounded-lg">
-               <Calendar className="w-4 h-4 text-gray-500" />
-                 <span className="text-xs text-gray-700">
-                  {format(selectedDate, 'EEEE, MMMM d, yyyy')}
-                 </span>
-              </div>
-              <input
-                type="time"
-                value={scheduledTime}
-                //onChange={(e) => setScheduledTime(e.target.value)}
-                 onChange={handleTimeChange}
-                 className={`px-4 py-2 border ${timeError ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
-                    />
-
-         
-                  </div>
-      
-      
-                </div>
-
-   // Error message 
-<div className={`flex items-center space-x-2 ${
-  timeError ? 'bg-red-50 border border-red-200' : 'hidden'
-} rounded-md p-2`}>
-  {timeError && <AlertCircle className="text-red-300 w-5 h-5"/>}
-  {timeError && (
-    <div className="mt-1 text-sm text-red-500">
-      {timeError}
-    </div>
-  )}
-</div>
-
-             // Preview section 
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Post Preview</h3>
-             <p className="text-sm text-gray-600">{postContent}</p>
-          </div>
-        </div>
-       ); 
-*/}
 
     const renderScheduleStep = () => (
         <div className="space-y-6">
@@ -930,32 +903,6 @@ const renderContentStep = () => (
             />
             
           </div>
-
-          {/*
-            <div className="relative w-6 h-6 flex items-center justify-center"> 
-            {uploadedPhotoUrl ? (
-                // State 1: Image is uploaded
-                <img
-                    src={uploadedPhotoUrl}
-                    alt="Uploaded post image"
-                    className="w-full h-full object-cover rounded-md shadow-sm cursor-pointer border border-gray-200"
-                    onClick={onImageClick} // Make the image clickable
-                    onError={onImageError} // Handle image loading errors
-                    title="Click to view image"
-                />
-            ) : (
-                // State 2: No image, show "Add Image" button
-                <button
-                    //onClick={onAddImageClick}
-                    className="w-full h-full justify-start flex items-start rounded-md bg-gray-50 text-blue-300 hover:bg-gray-100 hover:text-gray-500 transition-colors shadow-sm border border-gray-100"
-                    //title="Add Image to Post"
-                >
-                    <ImagePlus className="w-4 h-4 text-gray-500" /> 
-                        
-                </button>
-            )}
-        </div>
-          */}
 
             {/* Preview section */}
             <div className="bg-gray-50 p-4 rounded-lg">

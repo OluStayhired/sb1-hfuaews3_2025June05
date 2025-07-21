@@ -81,7 +81,7 @@ export function CampaignInfoModal({
 
         {/* Main Message - Prominent and Central */}
         <div className="text-center px-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Campaign Completed</h2> {/* Largest, boldest text for primary message */}
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Campaign Expired!</h2> {/* Largest, boldest text for primary message */}
             <div className="flex items-center justify-center mb-4">
                   <p className="text-gray-500 text-sm mr-2">{campaignName}</p>
               <TooltipExtended text={campaignDescription}>
