@@ -97,7 +97,7 @@ export function CampaignInfoModal({
 
         {/* Campaign Status Block - Clear and concise messaging */}
         <div className="px-6 py-4 bg-red-50 rounded-lg mx-6 mb-6 flex items-start space-x-3"> {/* Added mx-6 for side padding 
-          <div className="flex-shrink-0 bg-red-100 p-2 rounded-full flex items-center justify-center">
+          <div className="flex-shrink-0 bg-red-100 p-2 rounded-full flex items-center  justify-center">
             <CalendarCheck className="w-5 h-5 text-red-500" />
           </div>
           */}
