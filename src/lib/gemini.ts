@@ -1618,9 +1618,17 @@ This content calendar MUST start with the day of the week as ${startDayofWeek}.
     7. Do not include any follow-up questions or suggestions
     8. Notes provide context or tips
     9. Content is engaging and platform appropriate
-    10. Remove hashtags and generic content 
-    11. Place each sentence in the post on a new line.
-    12. Add a space after each line for readability
+
+Follow the [Rules] below:
+
+[Rules]:
+
+- Place each sentence in the post on a new line.
+- Add a space after each line for readability
+- Ban Generic Content
+- Ban hashtags
+- Ban bullet points.
+- Ban exclamation marks. 
 
 Generate a ${calendarDays}-day content calendar in valid JSON format. 
 The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".
