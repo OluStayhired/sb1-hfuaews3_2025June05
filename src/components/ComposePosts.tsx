@@ -1265,7 +1265,7 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
       />
 
       {/* --- RENDER THE SUCCESS POP-UP NOTIFICATION --- */}
-      {isSuccessModalOpen && notificationDetails && ( // Use the renamed state here
+      {isSuccessModalOpen && notificationDetails && ( // Use  the renamed state here
         <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg border border-green-100 p-4 flex items-center space-x-3 animate-fade-in z-[9999]">
           <div className="bg-green-100 rounded-full p-2">
             <Check className="w-5 h-5 text-green-500" />
