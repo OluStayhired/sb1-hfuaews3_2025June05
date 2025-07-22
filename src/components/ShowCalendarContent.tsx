@@ -689,6 +689,13 @@ const filteredContent = getFilteredContent();
 // Handler to open the BulkAddToCalendarModal
 const handleOpenBulkAddToCalendarModal = async (content: CalendarContent) => {
 
+        // Check if the campaign is expired
+  if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
+    return; // Stop execution, do not proceed with LLM call
+  }
+
   // Check for connected social accounts first
     const socials = await checkConnectedSocials();
   
@@ -1130,7 +1137,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
   const duplicateTooltipText =
     currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0
       ? `⚡Duplicate once expired - ${currentCalendarDaysLeft} Day${currentCalendarDaysLeft === 1 ? '' : 's'}`
-      : '⚡Duplicate Calendar'; // Original message when enabled or no days left
+      : '⚡Copy this Calendar'; // Original message when enabled or no days left
 
   if (loading) {
     return (
@@ -1176,7 +1183,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
   return (
     <div className="space-y-6">
       {/* Calendar Header */}
-      <div className="bg-gradient-to-r from-blue-75 via-blue-50 to-white border-1 border-transparent rounded-xl p-6 shadow-sm">
+      <div className="bg-gradient-to-r from-white via-white via-blue-50 to-blue-100 border-1 border-transparent rounded-xl p-6 shadow-sm">
 
       {/* Add the X button here */}
             <div className="flex justify-start mb-4 mt-[-16px]">
@@ -1225,7 +1232,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
     }`}
   >
-    This Week
+    This Week's Posts
   </button>
   <button
     onClick={() => setTimeFilter('next-week')}
@@ -1235,7 +1242,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
     }`}
   >
-    Next Week
+    Next Week's Posts
   </button>
   <button
     onClick={() => setTimeFilter('all')}
@@ -1245,7 +1252,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
     }`}
   >
-    Full Calendar
+    View All Posts
   </button>
 
 </div>
@@ -1293,7 +1300,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
                        }`}
             >
               <Copy className="h-4 w-4 mr-2" />
-              Duplicate
+              Duplicate All
             </button>
           </TooltipHelp>
 </div>        

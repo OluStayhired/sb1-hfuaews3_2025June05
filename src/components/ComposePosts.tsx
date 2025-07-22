@@ -874,26 +874,6 @@ const onModalScheduleError = (error: any) => {
   // Optionally, show an error message to the user
 };  
 
-  {/*
-  const getTooltipText = (channel: string) => {
-  switch (channel) {
-    case 'Twitter':
-    case 'X': // Assuming 'x' is also possible for Twitter
-      return "⚡ 280 Chars for Free Twitter (X)";
-    case 'LinkedIn':
-      return "⚡ Up to 3000 Chars for LinkedIn"; // LinkedIn has a higher character limit
-    case 'Bluesky':
-      return "⚡ 300 Chars for Bluesky"; // Bluesky has its own limit
-    // Add more cases for other social channels as needed
-    case 'facebook':
-        return "⚡ Up to 63,206 Chars for Facebook"; // Facebook has a very high limit
-    default:
-      return "Character limit varies by platform."; // Fallback for unknown channels
-  }
-};
-
-const tooltipMessage = getTooltipText(activeAccount.social_channel);  
-*/}
 const tooltipMessage = activeAccount // First, check if activeAccount exists
   ? (activeAccount.social_channel === 'Bluesky'
     ? "⚡ 300 Chars for Bluesky"
@@ -909,14 +889,6 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
 
-        {/*
-        <div className="flex items-center space-x-2 mb-6"> 
-          <div className="p-2 bg-blue-100 rounded-md"> 
-            <FileEdit className="w-5 h-5 text-blue-500"/> 
-          </div>
-          <h2 className="text-xl font-semibold text-gray-900">Draft Post</h2>
-        </div>
-        */}
 
         {isLoading ? (
           <div className="flex justify-center py-8">
@@ -1028,24 +1000,7 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
               </span>
             )}
         </button>
-            {/*
-              <button
-                  //onClick={() => setIsDraftPostModalOpen(!isDraftPostModalOpen)}
-
-                  onClick={() => { // Start a single arrow function block
-                    setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
-                    setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
-                    }}
-                  className="ml-2 flex p-2 bg-gray-100 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
-                  //title="View Drafts"
-                >
-
-                
-                  <FileEdit className="w-4 h-4 mr-2"/>
-                  <span className="text-xs">Saved Drafts ({totalDraftCount})</span>
-                             
-                </button>
-                */}
+            
        </TooltipHelp>
 
                     {/* End Add button to show draft posts */}
@@ -1106,7 +1061,7 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
                     {isGenerating ? (
                         <Loader2 className="w-3 h-3 animate-spin" />
                           ) : (
-                        <TooltipHelp text="⚡ Quick Rewrite">
+                        <TooltipHelp text="⚡Quick Rewrite">
                         <Sparkles className="w-3 h-3" />
                         </TooltipHelp>
                           )}
@@ -1114,41 +1069,6 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
                 {/*End Add AI Button*/}
 
                 {/*start linkedin button */}
-
-                {/*
-                <button
-                  type="button"
-                    onClick={handleGenerateContent}
-                    disabled={isGenerating || !activeAccountId || !content.trim() || isPosting}
-                    // Remove the outer conditional rendering for the button itself
-                  className={`
-                              absolute right-10 top-2 p-1 rounded-md shadow-md
-                              transition duration-200 flex items-center space-x-1
-                            ${
-                        content.trim() // If content exists, apply active styles
-                          ? 'bg-gray-100 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                            }
-                      ${
-                        (isGenerating || !activeAccountId || !content.trim() || isPosting)
-                          ? 'opacity-70' // Reduce opacity when disabled by any condition
-                          : ''
-                        }
-                      `}
-                      >
-                    {isGenerating ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                          ) : (
-                        <TooltipHelp text="⚡ Adapt for LinkedIn">
-                                      <>
-                
-                <img src={LinkedInLogo} className="w-3 h-3" />
-                </>
-                        </TooltipHelp>
-                          )}
-                    </button>
-              */}
-                    
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   
@@ -1189,12 +1109,6 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
                     </TooltipHelp>
                             );
                         })()}
-                  {/*
-                  
-                  <div className="text-sm text-gray-500 bg-gray-50 rounded-full p-2">
-                    {max_length - content.length} characters remaining
-                  </div>
-                  */}
 
                   <div className="flex items-center mt-4 pt-4 space-x-2">
 

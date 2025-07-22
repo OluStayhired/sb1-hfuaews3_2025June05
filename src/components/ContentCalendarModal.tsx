@@ -237,9 +237,10 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
 
                       <div className="absolute top-0 right-0 pr-2 pt-2">
                         {/* Copy Button for individual content */}
+                        <TooltipHelp  text = "Copy">
                             <button
                                 onClick={() => handleCopyToClipboard(item.content, item.id)}
-                                className="p-2 space-x-2 text-xs bg-gray-100 text-gray-500 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition-colors flex items-center space-x-2"
+                                className="p-2 space-x-2 text-xs bg-blue-50 text-blue-300 rounded-lg hover:bg-blue-100 hover:text-blue-500 transition-colors flex items-center space-x-2"
                             >
                                 {copySuccessMap[item.id] ? (
                                   <span className="text-green-500">Copied!</span>
@@ -250,6 +251,7 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
                                           </>
                                           )}
                                   </button>
+                        </TooltipHelp>
 
                       </div>
                   <h3 className="text-sm font-medium text-blue-500">Post Idea 💡</h3>
@@ -318,11 +320,11 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
               </button>
              </TooltipHelp>
 
-             <TooltipHelp  text = "⚡Rewrite for X">
+            <TooltipHelp  text = "⚡Rewrite for X">
               <button
                 onClick={() => handleHookPostV3(item, '280')}
                 disabled={loadingProcess === `${item.id}_280`|| isHooksLoading || hooksError !== null}
-                className="p-1 bg-gradient-to-r from-blue-50  to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
+                className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
                 
                 {loadingProcess === `${item.id}_280` ? (
