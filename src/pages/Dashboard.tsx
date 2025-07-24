@@ -73,6 +73,7 @@ function Dashboard() {
   const [isPaidAccount, setIsPaidAccount] = useState(false);
 
   // NEW: useEffect to check user's account type
+  {/*
   useEffect(() => {
     const checkAccountType = async () => {
       if (user?.id) { // Ensure user is authenticated
@@ -107,6 +108,96 @@ function Dashboard() {
     checkAccountType();
   }, [user?.id]); // Re-run when the user object (specifically user.id) changes
 
+*/}
+
+useEffect(() => {
+  // Function to initially fetch account type and update state
+  const fetchAndSetAccountType = async () => {
+    if (!user?.id) {
+      setIsPaidAccount(false); // Not paid if no user is logged in
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('user_preferences')
+        .select('account_type')
+        .eq('user_id', user.id) // Ensure 'user_id' column is used
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+        console.error('Error fetching account type:', error);
+        setIsPaidAccount(false); // Default to free on error
+        return;
+      }
+
+      // Assuming 'Pro' or 'Paid' indicates a paid account
+      if (data?.account_type === 'Pro' || data?.account_type === 'Paid') {
+        setIsPaidAccount(true);
+      } else {
+        setIsPaidAccount(false);
+      }
+    } catch (err) {
+      console.error('Unexpected error checking account type initially:', err);
+      setIsPaidAccount(false); // Default to free on unexpected error
+    }
+  };
+
+  // Function to set up the Realtime subscription
+  const setupRealtimeSubscription = () => {
+    if (!user?.id) {
+      return undefined; // No user, no subscription to set up
+    }
+
+    console.log(`Setting up Realtime subscription for user_id: ${user.id}`);
+
+    // Subscribe to changes specifically for this user's row in 'user_preferences'
+    const channel = supabase
+      .channel(`user_preferences_update:${user.id}`) // Create a unique channel name per user
+      .on(
+        'postgres_changes', // Listen for Postgres changes
+        {
+          event: 'UPDATE', // Specifically interested in UPDATE events
+          schema: 'public',
+          table: 'user_preferences',
+          filter: `user_id=eq.${user.id}`, // Filter to only receive updates for this user's row
+        },
+        (payload) => {
+          console.log('Realtime update received for user_preferences:', payload);
+          // Check the new value of 'account_type' from the payload
+          const newAccountType = (payload.new as { account_type: string }).account_type;
+
+          if (newAccountType === 'Pro' || newAccountType === 'Paid') {
+            setIsPaidAccount(true);
+          } else {
+            setIsPaidAccount(false);
+          }
+        }
+      )
+      .subscribe(); // Start listening for changes
+
+    // Return a cleanup function for useEffect
+    return () => {
+      console.log(`Unsubscribing from user_preferences_update:${user.id} channel.`);
+      supabase.removeChannel(channel); // Clean up the subscription when component unmounts or user changes
+    };
+  };
+
+  // 1. Perform initial fetch (important for displaying current state immediately)
+  fetchAndSetAccountType();
+
+  // 2. Set up the Realtime subscription
+  const cleanupRealtime = setupRealtimeSubscription();
+
+  // 3. Return the cleanup function for useEffect
+  return () => {
+    if (cleanupRealtime) {
+      cleanupRealtime();
+    }
+  };
+
+}, [user?.id]); // Dependency array: Re-run this effect when user.id changes (login/logout)  
+  
 
   const checkActiveSession = async () => {
   try {
