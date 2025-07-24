@@ -13,7 +13,7 @@ export function PaymentCancelPage() {
 
   const handleViewPricing = () => {
     // Assuming you have a pricing page or a section in the dashboard for pricing
-    navigate('/dashboard/settings'); // Or a dedicated pricing route like '/pricing'
+    navigate('/dashboard/pricing'); // Or a dedicated  pricing route like '/pricing'
   };
 
   return (
