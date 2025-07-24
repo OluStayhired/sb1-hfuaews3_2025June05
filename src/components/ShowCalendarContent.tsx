@@ -1599,7 +1599,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
         )*/}
   {/* ----------------- Start Display the image if photo_url exists --------------- */}
 {content.photo_url && (
-  <div className="mt-4 group relative w-full h-auto max-w-sm mx-auto">
+  <div className="mb-8 group relative w-full h-auto max-w-sm mx-auto">
     <img
       src={content.photo_url}
       alt="Post attachment"
@@ -1644,18 +1644,54 @@ const handleDeleteImage = async (content: CalendarContent) => {
         
           <div className="space-x-2 flex-wrap">
 
-             <div className={`text-xs text-blue-500 rounded-full p-1.5 inline-flex items-left
+            {/*<TooltipHelp  text = "⚡LinkedIn Max Limit 600 ">*/}
+          <TooltipHelp  text = {`⚡${content.content.length}/600 chars`}>
+       <div className={`items-center space-x-1 text-xs text-blue-500 rounded-full p-1.5 inline-flex items-left
+              ${content.content.length > 600 ? 'bg-red-50' : 'bg-gray-100'
+              }`}>
+              
+              {/*{content.call_to_action}*/}
+              <img src={LinkedInLogo} className="w-3 h-3" />
+              <span className={`text-xs ${
+              content.content.length > 600 ? 'text-red-300 hover:text-red-400' : 'text-gray-400 hover:text-gray-500'
+              }`}>
+                {(600 - content.content.length)} chars
+                </span>
+            </div>
+            </TooltipHelp>
+
+            <TooltipHelp  text = {`⚡${content.content.length}/300 chars`}>
+             <div className={`items-center space-x-1 text-xs text-blue-500 rounded-full p-1.5 inline-flex items-left
               ${content.content.length > 300 ? 'bg-red-50' : 'bg-gray-100'
               }`}>
               
               {/*{content.call_to_action}*/}
+               <img src={BlueskyLogo} className="w-3 h-3" />
               <span className={`text-xs ${
               content.content.length > 300 ? 'text-red-300 hover:text-red-400' : 'text-gray-400 hover:text-gray-500'
               }`}>
-              {content.content.length}/300 chars
+              {(300 - content.content.length)} chars
                 </span>
             </div>
+            </TooltipHelp>
+
+            <TooltipHelp  text = {`⚡${content.content.length}/280 chars`}>
+             <div className={`items-center space-x-1 text-xs text-blue-500 rounded-full p-1.5 inline-flex items-left
+              ${content.content.length > 280 ? 'bg-red-50' : 'bg-gray-100'
+              }`}>
               
+              {/*{content.call_to_action}*/}
+              <img src={XLogo} className="w-3 h-3" />
+              <span className={`text-xs ${
+              content.content.length > 280 ? 'text-red-300 hover:text-red-400' : 'text-gray-400 hover:text-gray-500'
+              }`}>
+                {(280 - content.content.length)} chars
+                </span>
+            </div>
+            </TooltipHelp>
+
+
+            
           </div>           
         </div>
       </div>

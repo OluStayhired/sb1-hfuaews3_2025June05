@@ -32,6 +32,7 @@ import { CalendarListSidePanel } from './CalendarListSidePanel';
 import { WelcomeGuide } from './WelcomeGuide';
 import { OnboardSuccessPage } from '../components/OnboardSuccessPage'; 
 import { SaveAndClosePage } from './SaveAndClosePage';
+import { CreateCalendarForm } from '/src/components/CreateCalendarForm'; 
 
 interface DashboardMetrics {
   todayPosts: {
@@ -88,6 +89,7 @@ export function UserDashboard() {
   const [selectedContentIdeaId, setSelectedContentIdeaId] = useState<string | null>(null); // To match selectedContentIdea prop
   const [currentPostIdeaRecord, setCurrentPostIdeaRecord] = useState<FirstPostIdeaRecord | null>(null); // To match postToUpdate prop
   const [isFirstPostModalOpen, setIsFirstPostModalOpen] = useState(false);
+ //const [isCreateCalendarFormOpen, setIsCreateCalendarFormOpen] = useState(false);
 
 
   // Define a consistent primary color for easy  changes
@@ -577,6 +579,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
   
  const handleCreateCampaign = () => {
     navigate('/dashboard/campaign');
+   //navigate('/dashboard/campaign/createcalendarform');
   };
 
   const handleSelectCalendarFromSidebar = (calendarName: string) => {
@@ -625,13 +628,16 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
           {/* Right-aligned Create New Campaign button */}
           <button
               onClick={handleCreateCampaign}
-              className={`inline-flex items-center px-4 py-2 rounded-full text-base font-semibold shadow-md
-                  ${PRIMARY_COLOR_CLASSES.bg} text-white ${PRIMARY_COLOR_CLASSES.hoverBg}
-                  transform transition-transform duration-200 hover:-translate-y-0.5
-                  shadow-blue-500/30
-                  `}
+              //className={`inline-flex items-center px-4 py-2 rounded-full text-base font-semibold shadow-md
+                //  ${PRIMARY_COLOR_CLASSES.bg} text-white ${PRIMARY_COLOR_CLASSES.hoverBg}
+                  //transform transition-transform duration-200 hover:-translate-y-0.5
+                  //shadow-blue-500/30
+                  //`}
+
+            className="text-blue-500 font-medium inline-flex items-center px-4 py-2 rounded-full text-base
+            bg-gradient-to-r from-blue-50 to-blue-50 to-white border border-blue-100 rounded-lg hover:border-blue-300 transition-all group"
             >
-              <Sparkles className="w-6 h-6 mr-2 text-yellow-400 fill-yellow-500" /> {/* Reduced icon size */}
+              <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
                 Plan 14 Days of Content
             </button>
         </div>

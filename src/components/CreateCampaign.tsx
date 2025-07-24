@@ -17,6 +17,7 @@ import { CalendarList } from './CalendarList';
 import { CampaignSuccessfulModal } from './CampaignSuccessfulModal'
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { getCompanyProblemAndAudience, CompanyInsightsResponse } from '../lib/firecrawl';
+import { UpgradePlanModal } from './UpgradePlanModal'
 
 
 interface ViewCalendarProps {
@@ -77,6 +78,16 @@ interface LineProgressProps {
   maxLength: number;
 }
 
+// Define the shape of your user preferences (assuming this comes from Supabase)
+interface UserPreferences {
+  account_type: 'Early Adopter' | 'Free' | 'Paid';
+  total_campaigns: number;
+  total_accounts?: number; // Example for future checks
+  total_posts?: number; // Example for future checks
+}
+
+
+
 //function ViewCalendars() {
 // Main Calendar Component
 
@@ -107,7 +118,32 @@ export function ViewCalendars({ onCreateCalendarClick }: ViewCalendarProps) {
   const [companyWebsite, setCompanyWebsite] = useState('');
   const [insights, setInsights] = useState<CompanyInsightsResponse | null>(null);
 
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [isCheckingLimits, setIsCheckingLimits] = useState(false);
+  const [userMessage, setUserMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
 
+  
+// Define specific limits
+const MAX_FREE_CAMPAIGNS = 10;
+const MAX_FREE_ACCOUNTS = 3;
+//const MAX_FREE_POSTS_PER_MONTH = 50;
+
+// Define the possible action types for our limit checks
+type ActionType = 'createCampaign' | 'addAccount' ;  
+
+  // handle UpgradeModal Open
+  const handleOpenUpgradeModal = () => {
+    setIsUpgradeModalOpen(true);
+  };
+
+  // Function to close the modal
+  const handleCloseUpgradeModal = () => {
+    setIsUpgradeModalOpen(false);
+  };
+
+
+  
 // function to determine email for use in the component
   const fetchUserIdAndEmail = async () => {
   try {
@@ -149,6 +185,99 @@ useEffect(() => {
   }
 }, [currentUserEmail]);
 
+
+// CheckLimits Function to determine User Limits for Upgrade Plan
+
+//----------- Start Check Limits Function -------------------- //
+// This refined function checks limits specific to the requested action
+  const checkActionLimits = async (action: ActionType): Promise<boolean> => {
+    setIsCheckingLimits(true);
+    setUserMessage('');
+    setModalMessage(''); // Clear previous modal message
+    setIsUpgradeModalOpen(false);
+
+    console.log(`[checkActionLimits] Action requested: ${action}`);
+
+    try {
+        const { data: userPreferences, error: supabaseError } = await supabase
+            .from('user_preferences')
+            .select('account_type, total_campaign, social_accounts') // <-- SELECTING 'total_campaign' and 'social_accounts'
+            .eq('user_id', currentUserId)
+            .single();
+
+        if (supabaseError || !userPreferences) {
+            console.error("[checkActionLimits] Error fetching user preferences:", supabaseError?.message || "No data returned.");
+            setUserMessage('Could not retrieve account details. Please try again.');
+            return false;
+        }
+
+        //console.log("[checkActionLimits] Fetched userPreferences:", userPreferences);
+        //console.log(`[checkActionLimits] User Account Type: ${userPreferences.account_type}`);
+        // IMPORTANT: Accessing data using the exact column names returned by Supabase
+        //console.log(`[checkActionLimits] User Total Campaigns (from DB 'total_campaign'): ${userPreferences.total_campaign}`);
+        //console.log(`[checkActionLimits] User Social Accounts (from DB 'social_accounts'): ${userPreferences.social_accounts}`);
+        //console.log(`[checkActionLimits] MAX_FREE_CAMPAIGNS: ${MAX_FREE_CAMPAIGNS}`);
+        //console.log(`[checkActionLimits] MAX_FREE_ACCOUNTS: ${MAX_FREE_ACCOUNTS}`);
+
+
+        const limitedAccountTypes = ['Free', 'Early Adopter']; // Define the types that have this limit
+
+         switch (action) {
+    case 'createCampaign':
+      // Correct variable name for campaign-related checks
+      const isLimitedCampaignAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+      const hasExceededCampaigns = userPreferences.total_campaign >= MAX_FREE_CAMPAIGNS;
+
+      //console.log(`[checkActionLimits] Is Limited Account Type for Campaign: ${isLimitedCampaignAccountType}`);
+      //console.log(`[checkActionLimits] Has Exceeded Campaigns: ${hasExceededCampaigns}`);
+      //console.log(`[checkActionLimits] Full Condition: ${isLimitedCampaignAccountType && hasExceededCampaigns}`);
+
+      if (isLimitedCampaignAccountType && hasExceededCampaigns) {
+        setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
+        setIsUpgradeModalOpen(true);
+        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        return false;
+      }
+      //console.log("[checkActionLimits] Campaign limits cleared. Continuing.");
+      break;
+
+    case 'addAccount':
+      // Correct variable name for addAccount-related checks
+      const isLimitedAccountAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+      const hasExceededAccounts = (userPreferences.social_accounts || 0) >= MAX_FREE_ACCOUNTS;
+
+      //console.log(`[checkActionLimits] Is Limited Account Type for Add Account: ${isLimitedAccountAccountType}`);
+      //console.log(`[checkActionLimits] Has Exceeded Accounts: ${hasExceededAccounts}`);
+      //console.log(`[checkActionLimits] Full Condition: ${isLimitedAccountAccountType && hasExceededAccounts}`);
+
+      if (isLimitedAccountAccountType && hasExceededAccounts) {
+        setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type} plan. Upgrade to connect more!`);
+        setIsUpgradeModalOpen(true);
+        console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+        return false;
+      }
+      //console.log("[checkActionLimits] Account limits cleared. Continuing.");
+      break;
+
+            default:
+                console.warn(`[checkActionLimits] Unknown action type for limit check: ${action}`);
+                return false; // Or throw error
+        }
+
+        //console.log("[checkActionLimits] All relevant checks passed. Returning true.");
+        return true;
+
+    } catch (e: any) {
+        console.error("[checkActionLimits] Unhandled error during limit check:", e.message);
+        setUserMessage('An unexpected error occurred during limit check. Please try again.');
+        return false;
+    } finally {
+        setIsCheckingLimits(false);
+    }
+};
+
+//------------- End Check Limits Function -------------------- //  
+
 const handleDiscoverAudience = async (): Promise<boolean> => { 
   if (!companyWebsite) {
     setError('Please enter a company website URL.');
@@ -173,10 +302,27 @@ const handleDiscoverAudience = async (): Promise<boolean> => {
 };
 
 const handleCreateCalendarClick = async () => {
-  console.log('Create Campaign button clicked in ViewCalendars!');
+  //console.log('Create Campaign button clicked in ViewCalendars!');
 
   setError(null);
 
+ //----------- Start Checking Limits Here --------------// 
+ if (isLoading || isCheckingLimits) {
+        return; // Already busy with something
+    }
+
+  console.log("Starting limit check...");
+    const canProceed = await checkActionLimits('createCampaign');
+
+    if (!canProceed) {
+        console.log("Limit check failed. Modal should be open. Returning.");
+        return; // This return is crucial and should prevent anything below from running
+    }
+
+    console.log("Limit check passed. Proceeding with campaign creation logic.");
+    setUserMessage('');
+ //-------------- End Checking Limits Here --------------- //
+  
   if (companyWebsite) {
     const insightsFetchedSuccessfully = await handleDiscoverAudience();
     if (insightsFetchedSuccessfully) {
@@ -417,7 +563,7 @@ const handleViewCalendarList = () => {
                   </div>
                   <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
                   {/*<p className="text-gray-400 mb-4 text-sm"> Adapt it for LinkedIn, Twitter or Bluesky </p>*/}
-                  <p className="text-gray-400 mb-4 text-sm"> <p className="text-gray-400 mb-4 text-sm">Use a website to kickstart your campaign (optional)</p> </p>
+                  <p className="text-gray-400 mb-4 text-sm">Use a website to kickstart your campaign (optional). </p>
 
 
               <div className="relative mb-3">
@@ -433,9 +579,31 @@ const handleViewCalendarList = () => {
                 />
               </div>
 
+                  <TooltipExtended text="⚡Generate from website (optional), or create manually.">
+  <button
+    onClick={handleCreateCalendarClick} // Or handleCreateCampaign as we've been using
+    disabled={isLoading || isCheckingLimits} // Button disabled during EITHER phase
+    className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+  >
+    {/* Conditional Rendering for Icon */}
+    {(isLoading || isCheckingLimits) ? ( // Show loader if either is true
+      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+    ) : (
+      <PlusCircle className="w-5 h-5 mr-2" />
+    )}
+
+    {/* Conditional Rendering for Text */}
+    <span>
+      {isCheckingLimits ? "Checking limits..." :
+       isLoading ? "Analyzing Website..." : "Create Campaign"}
+    </span>
+  </button>
+</TooltipExtended>
+                  {/*
             <TooltipExtended text="⚡Generate from website (optional), or create manually.">
                   <button
                     onClick={handleCreateCalendarClick}
+                    //disabled={isLoading}
                     disabled={isLoading}
                     className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                   >
@@ -447,9 +615,12 @@ const handleViewCalendarList = () => {
                     <span>{isLoading ? "Analyzing Website..." : "Create Campaign"}</span>
                   </button>
             </TooltipExtended>
-              
+              */}
                 </>
               ) : null} 
+
+
+
               
              
               {/* Conditionally render the CreateCalendarForm */}
@@ -532,19 +703,6 @@ const handleViewCalendarList = () => {
                             </div>
                         )}
               
-              {/*
-               {calendarCompleteList.length > 0 && !isCreateCalendarFormOpen && (
-                // Here you would render the actual calendar information when the list is not empty
-                <div className="w-full"> 
-                  {calendarCompleteList.map((item) => (
-                    <div key={item.id} className="py-4 border-b"> 
-                      <p className="font-semibold">{item.theme}</p>
-                      
-                    </div>
-                  ))}
-                </div>
-              )} 
-              */}
             
             </div>
           </div>
@@ -561,6 +719,13 @@ const handleViewCalendarList = () => {
         </div>
         {/*End inside the white boarder*/}
       </div>
+
+        <UpgradePlanModal
+          isOpen={isUpgradeModalOpen}
+          onClose={handleCloseUpgradeModal}
+          message={modalMessage} 
+        />
+      
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { CalendarCheck, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target, Combine, PlusCircle } from 'lucide-react';
+import { CalendarCheck, Sparkles, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target, Combine, PlusCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ComposePosts from '../components/ComposePosts';
 import ManageSchedule from '../components/ManageSchedule';
@@ -24,6 +24,9 @@ import { UserDashboard } from '../components/UserDashboard';
 import { OnboardSuccessPage } from '../components/OnboardSuccessPage';
 import { SettingsPage } from '../components/SettingsPage';
 import { FeedbackPage } from '../components/FeedbackPage';
+import { PaymentSuccessPage } from '../components/PaymentSuccessPage';
+import { PaymentCancelPage } from '../components/PaymentCancelPage';
+import { PricingPage } from '../components/PricingPage';
 import { v4 as uuidv4 } from 'uuid';
 import { TooltipHelp } from '../utils/TooltipHelp';
 
@@ -65,6 +68,45 @@ function Dashboard() {
   const [linkedinUser, setLinkedinUser] = useState<SocialAccount | null>(null);
   const [disconnectingLinkedInAccount, setDisconnectingLinkedInAccount] = useState<string | null>(null);
   const [linkedinLoading, setLinkedinLoading] = useState(false);
+
+  // NEW: State to track if the user has a paid account
+  const [isPaidAccount, setIsPaidAccount] = useState(false);
+
+  // NEW: useEffect to check user's account type
+  useEffect(() => {
+    const checkAccountType = async () => {
+      if (user?.id) { // Ensure user is authenticated
+        try {
+          const { data, error } = await supabase
+            .from('user_preferences')
+            .select('account_type')
+            .eq('user_id', user.id)
+            .single();
+
+          if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+            console.error('Error fetching account type:', error);
+            setIsPaidAccount(false); // Default to free on error
+            return;
+          }
+
+          // Assuming 'Pro' or similar indicates a paid account
+          if (data?.account_type === 'Pro' || data?.account_type === 'Paid') {
+            setIsPaidAccount(true);
+          } else {
+            setIsPaidAccount(false);
+          }
+        } catch (err) {
+          console.error('Unexpected error checking account type:', err);
+          setIsPaidAccount(false); // Default to free on unexpected error
+        }
+      } else {
+        setIsPaidAccount(false); // Not paid if no user is logged in
+      }
+    };
+
+    checkAccountType();
+  }, [user?.id]); // Re-run when the user object (specifically user.id) changes
+
 
   const checkActiveSession = async () => {
   try {
@@ -142,6 +184,8 @@ useEffect(() => {
     subscription.unsubscribe();
   };
 }, [isBlueskyAuthenticated]);
+
+
 
   
   const menuItems = [
@@ -707,6 +751,20 @@ const isLinkedInAuthenticated = !!linkedinUser;
                 <span className="font-medium">Feedback</span>
               </button>
 
+ {!isPaidAccount && (
+                <button 
+                  onClick={() => navigate('pricing')}
+                  className={`flex bg-blue-600 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
+                    location.pathname.includes('pricing')
+                      ? 'text-white'
+                      : 'text-white hover:bg-blue-500'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5"/>        
+                  <span className="font-medium">Upgrade Now</span>
+                </button>
+              )}
+
               {/*
                <button 
                 onClick={() => navigate('feedback')}
@@ -927,6 +985,9 @@ const isLinkedInAuthenticated = !!linkedinUser;
             <Route path="settings" element={<SettingsPage />} />
             <Route path="onboarding-success" element={<OnboardSuccessPage />} />
             <Route path="campaign/createcalendarform" element={<CreateCalendarForm />} />
+            <Route path="success" element={<PaymentSuccessPage />} />
+            <Route path="cancel" element={<PaymentCancelPage />} />
+            <Route path="pricing" element={<PricingPage />} />
             
             {/*Default Route Shown Below*/}
             
