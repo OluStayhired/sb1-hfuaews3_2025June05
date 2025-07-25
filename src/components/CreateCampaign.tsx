@@ -125,7 +125,7 @@ export function ViewCalendars({ onCreateCalendarClick }: ViewCalendarProps) {
 
   
 // Define specific limits
-const MAX_FREE_CAMPAIGNS = 10;
+const MAX_FREE_CAMPAIGNS = 5;
 const MAX_FREE_ACCOUNTS = 3;
 //const MAX_FREE_POSTS_PER_MONTH = 50;
 

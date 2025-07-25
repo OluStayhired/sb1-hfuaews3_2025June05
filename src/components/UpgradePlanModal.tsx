@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { X, Rocket, CheckCircle, CheckCircle2, Users, CalendarDays, Sparkles, DollarSign } from 'lucide-react';
 
 interface UpgradePlanModalProps {
@@ -9,6 +10,14 @@ interface UpgradePlanModalProps {
 }
 
 export function UpgradePlanModal({ isOpen, onClose, message }: UpgradePlanModalProps) { // --- ADDED 'message' HERE ---
+
+const navigate = useNavigate();
+
+const handleUpgradePlan = () => {
+    navigate('/dashboard/pricing');
+    onClose();
+  };
+  
   if (!isOpen) return null;
 
   return (
@@ -38,7 +47,7 @@ export function UpgradePlanModal({ isOpen, onClose, message }: UpgradePlanModalP
         </div>
 
         {/* Benefits Section - (Keep these static as they describe overall upgrade value) */}
-        <div className=" bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-lg hover:border-blue-300 transition-all group p-4 rounded-lg mb-6">
+    <div className=" bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-lg hover:border-blue-300 transition-all group p-4 rounded-lg mb-6">
           <h3 className="text-lg font-medium text-blue-500 mb-3 text-center">
             What You'll Get 👇
           </h3>
@@ -74,10 +83,11 @@ export function UpgradePlanModal({ isOpen, onClose, message }: UpgradePlanModalP
 
         {/* Upgrade Button */}
         <button
+          onClick={handleUpgradePlan}
           className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-500 transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-blue-500/50"
         >
           <Sparkles className="w-5 h-5" />
-          <span className="font-semibold text-lg">Upgrade Now</span>
+          <span className="font-semibold text-lg">Get Started</span>
         </button>
       </div>
     </div>

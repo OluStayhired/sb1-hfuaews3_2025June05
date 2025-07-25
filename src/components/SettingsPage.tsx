@@ -5,6 +5,8 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Save, Settings, User, Globe, Target, AlertCircle, CreditCard, Puzzle, Loader2, PlusCircle, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext'; // Import useAuth to get the current user
+import { TooltipHelp } from '../utils/TooltipHelp';
+import { TooltipExtended } from '../utils/TooltipExtended';
 
 
 // import { useNavigate } from 'react-router-dom'; // Example if using react-router-dom
@@ -36,7 +38,7 @@ export function SettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-  // Access the authenticated user
+   // Access the authenticated user
   const { user } = useAuth();
 
 // NEW: Environment variable for the customer portal session Edge Function URL
@@ -265,9 +267,9 @@ export function SettingsPage() {
                     <div>
                         <span className="text-blue-700 font-medium">{userPreferences.account_type}</span>
                         <p className="text-sm text-gray-500">
-                            {userPreferences.account_type === "Pro Plan" && "$25/mo Premium Features 🔥"}
+                            {userPreferences.account_type === "Pro Plan" && "Full Premium Features 🔥"}
                             {userPreferences.account_type === "Free Plan" && "$0/mo Basic Features"}
-                            {userPreferences.account_type === "Early Adopter" && "Discounted for Early Adopters 😍"}
+                            {userPreferences.account_type === "Early Adopter" && <><br/> Get the <strong>Pro Plan</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 👉 </>}
                             {/* Fallback or default if none match, though types prevent this if exhaustive */}
                             {!["Pro Plan", "Free Plan", "Early Adopter"].includes(userPreferences.account_type) && "Unknown Plan Features"}
                         </p>
@@ -306,8 +308,11 @@ export function SettingsPage() {
                                     </>
                                 ) : (
                                     <>
-                                        <Sparkles className="w-4 h-4 mr-2 text-white"/> {/* Sparkles icon */}
+                                      
+                                        <Sparkles className="w-4 h-4 mr-1 text-white"/> {/* Sparkles icon */}
+                                      <TooltipExtended text="⚡Learn more about the Pro Plan">
                                         Upgrade Plan
+                                       </TooltipExtended> 
                                     </>
                                 )}
                             </button>
@@ -334,7 +339,7 @@ export function SettingsPage() {
                     value={userPreferences.target_audience || ''}
                     onChange={handleInputChange}
                     placeholder="Describe your ideal target audience"
-                    className="w-full px-3 text-sm py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                    className="w-full px-3 text-sm py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-500"
                     rows={3}
                   />
                 </div>
@@ -349,7 +354,7 @@ export function SettingsPage() {
                     value={userPreferences.problem || ''}
                     onChange={handleInputChange}
                     placeholder="What problems does your business solve for your customers?"
-                    className="w-full px-3 text-sm py-2 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white  text-gray-900"
+                    className="w-full px-3 text-sm py-2 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white  text-gray-500"
                     rows={3}
                   />
                 </div>
@@ -367,7 +372,7 @@ export function SettingsPage() {
                       value={userPreferences.company_website || ''}
                       onChange={handleInputChange}
                       placeholder="https://example.com"
-                      className="flex-1 px-3 py-2 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white  text-gray-900 "
+                      className="flex-1 px-3 py-2 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white  text-gray-500 "
                     />
                   </div>
                 </div>
