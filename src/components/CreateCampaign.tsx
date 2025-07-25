@@ -80,7 +80,7 @@ interface LineProgressProps {
 
 // Define the shape of your user preferences (assuming this comes from Supabase)
 interface UserPreferences {
-  account_type: 'Early Adopter' | 'Free' | 'Paid';
+  account_type: 'Early Adopter' | 'Free Plan' | 'Pro Plan';
   total_campaigns: number;
   total_accounts?: number; // Example for future checks
   total_posts?: number; // Example for future checks
@@ -220,7 +220,7 @@ useEffect(() => {
         //console.log(`[checkActionLimits] MAX_FREE_ACCOUNTS: ${MAX_FREE_ACCOUNTS}`);
 
 
-        const limitedAccountTypes = ['Free', 'Early Adopter']; // Define the types that have this limit
+        const limitedAccountTypes = ['Free Plan', 'Early Adopter']; // Define the types that have this limit
 
          switch (action) {
     case 'createCampaign':
