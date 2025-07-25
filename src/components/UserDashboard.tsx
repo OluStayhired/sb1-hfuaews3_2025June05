@@ -18,7 +18,7 @@ import {
   Flame,
   ArrowRight,
   CalendarCheck,
-  ChevronRight
+  ChevronRight, 
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 //import { useNavigate } from 'react-router-dom';
@@ -33,6 +33,8 @@ import { WelcomeGuide } from './WelcomeGuide';
 import { OnboardSuccessPage } from '../components/OnboardSuccessPage'; 
 import { SaveAndClosePage } from './SaveAndClosePage';
 import { CreateCalendarForm } from '/src/components/CreateCalendarForm'; 
+import { TooltipHelp } from '../utils/TooltipHelp';
+import { TooltipExtended } from '../utils/TooltipExtended';
 
 interface DashboardMetrics {
   todayPosts: {
@@ -626,6 +628,8 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
             </div>
 
           {/* Right-aligned Create New Campaign button */}
+
+        <TooltipExtended text="⚡Get a full calendar in seconds" >
           <button
               onClick={handleCreateCampaign}
               //className={`inline-flex items-center px-4 py-2 rounded-full text-base font-semibold shadow-md
@@ -635,11 +639,13 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                   //`}
 
             className="text-blue-500 font-medium inline-flex items-center px-4 py-2 rounded-full text-base
-            bg-gradient-to-r from-blue-50 to-blue-50 to-white border border-blue-100 rounded-lg hover:border-blue-300 transition-all group"
+            bg-gradient-to-r from-blue-50 to-blue-50 to-white border border-blue-200 rounded-lg hover:border-blue-400 transition-all group"
             >
               <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
-                Plan 14 Days of Content
+                Generate Posts Today 🔥
             </button>
+        </TooltipExtended>
+        
         </div>
       </div>
 
@@ -659,11 +665,14 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
           <Calendar className="w-5 h-5 text-blue-500"/>
         </div> 
         <div>
-          <div className="font-medium text-gray-900">Today's Activity</div>
+          <TooltipExtended text="⚡See what's scheduled, sent or simply disabled for today">
+            <div className="font-medium text-gray-900">Today's Activity</div>
+          </TooltipExtended>
           <div className="text-xs text-gray-600">
             View {metrics.todayPosts.total} post{metrics.todayPosts.total !== 1 ? 's' : ''} today
           </div>
         </div>
+          
       </div>
       <ChevronRight className="w-4 h-4 text-gray-500" />
     </a>
@@ -678,7 +687,9 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
             <FileEdit className="w-5 h-5 text-yellow-500" />
         </div> 
         <div>
+          <TooltipExtended text="⚡Click to View/Edit/Delete all your saved drafts here">
           <div className="font-medium text-gray-900">Saved Drafts</div>
+          </TooltipExtended>
           <div className="text-xs text-gray-600">
             {metrics.drafts} post{metrics.drafts !== 1 ? 's' : ''} in progress
           </div>
@@ -697,7 +708,9 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
         <CalendarSearch className="w-5 h-5 text-green-600" />
         </div>
         <div>
+          <TooltipExtended text="⚡Click to view your campaigns. date started, days left & more">
           <div className="font-medium text-gray-900">Active Campaigns</div>
+          </TooltipExtended>
           <div className="text-xs text-gray-600">
             Manage {metrics.calendars.total} active campaign{metrics.calendars.total !== 1 ? 's' : ''}
           </div>
@@ -717,7 +730,10 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
         <Send className="w-5 h-5 text-gray-500" />
         </div>
         <div>
+          <TooltipExtended text="⚡Click here to view your first post created when you joined">
           <div className="font-medium text-gray-900">Your First Post</div>
+          </TooltipExtended>
+          
           <div className="text-xs text-gray-600">
             Review the first post you created 
           </div>
@@ -801,14 +817,17 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
 
       {/* Call to Action Button */}
       <div className="mt-auto">
+      <TooltipExtended text="⚡Add your posts to preset time slots OR Simply create new slots" >
         <button
           onClick={handleSchedulePost}
-          className="flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-100 text-gray-700 font-medium
+          className="flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-100 text-gray-700 font-medium border border-gray-600
                     transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
         >
+          <PlusCircle className="mr-2 w-4 h-4" />
           <span>Schedule New Post</span>
-          <PlusCircle className="ml-2 w-4 h-4" />
+          
         </button>
+      </TooltipExtended>
       </div>
     </div>
   </div>

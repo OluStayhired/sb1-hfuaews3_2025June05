@@ -132,7 +132,7 @@ useEffect(() => {
       }
 
       // Assuming 'Pro' or 'Paid' indicates a paid account
-      if (data?.account_type === 'Pro' || data?.account_type === 'Paid') {
+      if (data?.account_type === 'Pro Plan' || data?.account_type === 'Paid') {
         setIsPaidAccount(true);
       } else {
         setIsPaidAccount(false);
@@ -167,7 +167,7 @@ useEffect(() => {
           // Check the new value of 'account_type' from the payload
           const newAccountType = (payload.new as { account_type: string }).account_type;
 
-          if (newAccountType === 'Pro' || newAccountType === 'Paid') {
+          if (newAccountType === 'Pro Plan' || newAccountType === 'Paid') {
             setIsPaidAccount(true);
           } else {
             setIsPaidAccount(false);
@@ -832,10 +832,10 @@ const isLinkedInAuthenticated = !!linkedinUser;
 
               <button 
                 onClick={() => navigate('feedback')}
-                className={`flex bg-gray-50 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
+                className={`flex bg-blue-50 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
                   location.pathname.includes('feedback')
-                    ? 'text-blue-500 border border-blue-200'
-                    : 'text-gray-500 border border-gray-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-400'
+                    ? 'text-blue-500'
+                    : 'text-blue-500 bg-blue-50 hover:bg-blue-100'
                 }`}
               >
                        <ThumbsUp className="w-3.5 h-3.5"/>        

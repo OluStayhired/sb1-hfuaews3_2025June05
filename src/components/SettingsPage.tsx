@@ -1,9 +1,12 @@
 // src/pages/SettingsPage.tsx (Renamed file)
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 // Removed X import as it's no longer needed for closing
-import { Save, Settings, User, Globe, Target, AlertCircle, CreditCard, Puzzle, Loader2 } from 'lucide-react';
+import { Save, Settings, User, Globe, Target, AlertCircle, CreditCard, Puzzle, Loader2, PlusCircle, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-// Assuming you're using React Router or similar for navigation
+import { useAuth } from '../context/AuthContext'; // Import useAuth to get the current user
+
+
 // import { useNavigate } from 'react-router-dom'; // Example if using react-router-dom
 
 interface UserPreferences {
@@ -12,6 +15,7 @@ interface UserPreferences {
   target_audience: string | null;
   problems: string | null;
   company_website: string | null;
+  account_type: string | null;
 }
 
 // Renamed the component from SettingsModal to SettingsPage
@@ -25,12 +29,21 @@ export function SettingsPage() {
     old_target_audience: '', // Add a state to store original value for comparison if needed
     problems: '',
     company_website: '',
+    account_type: '',
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
+// NEW: Environment variable for the customer portal session Edge Function URL
+  const VITE_CUSTOMER_PORTAL_SESSION_URL = import.meta.env.VITE_CUSTOMER_PORTAL_SESSION_URL;
+
+   const handleUpgradePlan = () => {
+    navigate('/dashboard/pricing');
+  };
+  
   // Removed isOpen prop and its effect dependency
   useEffect(() => {
     const fetchUserPreferences = async () => {
@@ -64,6 +77,7 @@ export function SettingsPage() {
             target_audience: data.target_audience || '',
             problem: data.problem || '',
             company_website: data.company_website || '',
+            account_type: data.account_type || '',
           });
         } else {
           // No preferences found, use defaults
@@ -73,6 +87,7 @@ export function SettingsPage() {
             target_audience: '',
             problem: '',
             company_website: '',
+            account_type: 'Free Plan',
           });
         }
       } catch (err: any) {
@@ -116,6 +131,7 @@ export function SettingsPage() {
           target_audience: userPreferences.target_audience,
           problem: userPreferences.problem,
           company_website: userPreferences.company_website,
+          account_type: userPreferences.account_type,
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'email'
@@ -138,6 +154,51 @@ export function SettingsPage() {
     }
   };
 
+// NEW: handleManageStripeSubscription function
+  const handleManageStripeSubscription = async () => {
+    if (!user?.id) { // Ensure user is logged in and has an ID
+      setError('User not authenticated. Cannot manage subscription.');
+      return;
+    }
+    if (!VITE_CUSTOMER_PORTAL_SESSION_URL) {
+      setError('Stripe Customer Portal URL is not configured. Please contact support.');
+      return;
+    }
+
+    setIsSaving(true); // Set loading state for the button
+    setError(null); // Clear previous errors
+
+    try {
+      const response = await fetch(VITE_CUSTOMER_PORTAL_SESSION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id, // Pass the authenticated user's ID
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create customer portal session.');
+      }
+
+      const { url } = await response.json();
+      if (url) {
+        // Redirect the user to the Stripe Customer Portal
+        window.location.href = url;
+      } else {
+        throw new Error('Stripe Customer Portal URL not received.');
+      }
+    } catch (err: any) {
+      console.error('Error creating customer portal session:', err);
+      setError(err.message || 'An unexpected error occurred while trying to manage your subscription.');
+    } finally {
+      setIsSaving(false); // Clear loading state
+    }
+  };
+  
   // Removed the modal overlay and fixed positioning
   // This div now represents the main content area of your page
   return (
@@ -151,17 +212,6 @@ export function SettingsPage() {
               <h2 className="text-xl font-semibold text-gray-900">Account Settings</h2>
         </div>
       
-    {/* --------- old header information -----------
-      
-   //<div className="w-full mx-auto">
-   //   <div className="bg-white w-full mx-auto p-6 md:p-8">
-    //    <div className="flex items-center space-x-2 mb-8 pb-4 border-b border-gray-200">
-    //      <div className="p-2 bg-blue-50 rounded-lg">
-    //        <Settings className="w-5 h-5 text-blue-500" />
-     //     </div>
-     //     <h2 className="text-xl font-semibold text-gray-900 ml-3">Account Settings</h2>
-      //  </div>
- */} 
 
         {isLoading ? (
           <div className="flex justify-center py-12">
@@ -200,6 +250,70 @@ export function SettingsPage() {
                 </div>
               </div>
             </div>
+
+              {/* Billing Section */}
+             {/* Billing Section - Enhanced */}
+            <div className="max-w-4xl mx-auto p-2 md:p-4">
+                <h3 className="text-md font-medium text-gray-700 mb-4 flex items-center">
+                    <CreditCard className="w-5 h-5 mr-2 text-blue-500 " />
+                    Billing
+                </h3>
+                
+                <div className="p-4 flex items-center justify-between bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-lg hover:border-blue-300 transition-all group">
+                    <div>
+                        <span className="text-blue-700 font-medium">{userPreferences.account_type}</span>
+                        <p className="text-sm text-gray-500">
+                            {userPreferences.account_type === "Pro Plan" && "$25/mo Premium Features 🔥"}
+                            {userPreferences.account_type === "Free Plan" && "$0/mo Basic Features"}
+                            {userPreferences.account_type === "Early Adopter" && "Discounted for Early Adopters 😍"}
+                            {/* Fallback or default if none match, though types prevent this if exhaustive */}
+                            {!["Pro Plan", "Free Plan", "Early Adopter"].includes(userPreferences.account_type) && "Unknown Plan Features"}
+                        </p>
+                    </div>
+
+                    <span className="text-sm text-gray-500">
+                        {userPreferences.account_type === "Pro Plan" ? (
+                            <button
+                                onClick={handleManageStripeSubscription}
+                                disabled={isSaving}
+                                className="px-4 py-2 mt-8 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex space-x-2"
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <span>Loading...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <CreditCard className="w-4 h-4 mr-2 text-white"/>
+                                        Manage Subscription
+                                    </>
+                                )}
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleUpgradePlan}
+                                disabled={isSaving}
+                                className="px-4 py-2 mt-8 items-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex space-x-2" 
+                              // Changed color for upgrade button
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <span>Loading...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="w-4 h-4 mr-2 text-white"/> {/* Sparkles icon */}
+                                        Upgrade Plan
+                                    </>
+                                )}
+                            </button>
+                        )}
+                    </span>
+                </div>
+            </div>
+        
 
             {/* Target Audience Section */}
             <div className="max-w-4xl mx-auto p-2 md:p-4">
@@ -258,20 +372,7 @@ export function SettingsPage() {
               </div>
             </div>
 
-            {/* Billing Section */}
-            <div className="max-w-4xl mx-auto p-2 md:p-4">
-              <h3 className="text-md font-medium text-gray-700  mb-4 flex items-center">
-                <CreditCard className="w-5 h-5 mr-2 text-blue-500 " />
-                Billing
-              </h3>
-              <div className="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
-                <div>
-                  <p className="text-gray-700  font-medium">Standard Plan</p>
-                  <p className="text-sm text-gray-500">Basic features</p>
-                </div>
-                <span className="text-sm text-gray-500">Coming Soon</span>
-              </div>
-            </div>
+          
 
             {/* Integrations Section */}
             <div className="max-w-4xl mx-auto p-2 md:p-4">
