@@ -36,6 +36,8 @@ export function SettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  // Access the authenticated user
+  const { user } = useAuth();
 
 // NEW: Environment variable for the customer portal session Edge Function URL
   const VITE_CUSTOMER_PORTAL_SESSION_URL = import.meta.env.VITE_CUSTOMER_PORTAL_SESSION_URL;
