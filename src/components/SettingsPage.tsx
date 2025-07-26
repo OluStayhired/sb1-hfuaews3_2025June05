@@ -7,7 +7,30 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext'; // Import useAuth to get the current user
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { TooltipExtended } from '../utils/TooltipExtended';
+import { format } from 'date-fns';
 
+// Define interfaces for subscription details
+    interface UserSubscriptionDetails {
+      id: string;
+      status: string;
+      current_period_start: number; // Unix timestamp
+      current_period_end: number;   // Unix timestamp
+      price_id: string;
+      price_unit_amount: number;
+      price_currency: string;
+      price_interval: string;
+      cancel_at_period_end: boolean;
+    }
+
+
+// Define interfaces for Stripe price details
+interface StripePriceDetails {
+  id: string;
+  unit_amount: number;
+  currency: string;
+  recurring: { interval: string; interval_count: number } | null;
+  nickname: string | null;
+}
 
 // import { useNavigate } from 'react-router-dom'; // Example if using react-router-dom
 
@@ -24,6 +47,8 @@ interface UserPreferences {
 export function SettingsPage() {
   // const navigate = useNavigate(); // Initialize navigate if you need to redirect programmatically
 
+  const { user } = useAuth();
+
   const [userPreferences, setUserPreferences] = useState<UserPreferences>({
     email: '',
     timezone: '',
@@ -37,12 +62,28 @@ export function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+
+  // NEW: State for Stripe price details
+  const [monthlyPriceDetails, setMonthlyPriceDetails] = useState<StripePriceDetails | null>(null);
+  const [yearlyPriceDetails, setYearlyPriceDetails] = useState<StripePriceDetails | null>(null);
+  const [priceLoading, setPriceLoading] = useState(true);
+  const [priceError, setPriceError] = useState<string | null>(null);
+
+   // NEW: State for user's active subscription details
+  const [userSubscription, setUserSubscription] = useState<UserSubscriptionDetails | null>(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const [subscriptionError, setSubscriptionError] = useState<string | null>(null);
+
+  
   const navigate = useNavigate();
    // Access the authenticated user
-  const { user } = useAuth();
+
 
 // NEW: Environment variable for the customer portal session Edge Function URL
   const VITE_CUSTOMER_PORTAL_SESSION_URL = import.meta.env.VITE_CUSTOMER_PORTAL_SESSION_URL;
+  const VITE_GET_STRIPE_PRICES_URL = import.meta.env.VITE_GET_STRIPE_PRICES_URL;
+  const VITE_GET_USER_SUBSCRIPTION_DETAILS_URL = import.meta.env.VITE_GET_USER_SUBSCRIPTION_DETAILS_URL;
 
    const handleUpgradePlan = () => {
     navigate('/dashboard/pricing');
@@ -105,6 +146,113 @@ export function SettingsPage() {
     // Removed isOpen from dependency array; runs once on mount
     fetchUserPreferences();
   }, []); // Empty dependency array means it runs once on mount
+
+
+  // NEW: Fetch Stripe price details only for Pro Plan users
+useEffect(() => {
+  const fetchStripePrices = async () => {
+    // --- NEW CONDITION ADDED HERE ---
+    // Only proceed if userPreferences exists and account_type is 'Pro Plan'
+    {/* if (!userPreferences || userPreferences.account_type !== 'Pro Plan') {
+      console.log('Not fetching Stripe prices: User is not on a "Pro Plan".');
+      setMonthlyPriceDetails(null); // Clear previous price details if condition not met
+      setYearlyPriceDetails(null);
+      setPriceLoading(false);
+      setPriceError(null); // Clear any previous errors
+      return; // Exit early if the condition is not met
+    }
+    // --- END NEW CONDITION ---
+    */}
+
+    if (!VITE_GET_STRIPE_PRICES_URL) {
+      setPriceError('Stripe prices URL is not configured.');
+      setPriceLoading(false);
+      return;
+    }
+
+    try {
+      setPriceLoading(true);
+      setPriceError(null);
+
+      const response = await fetch(VITE_GET_STRIPE_PRICES_URL);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch prices.');
+      }
+
+      const { prices } = await response.json();
+      const monthly = prices.find((p: StripePriceDetails) => p.recurring?.interval === 'month');
+      const yearly = prices.find((p: StripePriceDetails) => p.recurring?.interval === 'year');
+
+      setMonthlyPriceDetails(monthly || null);
+      setYearlyPriceDetails(yearly || null);
+
+    } catch (err: any) {
+      console.error('Error fetching Stripe prices:', err);
+      setPriceError(err.message || 'Failed to load pricing details.');
+    } finally {
+      setPriceLoading(false);
+    }
+  };
+
+  fetchStripePrices();
+}, [VITE_GET_STRIPE_PRICES_URL, userPreferences]); 
+
+
+  // NEW: Fetch user's subscription details
+      useEffect(() => {
+        const fetchSubscriptionDetails = async () => {
+          if (!user?.id) { // Only fetch if user is logged in
+            setSubscriptionLoading(false);
+            return;
+          }
+
+// Only proceed if userPreferences exists and account_type is 'Pro Plan'
+    if (!userPreferences || userPreferences.account_type !== 'Pro Plan') {
+      console.log('Not fetching Stripe prices: User is not on a "Pro Plan".');
+      setUserSubscription(null); // Clear previous price details if condition not met
+      setSubscriptionLoading(false);
+      setSubscriptionError(null); // Clear any previous errors
+      return; // Exit early if the condition is not met
+    }
+          
+          if (!VITE_GET_USER_SUBSCRIPTION_DETAILS_URL) {
+            setSubscriptionError('Subscription details URL is not configured.');
+            setSubscriptionLoading(false);
+            return;
+          }
+
+          try {
+            setSubscriptionLoading(true);
+            setSubscriptionError(null);
+
+            const response = await fetch(VITE_GET_USER_SUBSCRIPTION_DETAILS_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ user_id: user.id }),
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || 'Failed to fetch subscription details.');
+            }
+
+            const { subscription } = await response.json();
+            setUserSubscription(subscription || null);
+
+          } catch (err: any) {
+            console.error('Error fetching subscription details:', err);
+            setSubscriptionError(err.message || 'Failed to load subscription details.');
+          } finally {
+            setSubscriptionLoading(false);
+          }
+        };
+
+        fetchSubscriptionDetails();
+      }, [user?.id, VITE_GET_USER_SUBSCRIPTION_DETAILS_URL, userPreferences]);
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -255,72 +403,154 @@ export function SettingsPage() {
               </div>
             </div>
 
-         
-             {/* Billing Section - Enhanced */}
-            <div className="max-w-4xl mx-auto p-2 md:p-4">
-                <h3 className="text-md font-medium text-gray-700 mb-4 flex items-center">
-                    <CreditCard className="w-5 h-5 mr-2 text-blue-500 " />
-                    Billing
-                </h3>
-                
-                <div className="p-4 flex items-center justify-between bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-lg hover:border-blue-300 transition-all group">
-                    <div>
-                        <span className="p-2 text-blue-600 bg-blue-100 rounded-lg font-bold">{userPreferences.account_type} 🚀</span>
-                        <p className="text-sm text-gray-500">
-                            {userPreferences.account_type === "Pro Plan" && <><br/><strong>Full Premium Features</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 🔥 </>}
-                            {userPreferences.account_type === "Free Plan" && <><br/> <strong>Get Pro Plan</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 👉 </>}
-                            {userPreferences.account_type === "Early Adopter" && <><br/> <strong> Get Pro Plan</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 👉 </>}
-                            {/* Fallback or default if none match, though types prevent this if exhaustive */}
-                            {!["Pro Plan", "Free Plan", "Early Adopter"].includes(userPreferences.account_type) && "Unknown Plan Features"}
-                        </p>
-                    </div>
 
-                    <span className="text-sm text-gray-500">
-                        {userPreferences.account_type === "Pro Plan" ? (
-                            <button
-                                onClick={handleManageStripeSubscription}
-                                disabled={isSaving}
-                                className="px-4 py-2 mt-8 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex space-x-2"
-                            >
-                                {isSaving ? (
-                                    <>
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                        <span>Loading...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <CreditCard className="w-4 h-4 mr-2 text-white"/>
-                                        Manage Subscription
-                                    </>
-                                )}
-                            </button>
-                        ) : (
-                            <button
-                                onClick={handleUpgradePlan}
-                                disabled={isSaving}
-                                className="px-4 py-2 mt-8 items-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex space-x-2" 
-                              // Changed color for upgrade button
-                            >
-                                {isSaving ? (
-                                    <>
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                        <span>Loading...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                      
-                                        <Sparkles className="w-4 h-4 mr-1 text-white"/> {/* Sparkles icon */}
-                                      <TooltipExtended text="⚡Learn more about the Pro Plan">
-                                        Upgrade Plan
-                                       </TooltipExtended> 
-                                    </>
-                                )}
-                            </button>
-                        )}
-                    </span>
-                </div>
+           {/* Billing Section - Enhanced */}
+<div className="max-w-4xl mx-auto p-2 md:p-4">
+    <h3 className="text-md font-medium text-gray-700 mb-4 flex items-center">
+        <CreditCard className="w-5 h-5 mr-2 text-blue-500 " />
+        Billing
+    </h3>
+
+    {/* Main content box with gradient border */}
+    <div className="p-4 flex flex-col bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-lg hover:border-blue-300 transition-all group">
+
+        {/* TOP ROW: Account Type/Features (left) and Button (right) */}
+        <div className="flex items-start justify-between w-full">
+            {/* Left side (top): Account Type and Plan Features */}
+            <div className="pr-4"> {/* Added pr-4 for spacing from the button */}
+                <span className="p-2 text-blue-600 bg-blue-100 rounded-lg font-bold">{userPreferences.account_type} 🚀</span>
+                <p className="text-sm text-gray-500 mt-2">
+                    {userPreferences.account_type === "Pro Plan" && <><br/><strong>Full Premium Features</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 🔥 </>}
+                    {userPreferences.account_type === "Free Plan" && <><br/> <strong>Get Pro Plan</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 👉 </>}
+                    {userPreferences.account_type === "Early Adopter" && <><br/> <strong> Get Pro Plan</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 👉 </>}
+                    {!["Pro Plan", "Free Plan", "Early Adopter"].includes(userPreferences.account_type) && "Unknown Plan Features"}
+                </p>
             </div>
-        
+
+            {/* Right side (top): Button */}
+            <span className="text-sm text-gray-500 flex-shrink-0"> {/* flex-shrink-0 prevents button from being squashed */}
+                {userPreferences.account_type === "Pro Plan" ? (
+                    <TooltipExtended text="⚡Download Receipts, Update Payment or Cancel Subscription">
+                        <button
+                            onClick={handleManageStripeSubscription}
+                            disabled={isSaving}
+                            className="px-4 py-2 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex space-x-2"
+                        >
+                            {isSaving ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <span>Manage Subscription</span>
+                                </>
+                            ) : (
+                                <>
+                                    <CreditCard className="w-4 h-4 mr-2 text-white"/>
+                                    Manage Subscription
+                                </>
+                            )}
+                        </button>
+                    </TooltipExtended>
+                ) : (
+                    <TooltipExtended text="⚡Learn more about the Pro Plan. Get Started for $25/mo">
+                        <button
+                            onClick={handleUpgradePlan}
+                            disabled={isSaving}
+                            className="px-4 py-2 items-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex space-x-2"
+                        >
+                            {isSaving ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <span>Loading...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Sparkles className="w-4 h-4 mr-1 text-white"/>
+                                    Upgrade Plan
+                                </>
+                            )}
+                        </button>
+                    </TooltipExtended>
+                )}
+            </span>
+        </div>
+
+        {/* BOTTOM ROW: Price Display Section (aligned left, below top content) */}
+
+        {/* ------------- Start Add specific information about subscription from Stripe --------------- */}
+
+ {/* NEW: Display fetched Stripe prices and subscription details */}
+      <span className="mt-4 text-blue-500 text-sm">Current Subscription</span>
+                    {subscriptionLoading ? (
+                      <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
+                    ) : subscriptionError ? (
+                      <span className="text-red-500 text-xs">{subscriptionError}</span>
+                    ) : userSubscription ? (
+                      <div className=" text-sm text-gray-500 text-left">
+                        {/*<span className="text-blue-500 text-sm">Current Subscription</span>*/}
+                        <p>
+                          Status: <span className="font-semibold capitalize">{userSubscription.status}</span>
+                        </p>
+                        <p>
+                          Plan: <span className="font-semibold">
+                            ${(userSubscription.price_unit_amount / 100).toFixed(2)}/{userSubscription.price_interval}
+                          </span>
+                        </p>
+                        <p>
+                          Next Renewal:{' '}
+                          <span className="font-semibold">
+                            {format(new Date(userSubscription.current_period_end * 1000), 'MMM d, yyyy')}
+                          </span>
+                        </p>
+                        {userSubscription.cancel_at_period_end && (
+                          <p className="text-red-500 text-xs">Cancels at period end</p>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-gray-500 text-sm">No active subscription.</span>
+                    )}
+
+
+      {/*--------------- Send Add specific information about subscription from Stripe -------------------*/}
+
+      
+        {/* Only render this div if there's actual price content to show */}
+        {(priceLoading || priceError || monthlyPriceDetails || yearlyPriceDetails) && (
+            <div className="mt-4 w-full"> {/* mt-4 for vertical space, w-full ensures it spans across */}
+
+              <span className="text-blue-500 text-sm">Yearly & Monthly Prices</span>
+              
+                <span>
+                    {priceLoading ? (
+                        <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
+                    ) : priceError ? (
+                        <span className="text-red-500 text-xs">{priceError}</span>
+                    ) : (
+                        <div className="text-sm text-gray-500 text-left"> {/* Explicitly text-left */}
+                            {monthlyPriceDetails && (
+                                <p>
+                                    
+                                    <span className="font-semibold">
+                                        ${(monthlyPriceDetails.unit_amount / 100).toFixed(0)}/{monthlyPriceDetails.recurring?.interval} 
+                                      <span className="font-normal"> per user</span>
+                                    </span>
+                                </p>
+                            )}
+                            {yearlyPriceDetails && (
+                                <p>
+                                   
+                                    <span className="font-semibold">
+                                        ${(yearlyPriceDetails.unit_amount / 100).toFixed(0)}/{yearlyPriceDetails.recurring?.interval}  
+                                      <span className="font-normal"> per user</span>
+                                    </span>
+                                </p>
+                            )}
+                        </div>
+                    )}
+                </span>
+            </div>
+        )}
+    </div>
+</div> 
+            
 
             {/* Target Audience Section */}
             <div className="max-w-4xl mx-auto p-2 md:p-4">
