@@ -28,6 +28,7 @@ interface SocialChannel {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
+  twitter_verified: boolean;
   timezone: string;
 }
 
@@ -85,12 +86,21 @@ const getSelectedChannelTimezone = () => {
     // Fallback to local browser timezone if no channel selected or timezone not found
     return activeChannel?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   };
+
+//const getSelectedChannelVerified = () => {
+  //  const twitterStatus = socialChannels.find(channel => channel.id === selectedChannel);
+    //return twitterStatus?.twitter_verified   
+ //}; 
+
+//const is_verified=getSelectedChannelVerified();  
+  
   
    const handleCreateCampaign = () => {
     navigate('/dashboard/campaign');
     onClose();
   };
-  
+
+  {/*
  useEffect(() => {
     if (selectedChannel) {
       const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
@@ -112,6 +122,35 @@ const getSelectedChannelTimezone = () => {
       }
     }
   }, [selectedChannel, socialChannels]);  
+*/}
+
+//New UseEffect to include Premium Twitter
+   useEffect(() => {
+    if (selectedChannel) {
+      const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
+      if (activeAccount) {
+        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        switch (activeAccount.social_channel) {
+          case 'Bluesky':
+            setMaxLength(300);
+            break;
+          case 'Twitter':
+                // Use activeAccount.twitter_verified directly here
+                if (activeAccount.twitter_verified) {
+                    setMaxLength(25000); // Premium Twitter limit
+                } else {
+                    setMaxLength(280); // Free Twitter limit
+                }
+            break;
+          case 'LinkedIn':
+            setMaxLength(3000);
+            break;
+          default:
+            setMaxLength(300); // Default
+        }
+      }
+    }
+  }, [selectedChannel, socialChannels]);  
 
 // --- UPDATED validateAndSetTime FUNCTION ---
 const validateAndSetTime = (
@@ -312,7 +351,7 @@ useEffect(() => {
   }, [selectedCalendar, selectedDate]);
 
 const canProceedToSchedule = () => {
-  return selectedChannel && postContent.trim().length > 0;
+  return selectedChannel && postContent.trim().length > 0 && postContent.trim().length < max_length ;
   //return selectedChannel && postContent.trim().length > 0 && !timeError;
 };
 
@@ -557,19 +596,9 @@ const handleRemoveImage = async () => {
 
 const hasActiveCalendars = calendars.length > 0;  
 
-  {/*
-const tooltipMessage = activeAccount // First, check if activeAccount exists
-  ? (channel.social_channel === 'Bluesky'
-    ? "⚡ 300 Chars for Bluesky"
-    : channel.social_channel === 'Twitter' || channel.social_channel === 'X' // Handle both 'Twitter' and 'X'
-      ? "⚡ 280 Chars for Free Twitter (X)"
-      : channel.social_channel === 'LinkedIn'
-        ? "⚡ Up to 3000 Chars for LinkedIn"
-        : "⚡ Character limit varies by platform (Unknown Channel)" // Default for known activeAccount but unrecognized channel
-    )
-  : "Select a social account to see details.";  
-*/}
-  
+const activeChannel = socialChannels.find(channel => channel.id === selectedChannel);  
+
+  {/*  
 const tooltipMessage =
   socialChannels.social_channel === 'Bluesky'
     ? "⚡ 300 Chars for Bluesky"
@@ -578,7 +607,37 @@ const tooltipMessage =
       : socialChannels.social_channel === 'LinkedIn'
         ? "⚡ Up to 3000 Chars for LinkedIn"
         : "⚡ Character limit varies by platform"; 
+        */}
   // This becomes the fallback for undefined activeAccount  
+  
+
+  const tooltipMessage =
+  activeChannel?.social_channel === 'Bluesky'
+    ? "⚡ 300 Chars for Bluesky"
+    : (activeChannel?.social_channel === 'Twitter' || activeChannel?.social_channel === 'X')
+      ? activeChannel?.twitter_verified === true  // Check the 'twitter_verified' attribute
+        ? "⚡ 25,000 Chars for Premium Twitter (X)" // For verified/premium accounts
+        : "⚡ 280 Chars for Free Twitter (X)" // For non-verified/free accounts
+      : activeChannel?.social_channel === 'LinkedIn'
+        ? "⚡ Up to 3000 Chars for LinkedIn"
+        : "⚡ Character limit varies by platform";
+
+
+// Function to determine the tooltip message for the "Next" button
+const getNextButtonTooltip = () => {
+  if (!selectedChannel) {
+    return "Please choose a social channel to continue.";
+  }
+  if (postContent.trim().length === 0) {
+    return "Write a post to continue.";
+  }
+  // Check if content length is greater than or equal to max_length, which disables the button
+  if (postContent.trim().length >= max_length) {
+    return "You've exceeded the maximum character limit for this social account.";
+  }
+  // If none of the above conditions are met, the button should be enabled, so no tooltip needed for disabled state.
+  return "";
+};
   
 const renderContentStep = () => (
 <div className="space-y-6" style={{
@@ -938,7 +997,7 @@ const renderActionButtons = () => (
       </button>
       
       {currentStep === 'content' ? (
-    <TooltipExtended text="Please select a campaign or draft a post to continue" show={!canProceedToSchedule()}>
+    <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToSchedule()}>
         <button
           onClick={() => setCurrentStep('schedule')}
           disabled={!canProceedToSchedule()}
