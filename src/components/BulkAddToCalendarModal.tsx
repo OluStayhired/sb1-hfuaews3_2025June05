@@ -572,7 +572,7 @@ const handleSave = async () => {
 
               {/* NEW: Display content length validation errors */}
               {contentLengthError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md flex items-start space-x-2 whitespace-pre-wrap">
+                  <div className="bg-red-50 text-sm border border-red-200 text-red-700 p-3 rounded-md flex items-start space-x-2 whitespace-pre-wrap max-h-15 overflow-y-auto">
                   <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <span>{contentLengthError}</span>
                 </div>
