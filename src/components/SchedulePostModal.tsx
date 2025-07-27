@@ -629,7 +629,7 @@ const getNextButtonTooltip = () => {
     return "Please choose a social channel to continue.";
   }
   if (postContent.trim().length === 0) {
-    return "Write a post to continue.";
+    return "Select a campaign to generate a Post, Or Write a post to continue.";
   }
   // Check if content length is greater than or equal to max_length, which disables the button
   if (postContent.trim().length >= max_length) {

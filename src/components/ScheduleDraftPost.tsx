@@ -31,6 +31,7 @@ interface SocialChannel {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
+  twitter_verified: boolean;
   timezone: string;
 }
 
@@ -109,28 +110,34 @@ const getSelectedChannelTimezone = () => {
     navigate('/dashboard/campaign');
     onClose();
   };
-  
- useEffect(() => {
-    if (selectedChannel) {
-      const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
-      if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
-        switch (activeAccount.social_channel) {
-          case 'Bluesky':
-            setMaxLength(300);
-            break;
-          case 'Twitter':
-            setMaxLength(280);
-            break;
-          case 'LinkedIn':
-            setMaxLength(3000);
-            break;
-          default:
-            setMaxLength(300); // Default
-        }
-      }
-    }
-  }, [selectedChannel, socialChannels]);  
+
+  //New UseEffect to include Premium Twitter
+   useEffect(() => {
+    if (selectedChannel) {
+      const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
+      if (activeAccount) {
+        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        switch (activeAccount.social_channel) {
+          case 'Bluesky':
+            setMaxLength(300);
+            break;
+          case 'Twitter':
+                // Use activeAccount.twitter_verified directly here
+                if (activeAccount.twitter_verified) {
+                    setMaxLength(25000); // Premium Twitter limit
+                } else {
+                    setMaxLength(280); // Free Twitter limit
+                }
+            break;
+          case 'LinkedIn':
+            setMaxLength(3000);
+            break;
+          default:
+            setMaxLength(300); // Default
+        }
+      }
+    }
+  }, [selectedChannel, socialChannels]);  
 
   // New useEffect to update postContent if initialContent changes while modal is open
 useEffect(() => {
@@ -221,10 +228,6 @@ const validateAndSetTime = (
   return true;
 };  
   
-//const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//  const newTime = e.target.value;
-//  validateAndSetTime(selectedDate, newTime, setTimeError, setScheduledTime);
-//};
 
 // --- UPDATED handleTimeChange CALL ---
 const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -234,15 +237,6 @@ const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 };  
 
  // New handleDateChange for the datepicker
-  {/*  
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = new Date(e.target.value);
-    validateAndSetDate(newDate, setDateError)
-    if (validateAndSetDate(newDate, setDateError)) {
-      setIsDatePickerOpen(false);
-    }
-  };
-  */}
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const newDate = new Date(e.target.value);
@@ -389,11 +383,9 @@ useEffect(() => {
   }, [selectedCalendar, selectedDate]);
 
 const canProceedToSchedule = () => {
-  return selectedChannel && postContent.trim().length > 0;
+  return selectedChannel && postContent.trim().length > 0 && postContent.trim().length < max_length ;
   //return selectedChannel && postContent.trim().length > 0 && !timeError;
 };
-
-
 
 // Add this function to handle content generation
 const handleGenerateContent = async () => {
@@ -573,137 +565,37 @@ const handleRemoveImage = async () => {
   }
 };
 
-  {/* 
-  const handleSave = async () => {
-    // Don't proceed if there's a time error
-  if (timeError) {
-    return;
-  }
-    try {
-      setIsSaving(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user?.email) throw new Error('No authenticated user');
-
-
-    const timeStringWithoutSeconds = scheduledTime.substring(0, 5);
-      
-    // Parse the scheduledTime string into a Date object
-    const parsedTime = parse(timeStringWithoutSeconds, 'HH:mm', new Date());
-    
-          // Crucially, check if parsing was successful.
-      if (isNaN(parsedTime.getTime())) {
-        console.error("Invalid time entered by user:", timeStringWithoutSeconds);
-        
-        // *** TODO: Show a user-friendly error message in the UI ***
-        setIsSaving(false); // Stop saving process
-        return; // Exit the function
-      }  
-
-
-      const targetTimezone = getSelectedChannelTimezone(); 
-      
-      const formattedTimeForDatabase = format(parsedTime, 'HH:mm:ss'); 
-      // <-- Format to 'HH:mm:ss' for the database
-
-      console.log('Scheduled Time State:', scheduledTime);
-      console.log('Parsed Time (Date object):', parsedTime);
-      console.log('Formatted Time for Database (HH:mm:ss):', formattedTimeForDatabase);
-
-
-
-    // Format the Date object to 'HH:mm'
-    console.log('ParsedTime', parsedTime);
-    const formattedTime = format(parsedTime, 'HH:mm');
-    console.log('formattedTime', formattedTime);
-
-    
-    
-
-    const selectedChannelObject = socialChannels.find(
-      (channel) => channel.id === selectedChannel
-    );  
-
-    const selectedCalendarObject = calendars.find(
-      (calendar) => calendar.calendar_name === selectedCalendar
-    );    
-
-    // Create the new post object
-    const newPost = {
-      user_email: session.user.email,
-      user_id: session.user.id,
-      social_channel: selectedChannelObject?.social_channel,
-      user_handle: selectedChannelObject?.handle,
-      user_display_name: selectedChannelObject?.display_name,
-      calendar_name: selectedCalendar  || "User Generated",
-      full_content: initialContent || postContent,
-      services: selectedCalendarObject?.core_services  || null,
-      target_audience: selectedCalendarObject?.target_audience  || null,
-      goals: selectedCalendarObject?.social_goals  || null,
-      topic: selectedTopic  || null,
-      theme: selectedTheme  || null,
-      content_date: format(selectedDate, 'yyyy-MM-dd'),
-      sent_post: false,
-      //content_time: formattedTime,
-      content_time: formattedTimeForDatabase,
-      target_timezone: targetTimezone,
-      created_at: new Date().toISOString()
-    };
-
-    // Call the optimistic update callback immediately
-    onSchedule(newPost);
-
-// Then make the actual API call
-    const { error } = await supabase
-      .from('user_post_schedule')
-      .insert(newPost);      
-
-      if (error) {
-      console.error('Supabase Insert Error:');
-      console.log('Error Details:', error); // Log the entire error object
-      throw error; // Still throw the error to be caught by the catch block
-    }
-
-      {/*
-      setIsSaving(false);
-      setIsSuccess(true);
-
-      
-      setTimeout(() => {
-      setIsSuccess(false);
-      onClose();
-    }, 3000);
-      
-    } catch (err) {
-      console.error('Error saving scheduled post:', err);
-      // Revert optimistic update on error
-      onScheduleError(newPost);
-    } finally {
-      setIsSaving(false);
-      //setIsSuccess(false);
-    }
-    
-
-   // --- SIMPLIFIED SUCCESS FEEDBACK ---
-    setIsSaving(false); // Hide loading spinner
-    setShowButtonSuccess(true); // Show "Scheduled!" on the button
-
-    // Wait briefly for "Scheduled!" to be seen, then close the modal
-    setTimeout(() => {
-      onClose(); // Close the modal
-      setShowButtonSuccess(false); // Reset for next time (optional, as modal unmounts)
-    }, 800); // Very short delay (e.g., 800ms) for quick feedback
-
-  } catch (err) {
-    console.error('Error saving scheduled post:', err);
-    onScheduleError(newPost); // Notify parent of error, if needed
-    setIsSaving(false); // Ensure loading is off
-    setShowButtonSuccess(false); // Ensure success message doesn't linger on error
-    // Potentially add a local error message here if you want in-modal error feedback
-  }   
-  };
-*/}
-
 const hasActiveCalendars = calendars.length > 0;  
+
+const activeChannel = socialChannels.find(channel => channel.id === selectedChannel);  
+
+  const tooltipMessage =
+  activeChannel?.social_channel === 'Bluesky'
+    ? "⚡ 300 Chars for Bluesky"
+    : (activeChannel?.social_channel === 'Twitter' || activeChannel?.social_channel === 'X')
+      ? activeChannel?.twitter_verified === true  // Check the 'twitter_verified' attribute
+        ? "⚡ 25,000 Chars for Premium Twitter (X)" // For verified/premium accounts
+        : "⚡ 280 Chars for Free Twitter (X)" // For non-verified/free accounts
+      : activeChannel?.social_channel === 'LinkedIn'
+        ? "⚡ Up to 3000 Chars for LinkedIn"
+        : "⚡ Character limit varies by platform";
+
+
+// Function to determine the tooltip message for the "Next" button
+const getNextButtonTooltip = () => {
+  if (!selectedChannel) {
+    return "Please choose a social channel to continue.";
+  }
+  if (postContent.trim().length === 0) {
+    return "Select a campaign to generate a Post, Or Write a post to continue.";
+  }
+  // Check if content length is greater than or equal to max_length, which disables the button
+  if (postContent.trim().length >= max_length) {
+    return "You've exceeded the maximum character limit for this social account.";
+  }
+  // If none of the above conditions are met, the button should be enabled, so no tooltip needed for disabled state.
+  return "";
+};  
   
 const renderContentStep = () => (
 <div className="space-y-6" style={{
@@ -827,11 +719,7 @@ const renderContentStep = () => (
     <div className="flex flex-col items-center justify-center p-1 border border-dashed border-gray-300 rounded-lg bg-gray-50">
       <Megaphone className="w-6 h-6 text-blue-500 mb-3" />
       <p className="text-gray-700 text-sm font-normal">No Active Campaigns</p>
-      {/*
-      <p className="text-gray-400 text-xs mt-1">
-        Activate a campaign for content ideas & AI assistance 💡
-      </p>
-      */}
+     
 
     <p className="mt-4">
   <button
@@ -904,12 +792,16 @@ const renderContentStep = () => (
       </button>
     )}
   </div>            
-                  <div className="flex justify-end mt-1">
+                <div className="flex justify-end mt-1">
+                  <TooltipHelp text={tooltipMessage}>     
                     <span className={`text-xs ${
-                      postContent.length > max_length ? 'text-red-500' : 'text-gray-500'
+                      postContent.length > max_length  ? 'text-red-500 bg-red-50 rounded-full p-2' : 'text-green-500 bg-green-50 rounded-full p-2'
                     }`}>
-                      {postContent.length}/{max_length}
-                    </span>
+                      {postContent.length}/{max_length} Characters
+                    </span>      
+             </TooltipHelp>
+
+                    
                   </div>
                 </div>
                 </>              
@@ -1148,7 +1040,7 @@ const renderActionButtons = () => (
       </button>
       
       {currentStep === 'content' ? (
-    <TooltipExtended text="Please select a campaign or draft a post to continue" show={!canProceedToSchedule()}>
+    <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToSchedule()}>
         <button
           onClick={() => setCurrentStep('schedule')}
           disabled={!canProceedToSchedule()}
@@ -1159,7 +1051,7 @@ const renderActionButtons = () => (
         </button>
     </TooltipExtended>
       ) : (
-        <TooltipExtended text="Please select a campaign or draft a post to continue" show={!postContent.trim()}>
+        <TooltipExtended text={getNextButtonTooltip()} show={!postContent.trim()}>
           <button
             onClick={handleSave}
             disabled={!initialContent.trim() || isSaving || timeError !== null || dateError !== null}
