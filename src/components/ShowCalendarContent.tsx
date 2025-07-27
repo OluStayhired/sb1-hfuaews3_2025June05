@@ -1139,6 +1139,19 @@ const handleDeleteImage = async (content: CalendarContent) => {
       ? `⚡Duplicate once expired - ${currentCalendarDaysLeft} Day${currentCalendarDaysLeft === 1 ? '' : 's'}`
       : '⚡Copy this Calendar'; // Original message when enabled or no days left
 
+// Function to determine the tooltip message for the "Next" button
+const getScheduleButtonTooltip = () => {
+  if (currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0) {
+    return "⚡ Bulk Schedule All Posts";
+  }
+  if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
+    return "⚡ Disabled on Expired Calendars";
+  }
+  // If none of the above conditions are met, the button should be enabled, so no tooltip needed for disabled state.
+  return "";
+};
+  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -1272,10 +1285,12 @@ const handleDeleteImage = async (content: CalendarContent) => {
 
 {/*End This Week Next Week Show All Filter*/}
 <div className="flex inline mt-6">
-<TooltipHelp  text = "⚡ Bulk Schedule All Posts">
+<TooltipHelp  text = {getScheduleButtonTooltip()}>
  <button
     onClick={handleOpenBulkAddToCalendarModal}
+    disabled = {currentCalendarDaysLeft === null || currentCalendarDaysLeft <= 0}
     className={`flex  items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
+      currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0 ? 'opacity-50 cursor-not-allowed' :
       timeFilter === 'all'
         ? 'bg-blue-50 text-blue-500'
         : 'bg-blue-50 text-blue-500 hover:bg-blue-100'

@@ -23,6 +23,7 @@ interface SocialChannel {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
+  twitter_verified: boolean;
   timezone: string;
 }
 
@@ -59,6 +60,11 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
   const [daySelectionError, setDaySelectionError] = useState<string | null>(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [calendarContent, setCalendarContent] = useState<CalendarContentItem[]>([]); // State for fetched calendar content
+  const [max_length, setMaxLength] = useState(300);
+
+  // NEW: State for content length validation errors
+  const [contentLengthError, setContentLengthError] = useState<string | null>(null);
+
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -66,6 +72,34 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
     const activeChannel = socialChannels.find(channel => channel.id === selectedChannel);
     return activeChannel?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   };
+
+  //New UseEffect to include Premium Twitter
+   useEffect(() => {
+    if (selectedChannel) {
+      const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
+      if (activeAccount) {
+        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        switch (activeAccount.social_channel) {
+          case 'Bluesky':
+            setMaxLength(300);
+            break;
+          case 'Twitter':
+                // Use activeAccount.twitter_verified directly here
+                if (activeAccount.twitter_verified) {
+                    setMaxLength(25000); // Premium Twitter limit
+                } else {
+                    setMaxLength(280); // Free Twitter limit
+                }
+            break;
+          case 'LinkedIn':
+            setMaxLength(3000);
+            break;
+          default:
+            setMaxLength(300); // Default
+        }
+      }
+    }
+  }, [selectedChannel, socialChannels]);  
 
   const validateAndSetTime = (
     timeString: string,
@@ -182,10 +216,16 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
       setIsSuccess(false);
       setTimeError(null);
       setDaySelectionError(null);
+      setContentLengthError(null);
     }
   }, [isOpen, calendarName]); // Add calendarName to dependencies
 
-  const handleSave = async () => {
+const handleSave = async () => {
+// Clear previous errors
+    setDaySelectionError(null);
+    setContentLengthError(null);
+    setTimeError(null);
+    
     if (!selectedChannel) {
       setDaySelectionError('Please select a social account.');
       return;
@@ -205,6 +245,32 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
     if (calendarContent.length === 0) {
       setDaySelectionError('No content available for this calendar to schedule.');
       return;
+    }
+
+
+    // NEW: Content length validation
+    const postsExceedingLimit: { date: string; time: string; length: number }[] = [];
+    const today = startOfDay(new Date()); // Get today's date at midnight for comparison
+
+    for (const contentItem of calendarContent) {
+      const itemContentDate = parse(contentItem.content_date, 'yyyy-MM-dd', new Date());
+      // Check if the post's content date is today or in the future
+      const isFutureOrToday = !isPast(itemContentDate) || isSameDay(itemContentDate, today);
+
+      if (contentItem.content.length > max_length && isFutureOrToday) {
+        postsExceedingLimit.push({
+          date: format(itemContentDate, 'MMM d, yyyy'),
+          time: selectedTime, // The selected time applies to all posts
+          length: contentItem.content.length,
+        });
+      }
+    }
+
+    if (postsExceedingLimit.length > 0) {
+      const errorMessage = `These posts exceed the character limit (${max_length}) for the selected channel:\n` +
+                           postsExceedingLimit.map(p => `- ${p.date} at ${p.time} (Length: ${p.length})`).join('\n');
+      setContentLengthError(errorMessage);
+      return; // Stop the save process
     }
 
     setIsSaving(true);
@@ -331,7 +397,7 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
                 <Check className="w-5 h-5 text-green-500" />
               </div>
               <div className="text-left">
-                <p className="font-medium text-gray-900">Posts Scheduled Successfully!</p>
+                <p className="font-medium text-left text-gray-900">Posts Scheduled Successfully!</p>
                 <p className="text-sm text-gray-500">Your posts have been added to the schedule.</p>
               </div>
             </div>
@@ -496,10 +562,19 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
                 </>
               )}
 
+              {/* Display general validation errors */}
               {daySelectionError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md flex items-center space-x-2">
                   <AlertCircle className="w-5 h-5" />
                   <span>{daySelectionError}</span>
+                </div>
+              )}
+
+              {/* NEW: Display content length validation errors */}
+              {contentLengthError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md flex items-start space-x-2 whitespace-pre-wrap">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <span>{contentLengthError}</span>
                 </div>
               )}
 
