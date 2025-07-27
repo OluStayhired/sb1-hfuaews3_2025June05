@@ -1131,7 +1131,7 @@ const renderActionButtons = () => (
     </div>
 
   {/* Render the SuccessNotification component here, outside the main modal container */}
-  {/*isSuccess && <SuccessNotification selectedDate={selectedDate} scheduledTime={scheduledTime} />*/}      
+  {/*isSuccess  && <SuccessNotification selectedDate={selectedDate} scheduledTime={scheduledTime} />*/}      
     </>
   );
 }
