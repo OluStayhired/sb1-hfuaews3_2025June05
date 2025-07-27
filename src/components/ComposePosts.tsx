@@ -10,6 +10,7 @@ import { ConnectSocialModal } from './ConnectSocialModal';
 import { AddSocialTabModal } from './AddSocialTabModal';
 import { supabase } from '../lib/supabase';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { TooltipExtended } from '../utils/TooltipExtended';
 import { MoreBlueskyAccounts } from './MoreBlueskyAccounts'; 
 import { MoreTwitterAccounts } from './MoreTwitterAccounts';
 import { MoreLinkedInAccounts } from './MoreLinkedInAccounts'; 
@@ -30,6 +31,7 @@ interface SocialAccount {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
+  twitter_verified: boolean;
 }
 
 interface ScheduledPostData {
@@ -177,6 +179,7 @@ const fetchDraftPosts = useCallback(async () => {
     fetchDraftPosts();
   }, [fetchDraftPosts]);
 
+  {/*
 useEffect(() => {
     if (activeAccountId) {
       const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
@@ -197,6 +200,37 @@ useEffect(() => {
       }
     }
   }, [activeAccountId, connectedAccounts]);  
+  */}
+
+  //New UseEffect to include Premium Twitter
+   useEffect(() => {
+    //if (selectedChannel) {
+      //const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
+    if (activeAccountId) {
+       const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
+      if (activeAccount) {
+        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        switch (activeAccount.social_channel) {
+          case 'Bluesky':
+            setMaxLength(300);
+            break;
+          case 'Twitter':
+                // Use activeAccount.twitter_verified directly here
+                if (activeAccount.twitter_verified) {
+                    setMaxLength(25000); // Premium Twitter limit
+                } else {
+                    setMaxLength(280); // Free Twitter limit
+                }
+            break;
+          case 'LinkedIn':
+            setMaxLength(3000);
+            break;
+          default:
+            setMaxLength(300); // Default
+        }
+      }
+    }
+  }, [activeAccountId, connectedAccounts]);   
             
 
   const handleRequestMoreBlueskyAccounts = () => {
@@ -874,6 +908,12 @@ const onModalScheduleError = (error: any) => {
   // Optionally, show an error message to the user
 };  
 
+
+const canProceedToPost = () => {
+  return activeAccountId && content.trim().length > 0 && content.trim().length < max_length ;
+  //return selectedChannel && postContent.trim().length > 0 && !timeError;
+};
+  
 const tooltipMessage = activeAccount // First, check if activeAccount exists
   ? (activeAccount.social_channel === 'Bluesky'
     ? "⚡ 300 Chars for Bluesky"
@@ -884,6 +924,23 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
         : "⚡ Character limit varies by platform (Unknown Channel)" // Default for known activeAccount but unrecognized channel
     )
   : "Select a social account to see details.";
+
+
+// Function to determine the tooltip message for the "Next" button
+const getNextButtonTooltip = () => {
+  if (!activeAccountId) {
+    return "⚡ Please choose a social channel to continue.";
+  }
+  if (content.trim().length === 0) {
+    return "⚡ Start writing a post or copy from drafts to continue.";
+  }
+  // Check if content length is greater than or equal to max_length, which disables the button
+  if (content.trim().length >= max_length) {
+    return "⚡ You've exceeded the maximum character limit for this social account. Reduce text to continue";
+  }
+  // If none of the above conditions are met, the button should be enabled, so no tooltip needed for disabled state.
+  return "";
+};  
 
   return (
     <div className="p-8">
@@ -1153,11 +1210,13 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
                     )}
                   </button>
             </TooltipHelp>
-                    
+
+          <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToPost()}>                    
                   <button
                     key={activeAccount?.id || 'no-account'}
                     type="submit"
-                    disabled={!activeAccountId || !content.trim() || isPosting}
+                    //disabled={!activeAccountId || !content.trim() || isPosting}
+                    disabled={!canProceedToPost()  || isPosting}
                     className="px-4 py-2 bg-blue-500 text-sm text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2 disabled:bg-blue-300 disabled:cursor-not-allowed"
                   >
                     {isPosting ? (
@@ -1172,6 +1231,8 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
                       </>
                     )}
                   </button>
+          </TooltipExtended>
+                    
                   </div>
                   
                 </div>
@@ -1265,7 +1326,7 @@ const tooltipMessage = activeAccount // First, check if activeAccount exists
       />
 
       {/* --- RENDER THE SUCCESS POP-UP NOTIFICATION --- */}
-      {isSuccessModalOpen && notificationDetails && ( // Use  the renamed state here
+      {isSuccessModalOpen && notificationDetails && ( // Use the renamed state here
         <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg border border-green-100 p-4 flex items-center space-x-3 animate-fade-in z-[9999]">
           <div className="bg-green-100 rounded-full p-2">
             <Check className="w-5 h-5 text-green-500" />
