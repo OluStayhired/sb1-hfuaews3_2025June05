@@ -7,6 +7,8 @@ import XLogo from '../images/x-logo.svg';
 import { format, parse } from 'date-fns';
 import { generateListPost } from '../lib/gemini';
 import { Sparkles } from 'lucide-react';
+import { TooltipExtended } from '../utils/TooltipExtended';
+import { TooltipHelp } from '../utils/TooltipHelp';
 
 
 
@@ -42,6 +44,7 @@ interface SocialChannel {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
+  twitter_verified: boolean;
 }
 
 interface CalendarOption {
@@ -104,27 +107,33 @@ export function EditSchedulePostModal({
 
   const [max_length, setMaxLength] = useState(300);
 
-useEffect(() => {
-    if (selectedChannel) {
-      const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
-      if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
-        switch (activeAccount.social_channel) {
-          case 'Bluesky':
-            setMaxLength(300);
-            break;
-          case 'Twitter':
-            setMaxLength(280);
-            break;
-          case 'LinkedIn':
-            setMaxLength(3000);
-            break;
-          default:
-            setMaxLength(300); // Default
-        }
-      }
-    }
-  }, [selectedChannel, socialChannels]);    
+//New UseEffect to include Premium Twitter
+   useEffect(() => {
+    if (selectedChannel) {
+      const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
+      if (activeAccount) {
+        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        switch (activeAccount.social_channel) {
+          case 'Bluesky':
+            setMaxLength(300);
+            break;
+          case 'Twitter':
+                // Use activeAccount.twitter_verified directly here
+                if (activeAccount.twitter_verified) {
+                    setMaxLength(25000); // Premium Twitter limit
+                } else {
+                    setMaxLength(280); // Free Twitter limit
+                }
+            break;
+          case 'LinkedIn':
+            setMaxLength(3000);
+            break;
+          default:
+            setMaxLength(300); // Default
+        }
+      }
+    }
+  }, [selectedChannel, socialChannels]);  
 
 
 
@@ -393,10 +402,11 @@ useEffect(() => {
   }
 }, [isOpen, post.social_channel, post.user_handle, socialChannels]);
 
-
+  {/*
 const canProceedToSchedule = () => {
   return selectedChannel && postContent.trim().length > 0;
 };
+*/}
 
 const handleGenerateContent = async () => {
   if (!selectedCalendar) return;
@@ -511,6 +521,41 @@ const handleGenerateContent = async () => {
 
 
 const hasActiveCalendars = calendars.length > 0;  
+
+const canProceedToSchedule = () => {
+  return selectedChannel && postContent.trim().length > 0 && postContent.trim().length < max_length ;
+  //return selectedChannel && postContent.trim().length > 0 && !timeError;
+};  
+
+const activeChannel = socialChannels.find(channel => channel.id === selectedChannel);  
+
+  const tooltipMessage =
+  activeChannel?.social_channel === 'Bluesky'
+    ? "⚡ 300 Chars for Bluesky"
+    : (activeChannel?.social_channel === 'Twitter' || activeChannel?.social_channel === 'X')
+      ? activeChannel?.twitter_verified === true  // Check the 'twitter_verified' attribute
+        ? "⚡ 25,000 Chars for Premium Twitter (X)" // For verified/premium accounts
+        : "⚡ 280 Chars for Free Twitter (X)" // For non-verified/free accounts
+      : activeChannel?.social_channel === 'LinkedIn'
+        ? "⚡ Up to 3000 Chars for LinkedIn"
+        : "⚡ Character limit varies by platform";
+
+
+// Function to determine the tooltip message for the "Next" button
+const getNextButtonTooltip = () => {
+  if (!selectedChannel) {
+    return "Please choose a social channel to continue.";
+  }
+  if (postContent.trim().length === 0) {
+    return "Select a campaign to generate a Post, Or Write a post to continue.";
+  }
+  // Check if content length is greater than or equal to max_length, which disables the button
+  if (postContent.trim().length >= max_length) {
+    return "You've exceeded the maximum character limit for this social account.";
+  }
+  // If none of the above conditions are met, the button should be enabled, so no tooltip needed for disabled state.
+  return "";
+};    
   
 const renderContentStep = () => (
 <div className="space-y-6" style={{
@@ -684,11 +729,22 @@ const renderContentStep = () => (
 
                 
                   <div className="flex justify-end mt-1">
+
+                <TooltipHelp text={tooltipMessage}>     
+                    <span className={`text-xs ${
+                      postContent.length > max_length  ? 'text-red-500 bg-red-50 rounded-full p-2' : 'text-green-500 bg-green-50 rounded-full p-2'
+                    }`}>
+                      {postContent.length}/{max_length} Characters
+                    </span>      
+               </TooltipHelp>
+
+                    {/*
                     <span className={`text-xs ${
                       postContent.length > max_length ? 'text-red-500' : 'text-gray-500'
                     }`}>
                       {postContent.length}/{max_length}
                     </span>
+                    */}
                   </div>
                 </div>
                 </>              
@@ -821,6 +877,7 @@ const renderActionButtons = () => (
       </button>
       
       {currentStep === 'content' ? (
+    <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToSchedule()}>
         <button
           onClick={() => setCurrentStep('schedule')}
           disabled={!canProceedToSchedule()}
@@ -829,6 +886,7 @@ const renderActionButtons = () => (
           <span>Next</span>
           <ChevronRight className="w-4 h-4" />
         </button>
+    </TooltipExtended>
       ) : (
           <button
               onClick={handleSave}
