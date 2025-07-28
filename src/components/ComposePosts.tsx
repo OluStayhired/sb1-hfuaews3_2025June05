@@ -10,7 +10,6 @@ import { ConnectSocialModal } from './ConnectSocialModal';
 import { AddSocialTabModal } from './AddSocialTabModal';
 import { supabase } from '../lib/supabase';
 import { TooltipHelp } from '../utils/TooltipHelp';
-import { TooltipExtended } from '../utils/TooltipExtended';
 import { MoreBlueskyAccounts } from './MoreBlueskyAccounts'; 
 import { MoreTwitterAccounts } from './MoreTwitterAccounts';
 import { MoreLinkedInAccounts } from './MoreLinkedInAccounts'; 
@@ -31,7 +30,6 @@ interface SocialAccount {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
-  twitter_verified: boolean;
 }
 
 interface ScheduledPostData {
@@ -179,7 +177,6 @@ const fetchDraftPosts = useCallback(async () => {
     fetchDraftPosts();
   }, [fetchDraftPosts]);
 
-  {/*
 useEffect(() => {
     if (activeAccountId) {
       const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
@@ -200,37 +197,6 @@ useEffect(() => {
       }
     }
   }, [activeAccountId, connectedAccounts]);  
-  */}
-
-  //New UseEffect to include Premium Twitter
-   useEffect(() => {
-    //if (selectedChannel) {
-      //const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
-    if (activeAccountId) {
-       const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
-      if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
-        switch (activeAccount.social_channel) {
-          case 'Bluesky':
-            setMaxLength(300);
-            break;
-          case 'Twitter':
-                // Use activeAccount.twitter_verified directly here
-                if (activeAccount.twitter_verified) {
-                    setMaxLength(25000); // Premium Twitter limit
-                } else {
-                    setMaxLength(280); // Free Twitter limit
-                }
-            break;
-          case 'LinkedIn':
-            setMaxLength(3000);
-            break;
-          default:
-            setMaxLength(300); // Default
-        }
-      }
-    }
-  }, [activeAccountId, connectedAccounts]);   
             
 
   const handleRequestMoreBlueskyAccounts = () => {
@@ -907,45 +873,21 @@ const onModalScheduleError = (error: any) => {
   setIsSchedulingPost(false);
   // Optionally, show an error message to the user
 };  
-
-
-const canProceedToPost = () => {
-  return activeAccountId && content.trim().length > 0 && content.trim().length < max_length ;
-  //return selectedChannel && postContent.trim().length > 0 && !timeError;
-};
   
-const tooltipMessage = activeAccount // First, check if activeAccount exists
-  ? (activeAccount.social_channel === 'Bluesky'
-    ? "⚡ 300 Chars for Bluesky"
-    : activeAccount.social_channel === 'Twitter' || activeAccount.social_channel === 'X' // Handle both 'Twitter' and 'X'
-      ? "⚡ 280 Chars for Free Twitter (X)"
-      : activeAccount.social_channel === 'LinkedIn'
-        ? "⚡ Up to 3000 Chars for LinkedIn"
-        : "⚡ Character limit varies by platform (Unknown Channel)" // Default for known activeAccount but unrecognized channel
-    )
-  : "Select a social account to see details.";
 
-
-// Function to determine the tooltip message for the "Next" button
-const getNextButtonTooltip = () => {
-  if (!activeAccountId) {
-    return "⚡ Please choose a social channel to continue.";
-  }
-  if (content.trim().length === 0) {
-    return "⚡ Start writing a post or copy from drafts to continue.";
-  }
-  // Check if content length is greater than or equal to max_length, which disables the button
-  if (content.trim().length >= max_length) {
-    return "⚡ You've exceeded the maximum character limit for this social account. Reduce text to continue";
-  }
-  // If none of the above conditions are met, the button should be enabled, so no tooltip needed for disabled state.
-  return "";
-};  
 
   return (
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
 
+        {/*
+        <div className="flex items-center space-x-2 mb-6"> 
+          <div className="p-2 bg-blue-100 rounded-md"> 
+            <FileEdit className="w-5 h-5 text-blue-500"/> 
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900">Draft Post</h2>
+        </div>
+        */}
 
         {isLoading ? (
           <div className="flex justify-center py-8">
@@ -964,7 +906,7 @@ const getNextButtonTooltip = () => {
                         <button
                           key={account.id}
                           onClick={() => setActiveAccountId(account.id)}
-                          className={`flex items-center space-x-2 px-4 py-2 border-b-2 whitespace-nowrap ${
+                          className={`flex items-center space-x-2 px-2 py-2 border-b-2 whitespace-nowrap ${
                             activeAccountId === account.id
                               ? 'border-blue-500 text-blue-600'
                               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -976,7 +918,7 @@ const getNextButtonTooltip = () => {
                             <img
                               src={account.avatar_url || `https://ui-avatars.com/api/?name=${account.handle}`}
                               alt={account.handle}
-                              className="w-6 h-6 rounded-full"
+                              className="w-6 h-6 rounded-full hover:border-2 hover:border-blue-100"
                             />
                               
                             <div className="absolute -bottom-1 -right-1 bg-gray-50 rounded-full p-0.5 shadow-sm">
@@ -993,10 +935,11 @@ const getNextButtonTooltip = () => {
                               />
                             </div>
                           </div>
-                      
+                          {/* REMOVED DISPLAY NAME
                           <span className="text-sm font-medium">
                             {truncateDisplayName(account.display_name, account.handle)}
                           </span>
+                          */}
                         </button>
                     
                       ))}
@@ -1057,7 +1000,24 @@ const getNextButtonTooltip = () => {
               </span>
             )}
         </button>
-            
+            {/*
+              <button
+                  //onClick={() => setIsDraftPostModalOpen(!isDraftPostModalOpen)}
+
+                  onClick={() => { // Start a single arrow function block
+                    setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
+                    setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
+                    }}
+                  className="ml-2 flex p-2 bg-gray-100 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                  //title="View Drafts"
+                >
+
+                
+                  <FileEdit className="w-4 h-4 mr-2"/>
+                  <span className="text-xs">Saved Drafts ({totalDraftCount})</span>
+                             
+                </button>
+                */}
        </TooltipHelp>
 
                     {/* End Add button to show draft posts */}
@@ -1118,7 +1078,7 @@ const getNextButtonTooltip = () => {
                     {isGenerating ? (
                         <Loader2 className="w-3 h-3 animate-spin" />
                           ) : (
-                        <TooltipHelp text="⚡Quick Rewrite">
+                        <TooltipHelp text="⚡ Quick Rewrite">
                         <Sparkles className="w-3 h-3" />
                         </TooltipHelp>
                           )}
@@ -1126,50 +1086,49 @@ const getNextButtonTooltip = () => {
                 {/*End Add AI Button*/}
 
                 {/*start linkedin button */}
+
+                {/*
+                <button
+                  type="button"
+                    onClick={handleGenerateContent}
+                    disabled={isGenerating || !activeAccountId || !content.trim() || isPosting}
+                    // Remove the outer conditional rendering for the button itself
+                  className={`
+                              absolute right-10 top-2 p-1 rounded-md shadow-md
+                              transition duration-200 flex items-center space-x-1
+                            ${
+                        content.trim() // If content exists, apply active styles
+                          ? 'bg-gray-100 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600'
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                            }
+                      ${
+                        (isGenerating || !activeAccountId || !content.trim() || isPosting)
+                          ? 'opacity-70' // Reduce opacity when disabled by any condition
+                          : ''
+                        }
+                      `}
+                      >
+                    {isGenerating ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                        <TooltipHelp text="⚡ Adapt for LinkedIn">
+                                      <>
+                
+                <img src={LinkedInLogo} className="w-3 h-3" />
+                </>
+                        </TooltipHelp>
+                          )}
+                    </button>
+              */}
+                    
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                  
-                  {/* Calculate characters remaining and determine state */}
-                    {(() => {
-                        const charactersRemaining = max_length - content.length;
-                        const eightyPercentThreshold = max_length * 0.8; // Calculate 80% of max_length
-
-                        // Determine the state based on characters remaining
-                          let backgroundColorClass = 'bg-green-50';
-                          let textColorClass = 'text-green-500';
-
-                          if (charactersRemaining < 0) {
-                          // State 1: Over the limit
-                                backgroundColorClass = 'bg-red-50';
-                                textColorClass = 'text-red-700';
-                                } else if (charactersRemaining <= (max_length - eightyPercentThreshold)) {
-                          // State 2: Nearing the limit (e.g., at or over 80% of max_length used)
-                          // This condition means content.length >= 80% of max_length
-                                backgroundColorClass = 'bg-yellow-100'; // Lighter yellow background
-                                textColorClass = 'text-yellow-700';   // Darker yellow text
-                                }
-                          // Else, it remains the default gray
-
-                  return (
-                    <TooltipHelp text={tooltipMessage}>
-                          <div
-                              className={`
-                                          text-sm
-                                          rounded-full
-                                          p-2
-                                          ${backgroundColorClass}
-                                          ${textColorClass}
-                                        `}
-                              >
-                                {charactersRemaining} characters remaining
-                            </div>
-                    </TooltipHelp>
-                            );
-                        })()}
+                  <div className="text-sm text-gray-500">
+                    {max_length - content.length} characters remaining
+                  </div>
 
                   <div className="flex items-center mt-4 pt-4 space-x-2">
 
-              <TooltipHelp text= "⚡ Save for Later">
                   <button
                     type="submit"
                     disabled={!activeAccountId || !content.trim() || isPosting}
@@ -1188,9 +1147,7 @@ const getNextButtonTooltip = () => {
                       </>
                     )}
                   </button>
-            </TooltipHelp>
-
-            <TooltipHelp text= "⚡Add Images in Scheduler">        
+            
                    <button
                     type="button" // Changed to type="button" to prevent form submission
                     disabled={!activeAccountId || !content.trim() || isSchedulingPost}
@@ -1209,14 +1166,12 @@ const getNextButtonTooltip = () => {
                       </>
                     )}
                   </button>
-            </TooltipHelp>
 
-          <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToPost()}>                    
+                    
                   <button
                     key={activeAccount?.id || 'no-account'}
                     type="submit"
-                    //disabled={!activeAccountId || !content.trim() || isPosting}
-                    disabled={!canProceedToPost()  || isPosting}
+                    disabled={!activeAccountId || !content.trim() || isPosting}
                     className="px-4 py-2 bg-blue-500 text-sm text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2 disabled:bg-blue-300 disabled:cursor-not-allowed"
                   >
                     {isPosting ? (
@@ -1231,8 +1186,6 @@ const getNextButtonTooltip = () => {
                       </>
                     )}
                   </button>
-          </TooltipExtended>
-                    
                   </div>
                   
                 </div>
