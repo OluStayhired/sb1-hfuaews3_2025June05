@@ -476,7 +476,7 @@ const handleGenerateContent = async () => {
         content_date: format(selectedDate, 'yyyy-MM-dd'),
         content_time: formattedTimeForDatabase,
         schedule_status: true,
-        schedule_status: selectedScheduleStatus ?? false,
+        schedule_status: selectedScheduleStatus ?? true,
         target_timezone: post.target_timezone || getSelectedChannelTimezone() || Intl.DateTimeFormat().resolvedOptions().timeZone,
         updated_at: new Date().toISOString()
       };
