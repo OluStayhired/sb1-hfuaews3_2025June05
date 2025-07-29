@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
+import { CheckEmailPage } from './pages/CheckEmailPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Loader2 } from 'lucide-react';
 import LinkedInAuthRedirect from './components/LinkedInAuthRedirect'; 
@@ -43,6 +44,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/check-email" element={<CheckEmailPage />} /> {/* NEW: Add route for CheckEmailPage */}
       <Route
         path="/dashboard/*"
         element={

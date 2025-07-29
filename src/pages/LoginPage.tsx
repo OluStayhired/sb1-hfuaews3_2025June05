@@ -52,19 +52,14 @@ const handleSubmit = async (e: React.FormEvent) => {
     setLoading(true);
 
     try {
-      // Validate input
       authSchema.parse({ email, password });
 
       if (isSignUp) {
         await signUp(email, password);
-        //onClose();
-        // Navigate to the dashboard
-        navigate('/dashboard', { replace: true }); 
-        //setError('Please check your email to verify your account');
+        // IMPORTANT CHANGE: Redirect to CheckEmailPage after successful signup
+        navigate('/check-email', { replace: true }); 
       } else {
         await signIn(email, password);
-        //onClose();
-        // Navigate to the dashboard
         navigate('/dashboard', { replace: true }); 
       }
     } catch (err) {
