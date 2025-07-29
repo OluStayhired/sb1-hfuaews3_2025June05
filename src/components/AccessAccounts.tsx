@@ -887,7 +887,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center">
                       <img
                         src={BlueskyLogo}
                         alt="LinkedIn"
@@ -986,7 +986,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center">
                       <img
                         src={LinkedInLogo}
                         alt="LinkedIn"
@@ -1084,7 +1084,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 p-2.5 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-blue-100 border border-blue-200 p-2.5 flex items-center justify-center">
                       <img
                         src={XLogo}
                         alt="Threads"
