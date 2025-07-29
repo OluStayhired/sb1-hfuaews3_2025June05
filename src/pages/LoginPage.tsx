@@ -75,12 +75,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   };  
 
-  //const handleEmailAuth = (e: React.FormEvent) => {
-   // e.preventDefault();
-  //  console.log(`Email ${isSignUp ? 'Sign Up' : 'Sign In'} clicked (no functionality)`);
-    // No actual functionality
- // };
-
   const benefits = [
     {
       icon: Sparkles,
@@ -125,11 +119,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             Effortless content that converts
           </h1>
       </div>
-          {/*
-          <p className="text-xl font-semibold mb-8">
-            Write effortless content that converts!
-          </p>
-          */}
+  
 
           <ul className="space-y-6 mb-10">
             {benefits.map((benefit, index) => (
