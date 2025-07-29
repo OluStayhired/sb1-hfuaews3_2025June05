@@ -4,6 +4,10 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import { CheckEmailPage } from './pages/CheckEmailPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage'; // NEW: Import ResetPasswordPage
+import { CheckEmailForResetPage } from './pages/CheckEmailForResetPage'; // NEW: Import CheckEmailForResetPage
+import { NewPasswordPage } from './pages/NewPasswordPage'; // NEW: Import NewPasswordPage (future step)
+
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Loader2 } from 'lucide-react';
 import LinkedInAuthRedirect from './components/LinkedInAuthRedirect'; 
@@ -45,6 +49,9 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/check-email" element={<CheckEmailPage />} /> {/* NEW: Add route for CheckEmailPage */}
+      <Route path="/reset-password" element={<ResetPasswordPage />} /> {/* NEW: Route for Reset Password Request */}
+      <Route path="/check-email-for-reset" element={<CheckEmailForResetPage />} /> {/* NEW: Route for Reset Confirmation */}
+      <Route path="/update-password" element={<NewPasswordPage />} />
       <Route
         path="/dashboard/*"
         element={

@@ -75,6 +75,12 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   };  
 
+  //const handleEmailAuth = (e: React.FormEvent) => {
+   // e.preventDefault();
+  //  console.log(`Email ${isSignUp ? 'Sign Up' : 'Sign In'} clicked (no functionality)`);
+    // No actual functionality
+ // };
+
   const benefits = [
     {
       icon: Sparkles,
@@ -119,7 +125,11 @@ const handleSubmit = async (e: React.FormEvent) => {
             Effortless content that converts
           </h1>
       </div>
-  
+          {/*
+          <p className="text-xl font-semibold mb-8">
+            Write effortless content that converts!
+          </p>
+          */}
 
           <ul className="space-y-6 mb-10">
             {benefits.map((benefit, index) => (
@@ -221,6 +231,19 @@ const handleSubmit = async (e: React.FormEvent) => {
                 required
               />
             </div>
+
+            {/* NEW: Forgot Password Link */}
+            {!isSignUp && ( // Only show for login form
+              <div className="w-3/4 text-right">
+                <button
+                  type="button" // Important: type="button" to prevent form submission
+                  onClick={() => navigate('/reset-password')}
+                  className="text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
 
             <button
               type="submit"
