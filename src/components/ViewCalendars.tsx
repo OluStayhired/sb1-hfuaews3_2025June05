@@ -2,11 +2,12 @@
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { PlusCircle } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { generateCalendar, generateListPost } from '../lib/gemini';
 import { useAuthStore } from '../auth';
 import { 
-  Calendar, Edit2, Sparkles, X, ArrowLeft, CalendarPlus,
+  Calendar, Edit2, Sparkles, X, ArrowLeft, CalendarPlus, ArrowRight,
   ChevronLeft, ChevronRight, 
   Loader2, Save, RefreshCw, CalendarCheck, Copy, ListOrdered, List, PartyPopper, Megaphone, ListChecks, LineChart, CalendarSearch, Search
 } from 'lucide-react';
@@ -101,6 +102,7 @@ export function ViewCalendars({ onCreateCalendarClick }: ViewCalendarProps) {
   const [isCampaignSuccessModalOpen, setIsCampaignSuccessModalOpen] = useState(false);
   const [createdCampaignName, setCreatedCampaignName] = useState('');
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const selectedCalendarFromUrl = searchParams.get('calendar');
   const [selectedCalendar, setSelectedCalendar] = useState<string | null>(selectedCalendarFromUrl);
   const [showCampaignList, setShowCampaignList] = useState(false);
@@ -165,8 +167,13 @@ useEffect(() => {
   
   
   const handleCreateCalendarClick = () => {
-    console.log('Create Campaign button clicked in ViewCalendars!');
+    //console.log('Create Campaign button clicked in ViewCalendars!');
     setIsCreateCalendarFormOpen(true);
+  };
+
+    const handleCreateCampaign = () => {
+    navigate('/dashboard/campaign');
+    //onClose();
   };
 
   const handleCloseCreateCalendarForm = () => {
@@ -348,7 +355,7 @@ const handleViewCalendarList = () => {
 };
   
  return (
-    <div className="p-4">
+    <div className="p-4 bg-white h-full">
       <div className="max-w-8xl mx-auto">
 
         {/* ------------------------------------------------------------- */}
@@ -364,7 +371,8 @@ const handleViewCalendarList = () => {
         )}
 
         {/* Start inside the white border p-12 is height */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12">
+        {/*<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12">*/}
+        <div className="bg-white rounded-lg p-12">
           <div className={`flex items-center justify-center border-1 border border-white rounded-lg ${
             isCreateCalendarFormOpen || showCampaignList || selectedCalendar || isCampaignSuccessModalOpen || calendarListLoading ? 'min-h-[300px]' : 'h-80'
           }`}>
@@ -436,14 +444,16 @@ const handleViewCalendarList = () => {
                     <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
                       <CalendarPlus className="w-12 h-12 font-light text-blue-500" />
                     </div>
-                    <p className="text-gray-600 mb-3 mt-4">Get 2 Weeks of Content in minutes 🥳</p>
-                    <p className="text-gray-400 mb-4 text-sm">Create your First content Campaign</p>
+                    <p className="text-gray-600 mb-3 mt-4">You Currently Don't Have Any Campaigns Created</p>
+                    <p className="text-gray-400 mb-4 text-sm">Create your <strong>First</strong> Content Campaign 🚀</p>
                     <button
-                      onClick={handleCreateCalendarClick}
+                      //onClick={handleCreateCalendarClick}
+                      onClick={handleCreateCampaign}
                       className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                     >
-                      <PlusCircle className="w-5 h-5 mr-2" />
-                      <span>Create Campaign</span>
+                      
+                      <span>Get Started</span>
+                      <ArrowRight className="w-5 h-5 ml-2" />
                     </button>
                   </div>
                 </>
