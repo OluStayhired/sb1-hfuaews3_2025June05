@@ -834,7 +834,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                       className="w-12 h-12 rounded-full"
                     />
                     {/* Bluesky Logo Overlay */}
-                    <div className="absolute -bottom-1 -right-1 bg-gray-100 rounded-full p-1 shadow-sm">
+                    <div className="absolute -bottom-1 -right-1 bg-blue-50 border border-blue-100  rounded-full p-1 shadow-sm">
                       <img
                         src={BlueskyLogo}
                         alt="Bluesky"
@@ -935,7 +935,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                       className="w-12 h-12 rounded-full"
                     />
                     {/* LinkedIn Logo Overlay */}
-                    <div className="absolute -bottom-1 -right-1 bg-gray-100 rounded-full p-1 shadow-sm">
+                    <div className="absolute -bottom-1 -right-1 bg-blue-50 border border-blue-100  rounded-full p-1 shadow-sm">
                       <img
                         src={LinkedInLogo}
                         alt="LinkedIn"
@@ -1032,7 +1032,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                       className="w-12 h-12 rounded-full"
                     />
                     {/* Threads Logo Overlay */}
-                    <div className="absolute -bottom-1 -right-1 bg-gray-100 rounded-full p-1 shadow-sm">
+                    <div className="absolute -bottom-1 -right-1 bg-blue-50 border border-blue-100  rounded-full p-1 shadow-sm">
                       <img
                         src={XLogo}
                         alt="Threads"

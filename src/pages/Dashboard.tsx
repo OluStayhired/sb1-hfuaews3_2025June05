@@ -929,7 +929,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
                   className="w-10 h-10 rounded-full"
                 />
                 
-                <div className="absolute -bottom-1 -right-1 bg-gray-100  rounded-full p-1 shadow-sm">
+                <div className="absolute -bottom-1 -right-1 bg-blue-50 border border-blue-100  rounded-full p-1 shadow-sm">
                   <img
                     src={BlueskyLogo}
                     alt="Bluesky"
@@ -951,7 +951,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
                   className="w-10 h-10 rounded-full"
                 />
                 
-                <div className="absolute -bottom-1 -right-1 bg-gray-100  rounded-full p-1 shadow-sm">
+                <div className="absolute -bottom-1 -right-1 bg-blue-50 border border-blue-100   rounded-full p-1 shadow-sm">
                   <img
                     src={LinkedInLogo}
                     alt="Bluesky"
@@ -972,7 +972,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
                   className="w-10 h-10 rounded-full"
                 />
                 
-                <div className="absolute -bottom-1 -right-1 bg-gray-100  rounded-full p-1 shadow-sm">
+                <div className="absolute -bottom-1 -right-1 bg-blue-50 border border-blue-100  rounded-full p-1 shadow-sm">
                   <img
                     src={XLogo}
                     alt="Bluesky"
