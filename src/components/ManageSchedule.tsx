@@ -18,6 +18,7 @@ import { PostNowWarningModal } from './PostNowWarningModal';
 import { TimezoneSelectorModal } from './TimezoneSelectorModal';
 import { formatInTimeZone, zonedTimeToUtc } from 'date-fns-tz';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { TooltipExtended } from '../utils/TooltipExtended';
 import { uploadImageGetUrl } from '../utils/UploadImageGetUrl';
 import { deletePostImage } from '../utils/DeletePostImage';
 
@@ -1095,12 +1096,20 @@ const handleDeleteImage = async (postId: string) => {
   </div>
 
   {/* The Timezone button remains separate and unchanged */}
+  <TooltipHelp text="⚡Reset your local time if travelling"> 
   <button
     onClick={() => setIsTimezoneSelectorOpen(true)}
     className="flex items-center space-x-2 px-4 py-2 hover:border-blue-400 hover:text-blue-500 hover:bg-gray-50 bg-white border border-gray-200 rounded-lg text-gray-600">
-    <Clock className="w-4 h-4" />
+
+   <span className="p-1 bg-blue-50 rounded-full">
+    <Clock className="w-4 h-4 text-blue-500" />
+    </span> 
+    
     <span>Timezone: {userTimezone}</span>
+       
   </button>
+  </TooltipHelp>
+ 
 </div>
           
           
@@ -1261,21 +1270,16 @@ const handleDeleteImage = async (postId: string) => {
                                 {scheduledPost.user_display_name || scheduledPost.user_handle}
                               </p>
 
-                              {/* User Handle 
-                              {scheduledPost.user_display_name && (                
-                                 <p className="font-normal text-xs text-gray-500 leading-none">
-                                  @{scheduledPost.user_handle}
-                                 </p>
-                              )}
-                              */}
                          </div> 
                     {/* Start - New Displayed Time */}
                     <div className="inline-flex items-center space-x-2">
                       
-                      
+                     <TooltipExtended text={`⚡viewing this post in your local timezone : ${userTimezone}`}> 
                       <span className="flex items-center text-xs py-1 px-2 text-gray-500 bg-gray-50 rounded-sm">
-                        
-                        <Clock className="h-3.5 w-3.5 mr-1"/>
+                        <span className="bg-blue-50 rounded-full">
+                            <Clock className="text-blue-500 h-3.5 w-3.5 mr-1"/>
+
+                      </span>
                         
                         {formatPostTimeForDisplay(
                           day.date,
@@ -1285,42 +1289,12 @@ const handleDeleteImage = async (postId: string) => {
                           'h:mm a'
                         )}
                       </span>
+                    </TooltipExtended>
                     </div>
                   {/* End - New Displayed Time */}
                                  
              {/*---------------------  Post Content ------------------------------------*/}      
-                    {/*
-                            <div className={`mt-6 text-sm ${day.isDisabledDay ? 'text-gray-300' : 'text-gray-900'}`}>  
-                              
-                              <p className="line-clamp-1"> 
-                           
-                                {truncateText(scheduledPost.content,60)}
-                              </p>
-                            </div>  
-                      */}
-
-{/* Post Content 
-<div className={`mt-6 text-sm ${day.isDisabledDay ? 'text-gray-300' : 'text-gray-900'}`}>
-  <p className="line-clamp-1">
-    {truncateText(scheduledPost.content, 60)}
-  </p>
-
-
-  {scheduledPost.photo_url && (
-    <div className="flex items-center mt-1"> 
-     
-      <img
-        //src={`${scheduledPost.photo_url}&width=32&height=32&fit=cover`} // Supabase transformation for a tiny thumbnail
-        src={`${scheduledPost.photo_url}`} 
-        alt="Attached"
-        className="w-16 h-16 shadow-md rounded-lg object-cover border border-gray-200 mr-1" // w-8/h-8 are 32x32px
-        title="Image attached" // Tooltip on hover
-      />
-    </div>
-  )}
-</div>
-*/}          
-
+               
 
 {/* Post Content */}
 <div className={`mt-6 text-sm ${day.isDisabledDay ? 'text-gray-300' : 'text-gray-900'}`}>
