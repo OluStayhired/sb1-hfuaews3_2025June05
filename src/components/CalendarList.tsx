@@ -11,6 +11,7 @@ import { TooltipHelp } from '../utils/TooltipHelp';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 
+
 interface CalendarListProps {
   calendars: {
     calendar_name: string;
@@ -41,11 +42,14 @@ export function CalendarList({
   const [isCreateCalendarFormOpen, setIsCreateCalendarFormOpen] = useState(false);
   const [isDeleteCampaignWarningOpen, setIsDeleteCampaignWarningOpen] = useState(false);
   const [selectedCalendarToDelete, setSelectedCalendarToDelete] = useState<string | null>(null);
+  
 
   const handleCreateCalendarClick = () => {
     console.log('Create Campaign button clicked in ViewCalendars!');
     setIsCreateCalendarFormOpen(true);
   };  
+
+  
 
    const truncateText = (text: string, maxLength: number = 25): string => {
   if (!text) return '';
@@ -483,23 +487,19 @@ const handleDeleteCampaign = async (calendarName: string) => {
                   </div>
                   
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                <td className="px-6 py-6 whitespace-nowrap text-xs text-gray-500">
 
-                  <div className="rounded-full p-1 flex justify-center items-center">
-                  
-                  <button
-                      
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenDeleteCampaignWarning(calendar.calendar_name);
-                    }}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    
-                    <Trash2 className="w-5 h-5" />
-                    
-                  </button>
-                  </div>
+                 <div className="p-2 w-15 h-15 flex justify-center items-center">
+    <button
+        onClick={(e) => {
+            e.stopPropagation();
+            handleOpenDeleteCampaignWarning(calendar.calendar_name);
+        }}
+        className="p-3 text-red-500 rounded-full bg-red-50 hover:text-red-700 hover:bg-red-100 flex justify-center items-center"
+    >
+        <Trash2 className="w-6 h-6" />
+    </button>
+</div>
                   
                 </td>
               </tr>
