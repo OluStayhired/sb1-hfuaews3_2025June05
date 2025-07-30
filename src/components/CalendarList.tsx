@@ -1,7 +1,7 @@
 // src/components/CalendarList.tsx
 
 import React, { useState, useEffect } from 'react';
-import { CalendarCheck, Users, Megaphone, CircleCheck, Clock, X, ListChecks, PlusCircle, CheckCircle, ArrowLeft, CalendarSearch, Trash2, Goal, NotepadText } from 'lucide-react';
+import { CalendarCheck, RefreshCcw, Users, Megaphone, CircleCheck, Clock, X, ListChecks, PlusCircle, CheckCircle, ArrowLeft, CalendarSearch, Trash2, Goal, NotepadText } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { CreateCalendarForm } from '/src/components/CreateCalendarForm';
 import { format, addDays, parseISO, differenceInDays } from 'date-fns';
@@ -75,6 +75,10 @@ export function CalendarList({
     navigate('/dashboard/campaign');
   };
 
+  const handleShowCampaignList = () => {
+    navigate('/dashboard/calendars') 
+  };
+  
  const handleOpenDeleteCampaignWarning = (calendarName: string) => {
     setSelectedCalendarToDelete(calendarName);
     setIsDeleteCampaignWarningOpen(true);
@@ -234,6 +238,15 @@ const handleDeleteCampaign = async (calendarName: string) => {
 
           
         {/* "Active" Button */}
+
+          <button
+            onClick={handleShowCampaignList}
+            //className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors mr-4"
+              className="inline-flex text-sm items-center px-4 py-2 bg-blue-50 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-100 border border-blue-200 rounded-lg text-gray-600 mr-2">
+         
+            <RefreshCcw className="text-blue-500 w-4 h-4 mr-2" />
+            <span className="text-blue-500">Refresh List</span>
+        </button>
         
         <button
             onClick={handleCreateCampaign}

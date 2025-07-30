@@ -67,6 +67,7 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [calendarDays, setCalendarDays] = useState<number>(14); 
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
   const [isImproving, setIsImproving] = useState<string | null>(null); // 
   const [optimisticContent, setOptimisticContent] = useState<CalendarContent[]>([]); 
@@ -115,8 +116,7 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   };
 
   const handleShowCampaignList = () => {
-    navigate('/dashboard/calendars');
-    onClose();
+  navigate('/dashboard/calendars');   
   };
 
     const handleCloseCampaignInfoModal = () => {
@@ -247,7 +247,83 @@ const handleConnectLinkedIn = () => {
     }
   };
 
-   // New useEffect to fetch calendar end date and calculate days left
+   // Start - New useEffect to fetch calendar end date and calculate days left
+  useEffect(() => {
+    const fetchCalendarDetails = async () => {
+      if (!calendarName || !userEmail) {
+        console.log("Skipping fetchCalendarDetails: calendarName or userEmail is missing.");
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('calendar_questions')
+          .select('end_date, start_date') // Removed calendar_days from select
+          .eq('calendar_name', calendarName)
+          .eq('email', userEmail)
+          .single();
+
+        if (error) {
+          console.error('Error fetching calendar end date:', error);
+          setCalendarEndDate(null);
+          setCurrentCalendarDaysLeft(null);
+          return;
+        }
+
+        let calculatedEndDate: Date | null = null;
+
+        // Prioritize end_date from database if it exists and is valid
+        if (data?.end_date) {
+          const parsedDbEndDate = parseISO(data.end_date);
+            if (!isNaN(parsedDbEndDate.getTime())) {
+                calculatedEndDate = parsedDbEndDate;
+                console.log(`Using database end_date for "${calendarName}":`, data.end_date);
+            } else {
+                console.warn(`Database end_date for "${calendarName}" is invalid:`, data.end_date);
+            }
+        }
+
+        // If database end_date is missing or invalid, try to deduce it
+        // Now using the calendarDays prop directly
+        if (!calculatedEndDate && data?.start_date && typeof calendarDays === 'number') {
+            const parsedStartDate = parseISO(data.start_date);
+            if (!isNaN(parsedStartDate.getTime())) {
+                // Deduce end_date: start_date + (calendar_days - 1)
+                // Subtract 1 because calendar_days typically includes the start day itself.
+                calculatedEndDate = addDays(parsedStartDate, calendarDays - 1);
+                console.log(`Deducing end_date for "${calendarName}" from start_date (${data.start_date}) and calendarDays prop (${calendarDays}):`, calculatedEndDate.toISOString());
+            } else {
+                console.warn(`Invalid start_date for deduction for "${calendarName}":`, data.start_date);
+            }
+        }
+
+        // Update state based on the calculated (or deduced) end date
+        if (calculatedEndDate) {
+          setCalendarEndDate(calculatedEndDate);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // Normalize today to midnight
+          calculatedEndDate.setHours(0, 0, 0, 0); // Normalize end date to midnight for comparison
+          const daysLeft = differenceInDays(calculatedEndDate, today);
+          setCurrentCalendarDaysLeft(Math.max(0, daysLeft)); // Ensure days left is not negative
+        } else {
+            console.warn(`Could not determine a valid end_date for calendar "${calendarName}". Setting to null.`);
+          setCalendarEndDate(null);
+          setCurrentCalendarDaysLeft(null);
+        }
+      } catch (err) {
+        console.error('Unexpected error fetching or calculating calendar details:', err);
+        setCalendarEndDate(null);
+        setCurrentCalendarDaysLeft(null);
+      }
+    };
+
+    fetchCalendarDetails();
+  }, [calendarName, userEmail, calendarDays]);
+
+
+  // End - New useEffect to fetch calendar end date and calculate days left
+
+  {/* Old useEffect to fetch calendar end date and calculate days left
   useEffect(() => {
     const fetchCalendarDetails = async () => {
       if (!calendarName || !userEmail) return;
@@ -285,6 +361,8 @@ const handleConnectLinkedIn = () => {
 
     fetchCalendarDetails();
   }, [calendarName, userEmail]);
+
+  */}
 
     const handleBulkScheduleSuccess = () => {
     fetchCalendarContent(); // Refresh the calendar content
@@ -1305,16 +1383,6 @@ const getScheduleButtonTooltip = () => {
         />
       )}
 
-{/*       
-{showCampaignInfo && filteredContent.length === 0 && (
-      <CampaignInfoModal
-          isOpen={showCampaignInfoModal}
-          onClose={handleCloseCampaignInfoModal}
-          campaignName={calendarName}
-          //onCreateNewCampaign={handleCreateNewCampaignFromModal}
-      />
-  )}
-  */}
           
         
         {filteredContent.map((content) => (
