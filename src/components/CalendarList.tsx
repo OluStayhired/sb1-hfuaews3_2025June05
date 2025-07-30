@@ -60,9 +60,7 @@ export function CalendarList({
 
   const navigate = useNavigate();
   const location = useLocation();
-  //useEffect(() => {
-  //setShowOnlyActiveLocal(showOnlyActive);
-//}, [showOnlyActive]);
+  
 
   // Add these checks right here, before any other logic
   if (!Array.isArray(calendars)) {
@@ -183,14 +181,6 @@ const handleDeleteCampaign = async (calendarName: string) => {
     ? safeCalendars.filter(calendar => calendar.active)
     : safeCalendars;
 
-  //if (displayedCalendars.length === 0) {
-    //return (
-      //<div className="text-center py-4 text-gray-500">
-        //{showOnlyActiveLocal ? 'No active campaigns found' : 'No campaigns found'}
-      //</div>
-    //);
-  //}
-
   if (displayedCalendars.length === 0) {
   return (
     <div className="text-center py-6 bg-white rounded-lg z-99999">
@@ -221,15 +211,6 @@ const handleDeleteCampaign = async (calendarName: string) => {
               <span>Activate Your Campaigns</span>
             </button>
           )}
-          {/*}
-          <button
-            onClick={handleCreateCalendarClick}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>Create Campaign</span>
-          </button>
-          */}
         </div>
       </div>
     </div>
@@ -353,16 +334,6 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 </div>
               </th>
 
-              {/*
-              <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
-                <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">
-                 <div className="p-1 bg-gray-100 rounded-full"> 
-                   <CheckCircle className="w-4 h-4 text-gray-500"/>
-                 </div>  
-                   <span className="whitespace-nowrap">Status</span>
-                </div>
-              </th>
-              */}
 
                       <th className="px-6 py-3 text-left text-sm font-normal text-gray-500 tracking-wider">
           <div className="p-2 flex items-center hover:bg-gray-100 rounded-md space-x-2">

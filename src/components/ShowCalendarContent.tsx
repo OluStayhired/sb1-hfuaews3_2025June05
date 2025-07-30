@@ -104,19 +104,6 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [showCampaignExpiredCard, setShowCampaignExpiredCard] = useState(false);
 
 
-  // Re-run this effect when currentCalendarDaysLeft changes
-  //useEffect(() => {
-    //if (currentCalendarDaysLeft !== null && currentCalendarDaysLeft < 0) {
-      //setShowCampaignInfoModal(true);
-    //} else {
-      //setShowCampaignInfoModal(false);
-    //}
-  //}, [currentCalendarDaysLeft]); 
-  
-
-
-  //const today = new Date();
-
   const handleCreateNewCampaign = () => {
     setShowCampaignInfo(false);
     onBackToList();
@@ -125,6 +112,11 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const handleCreateCampaign = () => {
     navigate('/dashboard/campaign');
     //onClose();
+  };
+
+  const handleShowCampaignList = () => {
+    navigate('/dashboard/calendars');
+    onClose();
   };
 
     const handleCloseCampaignInfoModal = () => {
@@ -314,6 +306,7 @@ const handleConnectLinkedIn = () => {
    if (onBackToList) {
       console.log("Calling onBackToList");
   onBackToList();
+  fetchCalendarList();   
     } else {
       console.error("onBackToList is not defined!");
     }
@@ -870,56 +863,6 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
   }
 };  
 
-// Old handleFileChange function
-  {/*  
-const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (!file || !uploadingImageId) {
-    setUploadingImageId(null); // Clear loading state if no file or no active upload
-    return;
-  }
-
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user?.id) {
-      throw new Error('User not authenticated.');
-    }
-
-    // Upload image and get URL
-    const imageUrl = await uploadImageGetUrl(file, session.user.id);
-
-    // Update the content_calendar table with the new photo_url
-    const { error: updateError } = await supabase
-      .from('content_calendar')
-      .update({ photo_url: imageUrl, updated_at: new Date().toISOString() })
-      .eq('id', uploadingImageId);
-
-    if (updateError) {
-      console.error('Error updating photo_url in Supabase:', updateError);
-      throw new Error('Failed to save image URL to database.');
-    }
-
-    // Optimistically update the local state
-    setCalendarContent(prev =>
-      prev.map(item =>
-        item.id === uploadingImageId ? { ...item, photo_url: imageUrl } : item
-      )
-    );
-
-    console.log('Image uploaded and URL saved:', imageUrl);
-
-  } catch (err) {
-    console.error('Error during image upload process:', err);
-    // Handle error (e.g., show a toast notification)
-  } finally {
-    setUploadingImageId(null); // Clear loading state
-    // Reset the file input value to allow selecting the same file again if needed
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  }
-};
-*/}
 
 //------------------------ End handle upload image to attach to post --------------------//  
 
@@ -1181,7 +1124,8 @@ const getScheduleButtonTooltip = () => {
             <p className="text-gray-400 mb-4 text-sm">Create a campaign to get started</p>
           
           <button
-                  onClick={handleBackToCalendarList}
+                  //onClick={handleBackToCalendarList}
+                  onClick={handleShowCampaignList}
                   className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                 >
                   <ArrowLeft className="w-5 h-5 mr-2" />
@@ -1201,7 +1145,8 @@ const getScheduleButtonTooltip = () => {
       {/* Add the X button here */}
             <div className="flex justify-start mb-4 mt-[-16px]">
                 <button
-                    onClick={handleBackToCalendarList} 
+                    //onClick={handleBackToCalendarList} 
+                    onClick={handleShowCampaignList}
                   // Make sure you have this function or state handler
                     className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
                     title="Close"
@@ -1783,14 +1728,6 @@ const getScheduleButtonTooltip = () => {
   </div>
 ) : null}     
 
-    {/*currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0 && (
-      <CampaignInfoModal
-          isOpen={showCampaignInfoModal}
-          onClose={handleCloseCampaignInfoModal}
-          campaignName={calendarName}
-          //onCreateNewCampaign={handleCreateNewCampaignFromModal}
-      />   
-      )*/}
 
 {showCampaignInfo && filteredContent.length === 0 || (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) && (
       <CampaignInfoModal

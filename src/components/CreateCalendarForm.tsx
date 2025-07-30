@@ -78,62 +78,6 @@ const handleSuccess = (campaignName: string) => {
   // onClose(); // Remove this
 };
 
-//const campaign_theme = "founder brand building"  
-
-
-  {/*
-  useEffect(() => {
-    async function fetchAndSetUserPreferences() {
- 
-      const { data: { session } } = await supabase.auth.getSession();
-
-        if (!session?.user) {
-          throw new Error('No authenticated user found in session.');
-          }
-
-  const userEmail = session.user.email;
-  const userId = session.user.id;
-
-  if (!userEmail) {
-    throw new Error('User email not found in session.');
-  }
-
-  if (!userId) {
-    throw new Error('User ID not found in session.');
-  }
-      
-      if (!userEmail || !userId) {
-        return;
-      }
-
-      const { data: productTierDataFromDb, error: productTierError } = await supabase
-        .from('user_preferences')
-        .select('calendar_days, product_tier, target_audience, problem')
-        .eq('email', userEmail)
-        .eq('user_id', userId)
-        .single();
-
-      if (productTierError) {
-        console.error("Error fetching user preferences:", productTierError);
-        return;
-      }
-
-      if (productTierDataFromDb) {
-        setFormData(prev => ({
-          ...prev,
-          targetAudience: productTierDataFromDb.target_audience || '',
-          coreServices: productTierDataFromDb.problem || '',
-        }));
-
-        setCalendarDays(productTierDataFromDb.calendar_days || 14);
-        setProductTier(productTierDataFromDb.product_tier || 'Standard');
-      }
-    }
-
-    fetchAndSetUserPreferences();
-}, []);
-Original Working Version */}
-
   useEffect(() => {
     async function fetchAndSetUserPreferences() {
       if (!user?.email || !user?.id) {
@@ -313,15 +257,7 @@ const checkCalendarName = useCallback(
     if (!name.trim() || !currentUserEmail) return; // Use the state variable
  
     setIsCheckingName(true);
-    
-    {/* == No Need To Set One-Off Session User Check for EMail in the component 
-    try {
-      // Get current user's session to access email
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user?.email) {
-        throw new Error('No authenticated user found');
-      }
-     */}
+  
     
     try {
       const { data, error } = await supabase
@@ -524,29 +460,48 @@ const getWeekday = (date: Date): string => {
   }
 
   // Now you have both userEmail and userId available to use
-  console.log('User Email:', userEmail);
-  console.log('User ID:', userId);
+  //console.log('User Email:', userEmail);
+  //console.log('User ID:', userId);
 
- //determine the calendar_days value 
-// Retrieve the selected calendar from the user_preferences table
-      {/*      
-    const { data: productTier, error: productTierError } = await supabase
-      .from('user_preferences')
-      .select('calendar_days, product_tier')
-      .eq('email', userEmail)
-      .eq('user_id', userId)
-      .single();
+// --- START OF END_DATE FIXES ---
 
-  const calendar_days = productTier.calendar_days;
-      */}
+      // 1. Validate formData.startDate: Ensure it's a valid date string before parsing.
+      const parsedStartDate = new Date(formData.startDate);    
+      if (isNaN(parsedStartDate.getTime())) {
+          console.error('Validation Error: Invalid start date from form data:', formData.startDate);
+          setError('Please select a valid start date for your campaign.');
+          setShowProgressModal(false);
+          setLoading(false);
+          return; // Stop submission if start date is invalid
+      }
+
+      // 2. Ensure calendarDays is a valid number:
+      const safeCalendarDays = typeof calendarDays === 'number' && !isNaN(calendarDays) && calendarDays >= 1
+                               ? calendarDays
+                               : 14; // Default to 14 days if invalid or less than 1
+
+      // 3. Calculate endDate using the validated startDate and safeCalendarDays
+      const calculatedEndDate = addDays(parsedStartDate, (safeCalendarDays - 1));
+
+      // 4. Validate the calculated endDate before converting to ISO string
+      if (isNaN(calculatedEndDate.getTime())) {
+          console.error('Logic Error: Calculated end date is invalid. Check startDate and calendarDays logic.');
+          setError('Failed to calculate a valid end date for your campaign. Please try again.');
+          setShowProgressModal(false);
+          setLoading(false);
+          return; // Stop submission if calculated end date is invalid
+      }
+
+     // 5. Format the valid endDate to ISO string
+      const formattedEndDate = calculatedEndDate.toISOString();
+
+      // --- END OF END_DATE FIXES ---
       
   const startDate = new Date(formData.startDate);
-      
-  //const endDate = addDays(startDate, (30-1));
 
   const endDate = addDays(startDate, (calendarDays-1));    
       
-  const formattedEndDate = endDate.toISOString();
+  //const formattedEndDate = endDate.toISOString();
       
       // Save questions and answers to Supabase
       const { data: calendarData, error: calendarError } = await supabase
@@ -620,13 +575,6 @@ const getWeekday = (date: Date): string => {
       }
 
       // Add this code before the database insertion:
-      {/*const updatedCalendarContent = calendarGeminiResult.map((day) => {
-      const contentDate = new Date(calculateContentDate(formData.startDate, day.day));
-        return {
-          ...day,
-          day_of_week: getWeekday(contentDate)
-        };
-      });*/}
 
       const updatedCalendarContent = calendarGeminiResult.map((day) => ({
       ...day
@@ -770,10 +718,6 @@ const getWeekday = (date: Date): string => {
               <div className="flex space-x-3 items-center mb-2">
                   <label className="block text-sm font-medium text-gray-700 flex items-center space-x-2">Calendar Description</label>
               
-                {/* <button type="button" className="p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors">
-                  <Sparkles className="w-3 h-3" />
-              </button>
-              */}
               </div>
               
               <textarea
@@ -916,43 +860,6 @@ const getWeekday = (date: Date): string => {
 
   return (    
     <div className="w-full h-full mx-auto bg-white rounded-xl px-6 relative min-h-screen "> 
-
-    {/*<div className="max-w-2xl mx-auto bg-white rounded-xl overflow-hidden mb-6 relative">
-          
-        <button
-          onClick={() => onClose?.()}
-          className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-          title="Close"
-        >
-          <X className="w-5 h-5 text-gray-500" />
-      </button>
-*/}
-
-      {/*     
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-2">
-            <div className="bg-blue-50 rounded-full p-2">
-              <CalendarPlus className="w-6 h-6 text-blue-500" />
-            </div>
-            <h2 className="text-xl font-semibold">Create Campaign</h2>
-      </div>
-      
-
-      {/* Add the close button 
-      
-        <button
-          onClick={() => onClose?.()}
-          className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-          title="Close"
-        >
-          <X className="w-5 h-5 text-gray-500" />
-      </button>
-
-      
-      
-  </div>
-
-  */}
     
     <CreateCalendarProgressModal
       isOpen={showProgressModal}
@@ -1043,7 +950,7 @@ const getWeekday = (date: Date): string => {
     </button>
   </TooltipExtended>
 ) : (
-//<TooltipExtended text="⚡ You're almost done! Let's review your  answers">
+//<TooltipExtended text="⚡ You're almost done! Let's review your answers">
   <button
     type="submit"
     disabled={loading || (step === 2 && formData.selectedGoals.length !== 3)}
