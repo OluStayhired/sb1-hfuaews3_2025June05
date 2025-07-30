@@ -82,6 +82,11 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
     onClose();
   };
 
+  const handleShowCampaign = () => {
+    navigate('/dashboard/calendars');
+    onClose();
+  }
+
   const handleSelectCalendar = (calendarName: string) => {
     if (onSelectCalendar) {
       onSelectCalendar(calendarName);
@@ -224,7 +229,7 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
                           {format(parseISO(calendar.start_date), 'MMM d')} - {format(parseISO(calendar.end_date), 'MMM d')}
                         </span>
 
-                        <TooltipExtended text={`⚡ ${calendar.calendar_description}`}>
+                          <TooltipExtended text={`⚡ ${calendar.calendar_description}`}>
                       <button
                             //onClick={() => handleShowCampaignInfo(calendar.calendar_name)} 
                             className="text-gray-500 hover:text-gray-600 px-2 py-1 rounded-md text-xs font-normal flex items-center" 
@@ -281,7 +286,8 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
 
  {/* Your "View Campaigns" button */}
   <button
-    onClick={handleSelectCalendar}
+    //onClick={handleSelectCalendar}
+    onClick={handleShowCampaign}
     className="text-sm py-2 px-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center"
   >
     <ArrowLeft className="w-4 h-4 mr-2" />
