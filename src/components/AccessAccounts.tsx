@@ -1214,7 +1214,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
           selectedTimeZone={selectedAccount.timezone || userTimezone}
           userHandle={selectedAccount.handle} 
           social_channel={selectedAccount.social_channel}       // Pass this
-          user_display_name={selectedAccount.display_name} // Pass this
+          user_display_name={selectedAccount.display_name} // Pass  this
           avatar_url={selectedAccount.avatar_url}  
           onSave={handleSaveTimezone}
         />
