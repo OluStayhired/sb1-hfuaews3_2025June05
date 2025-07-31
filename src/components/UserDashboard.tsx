@@ -629,6 +629,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
 
           {/* Right-aligned Create New Campaign button */}
 
+          {/* To be used for something else
         <TooltipExtended text="⚡Get a full calendar in seconds" >
           <button
               onClick={handleCreateCampaign}
@@ -641,11 +642,11 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
             className="text-blue-500 font-medium inline-flex items-center px-4 py-2 rounded-full text-base
             bg-gradient-to-r from-blue-50 to-blue-50 to-white border border-blue-200 rounded-lg hover:border-blue-400 transition-all group"
             >
-              <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
+              <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> 
                 Generate Posts Today 🔥
             </button>
         </TooltipExtended>
-        
+        */}
         </div>
       </div>
 
@@ -744,7 +745,10 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
   </div>
 
   {/* Column 2: Posting Streak Card */}
-  <div className="flex flex-col gap-6"> {/* Ensure this is still a flex column for consistent spacing */}
+  <div className="flex flex-col gap-6 
+    bg-gradient-to-t from-blue-100 via-white via-white via-white to-white
+    
+    rounded-lg"> {/* Ensure this is still a flex column for consistent spacing */}
     {/* Card: Posting Streak (Motivational) */}
     <div className="card p-6">
       {/* Header */}
@@ -775,14 +779,34 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
         </p>
         <div className="w-full bg-gray-100 rounded-full h-2.5">
           <div
-            className={`h-2.5 rounded-full ${PRIMARY_COLOR_CLASSES.bg}`}
+            className={`h-2.5 mb-4 rounded-full ${PRIMARY_COLOR_CLASSES.bg}`}
             style={{ width: `${Math.min(100, metrics.streak * 10)}%` }}
           ></div>
         </div>
           
       </div>
+
+          {/*----------------- Start Button to Generate Posts ------------------*/}
+
+      <span className="py-6 items-center justify-center absolute">
+    <TooltipExtended text="⚡Get a full calendar of posts and ideas in just a few seconds" >
+          <button
+              onClick={handleCreateCampaign}
+
+            className="text-blue-500 font-medium justify-center inline-flex items-center px-4 py-2 rounded-full text-base
+            bg-gradient-to-r from-blue-50 to-blue-50 to-white border border-blue-200 rounded-lg hover:border-blue-400 transition-all group"
+            >
+              <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
+                Generate Posts Today 🔥
+            </button>
+        </TooltipExtended>
+    </span>
+
+    {/*------------------End Button to Generate Posts ----------------------*/}
       
     </div>
+
+
     
   </div>
 
@@ -817,7 +841,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
 
       {/* Call to Action Button */}
       <div className="mt-auto">
-      <TooltipExtended text="⚡Add your posts to preset time slots OR Simply create new slots" >
+      <TooltipExtended text="⚡Add your posts to existing time slots OR create new time slots" >
         <button
           onClick={handleSchedulePost}
           className="flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-100 text-gray-700 font-medium border border-gray-600
