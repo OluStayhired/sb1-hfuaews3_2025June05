@@ -771,7 +771,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
       </div>
 
       {/* Description & Progress Bar */}
-      <div className="mt-auto">
+      <div className="mt-auto mb-6">
         <p className="text-sm text-gray-600 mb-3">
           {metrics.streak > 0
             ? `You've posted ${metrics.streak} day${metrics.streak !== 1 ? 's' : ''} in a row! Keep up the great work.`
@@ -779,7 +779,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
         </p>
         <div className="w-full bg-gray-100 rounded-full h-2.5">
           <div
-            className={`h-2.5 mb-4 rounded-full ${PRIMARY_COLOR_CLASSES.bg}`}
+            className={`h-2.5 rounded-full ${PRIMARY_COLOR_CLASSES.bg}`}
             style={{ width: `${Math.min(100, metrics.streak * 10)}%` }}
           ></div>
         </div>
@@ -788,7 +788,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
 
           {/*----------------- Start Button to Generate Posts ------------------*/}
 
-      <span className="py-6 items-center justify-center absolute">
+      <span className="py-6 items-center justify-center">
     <TooltipExtended text="⚡Get a full calendar of posts and ideas in just a few seconds" >
           <button
               onClick={handleCreateCampaign}
@@ -935,7 +935,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
         postContent={saveAndClosePostContent}
       />
 
-    {/* Render the FirstPostModal  component */}
+    {/* Render the FirstPostModal component */}
     <FirstPostModal
         isOpen={isFirstPostModalOpen}
         onClose={handleCloseFirstPostModal}
