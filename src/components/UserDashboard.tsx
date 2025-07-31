@@ -797,7 +797,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
             bg-gradient-to-r from-blue-50 to-blue-50 to-white border border-blue-200 rounded-lg hover:border-blue-400 transition-all group"
             >
               <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
-                Generate Posts Today 🔥
+                Generate Posts Today ⚡
             </button>
         </TooltipExtended>
     </span>
