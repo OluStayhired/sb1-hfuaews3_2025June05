@@ -18,6 +18,7 @@ import { CampaignSuccessfulModal } from './CampaignSuccessfulModal'
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { getCompanyProblemAndAudience, CompanyInsightsResponse } from '../lib/firecrawl';
 import { UpgradePlanModal } from './UpgradePlanModal'
+import { useProductTier } from '../hooks/useProductTierHook'
 
 
 interface ViewCalendarProps {
@@ -124,26 +125,7 @@ export function ViewCalendars({ onCreateCalendarClick }: ViewCalendarProps) {
   const [modalMessage, setModalMessage] = useState('');
 
   
-// Define specific limits
-const MAX_FREE_CAMPAIGNS = 5;
-const MAX_FREE_ACCOUNTS = 3;
-//const MAX_FREE_POSTS_PER_MONTH = 50;
-
-// Define the possible action types for our limit checks
-type ActionType = 'createCampaign' | 'addAccount' ;  
-
-  // handle UpgradeModal Open
-  const handleOpenUpgradeModal = () => {
-    setIsUpgradeModalOpen(true);
-  };
-
-  // Function to close the modal
-  const handleCloseUpgradeModal = () => {
-    setIsUpgradeModalOpen(false);
-  };
-
-
-  
+ 
 // function to determine email for use in the component
   const fetchUserIdAndEmail = async () => {
   try {
@@ -164,6 +146,49 @@ type ActionType = 'createCampaign' | 'addAccount' ;
     setCurrentUserId(null);
   }
 };
+
+//---- NEW Hook to Capture all Account Type Paramenters -----//
+    const {
+    isLoading: isProductLoading, //changed from isLoading
+    error: errorProduct, //changed from error
+    userPreferences,
+    productTierDetails,
+    isFreePlan,
+    isEarlyAdopter, // New variable
+    isTrialUser,
+    isPaidPlan,
+    canCreateMoreCampaigns,
+    canAddMoreSocialAccounts,
+    isTrialExpiringSoon,
+    daysUntilTrialExpires,
+    showFirstTrialWarning,
+    showSecondTrialWarning,
+    showFinalTrialWarning,
+    max_calendar,
+    max_social_accounts,
+    remainingCampaigns,
+    remainingSocialAccounts,
+  } = useProductTier(supabase, currentUserEmail);  
+  
+
+// Define specific limits
+const MAX_FREE_CAMPAIGNS = max_calendar;
+const MAX_FREE_ACCOUNTS = max_social_accounts;
+//const MAX_FREE_POSTS_PER_MONTH = 50;
+
+// Define the possible action types for our limit checks
+type ActionType = 'createCampaign' | 'addAccount' ;  
+
+  // handle UpgradeModal Open
+  const handleOpenUpgradeModal = () => {
+    setIsUpgradeModalOpen(true);
+  };
+
+  // Function to close the modal
+  const handleCloseUpgradeModal = () => {
+    setIsUpgradeModalOpen(false);
+  };
+  
 
 useEffect(() => {
   fetchUserIdAndEmail();
@@ -211,22 +236,14 @@ useEffect(() => {
             return false;
         }
 
-        //console.log("[checkActionLimits] Fetched userPreferences:", userPreferences);
-        //console.log(`[checkActionLimits] User Account Type: ${userPreferences.account_type}`);
-        // IMPORTANT: Accessing data using the exact column names returned by Supabase
-        //console.log(`[checkActionLimits] User Total Campaigns (from DB 'total_campaign'): ${userPreferences.total_campaign}`);
-        //console.log(`[checkActionLimits] User Social Accounts (from DB 'social_accounts'): ${userPreferences.social_accounts}`);
-        //console.log(`[checkActionLimits] MAX_FREE_CAMPAIGNS: ${MAX_FREE_CAMPAIGNS}`);
-        //console.log(`[checkActionLimits] MAX_FREE_ACCOUNTS: ${MAX_FREE_ACCOUNTS}`);
-
-
         const limitedAccountTypes = ['Free Plan', 'Early Adopter']; // Define the types that have this limit
 
          switch (action) {
     case 'createCampaign':
       // Correct variable name for campaign-related checks
       const isLimitedCampaignAccountType = limitedAccountTypes.includes(userPreferences.account_type);
-      const hasExceededCampaigns = userPreferences.total_campaign >= MAX_FREE_CAMPAIGNS;
+      //const hasExceededCampaigns = userPreferences.total_campaign >= MAX_FREE_CAMPAIGNS;
+      const hasExceededCampaigns = remainingCampaigns <= 0 ;       
 
       //console.log(`[checkActionLimits] Is Limited Account Type for Campaign: ${isLimitedCampaignAccountType}`);
       //console.log(`[checkActionLimits] Has Exceeded Campaigns: ${hasExceededCampaigns}`);
@@ -599,29 +616,9 @@ const handleViewCalendarList = () => {
     </span>
   </button>
 </TooltipExtended>
-                  {/*
-            <TooltipExtended text="⚡Generate from website (optional), or create manually.">
-                  <button
-                    onClick={handleCreateCalendarClick}
-                    //disabled={isLoading}
-                    disabled={isLoading}
-                    className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                  >
-                {isLoading ? (
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      ) : (
-                    <PlusCircle className="w-5 h-5 mr-2" />
-                  )}
-                    <span>{isLoading ? "Analyzing Website..." : "Create Campaign"}</span>
-                  </button>
-            </TooltipExtended>
-              */}
+
                 </>
-              ) : null} 
-
-
-
-              
+              ) : null}        
              
               {/* Conditionally render the CreateCalendarForm */}
               {isCreateCalendarFormOpen && (

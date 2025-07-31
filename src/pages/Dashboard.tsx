@@ -29,6 +29,8 @@ import { PaymentCancelPage } from '../components/PaymentCancelPage';
 import { PricingPage } from '../components/PricingPage';
 import { v4 as uuidv4 } from 'uuid';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { CalendarList } from '../components/CalendarList';
+import { useProductTier } from '../hooks/useProductTierHook'
 
 
 function Dashboard() {
@@ -72,44 +74,52 @@ function Dashboard() {
   // NEW: State to track if the user has a paid account
   const [isPaidAccount, setIsPaidAccount] = useState(false);
 
-  // NEW: useEffect to check user's account type
-  {/*
+   // Use a useEffect to get the current user's email after session loads
   useEffect(() => {
-    const checkAccountType = async () => {
-      if (user?.id) { // Ensure user is authenticated
-        try {
-          const { data, error } = await supabase
-            .from('user_preferences')
-            .select('account_type')
-            .eq('user_id', user.id)
-            .single();
-
-          if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
-            console.error('Error fetching account type:', error);
-            setIsPaidAccount(false); // Default to free on error
-            return;
-          }
-
-          // Assuming 'Pro' or similar indicates a paid account
-          if (data?.account_type === 'Pro' || data?.account_type === 'Paid') {
-            setIsPaidAccount(true);
-          } else {
-            setIsPaidAccount(false);
-          }
-        } catch (err) {
-          console.error('Unexpected error checking account type:', err);
-          setIsPaidAccount(false); // Default to free on unexpected error
-        }
-      } else {
-        setIsPaidAccount(false); // Not paid if no user is logged in
+    const fetchUserEmail = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        setCurrentUserEmail(session.user.email);
       }
     };
+    fetchUserEmail();
+  }, []); // Run once on mount to get the initial user email
 
-    checkAccountType();
-  }, [user?.id]); // Re-run when the user object (specifically user.id) changes
 
-*/}
 
+//---- NEW Hook to Capture all Account Type Paramenters -----//
+    const {
+    isLoading,
+    error,
+    userPreferences,
+    productTierDetails,
+    isFreePlan,
+    isEarlyAdopter, // New variable
+    isTrialUser,
+    isPaidPlan,
+    canCreateMoreCampaigns,
+    canAddMoreSocialAccounts,
+    isTrialExpiringSoon,
+    daysUntilTrialExpires,
+    showFirstTrialWarning,
+    showSecondTrialWarning,
+    showFinalTrialWarning,
+    remainingCampaigns,
+    remainingSocialAccounts,
+  } = useProductTier(supabase, currentUserEmail);
+  
+// --- ADDED FOR DEBUGGING MODAL STATE ---
+  useEffect(() => {
+    console.log('isBlueskyModalOpen state changed:', isBlueskyModalOpen);
+  }, [isBlueskyModalOpen]);
+
+  useEffect(() => {
+    console.log('isModalOpen (MoreBlueskyAccounts) state changed:', isModalOpen);
+  }, [isModalOpen]);
+  // --- END DEBUGGING ADDITION ---
+  
+
+// NEW: useEffect to check user's account type 
 useEffect(() => {
   // Function to initially fetch account type and update state
   const fetchAndSetAccountType = async () => {
@@ -298,7 +308,7 @@ useEffect(() => {
   };
 
 const handleConnectBluesky = () => {
-    console.log('Connecting to Bluesky');
+    //console.log('Connecting to Bluesky');
   setIsBlueskyModalOpen(true);
 };
 
@@ -463,38 +473,53 @@ const handleRequestMoreBskyAcct = async () => {
 
 const handleBlueskyButtonClick = async () => {
   const hasActiveSession = await checkActiveBlueskySession();
-  
-  if (hasActiveSession) {
-    console.log('Executing handleRequestMoreBskyAcct')
+// free plans and early adopters  
+if (!isPaidPlan) {  
+  if (hasActiveSession) {    
     handleRequestMoreBskyAcct();
-  } else {
-    console.log('Executing handleConnectBluesky')
+  } else {    
     handleConnectBluesky();
   }
+} else {
+  if (remainingSocialAccounts > 0 ) {
+   handleConnectBluesky();
+    }
+  }
+     
 };  
 
 const handleLinkedInButtonClick = async () => {
   const hasActiveLinkedInSession = await checkActiveLinkedInSession();
   
-  if (hasActiveLinkedInSession) {
-    console.log('Executing handleRequestMoreLinkedInAcct')
-    handleRequestMoreLinkedInAcct();
-  } else {
-    console.log('Executing handleConnectLinkedIn')
-    handleConnectLinkedIn();
-  }
+   // free plans and early adopters  
+    if (!isPaidPlan) {  
+        if (hasActiveSession) {        
+            handleRequestMoreLinkedInAcct();
+      } else {
+            handleConnectLinkedIn();
+        }  
+      } else {
+    if (remainingSocialAccounts > 0 ) {
+           handleConnectLinkedIn();
+      }
+    } 
 };    
 
 const handleTwitterButtonClick = async () => {
   const hasActiveTwitterSession = await checkActiveTwitterSession();
   
-  if (hasActiveTwitterSession) {
-    console.log('Executing handleRequestMoreLinkedInAcct')
-    handleRequestMoreTwitterAcct();
-  } else {
-    console.log('Executing handleConnectLinkedIn')
-    handleConnectTwitter();
-  }
+     // free plans and early adopters  
+    if (!isPaidPlan) {  
+        if (hasActiveSession) {        
+            handleRequestMoreTwitterAcct();
+      } else {
+             handleConnectTwitter();
+        }  
+      } else {
+    if (remainingSocialAccounts > 0 ) { // make sure you have social credits
+           handleConnectTwitter();
+      }
+    }  
 };     
 
   const blueskyButtonContent = isBlueskyAuthenticated ? (
@@ -842,7 +867,10 @@ const isLinkedInAuthenticated = !!linkedinUser;
                 <span className="font-medium">Feedback</span>
               </button>
 
- {!isPaidAccount && (
+          {/*Using the Paid Plan logic from the useProductTierHook hook */}
+          {/*!isPaidPlan && (*/}
+            {!isPaidAccount && (          
+             
                 <button 
                   onClick={() => navigate('pricing')}
                   className={`flex bg-blue-600 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
@@ -998,6 +1026,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
             
             <div className="space-y-2">
               <button
+                type="button"
                 onClick={handleBlueskyButtonClick}
                 className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
@@ -1063,6 +1092,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
             <Route path="compose" element={<ComposePosts />} />
             <Route path="schedule" element={<ManageSchedule />} />
             <Route path="calendars" element={<ViewCalendars />} />
+            <Route path="calendar-list" element={<CalendarList />} />
             <Route path="calendars/:calendarName" element={<ShowCalendarContent />} /> 
             <Route path="campaign" element={<CreateCampaign />} />
             <Route path="userdashboard" element={<UserDashboard />} />
@@ -1092,6 +1122,7 @@ const isLinkedInAuthenticated = !!linkedinUser;
     <CreateBlueskyModal 
         isOpen={isBlueskyModalOpen}
         onClose={handleCloseBlueskyModal}
+        isPaidPlan={isPaidPlan}
       />
     <MoreBlueskyAccounts 
         isOpen={isModalOpen}

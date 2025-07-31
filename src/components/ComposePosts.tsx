@@ -21,6 +21,7 @@ import { DraftPostModal } from './DraftPostModal';
 import { improveComment, generateHookPostV3 } from '../lib/gemini';
 import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
+import { useProductTier } from '../hooks/useProductTierHook'
 
 
 
@@ -124,6 +125,29 @@ useEffect(() => {
   
   fetchUserId();
 }, []);
+
+// use the productTier Hook here 
+ 
+//---- NEW Hook to Capture all Account Type Paramenters -----//
+    const {
+    isLoading: isProductLoading, //changed from isLoading
+    error: errorProduct, //changed from error
+    userPreferences,
+    productTierDetails,
+    isFreePlan,
+    isEarlyAdopter, // New variable
+    isTrialUser,
+    isPaidPlan,
+    canCreateMoreCampaigns,
+    canAddMoreSocialAccounts,
+    isTrialExpiringSoon,
+    daysUntilTrialExpires,
+    showFirstTrialWarning,
+    showSecondTrialWarning,
+    showFinalTrialWarning,
+    remainingCampaigns,
+    remainingSocialAccounts,
+  } = useProductTier(supabase, currentUserEmail);  
 
 
 const fetchDraftPosts = useCallback(async () => {
@@ -950,9 +974,16 @@ const onModalScheduleError = (error: any) => {
                     <button
                         onClick={(e) => {
                         e.stopPropagation();
+                          if (!isPaidPlan){
                         setShowAddSocialTabModal(true);
                         setIsContentCalendarModalOpen(false);
-                        setIsDraftPostModalOpen(false);  
+                        setIsDraftPostModalOpen(false); 
+                          } else {
+                            if(remainingSocialAccounts > 0){
+                                setIsConnectSocialModalOpen(true)
+                            }
+                          }
+                          
                         }}
                       //onClick={() => setShowAddSocialTabModal(true)}
                       className="ml-2 p-2 bg-gray-100 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
@@ -1216,6 +1247,8 @@ const onModalScheduleError = (error: any) => {
         onRequestMoreBlueskyAccounts={handleRequestMoreBlueskyAccounts}
         onRequestMoreLinkedInAccounts={handleRequestMoreLinkedInAccounts}
         onRequestMoreTwitterAccounts={handleRequestMoreTwitterAccounts}
+        isPaidPlan={isPaidPlan}
+        remainingSocialAccounts={remainingSocialAccounts}
         //onConnectBluesky={handleConnectBluesky}
         //onConnectLinkedIn={handleConnectLinkedIn}
       />
@@ -1247,6 +1280,7 @@ const onModalScheduleError = (error: any) => {
       <CreateBlueskyModal 
         isOpen={isBlueskyModalOpen}
         onClose={handleCloseBlueskyModal}
+        isPaidPlan={isPaidPlan}
       />
 
       <ContentCalendarModal

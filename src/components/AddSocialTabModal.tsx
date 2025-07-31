@@ -18,6 +18,8 @@ interface AddSocialTabModalProps {
   onRequestMoreBlueskyAccounts: () => void;
   onRequestMoreLinkedInAccounts: () => void;
   onRequestMoreTwitterAccounts: () => void;
+  isPaidPlan: boolean;
+  remainingSocialAccounts: number;
   //onConnectBluesky: () => void;
   //onConnectLinkedIn: () => void;
 }
@@ -27,7 +29,9 @@ export function AddSocialTabModal({
   onClose,
   onRequestMoreBlueskyAccounts,
   onRequestMoreLinkedInAccounts,
-  onRequestMoreTwitterAccounts
+  onRequestMoreTwitterAccounts,
+  isPaidPlan,
+  remainingSocialAccounts
 }: AddSocialTabModalProps) {
 const [isBlueskyModalOpen, setIsBlueskyModalOpen] = useState(false);
 const [isMoreAccountsModalOpen, setIsMoreAccountsModalOpen] = useState(false);
@@ -88,6 +92,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
   
   const handleCloseBlueskyModal = () => {
     setIsBlueskyModalOpen(false);
+    //onClose();
 
   };
 
@@ -112,6 +117,8 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
         return;
       }
 
+      
+  if (!isPaidPlan) { // this condition is only for Free Plans and Early Adopters
       if (existingAccounts && existingAccounts.length > 0) {
         onRequestMoreBlueskyAccounts();
         onClose();
@@ -119,6 +126,16 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
         setIsBlueskyModalOpen(true);
         setIsMoreAccountsModalOpen(false);
       }
+    }
+
+    if (isPaidPlan && remainingSocialAccounts > 0 ) { // this condition is only for Paid Plans with remaining accounts availability
+      //console.log('checking isPaidPlan:', isPaidPlan)
+      //console.log('checking remaingingAccounts:', remainingSocialAccounts)
+        setIsBlueskyModalOpen(true);
+        setIsMoreAccountsModalOpen(false);
+  }
+      
+      
     } catch (err) {
       console.error('Error checking Bluesky accounts:', err);
     }
@@ -126,8 +143,8 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
 
   const handleConnectLinkedIn = async () => {
   console.log('Connecting to LinkedIn...');
-  console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
-  console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
+  //console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
+  //console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -135,7 +152,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
       console.error('No authenticated user found. User must be logged in to connect LinkedIn.');
       return;
     }
-    console.log('Authenticated user ID:', session.user.id);
+    //console.log('Authenticated user ID:', session.user.id);
 
     const currentUserId = session.user.id;
     const currentUserEmail = session.user.email;
@@ -252,6 +269,7 @@ const handleConnectTwitter = async () => {
       'users.read',
       'tweet.write', 
       'offline.access', // Required to get a refresh token for long-term access
+      'media.write',
       // Add other scopes as needed based on Twitter API docs
     ];
     const scopeParam = encodeURIComponent(twitterScopes.join(' ')); 
@@ -300,6 +318,19 @@ const handleConnectLinkedInClick = async () => {
         return;
       }
 
+
+//----- Section to be Replaced ------------//      
+      {/*  if (existingAccounts && existingAccounts.length > 0) {
+        onRequestMoreLinkedInAccounts();
+        onClose();
+      } else {
+        handleConnectLinkedIn();
+        setIsMoreAccountsModalOpen(false);
+      }
+      */}
+//------ end section to be replaced ---------//
+
+ if (!isPaidPlan) { // this condition is only for Free Plans and Early Adopters
       if (existingAccounts && existingAccounts.length > 0) {
         onRequestMoreLinkedInAccounts();
         onClose();
@@ -307,6 +338,13 @@ const handleConnectLinkedInClick = async () => {
         handleConnectLinkedIn();
         setIsMoreAccountsModalOpen(false);
       }
+    }
+
+    if (isPaidPlan && remainingSocialAccounts > 0 ) { // this condition is only for Paid Plans with remaining accounts availability
+        handleConnectLinkedIn();
+        setIsMoreAccountsModalOpen(false);
+  }      
+      
     } catch (err) {
       console.error('Error checking LinkedIn accounts:', err);
     }
@@ -332,7 +370,9 @@ const handleConnectLinkedInClick = async () => {
         console.error('Error checking social channels:', error);
         return;
       }
-
+      
+//----- Section to be Replaced ------------//      
+      {/*
       if (existingAccounts && existingAccounts.length > 0) {
         onRequestMoreTwitterAccounts();
         onClose();
@@ -340,6 +380,22 @@ const handleConnectLinkedInClick = async () => {
         handleConnectTwitter();
         setIsMoreAccountsModalOpen(false);
       }
+     */}
+//------ end section to be replaced ---------//
+  if (!isPaidPlan) { // this condition is only for Free Plans and Early Adopters
+      if (existingAccounts && existingAccounts.length > 0) {
+        onRequestMoreTwitterAccounts();
+        onClose();
+      } else {
+        handleConnectTwitter();
+        setIsMoreAccountsModalOpen(false);
+      }
+    }
+
+    if (isPaidPlan && remainingSocialAccounts > 0 ) { // this condition is only for Paid Plans with remaining accounts availability
+        handleConnectTwitter();
+        setIsMoreAccountsModalOpen(false);
+      }    
     } catch (err) {
       console.error('Error checking Twitter accounts:', err);
     }
@@ -441,6 +497,7 @@ const handleConnectLinkedInClick = async () => {
       <CreateBlueskyModal 
         isOpen={isBlueskyModalOpen}
         onClose={handleCloseBlueskyModal}
+        isPaidPlan={isPaidPlan}
       />
 
       <MoreBlueskyAccounts

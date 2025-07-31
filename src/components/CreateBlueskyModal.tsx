@@ -11,14 +11,14 @@ interface CreateBlueskyModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  
+  isPaidPlan: boolean;
 }
 
 const debugLog = (message: string, data?: any) => {
   console.log(`[BlueSky Auth] ${message}`, data || '');
 };
 
-export function CreateBlueskyModal({ isOpen, onClose, onSuccess }: CreateBlueskyModalProps) {
+export function CreateBlueskyModal({ isOpen, onClose, onSuccess, isPaidPlan }: CreateBlueskyModalProps) {
   const { login, isLoading, error, clearError, isAuthenticated } = useBlueskyStore();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -191,11 +191,11 @@ useEffect(() => {
 
   // Close modal on successful authentication
     useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !isPaidPlan){
       onClose(); // Close the Bluesky modal itself
       onSuccess?.(); // Call the optional success callback without arguments
     }
-  }, [isAuthenticated, onClose, onSuccess]);
+  }, [isAuthenticated, onClose, onSuccess, isPaidPlan]);
 
   const validateForm = () => {
     if (!password.trim()) {
@@ -358,7 +358,7 @@ useEffect(() => {
             {isLoading || isCheckingCredentials ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>{isCheckingCredentials ? 'Checking credentials...' : 'Logging in...'}</span>
+                <span>{isCheckingCredentials ? 'Checking credentials...' : 'Connecting...'}</span>
               </>
             ) : (
               <span>Connect Account</span>

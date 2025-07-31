@@ -13,6 +13,9 @@ import { EditSocialUserTimezoneModal } from '/src/components/EditSocialUserTimez
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import { useProductTier } from '../hooks/useProductTierHook'
+import { AddSocialTabModal } from './AddSocialTabModal';
+import { ConnectSocialModal } from './ConnectSocialModal';
 
 interface SocialAccount {
   id: string;
@@ -49,7 +52,9 @@ export function AccessAccounts({
   const [isPosting, setIsPosting] = useState(false);
   const [isTimezoneSelectorOpen, setIsTimezoneSelectorOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<SocialAccount | null>(null);
-  //const selectedAccount = connectedAccounts.find(account => account.handle === userHandle);
+  const [showAddSocialTabModal, setShowAddSocialTabModal] = useState(false);
+  const [isConnectSocialModalOpen, setIsConnectSocialModalOpen] = useState(false);
+
 
   //Threads OAUTH
   const [threadsUser, setThreadsUser] = useState<SocialAccount | null>(null);
@@ -115,8 +120,46 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
   return base64urlencode(hashed);
 };
 
+ // Use a useEffect to get the current user's email after session loads
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        setCurrentUserEmail(session.user.email);
+      }
+    };
+    fetchUserEmail();
+  }, []); // Run once on mount to get the initial user email
+
+
+
+//---- NEW Hook to Capture all Account Type Paramenters -----//
+    const {
+    isLoadin: isProductLoading,
+    error: isProductError,
+    userPreferences,
+    productTierDetails,
+    isFreePlan,
+    isEarlyAdopter, // New variable
+    isTrialUser,
+    isPaidPlan,
+    canCreateMoreCampaigns,
+    canAddMoreSocialAccounts,
+    isTrialExpiringSoon,
+    daysUntilTrialExpires,
+    showFirstTrialWarning,
+    showSecondTrialWarning,
+    showFinalTrialWarning,
+    remainingCampaigns,
+    remainingSocialAccounts,
+  } = useProductTier(supabase, currentUserEmail);  
 
 //--------- Handle Connect All Social Accounts -------------//
+
+const handleOpenConnectSocialModal = async () => {
+  setIsConnectSocialModalOpen(true);
+  //Only open for Paid Accounts
+}
   
 //handleconnect Twitter
 const handleConnectTwitter = async () => {
@@ -1031,7 +1074,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                       alt={twitterUser.handle}
                       className="w-12 h-12 rounded-full"
                     />
-                    {/* Threads Logo Overlay */}
+                    {/* Twitter Logo Overlay */}
                     <div className="absolute -bottom-1 -right-1 bg-blue-50 border border-blue-100  rounded-full p-1 shadow-sm">
                       <img
                         src={XLogo}
@@ -1117,6 +1160,24 @@ const handleSaveTimezone = async (newTimezone: string) => {
             </div>
           )}  
 
+ {/*------------------------Start Separation Showing Button for Adding More Accounts --------------------------- */}
+ {isPaidPlan && (          
+<div className="mx-auto justify-end items-end relative flex border-t border-gray-100">
+  <button
+      //onClick={handleConnectTwitter}
+      onClick={handleOpenConnectSocialModal}
+      disabled={twitterLoading}
+      className="mt-4 px-4 py-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
+    >
+
+      <Plus className="w-4 h-4" />
+    <span>Add More Accounts</span>
+  </button>
+</div>
+      )}
+{/*------------------------End Separation Showing Button for Adding More Accounts --------------------------- */}          
+
+
           
         </div>
       </div>
@@ -1124,22 +1185,23 @@ const handleSaveTimezone = async (newTimezone: string) => {
   <CreateBlueskyModal 
   isOpen={isBlueskyModalOpen}
   onClose={handleCloseBlueskyModal}
+  isPaidPlan={isPaidPlan}
 />
 <MoreBlueskyAccounts 
   isOpen={isModalOpen}
   onClose={() => setIsModalOpen(false)}
+  
 />
 
-      {/*      
-<EditSocialUserTimezoneModal 
-  isOpen={isTimezoneSelectorOpen}
-  onClose={() => setIsTimezoneSelectorOpen(false)}
-  selectedTimeZone={selectedAccount?.timezone || userTimezone}
-  onSave={handleSaveTimezone}
-  userHandle={selectedAccount?.user_handle}
-  //userHandle={selectedUserHandle} // Pass the selected user handle
-/>
-      */}
+{remainingSocialAccounts > 0 && (      
+  <ConnectSocialModal
+        isOpen={isConnectSocialModalOpen}
+        onClose={() => setIsConnectSocialModalOpen(false)}
+        onConnectBluesky={handleConnectBluesky}
+        onConnectLinkedIn={handleConnectLinkedIn}
+        setIsBlueskyModalOpen={setIsBlueskyModalOpen}
+      />    
+  )}
 
       {selectedAccount && (
         <EditSocialUserTimezoneModal

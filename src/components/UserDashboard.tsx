@@ -792,9 +792,8 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
     <TooltipExtended text="⚡Get a full calendar of posts and ideas in just a few seconds" >
           <button
               onClick={handleCreateCampaign}
-
             className="text-blue-500 font-medium justify-center inline-flex items-center px-4 py-2 rounded-full text-base
-            bg-gradient-to-r from-blue-50 to-blue-50 to-white border border-blue-200 rounded-lg hover:border-blue-400 transition-all group"
+           bg-white border border-blue-200 rounded-lg hover:border-blue-400 transition-all group"
             >
               <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
                 Generate Posts Today ⚡
