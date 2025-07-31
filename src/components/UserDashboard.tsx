@@ -935,7 +935,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
         postContent={saveAndClosePostContent}
       />
 
-    {/* Render the FirstPostModal component */}
+    {/* Render the FirstPostModal  component */}
     <FirstPostModal
         isOpen={isFirstPostModalOpen}
         onClose={handleCloseFirstPostModal}
