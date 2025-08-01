@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Loader2, X, Unplug, Users, UserCheck, Clock, Zap, UserPlus } from 'lucide-react';
+import { Plus, Loader2, X, Unplug, Users, UserCheck, Clock, Zap, UserPlus, PlusCircle } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import BlueskyLogoWhite from '../images/bluesky-logo-white.svg';
@@ -150,6 +150,8 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
     showFirstTrialWarning,
     showSecondTrialWarning,
     showFinalTrialWarning,
+          max_calendar,
+    max_social_accounts,
     remainingCampaigns,
     remainingSocialAccounts,
   } = useProductTier(supabase, currentUserEmail);  
@@ -1161,16 +1163,18 @@ const handleSaveTimezone = async (newTimezone: string) => {
           )}  
 
  {/*------------------------Start Separation Showing Button for Adding More Accounts --------------------------- */}
+        
  {isPaidPlan && (          
+      
 <div className="mx-auto justify-end items-end relative flex border-t border-gray-100">
   <button
       //onClick={handleConnectTwitter}
       onClick={handleOpenConnectSocialModal}
       disabled={twitterLoading}
-      className="mt-4 px-4 py-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
+      className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
     >
 
-      <Plus className="w-4 h-4" />
+      <PlusCircle className="w-4 h-4" />
     <span>Add More Accounts</span>
   </button>
 </div>
@@ -1214,7 +1218,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
           selectedTimeZone={selectedAccount.timezone || userTimezone}
           userHandle={selectedAccount.handle} 
           social_channel={selectedAccount.social_channel}       // Pass this
-          user_display_name={selectedAccount.display_name} // Pass  this
+          user_display_name={selectedAccount.display_name} // Pass this
           avatar_url={selectedAccount.avatar_url}  
           onSave={handleSaveTimezone}
         />
