@@ -159,6 +159,8 @@ export function useProductTier(supabase: SupabaseClient, userEmail: string | nul
       }
 
       // 3. Calculate derived values and thresholds
+      const max_calendar = productTier.max_calendar;
+      const max_social_accounts = productTier.max_social_accounts;
       const isFreePlan = userPrefs.account_type === 'Free Plan';
       const isEarlyAdopter = userPrefs.account_type === 'Early Adopter'; // Set new flag
       const isPaidPlan = !isFreePlan && !isEarlyAdopter; // Paid plan if neither free nor early adopter
