@@ -12,13 +12,15 @@ interface CreateBlueskyModalProps {
   onClose: () => void;
   onSuccess?: () => void;
   isPaidPlan: boolean;
+  onAccountAdded?: () => void;
+  onAccountAddedDisplay?: () => void;
 }
 
 const debugLog = (message: string, data?: any) => {
   console.log(`[BlueSky Auth] ${message}`, data || '');
 };
 
-export function CreateBlueskyModal({ isOpen, onClose, onSuccess, isPaidPlan }: CreateBlueskyModalProps) {
+export function CreateBlueskyModal({ isOpen, onClose, onSuccess, isPaidPlan, onAccountAdded, onAccountAddedDisplay }: CreateBlueskyModalProps) {
   const { login, isLoading, error, clearError, isAuthenticated } = useBlueskyStore();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -27,6 +29,8 @@ export function CreateBlueskyModal({ isOpen, onClose, onSuccess, isPaidPlan }: C
   const [isCheckingCredentials, setIsCheckingCredentials] = useState(false);
   //const { login, isLoading, error, clearError, isAuthenticated } = useAuthStore();
 
+  const buttonText = isAuthenticated ? 'Add Another Account' : 'Connect Account';
+  
   // Add debounce utility at the top of LoginModal.tsx
 const debounce = (func: Function, wait: number) => {
   let timeout: NodeJS.Timeout;
@@ -189,13 +193,17 @@ useEffect(() => {
     }
   }, [isOpen, clearError]);
 
+
   // Close modal on successful authentication
     useEffect(() => {
-    if (isAuthenticated && !isPaidPlan){
+  if (isAuthenticated && !isPaidPlan){// removed this for a second
+  //  if (isAuthenticated){  
       onClose(); // Close the Bluesky modal itself
       onSuccess?.(); // Call the optional success callback without arguments
     }
+  //}, [isAuthenticated, onClose, onSuccess]);
   }, [isAuthenticated, onClose, onSuccess, isPaidPlan]);
+
 
   const validateForm = () => {
     if (!password.trim()) {
@@ -228,6 +236,17 @@ useEffect(() => {
       
       await login(identifier, password, rememberMe, timezone);
       debugLog('Login successful');
+      
+             if (onAccountAdded) {
+                console.log("CreateBlueskyModal : Executing onAccountAdded")  
+                onAccountAdded(); //Refresh the list
+                }  
+
+            if (onAccountAddedDisplay) {
+               console.log("CreateBlueskyModal : Executing onAccountAddedDisplay")  
+                onAccountAddedDisplay(); //Refresh the list          
+            }
+      
     } catch (err: any) {
       debugLog('Login failed in form handler', err);
       if (err.message?.includes('Invalid handle format')) {
@@ -361,7 +380,7 @@ useEffect(() => {
                 <span>{isCheckingCredentials ? 'Checking credentials...' : 'Connecting...'}</span>
               </>
             ) : (
-              <span>Connect Account</span>
+              <span>{buttonText}</span>
             )}
           </button>
         </form>

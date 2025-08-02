@@ -15,6 +15,8 @@ interface ConnectSocialModalProps {
   onConnectBluesky: () => void;
   onConnectLinkedIn: () => void;
   setIsBlueskyModalOpen: (isOpen: boolean) => void;
+  onAccountAdded: () => void;
+  onAccountAddedDisplay: () => void;
 }
 
 export function ConnectSocialModal({ 
@@ -22,7 +24,9 @@ export function ConnectSocialModal({
   onClose,
   onConnectBluesky,
   onConnectLinkedIn,
-  setIsBlueskyModalOpen 
+  setIsBlueskyModalOpen,
+  onAccountAdded,
+  onAccountAddedDisplay
 }: ConnectSocialModalProps) {
 
   const [twitterLoading, setTwitterLoading] = useState(false);
@@ -129,6 +133,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
       'users.read',
       'tweet.write', 
       'offline.access', // Required to get a refresh token for long-term access
+      'media.write',
       // Add other scopes as needed based on Twitter API docs
     ];
     const scopeParam = encodeURIComponent(twitterScopes.join(' ')); 
@@ -317,6 +322,8 @@ const handleCloseBlueskyModal = () => {
             <CreateBlueskyModal 
               isOpen={isBlueskyModalOpen}
               onClose={handleCloseBlueskyModal}
+              onAccountAdded={onAccountAdded} 
+              onAccountAddedDisplay={onAccountAddedDisplay}
             />
     </div>
   );

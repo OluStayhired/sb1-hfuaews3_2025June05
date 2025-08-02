@@ -9,6 +9,7 @@ interface BlueskyProfile {
   displayName?: string;
   avatar?: string;
   timezone?: string;
+  social_channel?: string;
 }
 
 interface BlueskyState {
@@ -92,6 +93,7 @@ export const useBlueskyStore = create<BlueskyState>((set, get) => ({
           handle: profile.data.handle,
           displayName: profile.data.displayName,
           avatar: profile.data.avatar,
+          social_channel: profile.data.social_channel,
           timezone: profile.data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
         },
         error: null

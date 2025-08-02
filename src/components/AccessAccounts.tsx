@@ -17,6 +17,187 @@ import { useProductTier } from '../hooks/useProductTierHook'
 import { AddSocialTabModal } from './AddSocialTabModal';
 import { ConnectSocialModal } from './ConnectSocialModal';
 
+// Define AccessAccountsProps interface based on your usage
+interface AccessAccountsProps {
+  refreshDashboardAccounts: () => void;
+}
+
+//--------------- Adding Dynamic Functions For Rendering Connected Accounts ---------------------------- //
+
+// Reusable component for displaying a connected social account card
+//const ConnectedAccountCard = ({ account, accountType, onDisconnect, isLoading, disconnectingAccount, onTimezoneChange }) => {
+const ConnectedAccountCard = ({ account, accountType, onDisconnect, isLoading, disconnectingAccount, onTimezoneChange }) => {
+  // Debugging log: Check the account prop when it renders
+  console.log('ConnectedAccountCard rendering with account:', account);
+  if (account && account.social_channel === undefined) {
+    console.error('social_channel is UNDEFINED for account:', account);
+  }
+
+  // Function to get the correct logo based on account social_channel
+  const getLogo = (socialChannel) => {
+    // Convert to lowercase to ensure consistent matching with internal identifiers
+    const lowerCaseSocialChannel = socialChannel ? String(socialChannel).toLowerCase() : ''; // Ensure it's a string before toLowerCase
+    switch (lowerCaseSocialChannel) {
+      case 'bluesky': return BlueskyLogo;
+      case 'linkedin': return LinkedInLogo; // Placeholder, replace with actual SVG if available
+      case 'twitter': return XLogo;
+      case 'threads': return ThreadsLogo; // New Threads logo
+      case 'instagram': return InstagramLogo; // Placeholder, replace with actual SVG if available
+      case 'pinterest': return PinterestLogo; // Placeholder, replace with actual SVG if available
+      case 'tiktok': return TikTokLogo; // Placeholder, replace with actual SVG if available
+      default: return null; // Or a generic placeholder logo
+    }
+  };
+
+  // Function to get the display name, handling different property names
+  const getDisplayName = (account) => {
+    return account.displayName || account.display_name || account.handle;
+  };
+
+  // Function to get the handle
+  const getHandle = (account) => {
+    return account.handle;
+  };
+
+  // Function to get the avatar URL, with a fallback to ui-avatars
+  const getAvatar = (account) => {
+    return account.avatar || account.avatar_url || `https://ui-avatars.com/api/?name=${getHandle(account)}`;
+  };
+
+  // Handler for disconnecting a dynamic account
+  const disconnectHandler = () => {
+    //onDisconnect(account.id, accountType.social_channel);
+    onDisconnect(account.id, account.social_channel);
+    //refreshDashboardAccounts();
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-blue-50 to-white p-6 rounded-lg border border-blue-100 hover:border hover:border-blue-300">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            {/* User Avatar */}
+            <img
+              src={getAvatar(account)}
+              alt={getHandle(account)}
+              className="w-12 h-12 rounded-full"
+            />
+            {/* Social Media Logo Overlay */}
+            <div className="absolute -bottom-1 -right-1 bg-blue-50 border border-blue-100 rounded-full p-1 shadow-sm">
+              <img
+                //src={getLogo(account.social_channel)}
+                src={getLogo(accountType.social_channel || account.social_channel )}
+                alt={accountType.name}
+                //src={BlueskyLogo}
+                //alt="Bluesky"
+                className="w-4 h-4"
+              />
+            </div>
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-900">{getDisplayName(account)}</h3>
+            <p className="text-sm text-gray-500">@{getHandle(account)}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-4">
+          {account.timezone && (
+            <TooltipHelp text="Change Timezone (soon) ☺️">
+              <button
+                // onClick={() => onTimezoneChange(account)} // Uncomment and implement if needed
+                className="flex items-center px-2 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
+                <Clock className="w-3.5 h-3.5 mr-1" />
+                <span className="mr-1">Timezone: </span>
+                {account.timezone}
+              </button>
+            </TooltipHelp>
+          )}
+          <span className="flex items-center px-2 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+            <Zap className="w-3.5 h-3.5 mr-1" />
+            <span className="mr-1">Connected </span>
+          </span>
+          <TooltipHelp text={`Remove ${accountType.name || account.social_channel}`}>    
+          
+            <button
+              onClick={disconnectHandler}
+              disabled={isLoading || disconnectingAccount === account.id}
+              className="p-2 text-green-700 hover:text-red-500 bg-green-100 rounded-full hover:bg-red-100 transition-colors disabled:opacity-50"
+            >
+              {isLoading || disconnectingAccount === account.id ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Unplug className="w-5 h-5" />
+              )}
+            </button>
+          </TooltipHelp>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Reusable component for displaying a "Connect" social account card
+const ConnectAccountCard = ({ accountType, onConnect, isLoading }) => {
+  // Function to get the correct logo based on account social_channel
+  const getLogo = (socialChannel) => {
+    // Convert to lowercase to ensure consistent matching with internal identifiers
+    const lowerCaseSocialChannel = socialChannel ? String(socialChannel).toLowerCase() : ''; // Ensure it's a string before toLowerCase
+    switch (lowerCaseSocialChannel) {
+      case 'bluesky': return BlueskyLogo;
+      case 'linkedin': return LinkedInLogo; // Placeholder
+      case 'twitter': return XLogo;
+      case 'threads': return ThreadsLogo; // New Threads logo
+      // Add cases for other social media social_channels
+      default: return null; // Or a generic placeholder logo
+    }
+  };
+
+  const connectHandler = () => {
+    onConnect(accountType.social_channel);
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <div className="w-12 h-12 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center">
+              <img
+                src={getLogo(accountType.social_channel)}
+                alt={accountType.name}
+                className="w-6 h-6"
+              />
+            </div>
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-900">{accountType.name}</h3>
+            <p className="text-sm text-gray-500">Connect your {accountType.name} account</p>
+          </div>
+        </div>
+        <TooltipHelp text={`⚡Connect ${accountType.name}`}>
+          <button
+            onClick={connectHandler}
+            disabled={isLoading}
+            className="px-4 py-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
+          >
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <>
+                <Plus className="w-4 h-4" />
+                <span>Connect</span>
+              </>
+            )}
+          </button>
+        </TooltipHelp>
+      </div>
+    </div>
+  );
+};
+
+
+
+//---------------End Adding Dynamic Functions For Rendering Connected Accounts ------------------------ //
+
 interface SocialAccount {
   id: string;
   user_id: string;
@@ -54,6 +235,7 @@ export function AccessAccounts({
   const [selectedAccount, setSelectedAccount] = useState<SocialAccount | null>(null);
   const [showAddSocialTabModal, setShowAddSocialTabModal] = useState(false);
   const [isConnectSocialModalOpen, setIsConnectSocialModalOpen] = useState(false);
+  //const [accountAddedThisSession, setAccountAddedThisSession] = useState(false);
 
 
   //Threads OAUTH
@@ -159,6 +341,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
 //--------- Handle Connect All Social Accounts -------------//
 
 const handleOpenConnectSocialModal = async () => {
+  //setAccountAddedThisSession(false);
   setIsConnectSocialModalOpen(true);
   //Only open for Paid Accounts
 }
@@ -694,6 +877,36 @@ const refreshConnectedAccounts = async () => {
 const handleCloseBlueskyModal = () => {
     setIsBlueskyModalOpen(false);
   };
+
+  // --- Handlers for dynamic `connectedAccounts` ---
+  const handleDisconnectDynamicAccount = async (accountId: string, socialChannel: string) => {
+    
+    //--- Start Disconnect Accounts based on Channel
+      if (socialChannel==="Bluesky"){
+        handleDisconnectBluesky(accountId);      
+      }  
+
+    if (socialChannel==="Twitter"){
+        handleDisconnectTwitter(accountId);      
+      }  
+
+    if (socialChannel==="LinkedIn"){
+        handleDisconnectLinkedIn(accountId);      
+      }  
+    //--- End Disconnect Accounts Based on Channel
+    
+    setDisconnectingAccount(accountId); // Use general disconnecting state for dynamic accounts
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setConnectedAccounts(prevAccounts =>
+      prevAccounts.filter(acc => acc.id !== accountId)
+    );
+    //await refreshConnectedAccounts();
+    
+    //send state update to Dashboard
+    await refreshDashboardAccounts(); 
+    
+    setDisconnectingAccount(null);
+  };  
   
 const checkActiveBlueskySession = async () => {
   try {
@@ -866,6 +1079,8 @@ const handleSaveTimezone = async (newTimezone: string) => {
          </div>
             
         <div className="space-y-6">
+{ !isPaidPlan && (
+  <>
  {/* Bluesky Account */}
           {blueskyUser ? (
             <div className="bg-gradient-to-r from-blue-50 to-white  p-6 rounded-lg border border-blue-100 hover:border hover:border-blue-300">
@@ -1160,27 +1375,55 @@ const handleSaveTimezone = async (newTimezone: string) => {
               </TooltipHelp>
               </div>
             </div>
-          )}  
+          )}   
+    </>
+  )}
 
- {/*------------------------Start Separation Showing Button for Adding More Accounts --------------------------- */}
+ {/*------------------------Start Paid Plan Separation Showing Button for Adding More Accounts --------------------------- */}     
+
+{isPaidPlan && ( // Only render this section if the user is on a paid plan
+            <>
+              {/* Add More Accounts Button - Placed after fixed accounts */}
+              {/*<div className="mx-auto justify-end items-end relative flex border-t border-gray-100 pt-4">*/}
+            <div className="mx-auto justify-end items-end relative flex pt-2">
+                <button
+                  onClick={handleOpenConnectSocialModal}
+                  disabled={isLoading} // Use isJustLoading for this button
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Add More Accounts</span>
+                </button>
+              </div>
+
+              {/* 
+              Dynamic Section for Additional Connected Accounts 
+              {connectedAccounts.length > 0 && (
+                <div className="flex items-center space-x-2 mt-8 pt-6 ">
+                  <h3 className="text-lg font-semibold text-blue-500">Your Additional Accounts</h3>
+                </div>
+              )}
+            */}      
         
- {isPaidPlan && (          
-      
-<div className="mx-auto justify-end items-end relative flex border-t border-gray-100">
-  <button
-      //onClick={handleConnectTwitter}
-      onClick={handleOpenConnectSocialModal}
-      disabled={twitterLoading}
-      className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
-    >
 
-      <PlusCircle className="w-4 h-4" />
-    <span>Add More Accounts</span>
-  </button>
-</div>
-      )}
-{/*------------------------End Separation Showing Button for Adding More Accounts --------------------------- */}          
-
+              {connectedAccounts.length > 0 ? (
+                connectedAccounts.map((account) => (
+                  <ConnectedAccountCard
+                    key={account.id} // Use a unique ID for the key
+                    accountType={account.social_channel}
+                    account={account}
+                    onDisconnect={handleDisconnectDynamicAccount}
+                    isLoading={isLoading} // Use general loading for dynamic accounts
+                    disconnectingAccount={disconnectingAccount} // Use general disconnecting for dynamic accounts
+                    // onTimezoneChange={handleTimezoneOpenModal} // Pass if you implement this for dynamic accounts
+                  />
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">No additional accounts connected yet. Click "Add More Accounts" to get started!</p>
+              )}
+            </>
+          )}          
+{/*------------------------End Paid Plan Separation Showing Button for Adding More Accounts --------------------------- */}              
 
           
         </div>
@@ -1190,6 +1433,8 @@ const handleSaveTimezone = async (newTimezone: string) => {
   isOpen={isBlueskyModalOpen}
   onClose={handleCloseBlueskyModal}
   isPaidPlan={isPaidPlan}
+  onAccountAdded={refreshDashboardAccounts}
+  onAccountAddedDisplay={refreshConnectedAccounts}
 />
 <MoreBlueskyAccounts 
   isOpen={isModalOpen}
@@ -1204,6 +1449,9 @@ const handleSaveTimezone = async (newTimezone: string) => {
         onConnectBluesky={handleConnectBluesky}
         onConnectLinkedIn={handleConnectLinkedIn}
         setIsBlueskyModalOpen={setIsBlueskyModalOpen}
+        //onAccountAdded={refreshConnectedAccounts} // prop to determine account added and refresh
+        onAccountAdded={refreshDashboardAccounts}
+        onAccountAddedDisplay={refreshConnectedAccounts}
       />    
   )}
 
