@@ -16,6 +16,7 @@ import { TooltipHelp } from '../utils/TooltipHelp';
 import { useProductTier } from '../hooks/useProductTierHook'
 import { AddSocialTabModal } from './AddSocialTabModal';
 import { ConnectSocialModal } from './ConnectSocialModal';
+import { ProPlanLimitModal } from './ProPlanLimitModal';
 
 // Define AccessAccountsProps interface based on your usage
 interface AccessAccountsProps {
@@ -247,6 +248,14 @@ export function AccessAccounts({
   const [twitterUser, setTwitterUser] = useState<SocialAccount | null>(null);
   const [disconnectingTwitterAccount, setDisconnectingTwitterAccount] = useState<string | null>(null);
   const [twitterLoading, setTwitterLoading] = useState(false);
+
+  // Check Limits Based on Product Tier
+  const [isProPlanLimitModalOpen, setIsProPlanLimitModalOpen] = useState(false);
+  const [isCheckingLimits, setIsCheckingLimits] = useState(false);
+  const [userMessage, setUserMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  //const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  //const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   
   //LinkedIn VITE
   const VITE_LINKEDIN_CLIENT_ID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
@@ -316,6 +325,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
 
 
 //---- NEW Hook to Capture all Account Type Paramenters -----//
+  {/*
     const {
     isLoadin: isProductLoading,
     error: isProductError,
@@ -337,13 +347,164 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
     remainingCampaigns,
     remainingSocialAccounts,
   } = useProductTier(supabase, currentUserEmail);  
+  */}
 
 //--------- Handle Connect All Social Accounts -------------//
 
+//------------------ Start Upgrade Modal and Limits Checks Here --------------------------//
+//========================================================================================//  
+  
+//---- NEW Hook to Capture all Account Type Paramenters -----//
+    const {
+    isLoading: isProductLoading, //changed from isLoading
+    error: errorProduct, //changed from error
+    userPreferences,
+    productTierDetails,
+    isFreePlan,
+    isEarlyAdopter, // New variable
+    isTrialUser,
+    isPaidPlan,
+    canCreateMoreCampaigns,
+    canAddMoreSocialAccounts,
+    isTrialExpiringSoon,
+    daysUntilTrialExpires,
+    showFirstTrialWarning,
+    showSecondTrialWarning,
+    showFinalTrialWarning,
+    max_calendar,
+    max_social_accounts,
+    remainingCampaigns,
+    remainingSocialAccounts,
+  } = useProductTier(supabase, currentUserEmail);  
+  
+
+// Define specific limits
+const MAX_FREE_CAMPAIGNS = max_calendar;
+const MAX_FREE_ACCOUNTS = max_social_accounts;
+const FREE_TRIAL_DAYS =   daysUntilTrialExpires
+type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
+
+
+//----------- Start Check Limits Function -------------------- //
+// This refined function checks limits specific to the requested action
+
+  const checkActionLimits = async (action: ActionType): Promise<boolean> => {
+    setIsCheckingLimits(true);
+    setUserMessage('');
+    setModalMessage(''); // Clear previous modal message
+    setIsProPlanLimitModalOpen(false);
+
+    console.log(`[checkActionLimits] Action requested: ${action}`);
+
+    try {
+        const { data: userPreferences, error: supabaseError } = await supabase
+            .from('user_preferences')
+            .select('account_type, total_campaign, social_accounts, user_tenure') // <-- SELECTING 'total_campaign' and 'social_accounts'
+            .eq('user_id', currentUserId)
+            .single();
+
+        if (supabaseError || !userPreferences) {
+            console.error("[checkActionLimits] Error fetching user preferences:", supabaseError?.message || "No data returned.");
+            setUserMessage('Could not retrieve account details. Please try again.');
+            return false;
+        }
+        //const limitedAccountTypes = ['Free Plan', 'Early Adopter']; // Define the types that have this limit
+      const limitedAccountTypes = ['Pro Plan']; // Define the types that have this limit
+         switch (action) {
+            case 'createCampaign':
+            // Correct variable name for campaign-related checks
+              const isLimitedCampaignAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+              const hasExceededCampaigns = remainingCampaigns <= 0 ;       
+              if (isLimitedCampaignAccountType && hasExceededCampaigns) {
+        setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
+        setIsProPlanLimitModalOpen(true);
+        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        return false;
+      }
+      break;
+          case 'addAccount':
+            // Correct variable name for addAccount-related checks
+            const isLimitedAccountAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+            const hasExceededAccounts = (userPreferences.social_accounts || 0) >= MAX_FREE_ACCOUNTS;
+              if (isLimitedAccountAccountType && hasExceededAccounts) {
+                setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
+                setIsProPlanLimitModalOpen(true);
+
+                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+
+              return false;
+
+            }
+      break;
+            case 'freeTrialEnded':
+              // Correct variable name for addAccount-related checks
+              const isLimitedFreeTrialAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+              if (isLimitedFreeTrialAccountType && (daysUntilTrialExpires <= 0)) {
+                  
+                setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
+                setIsProPlanLimitModalOpen(true);
+                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+          
+                return false;
+              }
+        break;             
+        
+        default:
+                console.warn(`[checkActionLimits] Unknown action type for limit check: ${action}`);
+                return false; // Or throw error
+        }
+
+        return true;
+
+    } catch (e: any) {
+        console.error("[checkActionLimits] Unhandled error during limit check:", e.message);
+        setUserMessage('An unexpected error occurred during limit check. Please try again.');
+        return false;
+    } finally {
+        setIsCheckingLimits(false);
+    }
+};
+
+//------------- End Check Limits Function -------------------- //  
+  
+ // handle UpgradeModal Open
+  const handleOpenProPlanLimitModal = () => {
+    setIsProPlanLimitModalOpen(true);
+  };
+
+  // Function to close the modal
+  const handleCloseProPlanLimitModal = () => {
+    setIsProPlanLimitModalOpen(false);
+  };
+
+//------------------ End Upgrade Modal and Limits Checks Here --------------------------//
+//========================================================================================//
+  
+
 const handleOpenConnectSocialModal = async () => {
-  //setAccountAddedThisSession(false);
-  setIsConnectSocialModalOpen(true);
+  //setIsConnectSocialModalOpen(true);
   //Only open for Paid Accounts
+
+    //----------- Start Checking Limits Here --------------// 
+     if (isLoading || isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      const canProceed =  await checkActionLimits('addAccount');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        setUserMessage('');
+        setIsConnectSocialModalOpen(true);
+      }
+       
+       //-------------- End Checking Limits Here --------------- //
+  
 }
   
 //handleconnect Twitter
@@ -1471,6 +1632,13 @@ const handleSaveTimezone = async (newTimezone: string) => {
           onSave={handleSaveTimezone}
         />
       )}      
+
+      {/* Upgrade Modal After Free Trial Runs Out */}
+      <ProPlanLimitModal
+          isOpen={isProPlanLimitModalOpen}
+          onClose={handleCloseProPlanLimitModal}
+          message={modalMessage} 
+        />
       
     </div>
   );
