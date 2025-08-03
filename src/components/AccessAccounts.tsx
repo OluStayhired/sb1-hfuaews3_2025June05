@@ -1547,6 +1547,8 @@ const handleSaveTimezone = async (newTimezone: string) => {
               {/* Add More Accounts Button - Placed after fixed accounts */}
               {/*<div className="mx-auto justify-end items-end relative flex border-t border-gray-100 pt-4">*/}
             <div className="mx-auto justify-end items-end relative flex pt-2">
+
+              <TooltipHelp text="⚡Add upto 8 Social Accounts">
                 <button
                   onClick={handleOpenConnectSocialModal}
                   disabled={isLoading} // Use isJustLoading for this button
@@ -1555,6 +1557,7 @@ const handleSaveTimezone = async (newTimezone: string) => {
                   <PlusCircle className="w-4 h-4" />
                   <span>Add More Accounts</span>
                 </button>
+                </TooltipHelp>
               </div>
 
               {/* 
