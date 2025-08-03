@@ -9,7 +9,7 @@ interface ProPlanLimitModalProps {
   message: string; // The dynamic message from checkLimits
 }
 
-export function ProPlanLimitModal({ isOpen, onClose, message }: UpgradePlanModalProps) { // --- ADDED 'message' HERE ---
+export function ProPlanLimitModal({ isOpen, onClose, message }: ProPlanLimitModalProps) { // --- ADDED 'message' HERE ---
 
 const navigate = useNavigate();
 

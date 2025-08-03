@@ -59,6 +59,7 @@ export function SchedulePostModal({ isOpen, onClose, selectedDate, selectedTime,
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [timeError, setTimeError] = useState<string | null>(null);
+  const [imageSizeError, setImageSizeTimeError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [campaignDateMismatch, setCampaignDateMismatch] = useState(false);
   const [campaignStartDate, setCampaignStartDate] = useState<Date | null>(null);
@@ -70,6 +71,7 @@ export function SchedulePostModal({ isOpen, onClose, selectedDate, selectedTime,
   // State to track which post is currently uploading an image
   const [uploadingImageId, setUploadingImageId] = useState<string | null>(null);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+  const [userMessage, setUserMessage] = useState('');
 
 
   const [selectedCalendarObject, setSelectedCalendarObject] = useState<{
@@ -414,6 +416,7 @@ const handleAddImage = () => {
   }
 };
 
+  {/* Working FileChange File
 // Function to handle file selection and upload
 const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0];
@@ -446,6 +449,63 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     }
   }
 };
+  */}
+
+// Function to handle file selection and upload
+  {/*INcludes a check for bluesky limitations*/}
+const handleFileChange = async (event) => {
+  
+  const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
+  
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  // Assume 'channel' and 'setUserMessage' are available in this scope
+  // For example: const channel = { social_channel: 'Bluesky' };
+  // For example: const [userMessage, setUserMessage] = useState('');
+
+  // Bluesky specific image size check (1MB limit)
+  const MAX_BLUESKY_IMAGE_SIZE_BYTES = 1 * 1024 * 1024; // 1 MB
+  if (activeAccount.social_channel === 'Bluesky' && file.size >= MAX_BLUESKY_IMAGE_SIZE_BYTES) {
+    setUserMessage('Error: Image for Bluesky must be under 1MB.');
+    setImageSizeTimeError(true);
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Clear input to allow re-selection
+    }
+    return; // Stop further processing
+  }
+
+  // Assuming you have a way to get the current user's ID
+  const { data: { session } } = await supabase.auth.getSession();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    console.error('User not authenticated. Cannot upload image.');
+    // Optionally show an error message to the user
+    return;
+  }
+
+  setUploadingImageId('uploading'); // Set a generic ID for loading state
+  try {
+    const imageUrl = await uploadImageGetUrl(file, userId);
+    setUploadedPhotoUrl(imageUrl);
+    console.log('Image uploaded successfully:', imageUrl);
+    setUserMessage(''); // Clear any previous error message on success
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    // Optionally show an error message to the user
+    setUploadedPhotoUrl(null);
+    setUserMessage('Error uploading image. Please try again.'); // Generic upload error
+    setImageSizeTimeError(true);
+  } finally {
+    setUploadingImageId(null);
+    // Clear the file input value to allow re-uploading the same file if needed
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
+};  
 
 // Function to remove the uploaded image
 const handleRemoveImage = async () => {
@@ -962,6 +1022,28 @@ const renderContentStep = () => (
             />
             
           </div>
+
+           {/* Image Size Error message 
+          {userMessage && (
+            <div className={`flex items-center space-x-2 ${
+                imageSizeError ? 'bg-red-50 border border-red-200' : 'hidden'} rounded-md p-2`}>
+                {imageSizeError && <AlertCircle className="text-red-300 w-5 h-5"/>}
+                {imageSizeError && (
+                    <div className="mt-1 text-sm text-red-500">
+                        {imageSizeError}
+                    </div>
+                )}
+            </div>
+          )}
+          */}
+
+           {/* Display error/success messages here */}
+      {userMessage && (
+        <p className={`mt-4 text-sm ${imageSizeError ? 'text-red-600' : 'text-green-600'}`}>
+          {userMessage}
+        </p>
+      )}
+    
 
             {/* Preview section */}
             <div className="bg-gray-50 p-4 rounded-lg">
