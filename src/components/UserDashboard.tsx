@@ -35,6 +35,8 @@ import { SaveAndClosePage } from './SaveAndClosePage';
 import { CreateCalendarForm } from '/src/components/CreateCalendarForm'; 
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { TooltipExtended } from '../utils/TooltipExtended';
+import { UpgradePlanModal } from './UpgradePlanModal'
+import { useProductTier } from '../hooks/useProductTierHook'
 
 interface DashboardMetrics {
   todayPosts: {
@@ -93,6 +95,14 @@ export function UserDashboard() {
   const [isFirstPostModalOpen, setIsFirstPostModalOpen] = useState(false);
  //const [isCreateCalendarFormOpen, setIsCreateCalendarFormOpen] = useState(false);
 
+  // Check Limits Based on Product Tier
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [isCheckingLimits, setIsCheckingLimits] = useState(false);
+  const [userMessage, setUserMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
 
   // Define a consistent primary color for easy  changes
 const PRIMARY_COLOR_CLASSES = {
@@ -112,7 +122,38 @@ const ACCENT_COLOR_CLASSES = {
   warningText: 'text-amber-600',
 };
 
+// function to determine email for use in the component
+  const fetchUserIdAndEmail = async () => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const userEmail = session.user.email;
+      const userId = session.user.id;
+      setCurrentUserEmail(userEmail);
+      setCurrentUserId(userId);
+    } else {
+      console.warn('No user found in session.');
+      setCurrentUserEmail(null);
+      setCurrentUserId(null);
+    }
+  } catch (error) {
+    console.error('Error fetching user session:', error);
+    setCurrentUserEmail(null);
+    setCurrentUserId(null);
+  }
+};  
 
+useEffect(() => {
+  fetchUserIdAndEmail();
+
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    fetchUserIdAndEmail();
+  });
+
+  return () => {
+    subscription?.unsubscribe();
+  };
+}, []);  
   
 useEffect(() => {
   const fetchInitialPost = async () => {
@@ -190,6 +231,136 @@ const twitterConnectedUser = connectedAccounts.find(acc => acc.social_channel ==
 const linkedinConnectedUser = connectedAccounts.find(acc => acc.social_channel === 'LinkedIn');  
 const blueskyConnectedUser = connectedAccounts.find(acc => acc.social_channel === 'Bluesky'); 
 
+//------------------ Start Upgrade Modal and Limits Checks Here --------------------------//
+//========================================================================================//  
+  
+//---- NEW Hook to Capture all Account Type Paramenters -----//
+    const {
+    isLoading: isProductLoading, //changed from isLoading
+    error: errorProduct, //changed from error
+    userPreferences,
+    productTierDetails,
+    isFreePlan,
+    isEarlyAdopter, // New variable
+    isTrialUser,
+    isPaidPlan,
+    canCreateMoreCampaigns,
+    canAddMoreSocialAccounts,
+    isTrialExpiringSoon,
+    daysUntilTrialExpires,
+    showFirstTrialWarning,
+    showSecondTrialWarning,
+    showFinalTrialWarning,
+    max_calendar,
+    max_social_accounts,
+    remainingCampaigns,
+    remainingSocialAccounts,
+  } = useProductTier(supabase, currentUserEmail);  
+  
+
+// Define specific limits
+const MAX_FREE_CAMPAIGNS = max_calendar;
+const MAX_FREE_ACCOUNTS = max_social_accounts;
+const FREE_TRIAL_DAYS =   daysUntilTrialExpires
+type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
+
+
+//----------- Start Check Limits Function -------------------- //
+// This refined function checks limits specific to the requested action
+
+  const checkActionLimits = async (action: ActionType): Promise<boolean> => {
+    setIsCheckingLimits(true);
+    setUserMessage('');
+    setModalMessage(''); // Clear previous modal message
+    setIsUpgradeModalOpen(false);
+
+    console.log(`[checkActionLimits] Action requested: ${action}`);
+
+    try {
+        const { data: userPreferences, error: supabaseError } = await supabase
+            .from('user_preferences')
+            .select('account_type, total_campaign, social_accounts, user_tenure') // <-- SELECTING 'total_campaign' and 'social_accounts'
+            .eq('user_id', currentUserId)
+            .single();
+
+        if (supabaseError || !userPreferences) {
+            console.error("[checkActionLimits] Error fetching user preferences:", supabaseError?.message || "No data returned.");
+            setUserMessage('Could not retrieve account details. Please try again.');
+            return false;
+        }
+        const limitedAccountTypes = ['Free Plan', 'Early Adopter']; // Define the types that have this limit
+         switch (action) {
+            case 'createCampaign':
+            // Correct variable name for campaign-related checks
+              const isLimitedCampaignAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+              const hasExceededCampaigns = remainingCampaigns <= 0 ;       
+              if (isLimitedCampaignAccountType && hasExceededCampaigns) {
+        setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
+        setIsUpgradeModalOpen(true);
+        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        return false;
+      }
+      break;
+          case 'addAccount':
+            // Correct variable name for addAccount-related checks
+            const isLimitedAccountAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+            const hasExceededAccounts = (userPreferences.social_accounts || 0) >= MAX_FREE_ACCOUNTS;
+              if (isLimitedAccountAccountType && hasExceededAccounts) {
+                setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
+                setIsUpgradeModalOpen(true);
+
+                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+
+              return false;
+
+            }
+      break;
+            case 'freeTrialEnded':
+              // Correct variable name for addAccount-related checks
+              const isLimitedFreeTrialAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+              if (isLimitedFreeTrialAccountType && (daysUntilTrialExpires <= 0)) {
+                  
+                setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
+                setIsUpgradeModalOpen(true);
+                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+          
+                return false;
+              }
+        break;             
+        
+        default:
+                console.warn(`[checkActionLimits] Unknown action type for limit check: ${action}`);
+                return false; // Or throw error
+        }
+
+        return true;
+
+    } catch (e: any) {
+        console.error("[checkActionLimits] Unhandled error during limit check:", e.message);
+        setUserMessage('An unexpected error occurred during limit check. Please try again.');
+        return false;
+    } finally {
+        setIsCheckingLimits(false);
+    }
+};
+
+//------------- End Check Limits Function -------------------- //  
+  
+ // handle UpgradeModal Open
+  const handleOpenUpgradeModal = () => {
+    setIsUpgradeModalOpen(true);
+  };
+
+  // Function to close the modal
+  const handleCloseUpgradeModal = () => {
+    setIsUpgradeModalOpen(false);
+  };
+
+//------------------ End Upgrade Modal and Limits Checks Here --------------------------//
+//========================================================================================//
+
+  
+  
 // --------- Start Helper function to handle connection success flow (for URL params) -------- //
 const handleConnectionSuccess = async (connectedChannel: string, contentFromModal?: string | null) => {
     console.log(`UserDashboard: Detected successful ${connectedChannel} connection.`);
@@ -382,24 +553,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
     useEffect(() => {
         checkAndLoadFlowStatus();
     }, [searchParams, location.pathname, navigate]);
-
-
-// This is called when WelcomeGuide's internal actions like 'Save & Close' complete
-  {/*
-    const handleWelcomeGuideComplete = (dataFromGuide: { action: string; content?: string }) => {
-        console.log('Welcome Guide completed with data:', dataFromGuide);
-        setIsWelcomeGuideOpen(false); // Close the WelcomeGuide modal
-
-        if (dataFromGuide.save_close === true) {
-          
-            setSaveAndClosePostContent(dataFromGuide.first_post);
-          
-            setShowSaveAndCloseSuccess(true); // Trigger the SaveAndClosePage modal
-        }
-        // If other actions are passed, you can handle them here
-        // e.g., if dataFromGuide.action === 'schedule', you might show a "Scheduled!" modal
-    };
-*/}
+  
   
   const handleWelcomeGuideComplete = (dataFromGuide: WelcomeGuideCompleteData) => {
     console.log('Welcome Guide completed with data:', dataFromGuide);
@@ -427,9 +581,97 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
     setIsWelcomeGuideOpen(true);
   };
 
-  const handleOpenFirstPostModal = () => {
-    setIsFirstPostModalOpen(true);
+  
+  const handleOpenActiveCampaignModal = async () => {
+       //----------- Start Checking Limits Here --------------// 
+     if (isLoading || isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      const canProceed =  await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        setUserMessage('');
+        setIsCalendarListOpen(true);
+      }
+       
+       //-------------- End Checking Limits Here --------------- //
+      
+    }
+  
+
+  const handleOpenFirstPostModal = async () => {
+      //----------- Start Checking Limits Here --------------// 
+     if (isLoading || isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        setUserMessage('');
+        setIsFirstPostModalOpen(true);
+      }
+       //-------------- End Checking Limits Here --------------- //
+        
   };
+
+
+const handleOpenDraftPost = async () => {  
+   //----------- Start Checking Limits Here --------------// 
+     if (isLoading || isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        setUserMessage('');
+        setIsDraftPostsOpen(true);
+      }
+       //-------------- End Checking Limits Here --------------- //
+  
+};
+
+const handleOpenScheduledPost = async () => {
+   //----------- Start Checking Limits Here --------------// 
+     if (isLoading || isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        setUserMessage('');
+        setIsScheduledPostsOpen(true);
+      }
+       //-------------- End Checking Limits Here --------------- //
+  
+}; 
 
     const handleCloseFirstPostModal = () => {
     setIsFirstPostModalOpen(false);
@@ -571,17 +813,72 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
     fetchDashboardMetrics();
   }, []);
 
-  const handleCreatePost = () => {
+  const handleCreatePost = async () => {
+    //----------- Start Checking Limits Here --------------// 
+     if (isLoading || isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        }
+
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        setUserMessage('');
+        return;
+       //-------------- End Checking Limits Here --------------- //
     navigate('/dashboard/compose');
   };
 
- const handleSchedulePost = () => {
-    navigate('/dashboard/schedule');
+ const handleSchedulePost = async () => {
+   //----------- Start Checking Limits Here --------------// 
+     if (isLoading || isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        setUserMessage('');
+         navigate('/dashboard/schedule');
+      }
+       //-------------- End Checking Limits Here --------------- //
+   
   };
   
- const handleCreateCampaign = () => {
-    navigate('/dashboard/campaign');
-   //navigate('/dashboard/campaign/createcalendarform');
+ const handleCreateCampaign = async() => {
+   //----------- Start Checking Limits Here --------------// 
+     if (isLoading || isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        setUserMessage('');
+        navigate('/dashboard/campaign');
+
+      }
+        
+       //-------------- End Checking Limits Here --------------- //
+    
+   
   };
 
   const handleSelectCalendarFromSidebar = (calendarName: string) => {
@@ -657,7 +954,8 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
   <div className="flex flex-col gap-6">
     {/* Card: Today's Activity */}
     <a
-      onClick={() => setIsScheduledPostsOpen(true)}
+      //onClick={() => setIsScheduledPostsOpen(true)}
+      onClick={handleOpenScheduledPost}
       className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
     >
       <div className="flex items-center">
@@ -680,7 +978,8 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
 
     {/* Card: Draft Posts */}
     <a
-      onClick={() => setIsDraftPostsOpen(true)}
+      //onClick={() => setIsDraftPostsOpen(true)}
+      onClick ={handleOpenDraftPost}
       className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
     >
       <div className="flex items-center">
@@ -701,7 +1000,9 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
 
     {/* Card: Upcoming Campaigns */}
     <a
-      onClick={() => setIsCalendarListOpen(true)}
+      //onClick={() => setIsCalendarListOpen(true)}
+      onClick={handleOpenActiveCampaignModal}
+      
       className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
     >
       <div className="flex items-center">
@@ -900,6 +1201,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
     />
     <CalendarListSidePanel
       isOpen={isCalendarListOpen}
+      //isOpen={handleOpenActiveCampaignModal}
       onClose={() => {
         setIsCalendarListOpen(false);
         setIsDraftPostsOpen(false);
@@ -941,7 +1243,13 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
         onEdit={handleEditFirstPost}
         onToggleShowPost={handleToggleShowPostInModal}
       />
-    
+
+    {/* Upgrade Modal After Free Trial Runs Out */}
+      <UpgradePlanModal
+          isOpen={isUpgradeModalOpen}
+          onClose={handleCloseUpgradeModal}
+          message={modalMessage} 
+        />
   </div>
 );
 }

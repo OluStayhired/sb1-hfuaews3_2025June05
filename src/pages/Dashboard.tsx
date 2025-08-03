@@ -31,12 +31,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { CalendarList } from '../components/CalendarList';
 import { useProductTier } from '../hooks/useProductTierHook'
+import { UpgradePlanModal } from '../components/UpgradePlanModal'
 
 
 function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signOut, user } = useAuth();
+  const [isLoadingPost, setIsLoadingPost] = useState(false);
   const [isBlueskyModalOpen, setIsBlueskyModalOpen] = useState(false);
   const { isAuthenticated: isBlueskyAuthenticated } = useBlueskyStore();
   const { user: blueskyUser } = useBlueskyStore();
@@ -74,6 +76,12 @@ function Dashboard() {
   // NEW: State to track if the user has a paid account
   const [isPaidAccount, setIsPaidAccount] = useState(false);
 
+  // Check Limits Based on Product Tier
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [isCheckingLimits, setIsCheckingLimits] = useState(false);
+  const [userMessage, setUserMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+
    // Use a useEffect to get the current user's email after session loads
   useEffect(() => {
     const fetchUserEmail = async () => {
@@ -85,12 +93,47 @@ function Dashboard() {
     fetchUserEmail();
   }, []); // Run once on mount to get the initial user email
 
+  // function to determine email for use in the component
+  const fetchUserIdAndEmail = async () => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const userEmail = session.user.email;
+      const userId = session.user.id;
+      setCurrentUserEmail(userEmail);
+      setCurrentUserId(userId);
+    } else {
+      console.warn('No user found in session.');
+      setCurrentUserEmail(null);
+      setCurrentUserId(null);
+    }
+  } catch (error) {
+    console.error('Error fetching user session:', error);
+    setCurrentUserEmail(null);
+    setCurrentUserId(null);
+  }
+};  
+
+useEffect(() => {
+  fetchUserIdAndEmail();
+
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    fetchUserIdAndEmail();
+  });
+
+  return () => {
+    subscription?.unsubscribe();
+  };
+}, []);  
 
 
+//------------------ Start Upgrade Modal and Limits Checks Here --------------------------//
+//========================================================================================//  
+  
 //---- NEW Hook to Capture all Account Type Paramenters -----//
     const {
-    isLoading,
-    error,
+    isLoading: isProductLoading, //changed from isLoading
+    error: errorProduct, //changed from error
     userPreferences,
     productTierDetails,
     isFreePlan,
@@ -104,9 +147,115 @@ function Dashboard() {
     showFirstTrialWarning,
     showSecondTrialWarning,
     showFinalTrialWarning,
+    max_calendar,
+    max_social_accounts,
     remainingCampaigns,
     remainingSocialAccounts,
-  } = useProductTier(supabase, currentUserEmail);
+  } = useProductTier(supabase, currentUserEmail);  
+  
+
+// Define specific limits
+const MAX_FREE_CAMPAIGNS = max_calendar;
+const MAX_FREE_ACCOUNTS = max_social_accounts;
+const FREE_TRIAL_DAYS =   daysUntilTrialExpires
+type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
+
+
+//----------- Start Check Limits Function -------------------- //
+// This refined function checks limits specific to the requested action
+
+  const checkActionLimits = async (action: ActionType): Promise<boolean> => {
+    setIsCheckingLimits(true);
+    setUserMessage('');
+    setModalMessage(''); // Clear previous modal message
+    setIsUpgradeModalOpen(false);
+
+    console.log(`[checkActionLimits] Action requested: ${action}`);
+
+    try {
+        const { data: userPreferences, error: supabaseError } = await supabase
+            .from('user_preferences')
+            .select('account_type, total_campaign, social_accounts, user_tenure') // <-- SELECTING 'total_campaign' and 'social_accounts'
+            .eq('user_id', currentUserId)
+            .single();
+
+        if (supabaseError || !userPreferences) {
+            console.error("[checkActionLimits] Error fetching user preferences:", supabaseError?.message || "No data returned.");
+            setUserMessage('Could not retrieve account details. Please try again.');
+            return false;
+        }
+        const limitedAccountTypes = ['Free Plan', 'Early Adopter']; // Define the types that have this limit
+         switch (action) {
+            case 'createCampaign':
+            // Correct variable name for campaign-related checks
+              const isLimitedCampaignAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+              const hasExceededCampaigns = remainingCampaigns <= 0 ;       
+              if (isLimitedCampaignAccountType && hasExceededCampaigns) {
+        setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
+        setIsUpgradeModalOpen(true);
+        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        return false;
+      }
+      break;
+          case 'addAccount':
+            // Correct variable name for addAccount-related checks
+            const isLimitedAccountAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+            const hasExceededAccounts = (userPreferences.social_accounts || 0) >= MAX_FREE_ACCOUNTS;
+              if (isLimitedAccountAccountType && hasExceededAccounts) {
+                setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
+                setIsUpgradeModalOpen(true);
+
+                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+
+              return false;
+
+            }
+      break;
+            case 'freeTrialEnded':
+              // Correct variable name for addAccount-related checks
+              const isLimitedFreeTrialAccountType = limitedAccountTypes.includes(userPreferences.account_type);
+              if (isLimitedFreeTrialAccountType && (daysUntilTrialExpires <= 0)) {
+                  
+                setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
+                setIsUpgradeModalOpen(true);
+                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+          
+                return false;
+              }
+        break;             
+        
+        default:
+                console.warn(`[checkActionLimits] Unknown action type for limit check: ${action}`);
+                return false; // Or throw error
+        }
+
+        return true;
+
+    } catch (e: any) {
+        console.error("[checkActionLimits] Unhandled error during limit check:", e.message);
+        setUserMessage('An unexpected error occurred during limit check. Please try again.');
+        return false;
+    } finally {
+        setIsCheckingLimits(false);
+    }
+};
+
+//------------- End Check Limits Function -------------------- //  
+  
+ // handle UpgradeModal Open
+  const handleOpenUpgradeModal = () => {
+    setIsUpgradeModalOpen(true);
+  };
+
+  // Function to close the modal
+  const handleCloseUpgradeModal = () => {
+    setIsUpgradeModalOpen(false);
+  };
+
+//------------------ End Upgrade Modal and Limits Checks Here --------------------------//
+//========================================================================================//  
+
+
   
 // --- ADDED FOR DEBUGGING MODAL STATE ---
   useEffect(() => {
@@ -795,6 +944,112 @@ const linkedinConnectedUser = connectedAccounts.find(acc => acc.social_channel =
 const isTwitterAuthenticated = !!twitterUser;
 const isLinkedInAuthenticated = !!linkedinUser;  
 
+//------------- Start Dashboard Top Menu Navigate handles-------------------------//  
+const handleNavigateDrafts = async () => {
+  
+ //----------- Start Checking Limits Here --------------// 
+     if (isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check ...");
+  
+      //const canProceed = checkActionLimits('freeTrialEnded');
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+            console.log("Limit check passed. Proceeding with campaign creation logic.");
+            setUserMessage('');
+            navigate('compose')
+        }
+    //-------------- End Checking Limits Here --------------- //                                 
+}
+
+  
+const handleNavigateCalendar = async () => {
+   
+  //----------- Start Checking Limits Here --------------// 
+     if (isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check ...");
+  
+      //const canProceed = checkActionLimits('freeTrialEnded');
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+            console.log("Limit check passed. Proceeding with campaign creation logic.");
+            setUserMessage('');
+            navigate('calendars')
+        }
+    //-------------- End Checking Limits Here --------------- //
+
+}  
+  
+const handleNavigateSchedule = async () => {
+
+   //----------- Start Checking Limits Here --------------// 
+     if (isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check Schedule...");
+  
+      //const canProceed = checkActionLimits('freeTrialEnded');
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+            console.log("Limit check passed. Proceeding with campaign creation logic.");
+            setUserMessage('');
+            navigate('schedule');
+        }
+    //-------------- End Checking Limits Here --------------- //
+}  
+
+
+const handleNavigateSidePanel  = async (path) => {
+
+if(path !== "settings") {  
+   //----------- Start Checking Limits Here --------------// 
+     if (isCheckingLimits) {
+          return; // Already busy with something
+        }
+
+      console.log("Starting limit check...");
+      //const canProceed = checkActionLimits('freeTrialEnded');
+      const canProceed = await checkActionLimits('freeTrialEnded');
+
+      if (!canProceed) {
+            console.log("Limit check failed. Modal should be open. Returning.");
+            return; // This return is crucial and should prevent anything below from running
+        } else {
+            console.log("Limit check passed. Proceeding with campaign creation logic.");
+            setUserMessage('');
+            navigate(path);
+        }
+       
+       //-------------- End Checking Limits Here --------------- //
+
+} else {
+  navigate(path);
+}
+  
+  
+  };
+  
+
+//------------- End Dashboard Top Menu Navigate handles-------------------------//    
+
   return (
     <>
     <div className="min-h-screen bg-gray-50">
@@ -812,7 +1067,8 @@ const isLinkedInAuthenticated = !!linkedinUser;
           
             <div className="ml-24 flex items-center space-x-8">
               <button 
-                onClick={() => navigate('calendars')}
+                //onClick={() => navigate('calendars')}
+                onClick={handleNavigateCalendar}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                   location.pathname.includes('calendars')
                     ? 'text-blue-600'
@@ -823,7 +1079,8 @@ const isLinkedInAuthenticated = !!linkedinUser;
               </button>
 
               <button 
-                onClick={() => navigate('schedule')}
+                //onClick={() => navigate('schedule')}
+                onClick={handleNavigateSchedule}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                   location.pathname.includes('schedule')
                     ? 'text-blue-600'
@@ -834,7 +1091,8 @@ const isLinkedInAuthenticated = !!linkedinUser;
               </button>
 
               <button 
-                onClick={() => navigate('compose')}
+                //onClick={() => navigate('compose')}
+                onClick={handleNavigateDrafts}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                   location.pathname.includes('compose')
                     ? 'text-blue-600'
@@ -1063,7 +1321,8 @@ const isLinkedInAuthenticated = !!linkedinUser;
               {menuItems.map((item) => (
                 <li key={item.path}>
                   <button
-                    onClick={() => navigate(item.path)}
+                    //onClick={() => navigate(item.path)}                  
+                    onClick={() => handleNavigateSidePanel(item.path)}
                     className={`w-full flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
                       location.pathname.includes(item.path)
                         ? 'bg-blue-50 text-blue-500'
@@ -1141,6 +1400,14 @@ const isLinkedInAuthenticated = !!linkedinUser;
         onClose={() => setIsCampaignSuccessModalOpen(false)}
         campaignName={createdCampaignName}
       />
+
+    {/* Upgrade Modal After Free Trial Runs Out */}
+      <UpgradePlanModal
+          isOpen={isUpgradeModalOpen}
+          onClose={handleCloseUpgradeModal}
+          message={modalMessage} 
+        />
+      
     </>
   );
 }
