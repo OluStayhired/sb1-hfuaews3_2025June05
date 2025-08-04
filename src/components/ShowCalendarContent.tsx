@@ -127,9 +127,12 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const checkSocials = async () => {
   const socials = await checkConnectedSocials();
   if (socials) {
-    console.log('Bluesky connected:', socials.bluesky);
-    console.log('LinkedIn connected:', socials.linkedin);
-    console.log('Twitter connected:', socials.twitter);
+    console.log('Bluesky connected:');
+    console.log('LinkedIn connected:');
+    console.log('Twitter connected:');
+    //console.log('Bluesky connected:', socials.bluesky);
+    //console.log('LinkedIn connected:', socials.linkedin);
+    //console.log('Twitter connected:', socials.twitter);
   }
 };
 
@@ -251,7 +254,7 @@ const handleConnectLinkedIn = () => {
   useEffect(() => {
     const fetchCalendarDetails = async () => {
       if (!calendarName || !userEmail) {
-        console.log("Skipping fetchCalendarDetails: calendarName or userEmail is missing.");
+        //console.log("Skipping fetchCalendarDetails: calendarName or userEmail is missing.");
         return;
       }
 
@@ -277,7 +280,7 @@ const handleConnectLinkedIn = () => {
           const parsedDbEndDate = parseISO(data.end_date);
             if (!isNaN(parsedDbEndDate.getTime())) {
                 calculatedEndDate = parsedDbEndDate;
-                console.log(`Using database end_date for "${calendarName}":`, data.end_date);
+                //console.log(`Using database end_date for "${calendarName}":`, data.end_date);
             } else {
                 console.warn(`Database end_date for "${calendarName}" is invalid:`, data.end_date);
             }
@@ -291,7 +294,7 @@ const handleConnectLinkedIn = () => {
                 // Deduce end_date: start_date + (calendar_days - 1)
                 // Subtract 1 because calendar_days typically includes the start day itself.
                 calculatedEndDate = addDays(parsedStartDate, calendarDays - 1);
-                console.log(`Deducing end_date for "${calendarName}" from start_date (${data.start_date}) and calendarDays prop (${calendarDays}):`, calculatedEndDate.toISOString());
+                //console.log(`Deducing end_date for "${calendarName}" from start_date (${data.start_date}) and calendarDays prop (${calendarDays}):`, calculatedEndDate.toISOString());
             } else {
                 console.warn(`Invalid start_date for deduction for "${calendarName}":`, data.start_date);
             }
@@ -376,13 +379,13 @@ const handleConnectLinkedIn = () => {
 
   
   const handleBackToCalendarList = () => {
-    console.log("handleBackToCalendarList called");
+    //console.log("handleBackToCalendarList called");
   // Clean up any state if needed
   setSelectedDay(null);
   setCopySuccess(null);
   // Call the parent's callback to switch views
    if (onBackToList) {
-      console.log("Calling onBackToList");
+      //console.log("Calling onBackToList");
   onBackToList();
   //fetchCalendarList();   
     } else {
@@ -393,7 +396,7 @@ const handleConnectLinkedIn = () => {
 const handleImproveContentAI = async (content: CalendarContent) => {
    // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -570,7 +573,7 @@ const handleHookPostV3 = async (content: CalendarContent, char_length: string) =
 
       // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -762,7 +765,7 @@ const handleOpenBulkAddToCalendarModal = async (content: CalendarContent) => {
 
         // Check if the campaign is expired
   if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -787,7 +790,7 @@ const handleEditCampaignPost = async (content: CalendarContent) => {
 
   // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -812,7 +815,7 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
 
      // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -861,7 +864,7 @@ const handleUploadImage = async (content: CalendarContent) => {
 
    // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -991,7 +994,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
       )
     );
 
-    console.log('Image deleted and URL removed from database.');
+    //console.log('Image deleted and URL removed from database.');
 
   } catch (err) {
     console.error('Error during image deletion process:', err);

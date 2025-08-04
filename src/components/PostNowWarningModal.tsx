@@ -68,7 +68,7 @@ export function PostNowWarningModal({ 
 
 // Helper to upload image
 const uploadImageToBlueskyFrontend = async (agent: BskyAgent, photoUrl: string, altText: string): Promise<BlobRef | null> => {
-    console.log('Frontend: Starting Bluesky image upload for URL:', photoUrl);
+    //console.log('Frontend: Starting Bluesky image upload for URL:', photoUrl);
 
     // Fetch the image from the Supabase Storage URL
     // Assuming photoUrl is already a direct public URL from Supabase Storage
@@ -81,18 +81,18 @@ const uploadImageToBlueskyFrontend = async (agent: BskyAgent, photoUrl: string, 
 
     const imageBlob = await imageFetchResponse.blob();
     const fetchedContentType = imageFetchResponse.headers.get('Content-Type') || 'application/octet-stream';
-    console.log('Frontend: Fetched image Content-Type:', fetchedContentType);
+    //console.log('Frontend: Fetched image Content-Type:', fetchedContentType);
 
     // Convert Blob to Uint8Array, which BskyAgent.uploadBlob typically expects
     const arrayBuffer = await imageBlob.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
 
-    console.log('Frontend: Uploading image blob to Bluesky...');
+    //console.log('Frontend: Uploading image blob to Bluesky...');
     try {
         const uploadResult = await agent.uploadBlob(uint8Array, { encoding: fetchedContentType });
 
         if (uploadResult?.data?.blob) {
-            console.log('Frontend: Image uploaded successfully to Bluesky. BlobRef:', uploadResult.data.blob);
+            //console.log('Frontend: Image uploaded successfully to Bluesky. BlobRef:', uploadResult.data.blob);
             return uploadResult.data.blob;
         } else {
             console.error('Frontend: BlobRef not found in Bluesky upload response:', uploadResult);
@@ -133,7 +133,7 @@ const updatePostStatus = useCallback(async (id: string, status: {
     error_message?: string | null;
 }) => {
     try {
-        console.log(`Updating DB status for post ID: ${id} with status:`, status);
+        //console.log(`Updating DB status for post ID: ${id} with status:`, status);
         const { error: updateError } = await supabase
             .from('user_post_schedule')
             .update(status)
@@ -142,7 +142,7 @@ const updatePostStatus = useCallback(async (id: string, status: {
         if (updateError) {
             console.error(`Error updating post status in database for post ID ${id}:`, updateError);
         } else {
-            console.log(`Successfully updated post status in database for post ID ${id}`);
+            //console.log(`Successfully updated post status in database for post ID ${id}`);
         }
     } catch (err) {
          console.error(`Unexpected error during DB update for post ID ${id}:`, err);
@@ -151,7 +151,7 @@ const updatePostStatus = useCallback(async (id: string, status: {
 
 // Posting to LinkedIn via Edge Function
 const handlePostOnLinkedIn = useCallback(async (id: string): Promise<boolean> => {
-    console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', id);
+    //console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', id);
     setIsPosting(true);
     setError(null);
 
@@ -169,9 +169,9 @@ const handlePostOnLinkedIn = useCallback(async (id: string): Promise<boolean> =>
             body: JSON.stringify({ postId: id }),
         });
 
-        console.log('handlePostOnLinkedIn: Edge Function response status:', response.status);
+        //console.log('handlePostOnLinkedIn: Edge Function response status:', response.status);
         const responseBody = await response.json().catch(() => null);
-        console.log('handlePostOnLinkedIn: Edge Function response body:', responseBody);
+        //console.log('handlePostOnLinkedIn: Edge Function response body:', responseBody);
 
         if (!response.ok) {
             console.error('handlePostOnLinkedIn: Edge Function reported an error:', response.status, responseBody || response.statusText);
@@ -180,7 +180,7 @@ const handlePostOnLinkedIn = useCallback(async (id: string): Promise<boolean> =>
             return false;
         }
 
-        console.log('handlePostOnLinkedIn: Edge Function indicates success/handled.');
+        //console.log('handlePostOnLinkedIn: Edge Function indicates success/handled.');
         return true;
 
     } catch (err) {
@@ -194,7 +194,7 @@ const handlePostOnLinkedIn = useCallback(async (id: string): Promise<boolean> =>
 
 // Posting PHOTOS on LinkedIn via Edge Function
 const handlePhotoPostOnLinkedIn = useCallback(async (id: string): Promise<boolean> => {
-    console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', id);
+    //console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', id);
     setIsPosting(true);
     setError(null);
 
@@ -212,9 +212,9 @@ const handlePhotoPostOnLinkedIn = useCallback(async (id: string): Promise<boolea
             body: JSON.stringify({ postId: id }),
         });
 
-        console.log('handlePhotoPostOnLinkedIn: Edge Function response status:', response.status);
+        //console.log('handlePhotoPostOnLinkedIn: Edge Function response status:', response.status);
         const responseBody = await response.json().catch(() => null);
-        console.log('handlePhotoPostOnLinkedIn: Edge Function response body:', responseBody);
+        //console.log('handlePhotoPostOnLinkedIn: Edge Function response body:', responseBody);
 
         if (!response.ok) {
             console.error('handlePhotoPostOnLinkedIn: Edge Function reported an error:', response.status, responseBody || response.statusText);
@@ -223,7 +223,7 @@ const handlePhotoPostOnLinkedIn = useCallback(async (id: string): Promise<boolea
             return false;
         }
 
-        console.log('handlePhotoPostOnLinkedIn: Edge Function indicates success/handled.');
+        //console.log('handlePhotoPostOnLinkedIn: Edge Function indicates success/handled.');
         return true;
 
     } catch (err) {
@@ -237,7 +237,7 @@ const handlePhotoPostOnLinkedIn = useCallback(async (id: string): Promise<boolea
 
 // Posting to Twitter via Edge Function
 const handlePostOnTwitter = useCallback(async (id: string): Promise<boolean> => {
-    console.log('handlePostOnTwitter: Triggering Edge Function for postId:', id);
+    //console.log('handlePostOnTwitter: Triggering Edge Function for postId:', id);
     setIsPosting(true);
     setError(null);
 
@@ -255,11 +255,11 @@ const handlePostOnTwitter = useCallback(async (id: string): Promise<boolean> => 
             body: JSON.stringify({ postId: id }),
         });
 
-        console.log('handlePostOnTwitter: Edge Function response status:', response.status);
+        //console.log('handlePostOnTwitter: Edge Function response status:', response.status);
         let responseBody = null;
         try {
             responseBody = await response.json();
-            console.log('handlePostOnTwitter: Edge Function response body:', responseBody);
+            //console.log('handlePostOnTwitter: Edge Function response body:', responseBody);
         } catch (jsonParseError) {
             console.error('handlePostOnTwitter: Failed to parse Edge Function response body as JSON:', jsonParseError);
             setError('Received unexpected response from posting service.');
@@ -273,7 +273,7 @@ const handlePostOnTwitter = useCallback(async (id: string): Promise<boolean> => 
             return false;
         }
 
-        console.log('handlePostOnTwitter: Edge Function indicates success/handled.');
+        //console.log('handlePostOnTwitter: Edge Function indicates success/handled.');
         return true;
 
     } catch (err) {
@@ -287,7 +287,7 @@ const handlePostOnTwitter = useCallback(async (id: string): Promise<boolean> => 
 
 // Posting to Twitter via Edge Function
 const handlePhotoPostOnTwitter = useCallback(async (id: string): Promise<boolean> => {
-    console.log('handlePhotoPostOnTwitter: Triggering Edge Function for postId:', id);
+    //console.log('handlePhotoPostOnTwitter: Triggering Edge Function for postId:', id);
     setIsPosting(true);
     setError(null);
 
@@ -305,11 +305,11 @@ const handlePhotoPostOnTwitter = useCallback(async (id: string): Promise<boolean
             body: JSON.stringify({ postId: id }),
         });
 
-        console.log('handlePhotoPostOnTwitter: Edge Function response status:', response.status);
+        //console.log('handlePhotoPostOnTwitter: Edge Function response status:', response.status);
         let responseBody = null;
         try {
             responseBody = await response.json();
-            console.log('handlePhotoPostOnTwitter: Edge Function response body:', responseBody);
+            //console.log('handlePhotoPostOnTwitter: Edge Function response body:', responseBody);
         } catch (jsonParseError) {
             console.error('handlePhotoPostOnTwitter: Failed to parse Edge Function response body as JSON:', jsonParseError);
             setError('Received unexpected response from posting service.');
@@ -323,7 +323,7 @@ const handlePhotoPostOnTwitter = useCallback(async (id: string): Promise<boolean
             return false;
         }
 
-        console.log('handlePhotoPostOnTwitter: Edge Function indicates success/handled.');
+        //console.log('handlePhotoPostOnTwitter: Edge Function indicates success/handled.');
         return true;
 
     } catch (err) {
@@ -337,7 +337,7 @@ const handlePhotoPostOnTwitter = useCallback(async (id: string): Promise<boolean
 
 // Posting to Bluesky directly
 const handlePostOnBluesky = useCallback(async (id: string): Promise<boolean> => {
-    console.log('handlePostOnBluesky: Attempting frontend post for postId:', id);
+    //console.log('handlePostOnBluesky: Attempting frontend post for postId:', id);
     setIsPosting(true);
     setError(null);
 
@@ -375,9 +375,9 @@ const handlePostOnBluesky = useCallback(async (id: string): Promise<boolean> => 
             password: account.app_password,
         });
 
-        console.log('handlePostOnBluesky: Posting to Bluesky...');
+        //console.log('handlePostOnBluesky: Posting to Bluesky...');
         const postResult = await agent.post({ text: post.full_content });
-        console.log('handlePostOnBluesky: Bluesky API post result:', postResult);
+        //console.log('handlePostOnBluesky: Bluesky API post result:', postResult);
 
         await updatePostStatus(id, {
             schedule_status: false,
@@ -411,7 +411,7 @@ const handlePostOnBluesky = useCallback(async (id: string): Promise<boolean> => 
 // handle post photo on Bluesky
 // --- New handle for posting photos and text to Bluesky ---
 const handlePostPhotoOnBluesky = useCallback(async (id: string): Promise<boolean> => {
-    console.log('handlePostPhotoOnBluesky: Attempting frontend post for postId:', id);
+    //console.log('handlePostPhotoOnBluesky: Attempting frontend post for postId:', id);
     // Assuming setIsPosting and setError are defined in your component's scope
     setIsPosting(true);
     setError(null);
@@ -453,13 +453,13 @@ const handlePostPhotoOnBluesky = useCallback(async (id: string): Promise<boolean
             identifier: account.handle,
             password: account.app_password,
         });
-        console.log('handlePostPhotoOnBluesky: Login successful.');
+        //console.log('handlePostPhotoOnBluesky: Login successful.');
 
         let imageBlobRef: BlobRef | null = null;
 
         // --- Conditional Logic for Photo Upload ---
         if (post.photo_url) {
-            console.log('handlePostPhotoOnBluesky: Photo URL found, attempting image upload.');
+            //console.log('handlePostPhotoOnBluesky: Photo URL found, attempting image upload.');
             try {
                 // Use the new helper function for image upload
                 // Using full_content as alt text for now; consider a dedicated alt_text column in your DB
@@ -495,13 +495,13 @@ const handlePostPhotoOnBluesky = useCallback(async (id: string): Promise<boolean
                     },
                 ],
             };
-            console.log('handlePostPhotoOnBluesky: Including image embed in post payload.');
+            //console.log('handlePostPhotoOnBluesky: Including image embed in post payload.');
         }
 
         // Post to Bluesky
-        console.log('handlePostPhotoOnBluesky: Posting to Bluesky...');
+        //console.log('handlePostPhotoOnBluesky: Posting to Bluesky...');
         const postResult = await agent.post(postPayload);
-        console.log('handlePostPhotoOnBluesky: Bluesky API post result:', postResult);
+        //console.log('handlePostPhotoOnBluesky: Bluesky API post result:', postResult);
 
         // Update post status in Supabase after successful Bluesky post
         await updatePostStatus(id, {
@@ -552,17 +552,17 @@ const handlePostNow = useCallback(async () => {
     try {
         switch (socialChannel) {
             case 'LinkedIn':
-                console.log('handlePostNow: Dispatching to LinkedIn handler');
+                //console.log('handlePostNow: Dispatching to LinkedIn handler');
                 //postSuccessful = await handlePostOnLinkedIn(postId);
                 postSuccessful = await handlePhotoPostOnLinkedIn(postId);
                 break;
             case 'Twitter':
-                console.log('handlePostNow: Dispatching to Twitter handler');
+                //console.log('handlePostNow: Dispatching to Twitter handler');
                 //postSuccessful = await handlePostOnTwitter(postId);
                 postSuccessful = await handlePhotoPostOnTwitter(postId);
                 break;
             case 'Bluesky':
-                console.log('handlePostNow: Dispatching to Bluesky handler');
+                //console.log('handlePostNow: Dispatching to Bluesky handler');
                 //postSuccessful = await handlePostOnBluesky(postId);
                 postSuccessful = await handlePostPhotoOnBluesky(postId);
                 break;
@@ -573,13 +573,13 @@ const handlePostNow = useCallback(async () => {
         }
 
         if (postSuccessful) {
-            console.log('handlePostNow: Posting handler reported success.');
+            //console.log('handlePostNow: Posting handler reported success.');
             setSuccess(true);
             setTimeout(() => {
                 onClose(true);
             }, 2000);
         } else {
-            console.log('handlePostNow: Posting handler reported failure.');
+            //console.log('handlePostNow: Posting handler reported failure.');
             setSuccess(false);
             onClose(false);
         }

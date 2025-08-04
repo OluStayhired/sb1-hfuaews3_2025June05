@@ -47,7 +47,7 @@ export function OnboardSuccessPage({ isOpen, onClose, postContent }: OnboardSucc
   const handleConnectBluesky = () => {
     // This would typically open your Bluesky connection modal
     // For now, just log and close NoSocialModal
-    console.log('Connecting Bluesky from OnboardSuccessPage');
+    //console.log('Connecting Bluesky from OnboardSuccessPage');
     setShowNoSocialModal(false);
     // You might need to trigger a modal or redirect here
   };
@@ -55,7 +55,7 @@ export function OnboardSuccessPage({ isOpen, onClose, postContent }: OnboardSucc
   const handleConnectLinkedIn = () => {
     // This would typically open your LinkedIn connection flow
     // For now, just log and close NoSocialModal
-    console.log('Connecting LinkedIn from OnboardSuccessPage');
+    //console.log('Connecting LinkedIn from OnboardSuccessPage');
     setShowNoSocialModal(false);
     // You might need to trigger a modal or redirect here
   };

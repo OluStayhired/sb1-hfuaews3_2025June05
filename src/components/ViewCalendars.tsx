@@ -221,7 +221,7 @@ const fetchCalendarList = async () => {
       social_goals: Array.isArray(calendar.social_goals) ? calendar.social_goals : [],
       target_audience: calendar.target_audience || ''
     })));
-     console.log('how many calendars: ', calendarList.length );
+     //console.log('how many calendars: ', calendarList.length );
 
   } catch (err) {
     console.error('Error fetching calendar list:', err);
@@ -275,7 +275,7 @@ const fetchCalendarContent = async () => {
 
     const calendarDataWithInfo = await Promise.all(calendarDataPromises);
     setCalendarCompleteList(calendarDataWithInfo);
-    console.log('how many days of content: ', calendarCompleteList.length )
+    //console.log('how many days of content: ', calendarCompleteList.length )
     // Filter out inactive calendars
     const activeCalendarContent = calendarDataWithInfo.filter((calendar) => calendar.active);
 

@@ -61,7 +61,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
 
 // handle connect Twitter
  const handleConnectTwitter = async () => {
-  console.log('handleConnectTwitter: initiated');
+  //console.log('handleConnectTwitter: initiated');
   setTwitterLoading(true); // Start loading indicator
 
   try {
@@ -109,7 +109,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
         return;
       }
 
-      console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
+      //console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
 
     } catch (dbError) {
       console.error('handleConnectTwitter: Unexpected error storing OAuth data:', dbError);
@@ -140,7 +140,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
                     `code_challenge=${encodeURIComponent(code_challenge)}&` + 
                     `code_challenge_method=S256`; 
 
-    console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
+    //console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
 
     // 7. Redirect the user's browser to Twitter's authorization page
     window.location.href = authUrl;
@@ -155,9 +155,9 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
 
   // handle connect LinkedIn
   const handleConnectLinkedIn = async () => {
-  console.log('Connecting to LinkedIn...');
-  console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
-  console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
+  //console.log('Connecting to LinkedIn...');
+  //console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
+  //console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -165,7 +165,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
       console.error('No authenticated user found. User must be logged in to connect LinkedIn.');
       return;
     }
-    console.log('Authenticated user ID:', session.user.id);
+    //console.log('Authenticated user ID:', session.user.id);
 
     const currentUserId = session.user.id;
     const currentUserEmail = session.user.email;
@@ -190,7 +190,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
         return;
       }
 
-      console.log('OAuth state stored successfully:', uniqueState);
+      //console.log('OAuth state stored successfully:', uniqueState);
 
     } catch (error) {
       console.error('Unexpected error storing OAuth state:', error);
@@ -207,7 +207,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
                             `scope=${scopeParam}&` +
                             `state=${encodeURIComponent(uniqueState)}`;
 
-    console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
+    //console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
 
     window.location.href = linkedInAuthUrl;
 

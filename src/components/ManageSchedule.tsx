@@ -567,7 +567,7 @@ const isTimeSlotInactive = (dayOfWeek: string, timeSlot: string, scheduleData: a
   );
 
   if (!matchingSlot) {
-     console.log('No matching slot found for Day:', dayOfWeek, 'Target timeSlot (HH:mm):', timeSlot, 'in scheduleData.');
+     //console.log('No matching slot found for Day:', dayOfWeek, 'Target timeSlot (HH:mm):', timeSlot, 'in scheduleData.');
      return false; 
     // No matching slot means it's not *inactive* from the schedule perspective
   }
@@ -722,7 +722,7 @@ const calculateDisabledSlotTime = (date: Date, time: string, scheduleData: any[]
   }    
     
     // Implementation for new post creation
-    console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
+    //console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
     setSelectedDate(date);
     setSelectedTime(time);
     setIsModalOpen(true);
@@ -787,7 +787,7 @@ const handleDelete = async (postId: string) => {
       throw new Error('No authenticated user found');
     }
     
-console.log("Post Id:", postId);
+//console.log("Post Id:", postId);
     
     // Delete the post from the database
     const { error } = await supabase
@@ -897,7 +897,7 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
       console.error('Error updating photo_url in database:', updateError);
       // Optionally, show an error message to the user
     } else {
-      console.log('Image uploaded and URL updated successfully:', imageUrl);
+      //console.log('Image uploaded and URL updated successfully:', imageUrl);
       // Refresh the schedule data to display the new image
       fetchUserSchedule();
     }
@@ -992,7 +992,7 @@ const handleDeleteImage = async (postId: string) => {
         }))
     );
 
-    console.log(`Image URL removed from database for post ID: ${postId}.`);
+    //console.log(`Image URL removed from database for post ID: ${postId}.`);
 
   } catch (err) {
     console.error('Error during image URL deletion process:', err);
@@ -1528,7 +1528,7 @@ const handleDeleteImage = async (postId: string) => {
                       setIsPostWarningModalOpen(false);
                       setSelectedPostForNow(null);
                     if (postedSuccessfully) {
-                      console.log("Post successful, refreshing schedule data.");
+                      //console.log("Post successful, refreshing schedule data.");
                       fetchUserSchedule(); // <-- Call your fetch function here
                       } else {
                        console.log("Post failed or cancelled, not refreshing schedule data.");

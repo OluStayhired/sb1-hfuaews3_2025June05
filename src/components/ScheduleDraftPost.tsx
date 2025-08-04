@@ -116,7 +116,7 @@ const getSelectedChannelTimezone = () => {
     if (selectedChannel) {
       const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
       if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        //console.log('Selected Social Channel:', activeAccount.social_channel); 
         switch (activeAccount.social_channel) {
           case 'Bluesky':
             setMaxLength(300);
@@ -427,7 +427,7 @@ const handleGenerateContent = async () => {
 
 // Function to trigger the hidden file input
 const handleAddImage = () => {
-   console.log('handleAddImage called. fileInputRef.current:', fileInputRef.current);
+   //console.log('handleAddImage called. fileInputRef.current:', fileInputRef.current);
   if (fileInputRef.current) {
     fileInputRef.current.click();
   }
@@ -452,7 +452,7 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
   try {
     const imageUrl = await uploadImageGetUrl(file, userId);
     setUploadedPhotoUrl(imageUrl);
-    console.log('Image uploaded successfully:', imageUrl);
+    //console.log('Image uploaded successfully:', imageUrl);
   } catch (error) {
     console.error('Error uploading image:', error);
     // Optionally show an error message to the user
@@ -480,7 +480,7 @@ const handleRemoveImage = async () => {
     if (filePath) {
       await deletePostImage(filePath);
       setUploadedPhotoUrl(null);
-      console.log('Image removed successfully.');
+      //console.log('Image removed successfully.');
     } else {
       console.error('Could not determine file path from URL:', uploadedPhotoUrl);
     }

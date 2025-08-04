@@ -130,7 +130,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
 
     // Only process if the modal is open AND it's a LinkedIn callback we care about
     if (isOpen && linkedInConnected === 'true' && context === 'welcome_guide') {
-        console.log('Detected successful LinkedIn connection from Welcome Guide context.');
+        //console.log('Detected successful LinkedIn connection from Welcome Guide context.');
         setCurrentSlide(3); // Go directly to the final slide (Congratulations!)
         setError(null); // Clear any previous errors
 
@@ -360,7 +360,7 @@ const handleForceClose = async () => {
 
     if (postToUpdate?.id) {
       // Scenario 1: Existing record, perform upsert (update)
-      console.log('Performing upsert for existing post idea:', postToUpdate.id);
+      //console.log('Performing upsert for existing post idea:', postToUpdate.id);
       operationPromise = supabase
         .from('first_post_idea')
         .upsert({
@@ -376,7 +376,7 @@ const handleForceClose = async () => {
         });
     } else {
       // Scenario 2: No existing record, perform insert
-      console.log('Performing insert for new post idea (guide closed early).');
+      //console.log('Performing insert for new post idea (guide closed early).');
       operationPromise = supabase
         .from('first_post_idea')
         .upsert({
@@ -398,7 +398,7 @@ const handleForceClose = async () => {
       console.error('Error saving welcome guide progress:', dbError);
       setError('Failed to save progress. Please try again.');
     } else {
-      console.log('Welcome guide progress saved successfully.');
+      //console.log('Welcome guide progress saved successfully.');
       onClose(); // Close the modal after successful operation
     }
   } catch (err) {
@@ -559,7 +559,8 @@ const handleForceClose = async () => {
     console.error('Error upserting first post idea:', upsertError);
     // Handle error
     } else {
-        console.log('First post idea upserted successfully:', upsertedIdeas);
+        //console.log('First post idea upserted successfully:', upsertedIdeas);
+        console.log('First post idea successfully added:');
         // Use upsertedIdeas (which will be an array containing the single post idea)
     }
     
@@ -721,7 +722,7 @@ const handleGenerateContent = async () => {
   
 // handle connect Twitter //
  const handleConnectTwitter = async () => {
-  console.log('handleConnectTwitter: initiated');
+  //console.log('handleConnectTwitter: initiated');
   setTwitterLoading(true); // Start loading indicator
 
   try {
@@ -769,7 +770,7 @@ const handleGenerateContent = async () => {
         return;
       }
 
-      console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
+      //console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
 
     } catch (dbError) {
       console.error('handleConnectTwitter: Unexpected error storing OAuth data:', dbError);
@@ -800,7 +801,7 @@ const handleGenerateContent = async () => {
                     `code_challenge=${encodeURIComponent(code_challenge)}&` + 
                     `code_challenge_method=S256`; 
 
-    console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
+    //console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
 
     // 7. Redirect the user's browser to Twitter's authorization page
     window.location.href = authUrl;
@@ -815,9 +816,9 @@ const handleGenerateContent = async () => {
 // ------ handle connect LinkedIn ------ //
   
   const handleConnectLinkedIn = async () => {
-  console.log('Connecting to LinkedIn...');
-  console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
-  console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
+  //console.log('Connecting to LinkedIn...');
+  //console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
+  //console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -825,7 +826,7 @@ const handleGenerateContent = async () => {
       console.error('No authenticated user found. User must be logged in to connect LinkedIn.');
       return;
     }
-    console.log('Authenticated user ID:', session.user.id);
+    //console.log('Authenticated user ID:', session.user.id);
 
     const currentUserId = session.user.id;
     const currentUserEmail = session.user.email;
@@ -853,7 +854,7 @@ const handleGenerateContent = async () => {
         return;
       }
 
-      console.log('OAuth state stored successfully:', uniqueState);
+      //console.log('OAuth state stored successfully:', uniqueState);
 
     } catch (error) {
       console.error('Unexpected error storing OAuth state:', error);
@@ -870,7 +871,7 @@ const handleGenerateContent = async () => {
                             `scope=${scopeParam}&` +
                             `state=${encodeURIComponent(uniqueState)}`;
 
-    console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
+    //console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
 
     window.location.href = linkedInAuthUrl;
 

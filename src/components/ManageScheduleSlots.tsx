@@ -137,7 +137,7 @@ export function ManageScheduleSlots() {
         active_time: true,
       }));
 
-      console.log('all the data: ', newSlots);
+      //console.log('all the data: ', newSlots);
       
       const { error } = await supabase
         .from('user_schedule')

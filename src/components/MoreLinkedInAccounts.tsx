@@ -60,7 +60,7 @@ export function MoreLinkedInAccounts({ isOpen, onClose }: MoreLinkedInAccountsPr
         console.error('Error incrementing feature request count:', updateError);
         throw updateError;
       }
-      console.log('Incremented existing feature request for:', featureToRequest);
+      //console.log('Incremented existing feature request for:', featureToRequest);
 
     } else {
       // 3. If no existing request, insert a new one (with requests = 1)
@@ -80,7 +80,7 @@ export function MoreLinkedInAccounts({ isOpen, onClose }: MoreLinkedInAccountsPr
         console.error('Error inserting new feature request:', insertError);
         throw insertError;
       }
-      console.log('New feature request submitted for:', featureToRequest);
+      //console.log('New feature request submitted for:', featureToRequest);
     }
 
     // --- End of UX-focused change ---

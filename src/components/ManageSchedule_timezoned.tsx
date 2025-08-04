@@ -92,9 +92,9 @@ function ManageSchedule() {
 
 
 const formatDateInUserTimezone = (date: Date, timezone: string, formatStr: string) => {
-  console.log('date: ', date)
-  console.log('timezone: ', timezone)
-  console.log('formatStr: ', formatStr )
+  //console.log('date: ', date)
+  //console.log('timezone: ', timezone)
+  //console.log('formatStr: ', formatStr )
   try {
   
     const zonedDate = utcToZonedTime(date, timezone);
@@ -108,9 +108,9 @@ const formatDateInUserTimezone = (date: Date, timezone: string, formatStr: strin
 
   {/*
 const formatTimeInUserTimezone = (time: string, date: Date, timezone: string) => {
-    console.log('time: ', time)
-  console.log('date: ', date )
-  console.log('timezone: ', timezone)
+    //console.log('time: ', time)
+  //console.log('date: ', date )
+  //console.log('timezone: ', timezone)
   
   try {
     const [hours, minutes, seconds] = time.split(':').map(Number);
@@ -457,7 +457,7 @@ const generateTimeSlots = (timesHHmm: string[]) => {
         .select('schedule_time, day_of_week, active_day, active_time')
         .eq('email', session.user.email);
 
-      console.log('Raw Schedule Data:', scheduleData);
+      //console.log('Raw Schedule Data:', scheduleData);
 
       if (scheduleError) throw scheduleError;
 
@@ -543,7 +543,7 @@ const isTimeSlotInactive = (dayOfWeek: string, timeSlot: string, scheduleData: a
   );
 
   if (!matchingSlot) {
-     console.log('No matching slot found for Day:', dayOfWeek, 'Target timeSlot (HH:mm):', timeSlot, 'in scheduleData.');
+     //console.log('No matching slot found for Day:', dayOfWeek, 'Target timeSlot (HH:mm):', timeSlot, 'in scheduleData.');
      return false; 
     // No matching slot means it's not *inactive* from the schedule perspective
   }
@@ -692,7 +692,7 @@ const calculateDisabledSlotTime = (date: Date, time: string, scheduleData: any[]
   }    
     
     // Implementation for new post creation
-    console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
+    //console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
     setSelectedDate(date);
     setSelectedTime(time);
     setIsModalOpen(true);
@@ -757,7 +757,7 @@ const handleDelete = async (postId: string) => {
       throw new Error('No authenticated user found');
     }
     
-console.log("Post Id:", postId);
+//console.log("Post Id:", postId);
     
     // Delete the post from the database
     const { error } = await supabase
@@ -822,7 +822,7 @@ const handleConnectLinkedIn = () => {
   setShowNoSocialModal(false);
 };
   
-console.log("Schedules State:", schedules);
+//console.log("Schedules State:", schedules);
   
   if (isLoading) {
     return (

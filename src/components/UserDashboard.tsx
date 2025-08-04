@@ -189,7 +189,7 @@ useEffect(() => {
       // Decide whether to open WelcomeGuide based on post status
       if (post.in_progress === true && post.welcome_complete === false) {
 
-        console.log('UserDashboard: In-progress first post found. Treating as completed, showing success page.');
+        //console.log('UserDashboard: In-progress first post found. Treating as completed, showing success page.');
         setOnboardSuccessPostContent(post.first_post || null); // Pass content
         setShowOnboardSuccess(true);
         setIsWelcomeGuideOpen(false);
@@ -274,7 +274,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
     setModalMessage(''); // Clear previous modal message
     setIsUpgradeModalOpen(false);
 
-    console.log(`[checkActionLimits] Action requested: ${action}`);
+    //console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -297,7 +297,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
               if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsUpgradeModalOpen(true);
-        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
       break;
@@ -309,7 +309,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                 setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
                 setIsUpgradeModalOpen(true);
 
-                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
 
               return false;
 
@@ -322,7 +322,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                   
                 setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
                 setIsUpgradeModalOpen(true);
-                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
           
                 return false;
               }
@@ -363,7 +363,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
   
 // --------- Start Helper function to handle connection success flow (for URL params) -------- //
 const handleConnectionSuccess = async (connectedChannel: string, contentFromModal?: string | null) => {
-    console.log(`UserDashboard: Detected successful ${connectedChannel} connection.`);
+    //console.log(`UserDashboard: Detected successful ${connectedChannel} connection.`);
     setIsLoadingPost(true); // Set loading state at the beginning
 
     const { data: { session } } = await supabase.auth.getSession();
@@ -375,11 +375,11 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
 
         if (contentFromModal !== undefined) { // Check if content was passed directly (from  Bluesky modal)
             postContentToUse = contentFromModal;
-            console.log(`Using post content from modal for ${connectedChannel} connection.`);
+            //console.log(`Using post content from modal for ${connectedChannel} connection.`);
 
         } else {
             // This path is for LinkedIn and Twitter  (via URL parameters)
-            console.log(`Fetching post content for ${connectedChannel} connection from database.`);
+            //console.log(`Fetching post content for ${connectedChannel} connection from database.`);
             const { data: postToUpdate, error: fetchError } = await supabase
                 .from('first_post_idea')
                 .select('id, welcome_complete, first_post')
@@ -403,10 +403,12 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                 if (updateError) {
                     console.error(`Error setting welcome_complete to true after ${connectedChannel} connection:`, updateError);
                 } else {
-                    console.log(`Successfully updated welcome_complete to true for post ID: ${postIdToUpdate}`);
+                    //console.log(`Successfully updated welcome_complete to true for post ID: ${postIdToUpdate}`);
+                    console.log(`Successfully updated welcome_complete to true for post ID`);
                 }
             } else {
-                console.log(`No specific pending post found to mark welcome_complete after ${connectedChannel} connection (via URL param).`);
+                //console.log(`No specific pending post found to mark welcome_complete after ${connectedChannel} connection (via URL param).`);
+                console.log(`No specific pending post found to mark welcome_complete`);
             }
         }
 
@@ -499,7 +501,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                 if (post.in_progress === true && post.welcome_complete === false) {
                     // Scenario: User started guide, generated post, but didn't explicitly finish/connect.
                     // Based on your instruction: Treat this as "completed enough" to show success.
-                    console.log('UserDashboard: In-progress first post found. Treating as completed, showing success page.');
+                    //console.log('UserDashboard: In-progress first post found. Treating as completed, showing success page.');
 
                     setFirstPostContent(post.first_post); // Keep content for OnboardSuccessPage
                     setFirstPostId(post.id);
@@ -527,7 +529,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                     setIsWelcomeGuideOpen(false);
                 } else {
                     // Any other unexpected state of the post
-                    console.log('UserDashboard: Post found in unexpected state. Opening WelcomeGuide for re-evaluation.');
+                    //console.log('UserDashboard: Post found in unexpected state. Opening WelcomeGuide for re-evaluation.');
                     setFirstPostContent(post.first_post); // Pre-fill if content exists
                     setFirstPostId(post.id);
                     setIsWelcomeGuideOpen(true); // Open guide to let user decide
@@ -535,7 +537,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
             } else {
                 // Scenario: No post records found at all for this user.
                 // This means it's a truly new user, so open the WelcomeGuide.
-                console.log('UserDashboard: No post history found. Opening WelcomeGuide for a fresh start.');
+                //console.log('UserDashboard: No post history found. Opening WelcomeGuide for a fresh start.');
                 setFirstPostContent(null);
                 setFirstPostId(null);
                 setIsWelcomeGuideOpen(true); // <<< CHANGED: Ensure it opens for truly new users
@@ -556,7 +558,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
   
   
   const handleWelcomeGuideComplete = (dataFromGuide: WelcomeGuideCompleteData) => {
-    console.log('Welcome Guide completed with data:', dataFromGuide);
+    //console.log('Welcome Guide completed with data:', dataFromGuide);
     setIsWelcomeGuideOpen(false); // Always close the WelcomeGuide modal when it completes
 
     // Scenario 1: User chose to "Save and Close"
@@ -588,15 +590,15 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed =  await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsCalendarListOpen(true);
       }
@@ -612,15 +614,15 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsFirstPostModalOpen(true);
       }
@@ -635,15 +637,15 @@ const handleOpenDraftPost = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsDraftPostsOpen(true);
       }
@@ -657,15 +659,15 @@ const handleOpenScheduledPost = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsScheduledPostsOpen(true);
       }
@@ -819,15 +821,15 @@ const handleOpenScheduledPost = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         }
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         return;
        //-------------- End Checking Limits Here --------------- //
@@ -840,15 +842,15 @@ const handleOpenScheduledPost = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
          navigate('/dashboard/schedule');
       }
@@ -862,15 +864,15 @@ const handleOpenScheduledPost = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         navigate('/dashboard/campaign');
 

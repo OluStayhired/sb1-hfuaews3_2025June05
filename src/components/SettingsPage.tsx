@@ -209,7 +209,7 @@ useEffect(() => {
 
 // Only proceed if userPreferences exists and account_type is 'Pro Plan'
     if (!userPreferences || userPreferences.account_type !== 'Pro Plan') {
-      console.log('Not fetching Stripe prices: User is not on a "Pro Plan".');
+      //console.log('Not fetching Stripe prices: User is not on a "Pro Plan".');
       setUserSubscription(null); // Clear previous price details if condition not met
       setSubscriptionLoading(false);
       setSubscriptionError(null); // Clear any previous errors

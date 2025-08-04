@@ -131,7 +131,7 @@ const getSelectedChannelTimezone = () => {
     if (selectedChannel) {
       const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
       if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        //console.log('Selected Social Channel:', activeAccount.social_channel); 
         switch (activeAccount.social_channel) {
           case 'Bluesky':
             setMaxLength(300);
@@ -410,7 +410,7 @@ const handleUpdateToStartDate = () => {
 
 // Function to trigger the hidden file input
 const handleAddImage = () => {
-   console.log('handleAddImage called. fileInputRef.current:', fileInputRef.current);
+   //console.log('handleAddImage called. fileInputRef.current:', fileInputRef.current);
   if (fileInputRef.current) {
     fileInputRef.current.click();
   }
@@ -490,7 +490,7 @@ const handleFileChange = async (event) => {
   try {
     const imageUrl = await uploadImageGetUrl(file, userId);
     setUploadedPhotoUrl(imageUrl);
-    console.log('Image uploaded successfully:', imageUrl);
+    //console.log('Image uploaded successfully:', imageUrl);
     setUserMessage(''); // Clear any previous error message on success
   } catch (error) {
     console.error('Error uploading image:', error);
@@ -521,7 +521,7 @@ const handleRemoveImage = async () => {
     if (filePath) {
       await deletePostImage(filePath);
       setUploadedPhotoUrl(null);
-      console.log('Image removed successfully.');
+      //console.log('Image removed successfully.');
     } else {
       console.error('Could not determine file path from URL:', uploadedPhotoUrl);
     }
@@ -566,16 +566,16 @@ const handleRemoveImage = async () => {
       const formattedTimeForDatabase = format(parsedTime, 'HH:mm:ss'); 
       // <-- Format to 'HH:mm:ss' for the database
 
-      console.log('Scheduled Time State:', scheduledTime);
-      console.log('Parsed Time (Date object):', parsedTime);
-      console.log('Formatted Time for Database (HH:mm:ss):', formattedTimeForDatabase);
+      //console.log('Scheduled Time State:', scheduledTime);
+      //console.log('Parsed Time (Date object):', parsedTime);
+      //console.log('Formatted Time for Database (HH:mm:ss):', formattedTimeForDatabase);
 
 
 
     // Format the Date object to 'HH:mm'
-    console.log('ParsedTime', parsedTime);
+    //console.log('ParsedTime', parsedTime);
     const formattedTime = format(parsedTime, 'HH:mm');
-    console.log('formattedTime', formattedTime);
+    //console.log('formattedTime', formattedTime);
 
     
     
@@ -631,7 +631,7 @@ const handleRemoveImage = async () => {
 
       if (error) {
       console.error('Supabase Insert Error:');
-      console.log('Error Details:', error); // Log the entire error object
+      //console.log('Error Details:', error); // Log the entire error object
       // Optionally, you can log specific properties for easier readability:
       // console.log('Error Message:', error.message);
       // console.log('Error Details:', error.details);

@@ -14,7 +14,8 @@ export function PaymentSuccessPage() {
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
     if (sessionId) {
-      console.log('Stripe Checkout Session ID:', sessionId);
+      //console.log('Stripe Checkout Session ID Done', sessionId);
+      console.log('Stripe Checkout Session ID Done');
       // In a real application, you would send this sessionId to your backend
       // to verify the payment and provision access.
     }
