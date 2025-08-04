@@ -20,10 +20,10 @@ export const HooksProvider = ({ children }: HooksProviderProps) => {
   // hooksError starts as null, also correct.
   const [hooksError, setHooksError] = useState<string | null>(null);
 
-  console.log('HooksProvider is rendering. isHooksLoading:', isHooksLoading); 
+  //console.log('HooksProvider is rendering. isHooksLoading:', isHooksLoading); 
   
   useEffect(() => {
-    console.log('useEffect in HooksProvider is running.');
+    //console.log('useEffect in HooksProvider is running.');
     const fetchHooks = async () => {
       // Remove these. isHooksLoading is already true from useState,
       // and hooksError is already null.

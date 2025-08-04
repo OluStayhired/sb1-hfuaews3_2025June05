@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // **Crucially, clear the hash from the URL after successful processing**
           // This makes the URL cleaner and prevents potential issues if the page reloads
           if (window.location.hash) {
-             console.log('Clearing URL hash after processing session.');
+             //console.log('Clearing URL hash after processing session.');
              window.history.replaceState({}, '', window.location.pathname);
           }
         } else {
@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
            setUser(null);
            // Also clear hash even if no session was found there, just in case
            if (window.location.hash) {
-              console.log('Clearing empty URL hash.');
+              //console.log('Clearing empty URL hash.');
               window.history.replaceState({}, '', window.location.pathname);
            }
         }
@@ -105,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
          setUser(null);
          // Clear hash even on error
           if (window.location.hash) {
-             console.log('Clearing URL hash after error loading session.');
+             //console.log('Clearing URL hash after error loading session.');
              window.history.replaceState({}, '', window.location.pathname);
           }
       } finally {
