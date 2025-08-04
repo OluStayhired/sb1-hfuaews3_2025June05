@@ -29,7 +29,7 @@ interface AccessAccountsProps {
 //const ConnectedAccountCard = ({ account, accountType, onDisconnect, isLoading, disconnectingAccount, onTimezoneChange }) => {
 const ConnectedAccountCard = ({ account, accountType, onDisconnect, isLoading, disconnectingAccount, onTimezoneChange }) => {
   // Debugging log: Check the account prop when it renders
-  console.log('ConnectedAccountCard rendering with account:', account);
+  //console.log('ConnectedAccountCard rendering with account:', account);
   if (account && account.social_channel === undefined) {
     console.error('social_channel is UNDEFINED for account:', account);
   }
@@ -43,9 +43,9 @@ const ConnectedAccountCard = ({ account, accountType, onDisconnect, isLoading, d
       case 'linkedin': return LinkedInLogo; // Placeholder, replace with actual SVG if available
       case 'twitter': return XLogo;
       case 'threads': return ThreadsLogo; // New Threads logo
-      case 'instagram': return InstagramLogo; // Placeholder, replace with actual SVG if available
-      case 'pinterest': return PinterestLogo; // Placeholder, replace with actual SVG if available
-      case 'tiktok': return TikTokLogo; // Placeholder, replace with actual SVG if available
+      //case 'instagram': return InstagramLogo; // Placeholder, replace with actual SVG if available
+      //case 'pinterest': return PinterestLogo; // Placeholder, replace with actual SVG if available
+      //case 'tiktok': return TikTokLogo; // Placeholder, replace with actual SVG if available
       default: return null; // Or a generic placeholder logo
     }
   };
@@ -394,7 +394,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
     setModalMessage(''); // Clear previous modal message
     setIsProPlanLimitModalOpen(false);
 
-    console.log(`[checkActionLimits] Action requested: ${action}`);
+    //console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -418,7 +418,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
               if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsProPlanLimitModalOpen(true);
-        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
       break;
@@ -430,7 +430,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                 setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
                 setIsProPlanLimitModalOpen(true);
 
-                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
 
               return false;
 
@@ -443,7 +443,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                   
                 setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
                 setIsProPlanLimitModalOpen(true);
-                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
           
                 return false;
               }
@@ -490,15 +490,15 @@ const handleOpenConnectSocialModal = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed =  await checkActionLimits('addAccount');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsConnectSocialModalOpen(true);
       }
@@ -509,7 +509,7 @@ const handleOpenConnectSocialModal = async () => {
   
 //handleconnect Twitter
 const handleConnectTwitter = async () => {
-  console.log('handleConnectTwitter: initiated');
+  //console.log('handleConnectTwitter: initiated');
   setTwitterLoading(true); // Start loading indicator
 
   try {
@@ -558,7 +558,7 @@ const handleConnectTwitter = async () => {
         return;
       }
 
-      console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
+      //console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
 
     } catch (dbError) {
       console.error('handleConnectTwitter: Unexpected error storing OAuth data:', dbError);
@@ -592,7 +592,7 @@ const handleConnectTwitter = async () => {
                     `code_challenge=${encodeURIComponent(code_challenge)}&` + // Send the code challenge
                     `code_challenge_method=S256`; // Indicate the challenge method
 
-    console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
+    //console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
 
     // 7. Redirect the user's browser to Twitter's authorization page
     //    The Edge Function will take over when Twitter redirects back to REDIRECT_URI
@@ -647,7 +647,7 @@ const handleConnectThreads = async () => {
         return;
       }
 
-      console.log('OAuth state stored successfully:', uniqueState);
+      //console.log('OAuth state stored successfully:', uniqueState);
 
     } catch (error) {
       console.error('Unexpected error storing OAuth state:', error);
@@ -673,7 +673,7 @@ const handleConnectThreads = async () => {
                   `state=${encodeURIComponent(uniqueState)}&` + // Send the state to Meta
                   `scope=${scopeParam}`;
 
-  console.log('Redirecting user to Meta authorization URL:', authUrl);
+  //console.log('Redirecting user to Meta authorization URL:', authUrl);
 
   // 6. Redirect the user's browser to Meta's authorization page
   //    The Edge Function will take over when Meta redirects back to REDIRECT_URI
@@ -683,14 +683,14 @@ const handleConnectThreads = async () => {
   
 //helper functions for checking Bluesky account status
 const handleConnectBluesky = () => {
-    console.log('Connecting to Bluesky');
+    //console.log('Connecting to Bluesky');
   setIsBlueskyModalOpen(true);
 };  
 
 const handleConnectLinkedIn = async () => {
-  console.log('Connecting to LinkedIn...');
-  console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
-  console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
+  //console.log('Connecting to LinkedIn...');
+  //console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
+  //console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -698,7 +698,7 @@ const handleConnectLinkedIn = async () => {
       console.error('No authenticated user found. User must be logged in to connect LinkedIn.');
       return;
     }
-    console.log('Authenticated user ID:', session.user.id);
+    //console.log('Authenticated user ID:', session.user.id);
 
     const currentUserId = session.user.id;
     const currentUserEmail = session.user.email;
@@ -723,7 +723,7 @@ const handleConnectLinkedIn = async () => {
         return;
       }
 
-      console.log('OAuth state stored successfully:', uniqueState);
+      //console.log('OAuth state stored successfully:', uniqueState);
 
     } catch (error) {
       console.error('Unexpected error storing OAuth state:', error);
@@ -740,7 +740,7 @@ const handleConnectLinkedIn = async () => {
                             `scope=${scopeParam}&` +
                             `state=${encodeURIComponent(uniqueState)}`;
 
-    console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
+    //console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
 
     window.location.href = linkedInAuthUrl;
 
@@ -789,12 +789,12 @@ const handleConnectLinkedIn = async () => {
 
 
 const refreshConnectedAccounts = async () => {
-    console.log('Refreshing connected accounts...');
+    //console.log('Refreshing connected accounts...');
     try {
       const { data: { session } } = await supabase.auth.getSession();
      
       if (!session?.user?.id) {
-        console.log('No authenticated user ID found for refresh.');
+        //console.log('No authenticated user ID found for refresh.');
         // Clear accounts if user logs out
         setConnectedAccounts([]);
         setLinkedinUser(null);
@@ -806,7 +806,7 @@ const refreshConnectedAccounts = async () => {
       }
       const currentUserId = session?.user?.id; 
 
-      console.log(`Workspaceing connected accounts for user ID: ${currentUserId}`);
+      //console.log(`Workspaceing connected accounts for user ID: ${currentUserId}`);
       const { data, error } = await supabase
         .from('social_channels')
         .select('*')
@@ -819,7 +819,7 @@ const refreshConnectedAccounts = async () => {
         throw error; // Throw to be caught by the outer catch if needed
       }
 
-      console.log('Fetched connected accounts data:', data);
+      //console.log('Fetched connected accounts data:', data);
 
       // Update the main list of connected accounts
       setConnectedAccounts(data || []); // Handle null case
@@ -876,11 +876,11 @@ const refreshConnectedAccounts = async () => {
      useEffect(() => {
        
         if (currentUserId) {
-            console.log('currentUserId detected, calling refreshConnectedAccounts...');
+            //console.log('currentUserId detected, calling refreshConnectedAccounts...');
             refreshConnectedAccounts();
         } else {
             
-            console.log('currentUserId is null, clearing connected accounts state...');
+            //console.log('currentUserId is null, clearing connected accounts state...');
             setConnectedAccounts([]);
             setLinkedinUser(null);
             setThreadsUser(null);
@@ -896,7 +896,7 @@ const refreshConnectedAccounts = async () => {
   //---------- Handle Disconnect Social Accounts ---------------//
 
   const handleDisconnectTwitter = async () => {
-  console.log('Attempting to disconnect Twitter account...');
+  //console.log('Attempting to disconnect Twitter account...');
 
   // Check if the Twitter account state has data and if the user is authenticated
   if (!twitterUser?.id || !currentUserId) {
@@ -929,7 +929,7 @@ const refreshConnectedAccounts = async () => {
       throw updateError; // Propagate the error to the catch block
     }
 
-    console.log(`Successfully marked Twitter account (${twitterUser.handle}) as inactive in DB.`);
+    //console.log(`Successfully marked Twitter account (${twitterUser.handle}) as inactive in DB.`);
 
     // Refresh the list of connected accounts to update the UI
     await refreshConnectedAccounts();
@@ -946,7 +946,7 @@ const refreshConnectedAccounts = async () => {
 };  
 
   const handleDisconnectLinkedIn = async () => {
-  console.log('Attempting to disconnect LinkedIn account...');
+  //console.log('Attempting to disconnect LinkedIn account...');
 
   if (!linkedinUser?.id || !currentUserId) {
     console.error('No connected LinkedIn account found in state or user not authenticated.');
@@ -973,7 +973,7 @@ const refreshConnectedAccounts = async () => {
       throw updateError;
     }
 
-    console.log(`Successfully marked LinkedIn account (${linkedinUser.handle}) as inactive in DB.`);
+    //console.log(`Successfully marked LinkedIn account (${linkedinUser.handle}) as inactive in DB.`);
 
     await refreshConnectedAccounts();
     
@@ -1121,7 +1121,7 @@ const handleRequestMoreBskyAcct = async () => {
     if (existingAccounts && existingAccounts.length > 0) {
       setIsModalOpen(true);
     } else {
-      console.log('Please connect a Bluesky account first');
+      //console.log('Please connect a Bluesky account first');
     }
 
   } catch (err) {
@@ -1136,10 +1136,10 @@ const handleBlueskyButtonClick = async () => {
   const hasActiveSession = await checkActiveBlueskySession();
   
   if (hasActiveSession) {
-    console.log('Executing handleRequestMoreBskyAcct')
+    //console.log('Executing handleRequestMoreBskyAcct')
     handleRequestMoreBskyAcct();
   } else {
-    console.log('Executing handleConnectBluesky')
+    //console.log('Executing handleConnectBluesky')
     handleConnectBluesky();
   }
 };    
