@@ -45,7 +45,7 @@ export function CalendarList({
   
 
   const handleCreateCalendarClick = () => {
-    console.log('Create Campaign button clicked in ViewCalendars!');
+    //console.log('Create Campaign button clicked in ViewCalendars!');
     setIsCreateCalendarFormOpen(true);
   };  
 

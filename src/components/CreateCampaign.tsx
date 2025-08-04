@@ -221,7 +221,7 @@ useEffect(() => {
     setModalMessage(''); // Clear previous modal message
     setIsUpgradeModalOpen(false);
 
-    console.log(`[checkActionLimits] Action requested: ${action}`);
+    //console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -245,17 +245,17 @@ useEffect(() => {
       //const hasExceededCampaigns = userPreferences.total_campaign >= MAX_FREE_CAMPAIGNS;
       const hasExceededCampaigns = remainingCampaigns <= 0 ;       
 
-      //console.log(`[checkActionLimits] Is Limited Account Type for Campaign: ${isLimitedCampaignAccountType}`);
-      //console.log(`[checkActionLimits] Has Exceeded Campaigns: ${hasExceededCampaigns}`);
-      //console.log(`[checkActionLimits] Full Condition: ${isLimitedCampaignAccountType && hasExceededCampaigns}`);
+      ////console.log(`[checkActionLimits] Is Limited Account Type for Campaign: ${isLimitedCampaignAccountType}`);
+      ////console.log(`[checkActionLimits] Has Exceeded Campaigns: ${hasExceededCampaigns}`);
+      ////console.log(`[checkActionLimits] Full Condition: ${isLimitedCampaignAccountType && hasExceededCampaigns}`);
 
       if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsUpgradeModalOpen(true);
-        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
-      //console.log("[checkActionLimits] Campaign limits cleared. Continuing.");
+      ////console.log("[checkActionLimits] Campaign limits cleared. Continuing.");
       break;
 
     case 'addAccount':
@@ -263,17 +263,17 @@ useEffect(() => {
       const isLimitedAccountAccountType = limitedAccountTypes.includes(userPreferences.account_type);
       const hasExceededAccounts = (userPreferences.social_accounts || 0) >= MAX_FREE_ACCOUNTS;
 
-      //console.log(`[checkActionLimits] Is Limited Account Type for Add Account: ${isLimitedAccountAccountType}`);
-      //console.log(`[checkActionLimits] Has Exceeded Accounts: ${hasExceededAccounts}`);
-      //console.log(`[checkActionLimits] Full Condition: ${isLimitedAccountAccountType && hasExceededAccounts}`);
+      ////console.log(`[checkActionLimits] Is Limited Account Type for Add Account: ${isLimitedAccountAccountType}`);
+      ////console.log(`[checkActionLimits] Has Exceeded Accounts: ${hasExceededAccounts}`);
+      ////console.log(`[checkActionLimits] Full Condition: ${isLimitedAccountAccountType && hasExceededAccounts}`);
 
       if (isLimitedAccountAccountType && hasExceededAccounts) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type} plan. Upgrade to connect more!`);
         setIsUpgradeModalOpen(true);
-        console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+        //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
         return false;
       }
-      //console.log("[checkActionLimits] Account limits cleared. Continuing.");
+      ////console.log("[checkActionLimits] Account limits cleared. Continuing.");
       break;
 
             default:
@@ -281,7 +281,7 @@ useEffect(() => {
                 return false; // Or throw error
         }
 
-        //console.log("[checkActionLimits] All relevant checks passed. Returning true.");
+        ////console.log("[checkActionLimits] All relevant checks passed. Returning true.");
         return true;
 
     } catch (e: any) {
@@ -319,7 +319,7 @@ const handleDiscoverAudience = async (): Promise<boolean> => {
 };
 
 const handleCreateCalendarClick = async () => {
-  //console.log('Create Campaign button clicked in ViewCalendars!');
+  ////console.log('Create Campaign button clicked in ViewCalendars!');
 
   setError(null);
 
@@ -328,15 +328,15 @@ const handleCreateCalendarClick = async () => {
         return; // Already busy with something
     }
 
-  console.log("Starting limit check...");
+  //console.log("Starting limit check...");
     const canProceed = await checkActionLimits('createCampaign');
 
     if (!canProceed) {
-        console.log("Limit check failed. Modal should be open. Returning.");
+        //console.log("Limit check failed. Modal should be open. Returning.");
         return; // This return is crucial and should prevent anything below from running
     }
 
-    console.log("Limit check passed. Proceeding with campaign creation logic.");
+    //console.log("Limit check passed. Proceeding with campaign creation logic.");
     setUserMessage('');
  //-------------- End Checking Limits Here --------------- //
   
@@ -345,7 +345,7 @@ const handleCreateCalendarClick = async () => {
     if (insightsFetchedSuccessfully) {
       setIsCreateCalendarFormOpen(true);
     } else {
-      console.log("Create Calendar Form not opened because company insights could not be retrieved.");
+      //console.log("Create Calendar Form not opened because company insights could not be retrieved.");
     }
   } else {
     setIsCreateCalendarFormOpen(true);
@@ -355,7 +355,7 @@ const handleCreateCalendarClick = async () => {
 
   {/* Old version of the Create Calendar Click
   const handleCreateCalendarClick = () => {
-    console.log('Create Campaign button clicked in ViewCalendars!');
+    //console.log('Create Campaign button clicked in ViewCalendars!');
     setIsCreateCalendarFormOpen(true);
   };
   */}
@@ -386,8 +386,8 @@ const fetchCalendarList = async () => {
       `)
       .eq('email', currentUserEmail);
 
-        //console.log("calendarData:", calendarData);
-        //console.log("user?.handle:", user?.handle);
+        ////console.log("calendarData:", calendarData);
+        ////console.log("user?.handle:", user?.handle);
     
         if (calendarError) {
             console.error("calendarError:", calendarError);
@@ -401,7 +401,7 @@ const fetchCalendarList = async () => {
       social_goals: Array.isArray(calendar.social_goals) ? calendar.social_goals : [],
       target_audience: calendar.target_audience || ''
     })));
-     console.log('how many calendars: ', calendarList.length );
+     //console.log('how many calendars: ', calendarList.length );
 
   } catch (err) {
     console.error('Error fetching calendar list:', err);
@@ -454,7 +454,7 @@ const fetchCalendarContent = async () => {
 
     const calendarDataWithInfo = await Promise.all(calendarDataPromises);
     setCalendarCompleteList(calendarDataWithInfo);
-    console.log('how many days of content: ', calendarCompleteList.length )
+    //console.log('how many days of content: ', calendarCompleteList.length )
     // Filter out inactive calendars
     const activeCalendarContent = calendarDataWithInfo.filter((calendar) => calendar.active);
 
@@ -627,7 +627,7 @@ const handleViewCalendarList = () => {
                   <div className="flex-grow"> 
                     <CreateCalendarForm
                           onSuccess={(campaignName) => {
-                          console.log('Campaign created successfully');
+                          //console.log('Campaign created successfully');
                           setCreatedCampaignName(campaignName);
                           setIsCampaignSuccessModalOpen(true);
                           setIsCreateCalendarFormOpen(false); 
@@ -649,7 +649,7 @@ const handleViewCalendarList = () => {
               {selectedCalendar && currentUserEmail && (
                           <div className="mt-8 w-full">
                             
-                            {/*console.log('Rendering ShowCalendarContent with calendar:', selectedCalendar, 'and email:', currentUserEmail, 'and onBackToList:', handleBackToList)*/}
+                            {/*//console.log('Rendering ShowCalendarContent with calendar:', selectedCalendar, 'and email:', currentUserEmail, 'and onBackToList:', handleBackToList)*/}
                             
                               <ShowCalendarContent
                                 calendarName={selectedCalendar}

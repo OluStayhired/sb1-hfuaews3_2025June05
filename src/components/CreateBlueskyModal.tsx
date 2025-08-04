@@ -17,7 +17,7 @@ interface CreateBlueskyModalProps {
 }
 
 const debugLog = (message: string, data?: any) => {
-  console.log(`[BlueSky Auth] ${message}`, data || '');
+  //console.log(`[BlueSky Auth] ${message}`, data || '');
 };
 
 export function CreateBlueskyModal({ isOpen, onClose, onSuccess, isPaidPlan, onAccountAdded, onAccountAddedDisplay }: CreateBlueskyModalProps) {
@@ -238,12 +238,12 @@ useEffect(() => {
       debugLog('Login successful');
       
              if (onAccountAdded) {
-                console.log("CreateBlueskyModal : Executing onAccountAdded")  
+                //console.log("CreateBlueskyModal : Executing onAccountAdded")  
                 onAccountAdded(); //Refresh the list
                 }  
 
             if (onAccountAddedDisplay) {
-               console.log("CreateBlueskyModal : Executing onAccountAddedDisplay")  
+               //console.log("CreateBlueskyModal : Executing onAccountAddedDisplay")  
                 onAccountAddedDisplay(); //Refresh the list          
             }
       

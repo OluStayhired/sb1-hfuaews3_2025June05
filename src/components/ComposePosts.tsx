@@ -178,7 +178,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
     setModalMessage(''); // Clear previous modal message
     setIsProPlanLimitModalOpen(false);
 
-    console.log(`[checkActionLimits] Action requested: ${action}`);
+    //console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -202,7 +202,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
               if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsProPlanLimitModalOpen(true);
-        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
       break;
@@ -214,7 +214,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                 setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
                 setIsProPlanLimitModalOpen(true);
 
-                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
 
               return false;
 
@@ -227,7 +227,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                   
                 setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
                 setIsProPlanLimitModalOpen(true);
-                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
           
                 return false;
               }
@@ -405,7 +405,7 @@ useEffect(() => {
   };
 
   const handleConnectLinkedIn = () => {
-    console.log('Connecting to LinkedIn');
+    //console.log('Connecting to LinkedIn');
   };
 
   const fetchConnectedAccounts = async () => {
@@ -516,7 +516,7 @@ useEffect(() => {
       })
       .eq('id', accountId);
     
-    console.log('Post successful:', postResult);
+    //console.log('Post successful:', postResult);
     return true;
     
   } catch (error) {
@@ -526,7 +526,7 @@ useEffect(() => {
 };
 
 const handlePostOnLinkedIn = async (postId: string): Promise<boolean> => {
-  console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', postId);
+  //console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', postId);
 
   if (!VITE_LINKEDIN_POSTER_URL) {
       console.error('handlePostOnLinkedIn: LinkedIn poster Edge Function URL is not configured.');
@@ -547,10 +547,10 @@ const handlePostOnLinkedIn = async (postId: string): Promise<boolean> => {
       body: JSON.stringify({ postId: postId }), // Send the postId in the request body
     });
 
-    console.log('handlePostOnLinkedIn: Edge Function response status:', response.status);
+    //console.log('handlePostOnLinkedIn: Edge Function response status:', response.status);
 
     const responseBody = await response.json();
-    console.log('handlePostOnLinkedIn: Edge Function response body:', responseBody);
+    //console.log('handlePostOnLinkedIn: Edge Function response body:', responseBody);
 
 
     if (!response.ok) {
@@ -563,7 +563,7 @@ const handlePostOnLinkedIn = async (postId: string): Promise<boolean> => {
     // Check the response body from the Edge Function for success details
     // (Your Edge Function returns { message: '...', linkedinPostId: '...' })
     if (responseBody.message === 'LinkedIn post successful') {
-         console.log('handlePostOnLinkedIn: Edge Function confirmed successful LinkedIn post.');
+         //console.log('handlePostOnLinkedIn: Edge Function confirmed successful LinkedIn post.');
          // Optionally, store the linkedinPostId returned in responseBody.linkedinPostId
          // if you need it on the frontend.
         return true; // Indicate success
@@ -585,7 +585,7 @@ const handlePostOnLinkedIn = async (postId: string): Promise<boolean> => {
 
 //handle Post function for Twitter
 const handlePostOnTwitter = async (postId: string): Promise<boolean> => {
-  console.log('handlePostOnTwitter: Triggering Edge Function for postId:', postId);
+  //console.log('handlePostOnTwitter: Triggering Edge Function for postId:', postId);
 
   // --- Check for the Twitter poster Edge Function URL environment variable ---
   if (!VITE_TWITTER_POSTER_URL) { // Use process.env.VITE_... based on your build tool
@@ -606,13 +606,13 @@ const handlePostOnTwitter = async (postId: string): Promise<boolean> => {
       body: JSON.stringify({ postId: postId }), // Send the postId in the request body
     });
 
-    console.log('handlePostOnTwitter: Edge Function response status:', response.status);
+    //console.log('handlePostOnTwitter: Edge Function response status:', response.status);
 
     // Attempt to parse the response body as JSON for logging/error details
     let responseBody = null;
     try {
          responseBody = await response.json();
-         console.log('handlePostOnTwitter: Edge Function response body:', responseBody);
+         //console.log('handlePostOnTwitter: Edge Function response body:', responseBody);
     } catch (jsonParseError) {
         console.error('handlePostOnTwitter: Failed to parse Edge Function response body as JSON:', jsonParseError);
          // Even if parsing fails, we can still check response.ok and status
@@ -635,7 +635,7 @@ const handlePostOnTwitter = async (postId: string): Promise<boolean> => {
     // It returns other error messages/structures on failure (!response.ok)
 
     if (responseBody && (responseBody.message === 'Twitter post successful' || responseBody.message === 'Post detected as duplicate by Twitter')) {
-         console.log('handlePostOnTwitter: Edge Function confirmed Twitter post handled (success or duplicate).');
+         //console.log('handlePostOnTwitter: Edge Function confirmed Twitter post handled (success or duplicate).');
          // Optionally, store the twitterPostId returned in responseBody.twitterPostId
          // if you need it on the frontend.
         return true; // Indicate success (task handled by Edge Function)
@@ -690,7 +690,7 @@ if (!activeAccountId) {
     // --- Branching logic based on social_channel ---
     if (activeAccount.social_channel === 'Bluesky') {
       // --- Bluesky Posting (Direct Client-Side API Call) ---
-      console.log('handleSubmit: Calling client-side Bluesky post handler.');
+      //console.log('handleSubmit: Calling client-side Bluesky post handler.');
       // Call the original handlePostOnBluesky function
       success = await handlePostOnBluesky(postContent, activeAccountId);
 
@@ -698,25 +698,25 @@ if (!activeAccountId) {
 
     } else if (activeAccount.social_channel === 'LinkedIn' || activeAccount.social_channel === 'Twitter') {
       // --- Backend-Triggered Posting (LinkedIn, Twitter, etc.) ---
-      console.log(`handleSubmit: Handling backend-triggered post for ${activeAccount.social_channel}.`);
+      //console.log(`handleSubmit: Handling backend-triggered post for ${activeAccount.social_channel}.`);
 
       // --- STEP 1: Create a pending post record in the database ---
       // This record will hold the content and link it to the user and social channel
       // Use your standard Supabase client here (not the service role one) as this is frontend
-      console.log('handleSubmit: Creating pending post record in user_post_schedule...');
+      //console.log('handleSubmit: Creating pending post record in user_post_schedule...');
       // Ensure currentUserId is available in this scope
       if (!currentUserId) {
           console.error('handleSubmit: Current user ID is not available.');
            // TODO: Show an authentication error to the user
            throw new Error('User not authenticated');
       }
-      //console.log('currentUserId: ', currentUserId);
-      //console.log('currentUserEmail: ', currentUserEmail);
-      //console.log('activeAccount.social_channel: ', activeAccount.social_channel);
-      //console.log('Account_Id: ', activeAccount.id);
-      //console.log('user_handle: ', activeAccount.handle);
-      //console.log('full_content: ', postContent);
-      //console.log('display_name: ', activeAccount.display_name);
+      ////console.log('currentUserId: ', currentUserId);
+      ////console.log('currentUserEmail: ', currentUserEmail);
+      ////console.log('activeAccount.social_channel: ', activeAccount.social_channel);
+      ////console.log('Account_Id: ', activeAccount.id);
+      ////console.log('user_handle: ', activeAccount.handle);
+      ////console.log('full_content: ', postContent);
+      ////console.log('display_name: ', activeAccount.display_name);
       
       
       const { data: newPostData, error: insertError } = await supabase
@@ -754,17 +754,17 @@ if (!activeAccountId) {
       }
 
       const postId = newPostData.id; // Get the ID of the newly created post record
-      console.log('handleSubmit: Pending post record created with ID:', postId);
+      //console.log('handleSubmit: Pending post record created with ID:', postId);
 
 
       // --- STEP 2: Call the appropriate Edge Function trigger handler with the postId ---
       if (activeAccount.social_channel === 'LinkedIn') {
-         console.log('handleSubmit: Calling handlePostOnLinkedIn with postId:', postId);
+         //console.log('handleSubmit: Calling handlePostOnLinkedIn with postId:', postId);
         // Call the new handlePostOnLinkedIn function, passing the postId
         success = await handlePostOnLinkedIn(postId);
 
       } else if (activeAccount.social_channel === 'Twitter') {
-         console.log('handleSubmit: Calling handlePostOnTwitter with postId:', postId);
+         //console.log('handleSubmit: Calling handlePostOnTwitter with postId:', postId);
         // TODO: Implement handlePostOnTwitter(postId) similar to handlePostOnLinkedIn
         success = await handlePostOnTwitter(postId);
          //success = false; // Placeholder for Twitter until implemented
@@ -782,7 +782,7 @@ if (!activeAccountId) {
 
     // --- Handle the outcome based on the 'success' flag ---
     if (success) {
-      console.log('handleSubmit: Posting process reported success.');
+      //console.log('handleSubmit: Posting process reported success.');
       setContent(''); // Clear content after successful post
       // TODO: Show a success message notification (e.g., "Post is being sent!")
     } else {
@@ -937,7 +937,7 @@ if (!activeAccountId) {
   if (matchingAccount) {
     // If a matching connected account is found, set it as active
     setActiveAccountId(matchingAccount.id);
-    console.log(`Draft continued for account: ${userHandle} on ${socialChannel}. Tab set.`);
+    //console.log(`Draft continued for account: ${userHandle} on ${socialChannel}. Tab set.`);
     // UX improvement: Optionally, provide a temporary visual confirmation to the user
     // e.g., a toast notification: "Draft loaded! Account set to @yourhandle (Platform)"
   } else {

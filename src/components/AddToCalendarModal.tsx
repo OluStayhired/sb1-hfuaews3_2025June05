@@ -91,7 +91,7 @@ const validateAndSetDate = (selectedDate: Date, setDateError:
     if (selectedChannel) {
       const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
       if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        //console.log('Selected Social Channel:', activeAccount.social_channel); 
         switch (activeAccount.social_channel) {
           case 'Bluesky':
             setMaxLength(300);
@@ -122,7 +122,7 @@ useEffect(() => {
     if (selectedChannel) {
       const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
       if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        //console.log('Selected Social Channel:', activeAccount.social_channel); 
         switch (activeAccount.social_channel) {
           case 'Bluesky':
             setMaxLength(300);

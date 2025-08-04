@@ -91,14 +91,14 @@ export function ContentCalendarModal({
 
 const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
 
-  //console.log('itemid: ', item.id)
-  //console.log('char_length: ', char_length)
+  ////console.log('itemid: ', item.id)
+  ////console.log('char_length: ', char_length)
 
   const uniqueKey = `${item.id}_${char_length}`;
   setLoadingProcess(uniqueKey);
 
-  //console.log('loadingProcess:  ', loadingProcess)
-  //console.log('uniqueKey:  ', uniqueKey)
+  ////console.log('loadingProcess:  ', loadingProcess)
+  ////console.log('uniqueKey:  ', uniqueKey)
   
   await new Promise(resolve => setTimeout(resolve, 2000));
   
@@ -112,7 +112,7 @@ const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
       char_length
     );
 
-    //console.log('executing the Hook Posts Here')
+    ////console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error)
       else {
@@ -133,14 +133,14 @@ const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
 
 const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
 
-  //console.log('itemid: ', item.id)
-  //console.log('char_length: ', char_length)
+  ////console.log('itemid: ', item.id)
+  ////console.log('char_length: ', char_length)
 
   const uniqueKey = `${item.id}_${char_length}`;
   setLoadingProcess(uniqueKey);
 
-  //console.log('loadingProcess:  ', loadingProcess)
-  //console.log('uniqueKey:  ', uniqueKey)
+  ////console.log('loadingProcess:  ', loadingProcess)
+  ////console.log('uniqueKey:  ', uniqueKey)
   
   await new Promise(resolve => setTimeout(resolve, 2000));
   
@@ -154,7 +154,7 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
       char_length
     );
 
-    //console.log('executing the Hook Posts Here')
+    ////console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error)
       else {
@@ -272,7 +272,7 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
               <button
                 
                 onClick={() => {
-                    //console.log('Clicked LinkedIn. item.id:', item.id, 'char_length:', '700');
+                    ////console.log('Clicked LinkedIn. item.id:', item.id, 'char_length:', '700');
                     handleHookPostV3(item, '700')}}
                 disabled={loadingProcess === `${item.id}_700`|| isHooksLoading || hooksError !== null}
                
@@ -289,7 +289,7 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
                 </>  
                 ) : (
               <>
-                {/*console.log('Not Loading LinkedIn, loadingProcess:', loadingProcess, 'Expected:', `${item.id}_700`)*/}
+                {/*//console.log('Not Loading LinkedIn, loadingProcess:', loadingProcess, 'Expected:', `${item.id}_700`)*/}
                 <img src={LinkedInLogo} className="w-3 h-3" />
                 </>
                  )}

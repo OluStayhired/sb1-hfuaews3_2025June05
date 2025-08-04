@@ -243,7 +243,7 @@ function cleanAndParseJSON(text: string): any {
       .trim();
 
     // Try to parse the cleaned text
-    console.log('cleanedText:', cleanedText)
+    //console.log('cleanedText:', cleanedText)
     return JSON.parse(cleanedText);
   } catch (err) {
     console.error('JSON parsing error:', err);
@@ -460,8 +460,8 @@ const getWeekday = (date: Date): string => {
   }
 
   // Now you have both userEmail and userId available to use
-  //console.log('User Email:', userEmail);
-  //console.log('User ID:', userId);
+  ////console.log('User Email:', userEmail);
+  ////console.log('User ID:', userId);
 
 // --- START OF END_DATE FIXES ---
 
@@ -546,7 +546,7 @@ const getWeekday = (date: Date): string => {
 
       if (generatedCalendar.error) throw new Error(generatedCalendar.error);
 
-      console.log('generated content:', generatedCalendar.text )
+      //console.log('generated content:', generatedCalendar.text )
 
 // Force UTF-8 encoding
         const decoder = new TextDecoder('utf-8');

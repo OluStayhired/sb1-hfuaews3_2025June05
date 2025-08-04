@@ -187,10 +187,10 @@ const handleBlueskyButtonClick = async () => {
   const hasActiveSession = await checkPlatformConnection('Bluesky');
   
   if (hasActiveSession) {
-    //console.log('account has an active session')
+    ////console.log('account has an active session')
     handleRequestMoreBskyAcct();
   } else {
-    //console.log('account DOES NOT have an active session')
+    ////console.log('account DOES NOT have an active session')
     handleConnectBluesky();
   }
 };
@@ -201,14 +201,14 @@ const handleBlueskyButtonClick = async () => {
 const checkSocials = async () => {
   const socials = await checkConnectedSocials();
   if (socials) {
-    console.log('Bluesky connected:', socials.bluesky);
-    console.log('LinkedIn connected:', socials.linkedin);
+    //console.log('Bluesky connected:', socials.bluesky);
+    //console.log('LinkedIn connected:', socials.linkedin);
   }
 };
 
 const checkBluesky = async () => {
   const isConnected = await checkPlatformConnection('Bluesky');
-  console.log('Bluesky connected:', isConnected);
+  //console.log('Bluesky connected:', isConnected);
 };  
   
 
@@ -360,7 +360,7 @@ const isTimeSlotInactive = (dayOfWeek: string, timeSlot: string, scheduleData: a
   );
 
   if (!matchingSlot) {
-     //console.log('No matching slot found for Day:', dayOfWeek, 'Target timeSlot (HH:mm):', timeSlot, 'in scheduleData.');
+     ////console.log('No matching slot found for Day:', dayOfWeek, 'Target timeSlot (HH:mm):', timeSlot, 'in scheduleData.');
      return false; 
     // No matching slot means it's not *inactive* from the schedule perspective
   }
@@ -383,7 +383,7 @@ const isTimeSlotInactive = (dayOfWeek: string, timeSlot: string, scheduleData: a
         .select('schedule_time, day_of_week, active_day, active_time')
         .eq('email', session.user.email);
 
-      //console.log('Raw Schedule Data:', scheduleData);
+      ////console.log('Raw Schedule Data:', scheduleData);
 
       if (scheduleError) throw scheduleError;
 
@@ -582,7 +582,7 @@ const isTimeSlotInactive = (dayOfWeek: string, timeSlot: string, scheduleData: a
   }        
     
     // Implementation for new post creation
-    console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
+    //console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
     setSelectedDate(date);
     setSelectedTime(time);
     setIsModalOpen(true);
@@ -646,7 +646,7 @@ const handleDelete = async (postId: string) => {
       throw new Error('No authenticated user found');
     }
     
-//console.log("Post Id:", postId);
+////console.log("Post Id:", postId);
     
     // Delete the post from the database
     const { error } = await supabase
@@ -788,7 +788,7 @@ const handleEmptySlotClick = (date: Date, time: string) => {
 };  
 
   
-//console.log("Schedules State:", schedules);
+////console.log("Schedules State:", schedules);
   
   if (isLoading) {
     return (
@@ -849,14 +849,14 @@ const handleEmptySlotClick = (date: Date, time: string) => {
             // Extract time from post.content_time (HH:mm:ss format)
             const postTime = post.content_time.substring(0, 5); // Get HH:mm
 
-            //console.log('Day date:', day.date);
-            //console.log('Post time:', postTime);
-            //console.log('Schedule data:', scheduleData);  
+            ////console.log('Day date:', day.date);
+            ////console.log('Post time:', postTime);
+            ////console.log('Schedule data:', scheduleData);  
   
            // Check if this post's time slot is disabled
             const isPostSlotDisabled = calculateDisabledSlotTime(day.date, postTime, scheduleData);
 
-          //console.log('Is post slot disabled:', isPostSlotDisabled);              
+          ////console.log('Is post slot disabled:', isPostSlotDisabled);              
   
           return (
             <div 
