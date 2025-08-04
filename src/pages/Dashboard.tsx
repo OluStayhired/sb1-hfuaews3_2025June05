@@ -1075,7 +1075,7 @@ if(path !== "settings") {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <LayoutGrid className="w-4 h-4"/>
+                {/*<LayoutGrid className="w-4 h-4"/>*/}
                 <span className="font-medium">Dashboard</span>
               </button>
 
@@ -1089,7 +1089,7 @@ if(path !== "settings") {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Sparkles className="w-4 h-4"/>
+                {/*<Sparkles className="w-4 h-4"/>*/}
                 <span className="font-medium">Campaigns</span>
               </button>
 
@@ -1102,7 +1102,7 @@ if(path !== "settings") {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                 <FileEdit className="w-4 h-4"/>
+                 {/*<FileEdit className="w-4 h-4"/>*/}
                 <span className="font-medium">Drafts</span>
               </button>
 
@@ -1115,7 +1115,7 @@ if(path !== "settings") {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <CalendarClock className="w-4 h-4"/>
+                {/*<CalendarClock className="w-4 h-4"/>*/}
                 <span className="font-medium">Posts</span>
               </button>
 
