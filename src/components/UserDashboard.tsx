@@ -1089,15 +1089,16 @@ const handleOpenScheduledPost = async () => {
 
           {/*----------------- Start Button to Generate Posts ------------------*/}
 
-      <span className="py-6 items-center justify-center">
+      <span className="py-4 items-center justify-center">
     <TooltipExtended text="⚡Get a full calendar of posts and ideas in just a few seconds" >
           <button
-              onClick={handleCreateCampaign}
-            className="text-blue-500 font-medium justify-center inline-flex items-center px-4 py-2 rounded-full text-base
-           bg-white border border-blue-200 rounded-lg hover:border-blue-400 transition-all group"
+            onClick={handleCreateCampaign}
+            className="text-white font-medium justify-center inline-flex items-center px-4 py-2 rounded-full text-base
+           bg-blue-500 border border-blue-500 rounded-md hover:border-blue-500 hover:bg-blue-600 transition-all group shadow-lg shadow-blue-500/60 hover:shadow-xl hover:shadow-blue-500/80"
             >
-              <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
-                Generate Posts Today ⚡
+              <Sparkles className="w-4 h-4 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
+                Start Generating Posts
+              <ArrowRight className="ml-2 w-4 h-4 text-white"/>
             </button>
         </TooltipExtended>
     </span>
@@ -1144,7 +1145,7 @@ const handleOpenScheduledPost = async () => {
       <TooltipExtended text="⚡Add your posts to existing time slots OR create new time slots" >
         <button
           onClick={handleSchedulePost}
-          className="flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-100 text-gray-700 font-medium border border-gray-600
+          className="flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-100 text-gray-700 font-medium border border-gray-500
                     transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
         >
           <PlusCircle className="mr-2 w-4 h-4" />

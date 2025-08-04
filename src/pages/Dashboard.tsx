@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { CalendarCheck, Sparkles, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target, Combine, PlusCircle } from 'lucide-react';
+import { CalendarCheck, Sparkles, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target, Combine, PlusCircle, LayoutGrid, FileEdit, CalendarClock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ComposePosts from '../components/ComposePosts';
 import ManageSchedule from '../components/ManageSchedule';
@@ -1066,6 +1066,20 @@ if(path !== "settings") {
             </div>
           
             <div className="ml-24 flex items-center space-x-8">
+             
+              <button 
+                onClick={() => navigate('userdashboard')}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                  location.pathname.includes('userdashboard')
+                    ? 'text-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <LayoutGrid className="w-4 h-4"/>
+                <span className="font-medium">Dashboard</span>
+              </button>
+
+              
               <button 
                 //onClick={() => navigate('calendars')}
                 onClick={handleNavigateCalendar}
@@ -1075,7 +1089,21 @@ if(path !== "settings") {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
+                <Sparkles className="w-4 h-4"/>
                 <span className="font-medium">Campaigns</span>
+              </button>
+
+               <button 
+                //onClick={() => navigate('compose')}
+                onClick={handleNavigateDrafts}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                  location.pathname.includes('compose')
+                    ? 'text-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                 <FileEdit className="w-4 h-4"/>
+                <span className="font-medium">Drafts</span>
               </button>
 
               <button 
@@ -1087,31 +1115,13 @@ if(path !== "settings") {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
+                <CalendarClock className="w-4 h-4"/>
                 <span className="font-medium">Posts</span>
               </button>
 
-              <button 
-                //onClick={() => navigate('compose')}
-                onClick={handleNavigateDrafts}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                  location.pathname.includes('compose')
-                    ? 'text-blue-600'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <span className="font-medium">Drafts</span>
-              </button>
+             
 
-                <button 
-                onClick={() => navigate('userdashboard')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                  location.pathname.includes('userdashboard')
-                    ? 'text-blue-600'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <span className="font-medium">Dashboard</span>
-              </button>
+             
 
               <button 
                 onClick={() => navigate('feedback')}
@@ -1121,7 +1131,7 @@ if(path !== "settings") {
                     : 'text-blue-500 bg-blue-50 hover:bg-blue-100'
                 }`}
               >
-                       <ThumbsUp className="w-3.5 h-3.5"/>        
+                       <ThumbsUp className="w-4 h-4"/>        
                 <span className="font-medium">Feedback</span>
               </button>
 
@@ -1173,8 +1183,20 @@ if(path !== "settings") {
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                </div>
+                  <p className="text-sm text-gray-500">{user.email}</p>   
+      {isEarlyAdopter && (   
+                  <span className="p-1 bg-gray-100 rounded-full text-gray-700 text-xs border border-gray-300"> Early Adopter </span>
+                )} 
+                  
+        {isFreePlan && (   
+                  <span className="p-1 bg-gray-100 rounded-full text-gray-700 text-xs border border-gray-300"> Free Plan </span>
+                )}
+
+        {isPaidPlan && (   
+                  <span className="p-1 bg-gray-100 rounded-full text-gray-700 text-xs border border-gray-300"> Pro Plan </span>
+                )}
+                </div> 
+                
               </div>
               <button
                 onClick={handleLogout}

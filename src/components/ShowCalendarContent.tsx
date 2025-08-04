@@ -6,7 +6,7 @@ import { format, parseISO, addWeeks, addDays, isWithinInterval, differenceInDays
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
-import { Calendar, Check, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine, ImagePlus } from 'lucide-react';
+import { Calendar, Check, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine, ImagePlus, ellipsis, info } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3 } from '../lib/gemini';
 import { ContentModal } from './ContentModal';
 import { AddToCalendarModal } from './AddToCalendarModal'
@@ -384,7 +384,7 @@ const handleConnectLinkedIn = () => {
    if (onBackToList) {
       console.log("Calling onBackToList");
   onBackToList();
-  fetchCalendarList();   
+  //fetchCalendarList();   
     } else {
       console.error("onBackToList is not defined!");
     }
@@ -1668,9 +1668,12 @@ const getScheduleButtonTooltip = () => {
   
       </div>
             
-    <div className="absolute bottom-2 left-2 flex items-center space-x-2 ml-1">
-        
-          <div className="space-x-2 flex-wrap">
+            {/*<div className="absolute bottom-2 left-2 flex items-center space-x-2 ml-1">*/}
+            <div className="absolute bottom-2 left-2 flex items-center space-x-2 ml-1 group">
+
+              
+              {/*<div className="space-x-2 flex-wrap">*/}
+              <div className="space-x-2 flex-wrap opacity-30 group-hover:opacity-100 transition-opacity duration-300">
 
             {/*<TooltipHelp  text = "⚡LinkedIn Max Limit 600 ">*/}
           <TooltipHelp  text = {`⚡${content.content.length}/600 chars`}>
@@ -1717,11 +1720,11 @@ const getScheduleButtonTooltip = () => {
                 </span>
             </div>
             </TooltipHelp>
-
-
-            
+       
           </div>           
         </div>
+
+            
       </div>
 
         
