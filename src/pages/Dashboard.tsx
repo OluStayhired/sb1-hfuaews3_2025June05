@@ -170,7 +170,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
     setModalMessage(''); // Clear previous modal message
     setIsUpgradeModalOpen(false);
 
-    console.log(`[checkActionLimits] Action requested: ${action}`);
+    //console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -193,7 +193,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
               if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsUpgradeModalOpen(true);
-        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
       break;
@@ -205,7 +205,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                 setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
                 setIsUpgradeModalOpen(true);
 
-                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
 
               return false;
 
@@ -218,7 +218,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                   
                 setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
                 setIsUpgradeModalOpen(true);
-                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
           
                 return false;
               }
@@ -258,13 +258,13 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
 
   
 // --- ADDED FOR DEBUGGING MODAL STATE ---
-  useEffect(() => {
-    console.log('isBlueskyModalOpen state changed:', isBlueskyModalOpen);
-  }, [isBlueskyModalOpen]);
+  //useEffect(() => {
+    //console.log('isBlueskyModalOpen state changed:', isBlueskyModalOpen);
+  //}, [isBlueskyModalOpen]);
 
-  useEffect(() => {
-    console.log('isModalOpen (MoreBlueskyAccounts) state changed:', isModalOpen);
-  }, [isModalOpen]);
+  //useEffect(() => {
+    //console.log('isModalOpen (MoreBlueskyAccounts) state changed:', isModalOpen);
+  //}, [isModalOpen]);
   // --- END DEBUGGING ADDITION ---
   
 
@@ -308,7 +308,7 @@ useEffect(() => {
       return undefined; // No user, no subscription to set up
     }
 
-    console.log(`Setting up Realtime subscription for user_id: ${user.id}`);
+    //console.log(`Setting up Realtime subscription for user_id: ${user.id}`);
 
     // Subscribe to changes specifically for this user's row in 'user_preferences'
     const channel = supabase
@@ -322,7 +322,7 @@ useEffect(() => {
           filter: `user_id=eq.${user.id}`, // Filter to only receive updates for this user's row
         },
         (payload) => {
-          console.log('Realtime update received for user_preferences:', payload);
+          //console.log('Realtime update received for user_preferences:', payload);
           // Check the new value of 'account_type' from the payload
           const newAccountType = (payload.new as { account_type: string }).account_type;
 
@@ -337,7 +337,7 @@ useEffect(() => {
 
     // Return a cleanup function for useEffect
     return () => {
-      console.log(`Unsubscribing from user_preferences_update:${user.id} channel.`);
+      //console.log(`Unsubscribing from user_preferences_update:${user.id} channel.`);
       supabase.removeChannel(channel); // Clean up the subscription when component unmounts or user changes
     };
   };
@@ -457,7 +457,7 @@ useEffect(() => {
   };
 
 const handleConnectBluesky = () => {
-    //console.log('Connecting to Bluesky');
+    ////console.log('Connecting to Bluesky');
   setIsBlueskyModalOpen(true);
 };
 
@@ -486,7 +486,7 @@ const handleCloseBlueskyModal = () => {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        console.log('No active Bluesky account found');
+        //console.log('No active Bluesky account found');
         return;
       }
       throw error;
@@ -494,7 +494,7 @@ const handleCloseBlueskyModal = () => {
 
     if (activeAccount?.handle && activeAccount?.app_password) {
       await login(activeAccount.handle, activeAccount.app_password, true);
-      console.log('Auto-connected to Bluesky');
+      //console.log('Auto-connected to Bluesky');
     }
 
   } catch (err) {
@@ -706,7 +706,7 @@ const generateCodeChallenge = async (code_verifier: string): Promise<string> => 
 
 //handleconnect Twitter
 const handleConnectTwitter = async () => {
-  console.log('handleConnectTwitter: initiated');
+  //console.log('handleConnectTwitter: initiated');
   setTwitterLoading(true); // Start loading indicator
 
   try {
@@ -952,16 +952,16 @@ const handleNavigateDrafts = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check ...");
+      //console.log("Starting limit check ...");
   
       //const canProceed = checkActionLimits('freeTrialEnded');
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
-            console.log("Limit check passed. Proceeding with campaign creation logic.");
+            //console.log("Limit check passed. Proceeding with campaign creation logic.");
             setUserMessage('');
             navigate('compose')
         }
@@ -976,16 +976,16 @@ const handleNavigateCalendar = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check ...");
+      //console.log("Starting limit check ...");
   
       //const canProceed = checkActionLimits('freeTrialEnded');
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
-            console.log("Limit check passed. Proceeding with campaign creation logic.");
+            //console.log("Limit check passed. Proceeding with campaign creation logic.");
             setUserMessage('');
             navigate('calendars')
         }
@@ -1000,16 +1000,16 @@ const handleNavigateSchedule = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check Schedule...");
+      //console.log("Starting limit check Schedule...");
   
       //const canProceed = checkActionLimits('freeTrialEnded');
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
-            console.log("Limit check passed. Proceeding with campaign creation logic.");
+            //console.log("Limit check passed. Proceeding with campaign creation logic.");
             setUserMessage('');
             navigate('schedule');
         }
@@ -1025,15 +1025,15 @@ if(path !== "settings") {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       //const canProceed = checkActionLimits('freeTrialEnded');
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
-            console.log("Limit check passed. Proceeding with campaign creation logic.");
+            //console.log("Limit check passed. Proceeding with campaign creation logic.");
             setUserMessage('');
             navigate(path);
         }

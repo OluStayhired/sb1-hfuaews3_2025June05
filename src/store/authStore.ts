@@ -3,9 +3,9 @@ import { BskyAgent } from '@atproto/api';
 import { createAgent, validateIdentifier } from '../utils/api';
 import { supabase } from '../lib/supabase';
 
-const debugLog = (message: string, data?: any) => {
-  console.log(`[BlueSky Auth] ${message}`, data || '');
-};
+//const debugLog = (message: string, data?: any) => {
+  //console.log(`[BlueSky Auth] ${message}`, data || '');
+//};
 
 // Add UUID generation function
 const generateUUID = () => {
@@ -44,14 +44,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isLoading: false,
   error: null,
   login: async (identifier: string, password: string, rememberMe = false) => {
-    debugLog('Starting login process');
+    //debugLog('Starting login process');
     set({ isLoading: true, error: null });
     
     try {
       const agent = createAgent();
       const validIdentifier = validateIdentifier(identifier);
       
-      debugLog('Attempting login with credentials');
+      //debugLog('Attempting login with credentials');
       
       const loginResponse = await agent.login({
         identifier: validIdentifier,
@@ -62,7 +62,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Login failed');
       };
       
-      debugLog('Login successful, fetching profile');
+      //debugLog('Login successful, fetching profile');
       
       const profile = await agent.getProfile({
         actor: validIdentifier
@@ -103,9 +103,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         error: null
       });
       
-      debugLog('Login process completed successfully');
+      //debugLog('Login process completed successfully');
     } catch (error: any) {
-      debugLog('Login process failed', error);
+      //debugLog('Login process failed', error);
       
       let errorMessage = 'Login failed. Please check your credentials and try again.';
       if (error.status === 401) {
@@ -119,7 +119,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   logout: async () => {
-    debugLog('Logging out');
+    //debugLog('Logging out');
     const { user } = get();
     
     if (user?.did) {
@@ -144,10 +144,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       user: null,
       error: null,
     });
-    debugLog('Logout completed');
+    //debugLog('Logout completed');
   },
   clearError: () => {
-    debugLog('Clearing error state');
+    //debugLog('Clearing error state');
     set({ error: null });
   },
 }));

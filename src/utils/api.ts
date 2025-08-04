@@ -1,18 +1,18 @@
 import { BskyAgent } from '@atproto/api';
 
-const debugLog = (message: string, data?: any) => {
-  console.log(`[BlueSky Auth] ${message}`, data || '');
-};
+//const debugLog = (message: string, data?: any) => {
+ // console.log(`[BlueSky Auth] ${message}`, data || '');
+//};
 
 export const createAgent = (): BskyAgent => {
   try {
-    debugLog('Creating new BskyAgent instance');
+    //debugLog('Creating new BskyAgent instance');
     const agent = new BskyAgent({
       service: 'https://bsky.social'
     });
     return agent;
   } catch (error) {
-    debugLog('Error creating BskyAgent instance', error);
+    //debugLog('Error creating BskyAgent instance', error);
     throw new Error('Failed to initialize BlueSky client');
   }
 };
@@ -32,7 +32,7 @@ export const validateIdentifier = (identifier: string): string => {
     
     return validIdentifier;
   } catch (error) {
-    debugLog('Error validating identifier', error);
+    //debugLog('Error validating identifier', error);
     throw error;
   }
 };
