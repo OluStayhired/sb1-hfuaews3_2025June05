@@ -13,7 +13,7 @@ import LinkedInSolidLogoWhite from '../images/linkedin-solid-logo-white.svg';
 import XLogo from '../images/x-logo.svg';
 import googleLogo from '../images/google-logo-48.svg';
 import { TooltipExtended } from '/src/utils/TooltipExtended';
-import { WaitlistModal } from '../components/WaitlistModal.tsx';
+//import { WaitlistModal } from '../components/WaitlistModal.tsx';
 
 function LandingPage() {
   const navigate = useNavigate();
