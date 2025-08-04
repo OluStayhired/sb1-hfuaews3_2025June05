@@ -30,11 +30,13 @@ export function PricingPage() {
 
   // Define Stripe Price IDs
   const STRIPE_PRICE_IDS = {
-    //monthly: 'price_1Ro8sHGatbp3kZShvhQWkgJU', // LIVE Replace with your actual monthly Stripe Price ID
-    //yearly: 'price_1Ro8sHGatbp3kZShHnp5sYZ6',   //LIVE Replace with your actual yearly Stripe Price ID
+    monthly: 'price_1Ro8sHGatbp3kZShvhQWkgJU', // LIVE Replace with your actual monthly Stripe Price ID
+    yearly: 'price_1Ro8sHGatbp3kZShHnp5sYZ6',   //LIVE Replace with your actual yearly Stripe Price ID
     
-    monthly: 'price_1RoPyXGatbp3kZShAzyx4HWi', // test stripe id
-    yearly:  'price_1RoPyXGatbp3kZSh0iMW92rh', // test stripe id
+    //monthly: 'price_1RoPyXGatbp3kZShAzyx4HWi', // test stripe id
+    //yearly:  'price_1RoPyXGatbp3kZSh0iMW92rh', // test stripe id
+
+    
   };
 
   // Define the URL for your create-checkout-session Edge Function
