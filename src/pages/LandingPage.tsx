@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CalendarCheck, Calendar, PenSquare, Clock, Users, PenTool, Briefcase, Plus, Minus,Menu,
-  Bot, CheckCircle,X, Send,Timer, Zap, ArrowRight, 
+  Bot, CheckCircle,X, Send, ArrowRight,
+  Timer, 
+  Zap, 
   Lightbulb, Sparkles, CircleDollarSign, Star } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { AuthModal } from '../components/AuthModal';
@@ -13,7 +15,6 @@ import LinkedInSolidLogoWhite from '../images/linkedin-solid-logo-white.svg';
 import XLogo from '../images/x-logo.svg';
 import googleLogo from '../images/google-logo-48.svg';
 import { TooltipExtended } from '/src/utils/TooltipExtended';
-//import { WaitlistModal } from '../components/WaitlistModal.tsx';
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -22,22 +23,8 @@ function LandingPage() {
   const { signInWithGoogle } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false);
-  const [isWaitlistSuccessModalOpen, setIsWaitlistSuccessModalOpen] = useState(false);
 
-const handleLoginClick = () => {
-    // This navigates to an external URL, not an internal route
-    window.location.href = 'https://app.sosavvy.so/login';
-  };
 
-   const openWaitlistModal = () => {
-    setIsWaitlistModalOpen(true);
-  };
-
-  const closeWaitlistModal = () => {
-    setIsWaitlistModalOpen(false);
-  };
-  
   const handleGoogleLogin = async () => {
   try {
     await signInWithGoogle(); // This would be the new function from AuthContext
@@ -46,6 +33,16 @@ const handleLoginClick = () => {
   }
 };
 
+//const loginUrl = "https://dapper-dragon-cd4c40.netlify.app/login"; 
+
+const loginUrl = "/login";   
+
+const handleGetStartedClick = () => {
+    // This will trigger a full page reload to the specified URL.
+    window.location.href = loginUrl;
+  };
+
+  
   const handleEmailLogin = () => {
     setIsAuthModalOpen(true);
   };
@@ -120,28 +117,16 @@ const handleLoginClick = () => {
             Pricing
           </button> 
       </div> 
-          {/*
-          <button
-            onClick={handleGoogleLogin}
-            className="flex px-4 py-2 bg-white border border-gray-200 flex items-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2"
-          >
-            
-            <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>
-            Join with Google
-              </span>
-          </button>
-        */}
+  
           
           <button
-            onClick={handleLoginClick}
-            //onClick={openWaitlistModal}
-            className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors              
+            onClick={handleGetStartedClick}
+            className="group flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors              
             shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group"
+             hover:shadow-xl hover:shadow-blue-500/80 "
           >
-            {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Start for Free</span>
+            
+           <span>Get Started</span>
            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
           
@@ -217,16 +202,6 @@ const handleLoginClick = () => {
             Pricing
           </button>
 
-          {/*
-            <button
-            onClick={handleGoogleLogin}
-            className="w-11/12 max-w-sm flex px-4 py-3 bg-white border border-blue-600 items-center justify-center  font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:text-lg" 
-          >
-            <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>Join with Google</span>
-          </button>
-
-          */}
           
           {/* Close button within the overlay */}
           <button
@@ -238,14 +213,13 @@ const handleLoginClick = () => {
           </button>
           
           <button
-            onClick={handleLoginClick}
-           //onClick={openWaitlistModal}
-            //className="flex items-center justify-center space-x-2 w-11/12 max-w-sm px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:text-lg"
-            className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors
-             shadow-lg shadow-blue-500/60 hover:shadow-xl hover:shadow-blue-500/80 sm:px-8 sm:py-4 sm:text-lg">
-           {/*<Send className="w-4 h-4"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            //onClick={handleEmailLogin}
+            onClick={handleGetStartedClick}
+            className="group flex items-center justify-center space-x-2 w-11/12 max-w-sm px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:text-lg"
+          >
+           
+           <span>Get Started</span>
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
         
         </div>
@@ -253,41 +227,48 @@ const handleLoginClick = () => {
         
       </nav>
 
-      <main className="max-w-7xl mx-auto px-6 pt-10 pb-32">
-        <div className="text-center px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-16 md:py-20 lg:py-24 rounded-lg">
-          
-          <span className="text-lg p-3 font-semibold bg-gray-100 rounded-full text-gray-700 border-8 border-gray-50">For Entrepreneurs and Creators</span>
-          
+      <main className="max-w-7xl mx-auto px-6 pt-20 pb-32">
+        <div className="text-center px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-16 md:py-20 lg:py-24">
           {/*start alternative header */}
             <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold mb-2 sm:mb-3"> 
             <p>
-              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text mt-6">
-                Get Leads on Social Media  <br className="sm:hidden" /> {/* This is the key change! */}
-       <p className="block font-semibold sm:font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-700 leading-tight mt-1 sm:mt-1">
-         without chasing likes
-         </p>
+              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
+                Go from Content <br className="sm:hidden" /> {/* This is the key change! */}
+      to Clients <br/> <p className="block font-semibold sm:font-bold text-xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-400 leading-tight mt-1 sm:mt-1"> 
+        on X and LinkedIn <br className="sm:hidden" /> (Bluesky too) </p>
               </span>
             </p>
           </h1>
           {/*end alternative header*/}
           
-        <p className="text-base sm:text-lg md:text-xl text-gray-700 sm:font-normal font-normal mt-10 mb-8 sm:mb-10">
-            SoSavvy writes & schedules months of customer-engaging posts <br className="hidden sm:inline" />
-           to <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>grow inquiries</span> on LinkedIn, Twitter(X) and Bluesky🔥
+        <p className="text-base sm:text-lg md:text-xl text-gray-700 sm:font-semibold font-normal mb-8 sm:mb-10">
+            Grow inbound leads with months of customer-focused content <br className="hidden sm:inline" />
+            crafted & scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes 🔥
       </p>
 
   <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center mx-auto w-fit"> 
     {/* Adjusted button layout for mobile */}
+
+    {/*
+    <button
+      onClick={handleGoogleLogin}
+      className="w-full sm:w-auto flex px-6 py-3 bg-white text-blue-600 border-2 border-blue-600 text-base font-semibold rounded-lg hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl items-center justify-center space-x-2 sm:px-8 sm:py-4 sm:text-lg">
+      <img src={googleLogo} alt="Google" className="w-5 h-5" />
+      <span>Join with Google</span>
+    </button>
+    */}
     
 <button
-  onClick={handleLoginClick}
-  //onClick={openWaitlistModal}
-  className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors
-  shadow-lg shadow-blue-500/60 hover:shadow-xl hover:shadow-blue-500/80 sm:px-8 sm:py-4 sm:text-lg group"
+  //onClick={handleEmailLogin}
+  onClick={handleGetStartedClick}
+  className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors
+             shadow-lg shadow-blue-500/60       
+             hover:shadow-xl hover:shadow-blue-500/80 
+             sm:px-8 sm:py-4 sm:text-lg"
 >
-           {/*<Send className="w-5 h-5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+           
+           <span>Get Started</span>
+          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
 </button>
 
   </div>
@@ -302,6 +283,7 @@ const handleLoginClick = () => {
               <img src={LinkedInSolidLogoWhite} alt="LinkedIn" className="w-9 h-9 rounded-lg" />
             </div>
 
+            {/*<div className="flex items-center p-2 bg-blue-100 hover:bg-gray-200 space-x-2 text-blue-700 rounded-tl-xl rounded-br-xl">*/}
             <div className="flex items-center border-8 border-gray-100 p-3 bg-gray-900 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
               <img src={XLogo} alt="Twitter" className="w-9 h-9 rounded-lg" />
             </div>
@@ -314,13 +296,9 @@ const handleLoginClick = () => {
         <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2">
           Content Planning on Steroids 👇
         </h2>
-        {/*<p className="text-sm sm:text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+        <p className="text-sm sm:text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
             Unlock weeks of website-powered, customer-focused content in minutes
           </p>
-        */}
-          <p className="text-2xl sm:text-2xl text-gray-700 mb-12 max-w-3xl mx-auto">
-            Unlock weeks of customer-focused content with zero effort. <br/> Generate months of posts from websites you love.   
-          </p>  
         <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
           {/* Outer div for responsive aspect ratio (16:9 - 56.25%) */}
           <div style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
@@ -482,7 +460,7 @@ const handleLoginClick = () => {
                 Attracting customers <br/> on social media is tough 😏
             </h2>
           <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
-            {/*Many founders have tried to crack the code, unfortunately many have hit the same issues:*/}
+            Many founders have tried to crack the code, unfortunately many have hit the same issues:
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -493,9 +471,9 @@ const handleLoginClick = () => {
                   <Timer className="h-8 w-8 text-blue-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Manual Content Creation Steals Time.</h3>
-              <p className="text-gray-600 text-lg">
-                As a content creator you're stuck looking for inspiration instead of building your business.
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Manual Content Creation Steals Time.</h3>
+              <p className="text-gray-600 text-sm">
+                As a content creator or social media manager, you're stuck in a content grind, constantly seeking LinkedIn content inspiration instead of building your business.
               </p>
             </div>
 
@@ -506,9 +484,9 @@ const handleLoginClick = () => {
                   <Bot className="h-8 w-8 text-blue-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Generic AI Tools Lack Human Empathy.</h3>
-              <p className="text-gray-600 text-lg">
-                Automated AI post generators churn out content but rarely connect with your customers' pain.
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Generic AI Tools Misses Your Audience.</h3>
+              <p className="text-gray-600 text-sm">
+                Automated AI LinkedIn post generators and Twitter post generators churn out content fast, but it rarely connects deeply or converts your ideal customers.
               </p>
             </div>
 
@@ -519,9 +497,9 @@ const handleLoginClick = () => {
                   <Zap className="h-8 w-8 text-blue-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Simple Schedulers Don't Generate Leads.</h3>
-              <p className="text-gray-600 text-lg">
-                Scheduling platforms help you post, but they don't create strategic content to generate leads.
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Simple Schedulers Don't Generate Leads.</h3>
+              <p className="text-gray-600 text-sm">
+                Social media scheduling platforms like Buffer or Hootsuite help you post, but they don't solve the core problem: creating strategic content that actually generates inbound requests.
               </p>
             </div>
             
@@ -532,15 +510,15 @@ const handleLoginClick = () => {
                   <CircleDollarSign className="h-8 w-8 text-blue-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Hiring More Staff <br/>is Expensive.</h3>
-              <p className="text-gray-600 text-lg">
-                Hiring a social media manager requires a significant investment, often with zero guarantees.
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Hiring More Staff <br/>may be Unaffordable.</h3>
+              <p className="text-gray-600 text-sm">
+                A dedicated social media manager means significant investment, often without guaranteed content that drives inquiries.
               </p>
             </div>
    
           </div>
-        <p className="text-xl text-gray-700 mb-12 max-w-3xl mx-auto mt-6">
-          {/*These all lead to the same frustration: more effort, less impact, and no reliable path to customers*/}
+        <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto mt-6">
+        These all lead to the same frustration: more effort, less impact, and no reliable path to customers
           </p>
         </section>
         {/* End New Interactive Section */}
@@ -574,24 +552,9 @@ const handleLoginClick = () => {
             Create <span className="text-blue-400 justify-center items-center">problem-focused</span> content that <br/>connects with your customers' pain 😊  
         </h2>
 
-        {/* Button Call to Action for Customers */}
-        <button
-            onClick={handleLoginClick}
-            className="mt-4 mb-6 flex-grow items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
-                         shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group" // Adjusted mobile button size/text for consistency
-          >
-                {/*<Send className="w-3.5 h-3.5"/>*/}
-                <span className="flex items-center justify-center space-x-2">
-                  <span>Get Started for Free</span>
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-                </span>
-                
-        </button>
-
         {/* Paragraph (P) - Centered by parent text-center */}
-        <p className="text-3xl font-light opacity-90 max-w-2xl mx-auto">
-            SoSavvy crafts compelling social media content that <br/> resonates with your customers and generates inquiries on AutoPilot
+        <p className="text-xl font-light opacity-90 max-w-2xl mx-auto">
+            SoSavvy crafts compelling, ICP-aligned social media content that <br/> resonates with your customers and generates inquiries on AutoPilot
         </p>
 
     </div>
@@ -628,9 +591,6 @@ const handleLoginClick = () => {
       {/* Image - fully separated from the text card below */}
       <div className="w-full h-48 mb-6"> {/* Added mb-6 for spacing between image and text card */}
         <img
-          //src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          //src="https://i.imghippo.com/files/sWbH6697Do.png"
-          //src="https://i.imghippo.com/files/Ong5596H.png"
           src="https://i.imghippo.com/files/dL4344ps.png"
           alt="Website Analysis Screenshot"
           className="w-full h-full object-cover rounded-lg" 
@@ -649,7 +609,6 @@ const handleLoginClick = () => {
     <div>
       <div className="w-full h-48 mb-6">
         <img
-          //src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
           src="https://i.imghippo.com/files/dE6647lM.png"
           alt="Content Calendar Screenshot"
           className="w-full h-full object-cover rounded-lg"
@@ -715,26 +674,18 @@ const handleLoginClick = () => {
           {/* Buttons (Desktop Version: visible from md breakpoint up) */}
           {/* These buttons appear after text on desktop */}
           <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
-            {/*
-                        <button
-              onClick={handleGoogleLogin}
-              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
-            >
-              <img src={googleLogo} alt="Google" className="w-5 h-5" />
-              <span>Join with Google</span>
-            </button>
-            */}
+      
             <button
-              onClick={handleLoginClick}
-              //onClick={openWaitlistModal}
+              //onClick={handleEmailLogin}
+              onClick={handleGetStartedClick}
               className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
                            shadow-lg shadow-blue-500/60       
              hover:shadow-xl hover:shadow-blue-500/80 
               "
             >
-               {/*<Send className="w-3.5 h-3.5"/>*/}
-               <span>Get Started for Free</span>
-               <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+               
+               <span>Get Started</span>
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
 
           </div>
@@ -771,26 +722,18 @@ const handleLoginClick = () => {
       {/* These buttons appear after the mobile image */}
       <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
 
-        {/*
-        <button
-          onClick={handleGoogleLogin}
-          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
-        >
-          <img src={googleLogo} alt="Google" className="w-5 h-5" />
-          <span>Join with Google</span>
-        </button>
-        */}
+    
         
         <button
-          onClick={handleLoginClick}
-          //onClick={openWaitlistModal}
-          className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
+          //onClick={handleEmailLogin}
+          onClick={handleGetStartedClick}
+          className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
                        shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group "
+             hover:shadow-xl hover:shadow-blue-500/80 "
         >
-          {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          
+           <span>Get Started</span>
+          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
 
       </div>
@@ -817,25 +760,6 @@ const handleLoginClick = () => {
             Stop random acts of content. Build strategic campaigns that ensure every post addresses customer pain and guides them to your solution.
           </p>
 
-          {/* Buttons (Desktop Version: visible from md breakpoint up) */}
-          {/* These buttons appear after text on desktop, aligned left with text */}
-          {/* disabling alternate buttons
-          <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
-            <button
-              onClick={handleEmailLogin}
-              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
-            >
-              Login with Email
-            </button>
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
-            >
-              <img src={googleLogo} alt="Google" className="w-5 h-5" />
-              <span>Join with Google</span>
-            </button>
-          </div>
-          */}
         </div>
 
         {/* No explicit placeholder div is needed here. md:justify-end on the parent handles the right alignment of the text content. */}
@@ -846,8 +770,7 @@ const handleLoginClick = () => {
       <img
         src="https://i.imghippo.com/files/ZsdT4458qo.png"
         alt="SoSavvy Product Screenshot"
-        //className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-contain rounded-xl z-0"
-          className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
+        className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 md:w-3/5 lg:w-1/2 h-[450px] md:h-[550px] object-cover rounded-xl z-0"
       />
 
       {/* Image (Mobile Version: In-flow, visible below md breakpoint) */}
@@ -862,26 +785,18 @@ const handleLoginClick = () => {
 
       {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* These buttons appear after the mobile image */}
-      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
-      {/*
-          <button
-          onClick={handleGoogleLogin}
-          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
-        >
-          <img src={googleLogo} alt="Google" className="w-5 h-5" />
-          <span>Join with Google</span>
-        </button>
-        */}
+      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> 
+
         <button
-          onClick={handleLoginClick}
-          //onClick={openWaitlistModal}
-          className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
+          //onClick={handleEmailLogin}
+          onClick={handleGetStartedClick}
+          className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
                        shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group "
+             hover:shadow-xl hover:shadow-blue-500/80 "
         >
-            {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            
+           <span>Get Started</span>
+          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
 
       </div>
@@ -909,25 +824,17 @@ const handleLoginClick = () => {
           {/* Buttons (Desktop Version: visible from md breakpoint up) */}
           {/* These buttons appear after text on desktop */}
           <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
-            {/*
+
             <button
-              onClick={handleGoogleLogin}
-              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
-            >
-              <img src={googleLogo} alt="Google" className="w-5 h-5" />
-              <span>Join with Google</span>
-            </button>
-            */}
-            <button
-              onClick={handleLoginClick}
-              //onClick={openWaitlistModal}
-              className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
+              //onClick={handleEmailLogin}
+              onClick={handleGetStartedClick}
+              className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
                            shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group "
+             hover:shadow-xl hover:shadow-blue-500/80 "
             >
-             {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+             
+               <span>Get Started</span>
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
 
           </div>
@@ -964,26 +871,17 @@ const handleLoginClick = () => {
       {/* These buttons appear after the mobile image */}
       <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
 
-        {/*
-        <button
-          onClick={handleGoogleLogin}
-          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
-        >
-          <img src={googleLogo} alt="Google" className="w-5 h-5" />
-          <span>Join with Google</span>
-        </button>
-        */}
         
         <button
-          onClick={handleLoginClick}
-          //onClick={openWaitlistModal}
-          className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
+          //onClick={handleEmailLogin}
+          onClick={handleGetStartedClick}
+          className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
                        shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group "
+             hover:shadow-xl hover:shadow-blue-500/80 "
         >
-          {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          
+           <span>Get Started</span>
+          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
 
       </div>
@@ -1010,28 +908,9 @@ const handleLoginClick = () => {
             Publish effortlessly. Automatically schedule strategic posts across LinkedIn, X, and Bluesky, freeing you to focus on your business as inquiries roll in.
           </p>
 
-          {/* Buttons (Desktop Version: visible from md breakpoint up) */}
-          {/* These buttons appear after text on desktop, aligned left with text */}
-          {/* disabling alternate buttons
-          <div className="hidden md:flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center md:justify-start">
-            <button
-              onClick={handleEmailLogin}
-              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold"
-            >
-              Login with Email
-            </button>
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
-            >
-              <img src={googleLogo} alt="Google" className="w-5 h-5" />
-              <span>Join with Google</span>
-            </button>
-          </div>
-          */}
+  
         </div>
 
-        {/* No explicit placeholder div is needed here. md:justify-end on the parent handles the right alignment of the text content. */}
 
       </div> {/* End max-w-6xl mx-auto div */}
 
@@ -1045,7 +924,7 @@ const handleLoginClick = () => {
 
       {/* Image (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* This image appears after text on mobile, is larger, and uses object-contain to prevent cropping */}
-      <div className="md:hidden mt-8 flex justify-center"> {/* mt-8 for spacing after text content */}
+      <div className="md:hidden mt-8 flex justify-center"> 
         <img
           src="https://i.imghippo.com/files/pRPI1002zk.png"
           alt="SoSavvy Product Screenshot"
@@ -1055,27 +934,19 @@ const handleLoginClick = () => {
 
       {/* Buttons (Mobile Version: In-flow, visible below md breakpoint) */}
       {/* These buttons appear after the mobile image */}
-      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> {/* mt-6 for spacing after image */}
-      {/*
+      <div className="md:hidden flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 justify-center"> 
+        {/* mt-6 for spacing after image */}
         <button
-          onClick={handleGoogleLogin}
-          className="w-full sm:w-auto flex px-6 py-3 bg-white border border-blue-600 items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base"
-        >
-          <img src={googleLogo} alt="Google" className="w-5 h-5" />
-          <span>Join with Google</span>
-        </button>
-        */}
-        <button
-          onClick={handleLoginClick}
-          //onClick={openWaitlistModal}
-          className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
+          //onClick={handleEmailLogin}
+          onClick={handleGetStartedClick}
+          className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold
                        shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group
+             hover:shadow-xl hover:shadow-blue-500/80 
           "
         >
-          {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          
+           <span>Get Started</span>
+          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
 
       </div>
@@ -1085,10 +956,6 @@ const handleLoginClick = () => {
 {/* End New Gradient Section with picture on the left */}    
             
   <section className="relative mt-24 py-16 bg-gradient-to-b from-blue-500 via-blue-400 to-white text-gray-900 rounded-xl overflow-hidden">
-    {/*
-        1. Gradient from top to bottom (`bg-gradient-to-b`)
-        2. `overflow-hidden` is crucial to ensure the image's "break out" is clipped neatly at the rounded-xl corners.
-    */}
 
     <div className="max-w-4xl mx-auto px-6 text-center z-10 relative">
         {/* Sparkles Icon (Maintained positioning from previous iteration) */}
@@ -1109,50 +976,26 @@ const handleLoginClick = () => {
         </p>
 
         {/* Buttons */}
-      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> {/* Added flex-col, space-y-4 for mobile; sm:flex-row, sm:space-x-4, sm:space-y-0 for desktop */}
-      {/*
+      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16">       
           <button
-            onClick={handleGoogleLogin}
-            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
-          >
-            <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>Join with Google</span>
-          </button>
-*/}
-        
-          <button
-            onClick={handleLoginClick}
-            //onClick={openWaitlistModal}
-            className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
+            //onClick={handleEmailLogin}
+            onClick={handleGetStartedClick}
+            className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
             shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group " // Adjusted mobile button size/text for consistency
+             hover:shadow-xl hover:shadow-blue-500/80 " // Adjusted mobile button size/text for consistency
           >
-            {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            
+           <span>Get Started</span>
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
 
 
         </div>
 
         {/* Image - Centered and "unconstrained" */}
-        {/*
-            - `relative` parent is the <section>
-            - `mx-auto` for horizontal centering
-            - `px-6` for left/right padding on the image itself.
-            - `w-full max-w-5xl`: Image takes full width up to 5xl, scaling responsively.
-            - `h-[300px] md:h-[400px] lg:h-[500px]`: Defines a substantial height, approximately 1/3 to 1/2 of typical section height.
-              This height will make it visually prominent.
-            - `object-cover` and `rounded-lg shadow-xl` for style.
-            - `mt-8`: Adds space above the image.
-            - `block`: Ensures it behaves like a block element for `mx-auto` to work.
-            - No bottom padding means it can appear to sit flush with the bottom of the section.
-        */}
 
     </div>
           <img
-            //src="https://placehold.co/1200x500/E0E7FF/000000?text=SoSavvy+Dashboard+Screenshot"
-            //src="https://i.imghippo.com/files/Lp8140co.png"
             src="https://i.imghippo.com/files/hjBw8272m.png"
             alt="SoSavvy Dashboard Screenshot"
             className="hidden sm:block w-full max-w-5xl h-[300px] md:h-[400px] lg:h-[500px] object-cover rounded-lg mx-auto mt-8 block"
@@ -1177,7 +1020,7 @@ const handleLoginClick = () => {
   <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4">
     Hear From Founders & Creators Like You
   </h2>
-  <p className="text-3xl text-gray-700 mb-12 max-w-3xl mx-auto">
+  <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
     SoSavvy is helping entrepreneurs transform their social media presence into a pipeline building machine.
   </p>
 
@@ -1337,7 +1180,7 @@ const handleLoginClick = () => {
     <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4">
       Simple Pricing, Powerful Results 🚀
     </h2>
-    <p className="text-3xl text-gray-700 mb-12 max-w-3xl mx-auto">
+    <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
       Unlock all of SoSavvy's features and start converting your audience into paying customers.
     </p>
 
@@ -1346,7 +1189,7 @@ const handleLoginClick = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"> {/* Grid for horizontal spread */}
         {/* Left Column: Pricing and CTA */}
         <div className="text-center md:text-right md:pr-8 md:border-r md:border-blue-400"> {/* Added border-r for visual separation */}
-          <span> <h3 className="text-2xl sm:text-3xl font-semibold mb-4">All-in-One Content Writer</h3> </span>
+          <h3 className="text-2xl sm:text-3xl font-semibold mb-4">All-in-One Content Writer</h3>
           <div className="flex items-baseline justify-center md:justify-end mb-6">
             <span className="text-6xl sm:text-9xl text-center font-extrabold">$25</span> {/* Larger font for price */}
             <span className="text-2xl font-medium">/month</span>
@@ -1356,26 +1199,17 @@ const handleLoginClick = () => {
           {/* Buttons */}
       <div className="flex flex-col sm:flex-row sm:mr-24 sm:justify-end justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> 
 
-        {/*
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
-          >
-            <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>Join with Google</span>
-          </button>
-        */}
         
           <button
-            onClick={handleLoginClick}
-            //onClick={openWaitlistModal}
-            className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
+            //onClick={handleEmailLogin}
+            onClick={handleGetStartedClick}
+            className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
                          shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group"
+             hover:shadow-xl hover:shadow-blue-500/80 "
           >
-            {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            
+           <span>Get Started</span>
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
 
 
@@ -1383,75 +1217,54 @@ const handleLoginClick = () => {
       
         </div>
 
-            {/* Right Column: Features List */}
-            <div className="text-left md:pl-8">
-
-          <h4 className="text-2xl font-semibold mb-7">What's Included 👇</h4>
-          <ul className="space-y-4">
+        {/* Right Column: Features List */}
+        <div className="text-left md:pl-8">
+          <h4 className="text-2xl font-semibold mb-4">What's Included:</h4>
+          <ul className="space-y-3">
            
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
                <TooltipExtended text="⚡ Get a full, 14-day calendar of strategic posts, planned around your insights and goals. Never wonder what to post next – it's already done and optimized for impact.">
-              <span className="p-2 rounded-full bg-blue-400 decoration-2 cursor-pointer">14-Day High-Value Content Calendars</span>
+              <span className="underline decoration-white decoration-2 cursor-pointer">14-Day High-Value Content Calendars</span>
               </TooltipExtended>  
             </li>
                             
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
               <TooltipExtended text="⚡ SoSavvy analyzes your website's content, services, and offerings to pinpoint your ideal customer's pains, desires, and the exact language they use. No more guesswork about what matters.">
-              
-                {/*<span className="underline decoration-white decoration-2 cursor-pointer">Deep Customer & Niche Insights</span>*/}
-
-                <span className="p-2 rounded-full bg-blue-400 decoration-2 cursor-pointer">Deep Customer & Niche Insights</span>
-                
+              <span className="underline decoration-white decoration-2 cursor-pointer">Deep Customer & Niche Insights</span>
               </TooltipExtended>
             </li>
             <li className="flex items-center">
-              
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
               <TooltipExtended text="⚡ Go beyond generic. Our intelligent AI crafts non-salesy, compelling posts that truly sound like you, directly addressing your audience's needs and building genuine connection.">
-              <span className="p-2 rounded-full bg-blue-400 decoration-2 cursor-pointer">Human-Like Content Creation</span>
+              <span className="underline decoration-white decoration-2 cursor-pointer">Human-Like Content Creation</span>
               </TooltipExtended>
-              
             </li>
-              
-            <li className="flex items-center">
-            
-              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-            <TooltipExtended text="⚡ Schedule content seamlessly across Twitter(X), LinkedIn and Bluesky. Add Images, enhance with AI Writers">
-              <span className="p-2 rounded-full bg-blue-400 decoration-2 cursor-pointer">Seamless Cross-Platform Scheduling</span>
-            </TooltipExtended>
-              
-            </li>
-            
-            <li className="flex items-center">
 
-         
+            <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-               <TooltipExtended text="⚡Bulk Schedule content for 14 r 28 days depending on the number of calendars you created"> 
-              <span className="p-2 rounded-full bg-blue-400 decoration-2 cursor-pointer">Automated Post Publishing</span>
-          </TooltipExtended>
-              
+              <span>Seamless Cross-Platform Scheduling</span>
+            </li>
+            <li className="flex items-center">
+              <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
+              <span>Automated Post Publishing</span>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
               <TooltipExtended text="⚡Maintain full control. Review, refine, and edit any generated post before it goes live, ensuring every message aligns perfectly with your brand voice.">
-              <span className="p-2 rounded-full bg-blue-400 decoration-2 cursor-pointer">Flexible Content Editor & Drafts</span>
+              <span className="underline decoration-white decoration-2 cursor-pointer">Flexible Content Editor & Drafts</span>
               </TooltipExtended>
             </li>
             <li className="flex items-center">
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
                <TooltipExtended text="⚡Ensure your content reaches your audience when they're most active, wherever they are in the world. SoSavvy intelligently schedules posts for maximum visibility across different timezones.">
-              <span className="p-2 rounded-full bg-blue-400 decoration-2 cursor-pointer">Timezone-Aware Scheduling</span>
+              <span className="underline decoration-white decoration-2 cursor-pointer">Timezone-Aware Scheduling</span>
                </TooltipExtended>
             </li>
             <li className="flex items-center">
-              
               <CheckCircle className="w-6 h-6 text-white mr-3 flex-shrink-0" />
-              <TooltipExtended text="⚡ Dedicated customer support Monday through to Friday, Occassional Support available on Saturdays and Sundays">
-              <span className="p-2 rounded-full bg-blue-400 decoration-2 cursor-pointer">Dedicated Customer Support</span>
-                
-              </TooltipExtended>
+              <span>Dedicated Customer Support</span>
             </li>
           </ul>
         </div>
@@ -1459,7 +1272,8 @@ const handleLoginClick = () => {
     </div>
   </div>
 </section>
-{/*----------------------------- End of the Pricing Section ----------------------------------*/}
+
+  {/*----------------------------- End of the Pricing Section ----------------------------------*/}
 
   {/*------------------------------start of the FAQ Section -------------------------------------*/}    
 
@@ -1481,15 +1295,6 @@ const handleLoginClick = () => {
    Learn how SoSavvy can transform your social media strategy.
   </p>
 
-  {/*     
-<section className="mt-32 text-center">
-  <h2 className="text-4xl font-bold text-gray-900 mb-4">
-    Frequently Asked Questions
-  </h2>
-  <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
-    Have questions? We've got answers. Find out more about how SoSavvy can transform your social media strategy.
-  </p>
-*/}
   <div className="max-w-3xl mx-auto space-y-4 text-left">
     {/* FAQ Item 1 */}
    <details className="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -1655,26 +1460,17 @@ const handleLoginClick = () => {
     </p>
 
         {/* Buttons */}
-      <div className="flex flex-col sm:mr-10  sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> {/* Added flex-col, space-y-4 for mobile; sm:flex-row, sm:space-x-4, sm:space-y-0 for desktop */}
-      {/*  
-        <button
-            onClick={handleGoogleLogin}
-            className="w-full sm:w-auto flex px-6 py-3 bg-white items-center justify-center font-semibold text-blue-600 rounded-lg hover:bg-blue-50 transition-colors space-x-2 text-base sm:px-4 sm:py-3 sm:text-base" // Adjusted mobile button size/text for consistency
-          >
-            <img src={googleLogo} alt="Google" className="w-5 h-5" />
-            <span>Join with Google</span>
-          </button>
-        */}
+      <div className="flex flex-col sm:mr-10  sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16"> 
           <button
-            onClick={handleLoginClick}
-            //onClick={openWaitlistModal}
-            className="flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
+            //onClick={handleEmailLogin}
+            onClick={handleGetStartedClick}
+            className="group flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-semibold sm:px-4 sm:py-3 sm:text-base
                          shadow-lg shadow-blue-500/60       
-             hover:shadow-xl hover:shadow-blue-500/80 group" // Adjusted mobile button size/text for consistency
+             hover:shadow-xl hover:shadow-blue-500/80 " // Adjusted mobile button size/text for consistency
           >
-            {/*<Send className="w-3.5 h-3.5"/>*/}
-           <span>Get Started for Free</span>
-           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            
+           <span>Get Started</span>
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
 
 
@@ -1688,31 +1484,7 @@ const handleLoginClick = () => {
   {/*---------------------------------End Final Call to Action Section-----------------------------*/}      
 
 
-        {/* Start Feature Section */}
-        {/*
-        <div className="mt-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <FeatureCard
-            icon={<PenSquare className="h-8 w-8 text-blue-500" />}
-            title="Compose Posts"
-            description="Create engaging content for your social media channels"
-          />
-          <FeatureCard
-            icon={<Clock className="h-8 w-8 text-blue-500" />}
-            title="Create Schedule"
-            description="Plan and schedule your posts for optimal engagement"
-          />
-          <FeatureCard
-            icon={<Calendar className="h-8 w-8 text-blue-500" />}
-            title="View Calendars"
-            description="Visualize your content calendar across platforms"
-          />
-          <FeatureCard
-            icon={<Users className="h-8 w-8 text-blue-500" />}
-            title="Access Accounts"
-            description="Manage all your social media accounts in one place"
-          />
-        </div>
-*/}
+      
         {/* Start Footer - Full Foot Breakdown */}
 
 <footer className="mt-24 border-t border-gray-300 text-left">
@@ -1724,12 +1496,6 @@ const handleLoginClick = () => {
               <div className="inline-flex bg-blue-600 rounded-full p-2 rotate-180">
                 <PenTool className="h-9 w-9 fill-white stroke-blue-600" />
               </div>
-        {/*
-        <div className="flex  items-center space-x-2">
-          <img src={klaowtIcon} alt="Klaowt Icon in-App" className="w-9 h-9 bg-blue-200 p-1.5 rounded-full" />
-          <span className="font-bold text-xl">Klaowt</span>
-        </div>
-        */}
         
         <p className="text-sm text-gray-600">
           The smart solution for audience builders on Bluesky <img src={BlueskyLogo} alt="Bluesky" className="inline-block w-3 h-3 align-middle" /> LinkedIn <img src={LinkedInSolidLogo} alt="LinkedIn" className="inline-block w-3 h-3 align-middle" /> and Twitter <img src={XLogo} alt="Twitter" className="inline-block w-3 h-3 align-middle" />
@@ -1752,9 +1518,9 @@ const handleLoginClick = () => {
       <div>
         <h3 className="font-semibold mb-4">Resources</h3>
         <ul className="space-y-2 text-sm text-gray-600">
-          {/*<li className="text-gray-400">Blog <em>(soon)</em></li>
+          <li className="text-gray-400">Blog <em>(soon)</em></li>
           <li className="text-gray-400">Docs <em>(soon)</em></li>
-      <li className="text-gray-400">Support <em>(soon)</em></li>*/}
+          <li className="text-gray-400">Support <em>(soon)</em></li>
           <li> <a href="#FAQ" className="no-underline hover:text-blue-400 transition-colors">FAQ</a></li>
         </ul>
       </div>
@@ -1777,52 +1543,19 @@ const handleLoginClick = () => {
     {/* Bottom bar */}
     <div className="mt-12 pt-8 border-t border-gray-200">
       <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-gray-600"> {/* Responsive flex */}
-      <p className="order-2 sm:order-1">&copy; 2025 SoSavvy.so All rights reserved.</p> {/* Order for mobile */}
+        <p className="order-2 sm:order-1">&copy; 2024 soSavvy.app All rights reserved.</p> {/* Order for mobile */}
         <div className="flex space-x-6 order-1 sm:order-2"> 
           {/* Order for mobile */}
           <span>Made with ❤️ for founders and creators building their personal brand with purpose</span>
-            <a href="https://www.linkedin.com/in/oluadedeji" className="text-blue-500 hover:text-blue-600">Olu on LinkedIn (8.9k followers)
+            <a href="https://bsky.app/profile/oluadedeji.bsky.social" className="text-blue-500 hover:text-blue-600">@oluadedeji.bsky.social
           </a>
         </div>
       </div>
     </div>
   </div>
 </footer>
+</main>
         
-      </main>
-
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={handleCloseAuthModal}
-      />
-
-      <WaitlistModal
-        isOpen={isWaitlistModalOpen}
-        onClose={closeWaitlistModal}
-      />
-{isWaitlistSuccessModalOpen ? (
-  <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg border border-green-100 p-4 flex items-center space-x-3 animate-fade-in z-[9999]">
-    <div className="bg-green-100 rounded-full p-2">
-      <Check className="w-5 h-5 text-green-500" />
-    </div>
-    <div>
-      <p className="font-medium text-gray-900">Congratulations! 🎉 </p>
-      <p className="text-sm text-gray-500">
-        You've joined our waitlist. Expect an email in a few days!
-      </p>
-    </div>
-  </div>
-) : null}          
-    </div>
-  );
-}
-
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
-  return (
-    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-      <div className="mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold text-blue-900 mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
     </div>
   );
 }
