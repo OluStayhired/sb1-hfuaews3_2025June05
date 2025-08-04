@@ -14,7 +14,7 @@ export function PricingPage() {
     "Connect up to 8 Social Media Accounts (LinkedIn, Twitter, Bluesky)",
     "Build 30-Day Content Calendars",
     "Enjoy Unlimited AI Rewrites for your posts",
-    "Access to advanced analytics and insights",
+    //"Access to advanced analytics and insights",
     "Priority customer support",
   ];
 
