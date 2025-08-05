@@ -229,21 +229,28 @@ const handleGetStartedClick = () => {
 
       <main className="max-w-7xl mx-auto px-6 pt-20 pb-32">
         <div className="text-center px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-16 md:py-20 lg:py-24">
-          {/*start alternative header */}
-            <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold mb-2 sm:mb-3"> 
+            {/*start alternative header */}
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold mb-2 sm:mb-3"> 
             <p>
-              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text">
-                Go from Content <br className="sm:hidden" /> {/* This is the key change! */}
-      to Clients <br/> <p className="block font-semibold sm:font-bold text-xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-400 leading-tight mt-1 sm:mt-1"> 
-        on X and LinkedIn <br className="sm:hidden" /> (Bluesky too) </p>
+              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text mt-6">
+                Get Leads <br className="sm:hidden" /> on Social Media  <br className="sm:hidden" /> {/* This is the key change! */}
+       <p className="block font-semibold sm:font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-700 leading-tight mt-1 sm:mt-1">
+         without chasing likes
+         </p>
               </span>
             </p>
           </h1>
           {/*end alternative header*/}
           
-        <p className="text-base sm:text-lg md:text-xl text-gray-700 sm:font-semibold font-normal mb-8 sm:mb-10">
-            Grow inbound leads with months of customer-focused content <br className="hidden sm:inline" />
-            crafted & scheduled <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>for you</span> in minutes 🔥
+           {/*
+        <p className="mt-10 text-base sm:text-3xl md:text-2xl text-gray-700 sm:font-normal font-normal mb-8 sm:mb-10">
+            SoSavvy writes & schedules months of customer-engaging posts <br className="hidden sm:inline" />
+           to <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>grow inquiries</span> on LinkedIn, Twitter(X) and Bluesky🔥
+      </p>*/}
+
+<p className="mt-10 text-base sm:text-3xl md:text-2xl text-gray-700 sm:font-normal font-normal mb-8 sm:mb-10">
+            SoSavvy writes & schedules months of customer-engaging posts <br className="hidden sm:inline" />
+           to grow inquiries on LinkedIn, Twitter(X) and Bluesky🔥
       </p>
 
   <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center mx-auto w-fit"> 
@@ -296,9 +303,13 @@ const handleGetStartedClick = () => {
         <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2">
           Content Planning on Steroids 👇
         </h2>
-        <p className="text-sm sm:text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+        {/*<p className="text-sm sm:text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
             Unlock weeks of website-powered, customer-focused content in minutes
           </p>
+        */}
+          <p className="text-xl sm:text-2xl text-gray-700 mb-12 max-w-3xl mx-auto">
+            Unlock weeks of customer-focused content with zero effort. <br/> Generate months of posts from websites you love.   
+          </p>  
         <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
           {/* Outer div for responsive aspect ratio (16:9 - 56.25%) */}
           <div style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
