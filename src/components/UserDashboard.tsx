@@ -1100,7 +1100,7 @@ const handleOpenScheduledPost = async () => {
             >
               <Sparkles className="w-4 h-4 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
                 Start Generating Posts
-              <ArrowRight className="ml-2 w-4 h-4 text-white"/>
+              <ArrowRight className="ml-2 w-4 h-4 text-white transition-transform duration-300 group-hover:translate-x-1"/>
             </button>
         </TooltipExtended>
     </span>
