@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { format, addDays, parseISO } from 'date-fns';
-import { Plus, Clock, ChevronLeft, ChevronRight, Trash2, SquarePen, Send, PlusCircle, Calendar, List, CalendarClock, X, Loader2, ImagePlus, Copy } from 'lucide-react';
+import { Plus, Clock, ChevronLeft, ChevronRight, Trash2, SquarePen, Send, PlusCircle, Calendar, List, CalendarClock, X, Loader2, ImagePlus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { ReschedulePostModal } from '/src/components/ReschedulePostModal';
 import { SchedulePostModal } from '/src/components/SchedulePostModal';
@@ -34,7 +34,6 @@ interface PostData {
   user_display_name: string | null;
   avatar_url?: string | null;
   content_time: string;
-  content_date?: string; // recently added
   photo_url?: string | null;
   target_timezone?: string;
   social_channels?: {
@@ -109,11 +108,6 @@ function ManageSchedule() {
   // State to track which post is currently uploading an image
   const [uploadingImageId, setUploadingImageId] = useState<string | null>(null);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
-
-  const [copyingPostId, setCopyingPostId] = useState<string | null>(null); // NEW: State for copying loading
-  const [copySuccessMessage, setCopySuccessMessage] = useState<string | null>(null); // NEW: State for copy success
-
-
 
   //LinkedIn VITE
   const VITE_LINKEDIN_POSTER_URL = import.meta.env.VITE_LINKEDIN_POSTER_URL;
@@ -245,14 +239,14 @@ useEffect(() => {
 const checkSocials = async () => {
   const socials = await checkConnectedSocials();
   if (socials) {
-    //console.log('Bluesky connected:', socials.bluesky);
-    //console.log('LinkedIn connected:', socials.linkedin);
+    console.log('Bluesky connected:', socials.bluesky);
+    console.log('LinkedIn connected:', socials.linkedin);
   }
 };
 
 const checkBluesky = async () => {
   const isConnected = await checkPlatformConnection('Bluesky');
-  //console.log('Bluesky connected:', isConnected);
+  console.log('Bluesky connected:', isConnected);
 };  
 
   // Generate next 7 days starting from today
@@ -860,142 +854,6 @@ const handleConnectLinkedInClick = () => {
   
 //console.log("Schedules State:", schedules);
 
-// ------------------------ Start handle Copy Post Function ---------------------- //
-
-// NEW: handleCopyPost function
-const handleCopyPost = async (postToCopy: PostData) => {
-  if (!postToCopy?.id) {
-    console.error('Post ID is missing for copy operation.');
-    return;
-  }
-
-  setCopyingPostId(postToCopy.id); // Set loading state for this specific post
-  setCopySuccessMessage(null); // Clear previous messages
-
-  try {
-    const { data: { session } = {} } = await supabase.auth.getSession();
-    if (!session?.user?.email || !session?.user?.id) {
-      throw new Error('No authenticated user found to copy post.');
-    }
-
-    // Create a new post object based on the original
-    {/*
-    const copiedPost: PostData = {
-      ...postToCopy,
-      //id: uuidv4(), // Generate a new unique ID
-      created_at: new Date().toISOString(), // Set new creation timestamp
-      sent_post: false, // Copied post is not yet sent
-      schedule_status: true, // Copied post is scheduled by default
-      draft_status: false, // Copied post is not a draft by default
-      posted_at: null, // Clear posted timestamp
-      social_post_id: null, // Clear social media platform ID
-      error_message: null, // Clear any error messages
-    };
-*/}
-    // Define the properties you want to copy from the original post.
-// Exclude avatar_url and any other fields not present in user_post_schedule.
-      const {
-              //id,
-              user_id,
-              full_content,
-              content_time,
-              content_date, // recently added
-              photo_url,
-              social_channel,
-              user_display_name,
-              // Exclude avatar_url here, so it won't be copied
-              } = postToCopy;
-
-        const copiedPost = {
-            // Use the destructured variables to create the new object
-              user_id: session.user.id,
-              user_email: session.user.email,
-              full_content,
-              content_time,
-              content_date,
-              //platform,
-              photo_url,
-              social_channel,
-              user_display_name,
-              
-
-  // Add the new or overridden properties
-            created_at: new Date().toISOString(),
-            sent_post: false,
-            schedule_status: false,
-            draft_status: false,
-            posted_at: null,
-            social_post_id: null,
-            error_message: null,
-            //user_display_name: null,
-            
-};
-
-    // Insert the new copied post into the database
-    const { error: insertError } = await supabase
-      .from('user_post_schedule')
-      .insert(copiedPost);
-
-    if (insertError) {
-      console.error('Error inserting copied post into database:', insertError);
-      throw insertError;
-    }
-
-    // Optimistically update the UI: add the copied post to the schedule
-    setSchedules(prevSchedules => {
-      return prevSchedules.map(daySchedule => {
-        // Find the day corresponding to the copied post's date
-        if (format(daySchedule.date, 'yyyy-MM-dd') === copiedPost.content_date) {
-          // Add the copied post to the slots for that day
-          const updatedSlots = [...daySchedule.slots];
-          const existingSlotIndex = updatedSlots.findIndex(
-            slot => slot.time === copiedPost.content_time
-          );
-
-          if (existingSlotIndex !== -1) {
-            // If a slot for this time already exists, update it (e.g., if it was empty)
-            updatedSlots[existingSlotIndex] = {
-              ...updatedSlots[existingSlotIndex],
-              scheduledPost: copiedPost,
-            };
-          } else {
-            // If no slot exists for this time, create a new one
-            updatedSlots.push({
-              time: copiedPost.content_time,
-              isAvailable: true, // Assuming copied posts go into available slots
-              scheduledPost: copiedPost,
-              isDisabled: false, // Assuming it's an active slot
-            });
-            // Re-sort slots to maintain chronological order
-            updatedSlots.sort((a, b) => a.time.localeCompare(b.time));
-          }
-          return { ...daySchedule, slots: updatedSlots };
-        }
-        // Refresh the schedule data to display the new post
-        fetchUserSchedule();
-        return daySchedule;
-      });
-    });
-
-    setCopySuccessMessage('Post copied successfully!');
-    // Clear success message after a few seconds
-    setTimeout(() => setCopySuccessMessage(null), 3000);
-
-    // Optionally, re-fetch the entire schedule after a short delay for full consistency
-    // setTimeout(() => fetchUserSchedule(), 1000);
-
-  } catch (err: any) {
-    console.error('Error copying post:', err);
-    setCopySuccessMessage(`Failed to copy post: ${err.message || 'Unknown error'}`);
-    // Clear error message after a few seconds
-    setTimeout(() => setCopySuccessMessage(null), 5000);
-  } finally {
-    setCopyingPostId(null); // Clear loading state
-  }
-};
-
-// ----------------------- ENd handle Copy Post FUnction -------------------------//  
-  
 //------------------------ Start handle upload image to attach to post ------------------ //
 
 // New handleUploadImage function
@@ -1252,19 +1110,10 @@ const handleDeleteImage = async (postId: string) => {
   </button>
   </TooltipHelp>
  
-  </div>
 </div>
-
-{/* NEW: Copy Success/Error Message */}
-        {copySuccessMessage && (
-          <div className={`mb-4 p-3 rounded-lg text-sm ${
-            copySuccessMessage.includes('Failed') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
-          }`}>
-            {copySuccessMessage}
-          </div>
-        )}    
-
-        {/*End Copy Success Error Message */}        
+          
+          
+        </div>
 
 {/* Schedule List View */}
  {viewMode === 'list' ? (        
@@ -1344,12 +1193,7 @@ const handleDeleteImage = async (postId: string) => {
                             </div>
                         </div>
                 {/* Add the buttons container */}
-                {/* Only Show Button Container When it's a Valid Post */}
-
-                          
                 <div className="absolute  top-1 right-1 flex space-x-1 z-10">
-
-                  {scheduledPost.user_handle && ( 
                          <button
                             onClick={() => handleNewPost(day.date, slot.time)}
                             className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-md transition-colors"
@@ -1357,9 +1201,7 @@ const handleDeleteImage = async (postId: string) => {
                             <PlusCircle className="w-3 h-3" />
                             <span>New Post</span>
                           </button>
-                  )}
-
-                  {scheduledPost.user_handle && ( 
+                  
                     <TooltipHelp text="Post now">
                     <button
                         onClick={() => {
@@ -1375,30 +1217,6 @@ const handleDeleteImage = async (postId: string) => {
 
                     </TooltipHelp>  
 
-                     )}
-                  
-                  {/* NEW: Copy Post Button */}
-                  {/*
-                  {scheduledPost.user_handle && ( //is NULL or recently copied So REMOVE copy option
-                    <button
-                      //onClick={() => handleCopyPost(slot.scheduledPost)}
-                      onClick={() => handleCopyPost(scheduledPost)}
-                      //disabled={copyingPostId === slot.scheduledPost.id}
-                      disabled={copyingPostId === scheduledPost.id}
-                      className="p-1 rounded-md text-gray-500 bg-gray-50 hover:text-purple-500 hover:bg-purple-100 transition-colors"
-                      title="Copy post"
-                    >
-                      {copyingPostId === scheduledPost.id ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Copy className="w-3 h-3" />
-                      )}
-                    </button>
-                    )}
-                */}
-
-                  
-          {scheduledPost.user_handle && ( 
               <TooltipHelp text="Add image">
                     <button
                       onClick={() => handleUploadImage(scheduledPost)} // Call with postId
@@ -1413,9 +1231,7 @@ const handleDeleteImage = async (postId: string) => {
                             )}
                           </button>
                   </TooltipHelp>
-               )}
-
-             {scheduledPost.user_handle && (      
+                  
                   <TooltipHelp text="Reschedule post">
                     <button
                         onClick={() => handleRescheduleClick(scheduledPost)}
@@ -1426,9 +1242,7 @@ const handleDeleteImage = async (postId: string) => {
                       <Calendar className="w-3 h-3" /> 
                     </button>
                   </TooltipHelp>
-               )}
 
-            {scheduledPost.user_handle && (    
                   <TooltipHelp text="Edit post">
                     <button
                        onClick={() => handleEditPost(scheduledPost)}
@@ -1438,34 +1252,6 @@ const handleDeleteImage = async (postId: string) => {
                         <SquarePen className="w-3 h-3" />
                     </button>
                   </TooltipHelp>
-                     )}
-
-                  {/*                  
-          {!scheduledPost.user_handle && (               
-                  <TooltipHelp text="Update social account">
-                    <button
-                       onClick={() => handleEditPost(scheduledPost)}
-                       //className="p-1 rounded-md text-gray-500 bg-gray-50 hover:text-blue-500 hover:bg-blue-100 transition-colors"
-                         className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-md transition-colors"
-                     >
-                        <SquarePen className="w-3 h-3" />
-                        <span className="text-xs">Continue</span>
-                    </button>
-                  </TooltipHelp>
-                
-           )} */}
-
-              {!scheduledPost.user_handle && (               
-                 
-                    <button
-                      className={`flex text-xs px-2 py-1 rounded-md items-center p-1 space-x-2 text-sm bg-green-50 text-green-500 hover:text-green-500 hover:bg-green-100}`}>
-                      {/*<SquarePen className="w-3 h-3" />*/}
-                        <span className="text-xs">Recently Copied!</span>
-                    </button>
-                  
-                
-           )}                  
-           {/*Useful for changing social account*/}         
 
                   <TooltipHelp text="Delete post">
                     <button
@@ -1476,7 +1262,6 @@ const handleDeleteImage = async (postId: string) => {
                            <Trash2 className="w-3 h-3" />
                     </button>
                   </TooltipHelp>
-                  
                   </div>
                                     
                   <div className="flex flex-col flex-1 pr-8"> 
@@ -1576,45 +1361,11 @@ const handleDeleteImage = async (postId: string) => {
                           <div className="mt-4 border-t border-gray-100"></div>
   
                           {/* Add Pause Post button in bottom right */}
-                          <div className="flex space-x-2 justify-end mt-2">
-
-
-                    {/* NEW: Copy Post Button */}
-              {scheduledPost.user_handle && (                                
-                  <TooltipHelp text="duplicate post">                        
-                    <button
-                      onClick={() => handleCopyPost(scheduledPost)}
-                      disabled={copyingPostId === scheduledPost.id}
-                      className={`flex text-xs px-2 py-1 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-300 bg-gray-50 hover:bg-gray-100 hover:text-gray-400' : 'bg-gray-50 text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}>
-
-                      {copyingPostId === scheduledPost.id ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Copy className="w-3 h-3" />
-                      )}
-                      <span>Copy</span>
-                    </button> 
-                    </TooltipHelp>
-                  )}
+                          <div className="flex justify-end mt-2">
                             
-                    {!scheduledPost.user_handle && (               
-                  <TooltipExtended text="⚡Publish this post under a different social media account">
-                    <button
-                       onClick={() => handleEditPost(scheduledPost)}
-                       //className="p-1 rounded-md text-gray-500 bg-gray-50 hover:text-blue-500 hover:bg-blue-100 transition-colors"
-                         //className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-md transition-colors">
-                      className={`flex text-xs px-2 py-1 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-500' : 'bg-blue-50 text-blue-500 hover:text-white hover:bg-blue-500'}`}>
-                      {/*<SquarePen className="w-3 h-3" />*/}
-                        <span className="text-xs">Publish Post</span>
-                    </button>
-                  </TooltipExtended>
-                
-           )} {/*Useful for changing social account*/}   
+{/* Pause/Activate Post button */}
 
-                            
-          {/* Pause/Activate Post button */}
-
- {scheduledPost.user_handle && (                       
+                     
 <button
   // Use a template literal for the className string
   className={`
@@ -1664,7 +1415,6 @@ const handleDeleteImage = async (postId: string) => {
   </TooltipHelp>  
   )}
 </button>
-  )}
     
 
                           </div>

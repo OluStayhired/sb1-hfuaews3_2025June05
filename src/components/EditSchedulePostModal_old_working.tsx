@@ -252,29 +252,13 @@ const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!session?.user?.email) return;
 
         // Fetch connected social channels
-        // Start the base query
-            let query = supabase
-              .from('social_channels')
-              .select('*')
-              .eq('email', session.user.email)
-              .eq('activated', true);
-
-            // Conditionally add the 'handle' filter
-            if (post.user_handle) {
-            query = query.eq('handle', post.user_handle);
-          }
-
-          // Execute the final, constructed query
-          const { data: channels, error: channelsError } = await query;
-        
-        {/*
         const { data: channels, error: channelsError } = await supabase
           .from('social_channels')
           .select('*')
           .eq('email', session.user.email)
           .eq('activated', true)
           .eq('handle', post.user_handle);
-        */}
+
         if (channelsError) throw channelsError;
         setSocialChannels(channels || []);
 
@@ -494,12 +478,7 @@ const handleGenerateContent = async () => {
         schedule_status: true,
         schedule_status: selectedScheduleStatus ?? true,
         target_timezone: post.target_timezone || getSelectedChannelTimezone() || Intl.DateTimeFormat().resolvedOptions().timeZone,
-        updated_at: new Date().toISOString(),
-        
-        // new updates based on information for copy Post
-        social_channel: selectedChannelObject?.social_channel,
-        user_display_name: selectedChannelObject?.user_display_name,
-        user_handle: selectedChannelObject?.handle
+        updated_at: new Date().toISOString()
       };
     
       // Update the post in Supabase
@@ -608,7 +587,6 @@ const renderContentStep = () => (
                 Account
               </label>
               <div className="flex flex-wrap gap-3">
-                {/* Start Old Social Channels Map
                 {socialChannels.map((channel) => (
                   <button
                     key={channel.id}
@@ -645,48 +623,6 @@ const renderContentStep = () => (
                     </div>
                   </button>
                 ))}
-                End Old Social Channels Map*/}
-
-                {/*----------------------------Start New Social Channels Map-------------------------------*/}
-
-              {socialChannels.map((channel) => (
-                  <button
-                    key={channel.id}
-                    onClick={() => setSelectedChannel(channel.id)}
-                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg border transition-colors ${
-                      selectedChannel === channel.id
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-blue-300'
-                    }`}
-                  >
-                    
-                    <div className="relative">
-                      <img
-                        src={channel.avatar_url || `https://ui-avatars.com/api/?name=${channel.handle}`}
-                        alt={channel.handle}
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-                        <img
-                          src={channel.social_channel === 'Bluesky' 
-                                ? BlueskyLogo  
-                                : channel.social_channel === 'LinkedIn'
-                                ? LinkedInLogo
-                                : XLogo  
-                              }
-                          alt={channel.social_channel}
-                          className="w-3 h-3"
-                        />
-                      </div>
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium">{channel.display_name || channel.handle}</p>
-                      <p className="text-xs text-gray-500">@{channel.handle}</p>
-                    </div>
-                  </button>
-                ))}
-                
-                {/* ------------------------------ End New Social Channels Map ----------------------------*/}
               </div>
             </div>
 
