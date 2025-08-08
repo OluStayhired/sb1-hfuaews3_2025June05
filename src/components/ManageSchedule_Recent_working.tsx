@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect, useRef } from 'react';
 import { format, addDays, parseISO } from 'date-fns';
 import { Plus, Clock, ChevronLeft, ChevronRight, Trash2, SquarePen, Send, PlusCircle, Calendar, List, CalendarClock, X, Loader2, ImagePlus, Copy } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -114,9 +113,6 @@ function ManageSchedule() {
   const [copyingPostId, setCopyingPostId] = useState<string | null>(null); // NEW: State for copying loading
   const [copySuccessMessage, setCopySuccessMessage] = useState<string | null>(null); // NEW: State for copy success
 
-  const containerRef = useRef(null);
-  const [scrollPosition, setScrollPosition] = useState(0);
-
 
 
   //LinkedIn VITE
@@ -129,12 +125,6 @@ function ManageSchedule() {
     fetchUserSchedule();
   }, [viewMode]);
 
-  // 3. RESTORE the scroll position after the DOM has been updated
-  useLayoutEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = scrollPosition;
-    }
-  }, [schedules, scrollPosition]);
 
   const handleViewModeChange = (newViewMode: 'list' | 'calendar') => {
     setViewMode(newViewMode);
@@ -146,10 +136,6 @@ const handleRescheduleClick = (postToReschedule: PostData) => {
   setSelectedPostForReschedule(postToReschedule);
   setIsRescheduleModalOpen(true);
 };
-
-
-//const toolTipText = {scheduledPost.user_display_name || scheduledPost.user_handle};
-
 
   
 // Add this function to handle timezone changes
@@ -474,13 +460,6 @@ const generateTimeSlots = (timesHHmm: string[]) => {
 
   // **Define the reusable fetch and data processing logic here**
   const fetchUserSchedule = async () => {
-    //-- Set the Scroll location here
-     //if (containerRef.current) {
-      //setScrollPosition(containerRef.current.scrollTop);
-       //console.log('--- BEFORE FETCH ---');
-    //console.log('Saved scroll position:', currentScrollPosition);
-    //}
-    
     try {
       setIsLoading(true);
 
@@ -719,20 +698,6 @@ const calculateDisabledSlotTime = (date: Date, time: string, scheduleData: any[]
     fetchUserSchedule(); // Call the reusable function
   }, []); // Empty dependency array means this runs once on mount
 
-//-- start useEffect to stop the schedule scrolling up 
-useEffect(() => {
-  //console.log('--- AFTER RENDER ---');
-  //console.log('Current container ref:', containerRef.current);
-  //console.log('Scroll position to restore:', scrollPosition);
-
-  if (containerRef.current) {
-    containerRef.current.scrollTop = scrollPosition;
-
-    //console.log('Restored scroll position to:', containerRef.current.scrollTop);
-  }
-}, [copySuccessMessage, scrollPosition]);
-//-- end useEffect to stop the schedule scrolling up 
-  
   // Pass this to SchedulePostModal
   const handlePostScheduled = async (newPost: PostData) => {
     handleSchedulePost(newPost);
@@ -763,7 +728,7 @@ useEffect(() => {
   }    
     
     // Implementation for new post creation
-    console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
+    //console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
     setSelectedDate(date);
     setSelectedTime(time);
     setIsModalOpen(true);
@@ -779,7 +744,6 @@ const handleEditPost = (post: PostData) => {
   setIsEditModalOpen(true);
 };
 
-  
 
 // Add these handlers in ManageSchedule component
 const handlePostUpdate = (updatedPost: PostData) => {
@@ -897,153 +861,13 @@ const handleConnectLinkedInClick = () => {
 //console.log("Schedules State:", schedules);
 
 // ------------------------ Start handle Copy Post Function ---------------------- //
-// NEW : handleCopyPost function
 
+// NEW: handleCopyPost function
 const handleCopyPost = async (postToCopy: PostData) => {
   if (!postToCopy?.id) {
     console.error('Post ID is missing for copy operation.');
     return;
   }
-
-  if (containerRef.current) {
-    setScrollPosition(containerRef.current.scrollTop);
-  }
-
-  setCopyingPostId(postToCopy.id);
-  setCopySuccessMessage(null);
-
-  let optimisticPost = null;
-
-  try {
-    const { data: { session } = {} } = await supabase.auth.getSession();
-    if (!session?.user?.email || !session?.user?.id) {
-      throw new Error('No authenticated user found to copy post.');
-    }
-
-    // Create the object to be inserted into the database.
-    const postDataForDb = {
-      user_id: session.user.id,
-      user_email: session.user.email,
-      full_content: postToCopy.full_content,
-      content_time: postToCopy.content_time,
-      content_date: postToCopy.content_date,
-      photo_url: postToCopy.photo_url,
-      social_channel: postToCopy.social_channel,
-      user_display_name: postToCopy.user_display_name,
-      created_at: new Date().toISOString(),
-      sent_post: false,
-      schedule_status: false,
-      draft_status: false,
-      posted_at: null,
-      social_post_id: null,
-      error_message: null,
-    };
-
-    // Create the complete post object for the optimistic UI update
-    optimisticPost = {
-      ...postDataForDb,
-      id: uuidv4(), // Temporary ID for the UI
-      avatar_url: postToCopy.avatar_url, // UI-specific data
-    };
-
-    // Optimistically update the UI: INSERT the new post
-    setSchedules(prevSchedules =>
-      prevSchedules.map(daySchedule => {
-        if (format(daySchedule.date, 'yyyy-MM-dd') === optimisticPost.content_date) {
-          const updatedSlots = [...daySchedule.slots];
-          const newSlot = {
-            time: optimisticPost.content_time,
-            isAvailable: true,
-            scheduledPost: optimisticPost, // Use the full optimisticPost object
-            isDisabled: false,
-          };
-
-          // Insert the new slot in the correct chronological order
-          let inserted = false;
-          for (let i = 0; i < updatedSlots.length; i++) {
-            if (newSlot.time.localeCompare(updatedSlots[i].time) < 0) {
-              updatedSlots.splice(i, 0, newSlot);
-              inserted = true;
-              break;
-            }
-          }
-          if (!inserted) {
-            updatedSlots.push(newSlot);
-          }
-          return { ...daySchedule, slots: updatedSlots }; // Return a new daySchedule object
-        }
-        return daySchedule; // Return an unchanged daySchedule object
-      })
-    );
-
-    fetchUserSchedule();
-    
-    // Insert the data into the database
-    const { data: newPostFromDb, error: insertError } = await supabase
-      .from('user_post_schedule')
-      .insert(postDataForDb)
-      .select()
-      .single();
-
-    if (insertError) {
-      throw insertError;
-    }
-
-    // Final UI update: REPLACE the temporary post with the permanent one
-    if (newPostFromDb) {
-      const finalPostForUi = {
-        ...newPostFromDb,
-        avatar_url: postToCopy.avatar_url,
-      };
-
-      setSchedules(prevSchedules =>
-        prevSchedules.map(daySchedule => ({
-          ...daySchedule,
-          slots: daySchedule.slots.map(slot => {
-            // Find the slot with the temporary ID and replace it
-            if (slot.scheduledPost?.id === optimisticPost.id) {
-              return { ...slot, scheduledPost: finalPostForUi };
-            }
-            return slot;
-          }),
-        }))
-      );
-    }
-    
-    setCopySuccessMessage('Post copied successfully!');
-    setTimeout(() => setCopySuccessMessage(null), 3000);
-
-  } catch (err: any) {
-    console.error('Error copying post:', err);
-    // Revert the optimistic update on error. This mirrors the delete pattern.
-    if (optimisticPost) {
-        setSchedules(prevSchedules =>
-          prevSchedules.map(daySchedule => ({
-            ...daySchedule,
-            slots: daySchedule.slots.filter(slot => slot.scheduledPost?.id !== optimisticPost.id),
-          }))
-        );
-    }
-    setCopySuccessMessage(`Failed to copy post: ${err.message || 'Unknown error'}`);
-    setTimeout(() => setCopySuccessMessage(null), 5000);
-
-  } finally {
-    setCopyingPostId(null);
-  }
-};
-
-// OLD WORKING: handleCopyPost function
-  {/*  
-const handleCopyPost = async (postToCopy: PostData) => {
-  if (!postToCopy?.id) {
-    console.error('Post ID is missing for copy operation.');
-    return;
-  }
-
-  // Set Current Scroll Position Here
-   if (containerRef.current) {
-      setScrollPosition(containerRef.current.scrollTop);
-    }
 
   setCopyingPostId(postToCopy.id); // Set loading state for this specific post
   setCopySuccessMessage(null); // Clear previous messages
@@ -1055,9 +879,21 @@ const handleCopyPost = async (postToCopy: PostData) => {
     }
 
     // Create a new post object based on the original
+    {/*
+    const copiedPost: PostData = {
+      ...postToCopy,
+      //id: uuidv4(), // Generate a new unique ID
+      created_at: new Date().toISOString(), // Set new creation timestamp
+      sent_post: false, // Copied post is not yet sent
+      schedule_status: true, // Copied post is scheduled by default
+      draft_status: false, // Copied post is not a draft by default
+      posted_at: null, // Clear posted timestamp
+      social_post_id: null, // Clear social media platform ID
+      error_message: null, // Clear any error messages
+    };
+*/}
     // Define the properties you want to copy from the original post.
-    // Exclude avatar_url and any other fields not present in user_post_schedule.
-    
+// Exclude avatar_url and any other fields not present in user_post_schedule.
       const {
               //id,
               user_id,
@@ -1112,27 +948,6 @@ const handleCopyPost = async (postToCopy: PostData) => {
         if (format(daySchedule.date, 'yyyy-MM-dd') === copiedPost.content_date) {
           // Add the copied post to the slots for that day
           const updatedSlots = [...daySchedule.slots];
-          // added newSlot here 
-          //const newSlot = {
-          //time: copiedPost.content_time,
-          // isAvailable: true,
-          // scheduledPost: copiedPost,
-          // isDisabled: false,
-          //};
-
-          const newSlot = {
-                user_id: copiedPost.user_id,
-                user_email: copiedPost.user_email,
-                time: copiedPost.content_time,
-                isAvailable: true,
-                scheduledPost: {
-                ...copiedPost, // Use the copiedPost object here to include all its data
-                avatar_url: postToCopy.avatar_url, // Get avatar_url from the original post if needed
-                photo_url: copiedPost.photo_url, // Get photo_url from the copied post
-              },
-              isDisabled: false,
-            };
-          
           const existingSlotIndex = updatedSlots.findIndex(
             slot => slot.time === copiedPost.content_time
           );
@@ -1145,8 +960,6 @@ const handleCopyPost = async (postToCopy: PostData) => {
             };
           } else {
             // If no slot exists for this time, create a new one
-
-            {/* Start old else block
             updatedSlots.push({
               time: copiedPost.content_time,
               isAvailable: true, // Assuming copied posts go into available slots
@@ -1155,26 +968,11 @@ const handleCopyPost = async (postToCopy: PostData) => {
             });
             // Re-sort slots to maintain chronological order
             updatedSlots.sort((a, b) => a.time.localeCompare(b.time));
-            // End old else block 
-            
-            //Start new Else Block
-             let inserted = false;
-            for (let i = 0; i < updatedSlots.length; i++) {
-              if (newSlot.time.localeCompare(updatedSlots[i].time) < 0) {
-                updatedSlots.splice(i, 0, newSlot); // Insert before current element
-                inserted = true;
-                break;
-              }
-            }
-            if (!inserted) {
-              updatedSlots.push(newSlot); // If it's the largest time, push to end
-            }
-            //End New else block
           }
           return { ...daySchedule, slots: updatedSlots };
         }
         // Refresh the schedule data to display the new post
-        //fetchUserSchedule(); // Removed full refresh here
+        fetchUserSchedule();
         return daySchedule;
       });
     });
@@ -1195,8 +993,7 @@ const handleCopyPost = async (postToCopy: PostData) => {
     setCopyingPostId(null); // Clear loading state
   }
 };
-*/}
-  
+
 // ----------------------- ENd handle Copy Post FUnction -------------------------//  
   
 //------------------------ Start handle upload image to attach to post ------------------ //
@@ -1337,7 +1134,7 @@ const handleDeleteImage = async (postId: string) => {
         }))
     );
 
-   //console.log(`Image URL removed from database for post ID: ${postId}.`);
+    //console.log(`Image URL removed from database for post ID: ${postId}.`);
 
   } catch (err) {
     console.error('Error during image URL deletion process:', err);
@@ -1494,13 +1291,9 @@ const handleDeleteImage = async (postId: string) => {
                   <div 
                       key={slot.time} 
                       //key={slot.scheduledPost?.id}
-                      className={`px-6 bg-gray-50 py-3 flex items-center justify-between ${
-                          
+                      className={`px-6 bg-white py-3 flex items-center justify-between ${
                           slot.isDisabled ? 'bg-gray-100 opacity-50' :
-                          slot.isAvailable ? 'hover:bg-white' : 'bg-gray-50' 
-                          //slot.isAvailable ? 'bg-gray-50' : 'hover:bg-white' 
-                          
-                        
+                          slot.isAvailable ? 'hover:bg-gray-50' : 'bg-gray-50'
                           }`}
                     >
                     <div className="flex items-center space-x-6">
@@ -1531,13 +1324,12 @@ const handleDeleteImage = async (postId: string) => {
                           
 
                           <div className="relative flex-shrink-0">
-                         <TooltipHelp text = {`${scheduledPost.user_display_name}`}>
+                         
                             <img
                               src={scheduledPost.avatar_url || `https://ui-avatars.com/api/?name=${scheduledPost.user_handle}`}
                               alt={scheduledPost.user_handle}
                               className="w-8 h-8 rounded-full"
                             />
-                        </TooltipHelp>
                             <div className="absolute -bottom-1 -right-1 bg-gray-50 rounded-full p-1 shadow-sm">
                               <img
                                 src={
@@ -1560,9 +1352,9 @@ const handleDeleteImage = async (postId: string) => {
                   {scheduledPost.user_handle && ( 
                          <button
                             onClick={() => handleNewPost(day.date, slot.time)}
-                            className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500 rounded-md transition-colors"
+                            className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-md transition-colors"
                           >
-                            <PlusCircle className="w-3 h-3 text-blue-500" />
+                            <PlusCircle className="w-3 h-3" />
                             <span>New Post</span>
                           </button>
                   )}
@@ -1688,9 +1480,9 @@ const handleDeleteImage = async (postId: string) => {
                   </div>
                                     
                   <div className="flex flex-col flex-1 pr-8"> 
-                      <div className="flex flex-col"> 
+                      <div className="flex flex-col mb-1"> 
                               <p className="text-sm font-semibold text-gray-900 leading-none">
-                                {/* {scheduledPost.user_display_name || scheduledPost.user_handle}*/}
+                                {scheduledPost.user_display_name || scheduledPost.user_handle}
                               </p>
 
                          </div> 
@@ -1700,7 +1492,7 @@ const handleDeleteImage = async (postId: string) => {
                      <TooltipExtended text={`⚡viewing this post in your local timezone : ${userTimezone}`}> 
                       <span className="flex items-center text-xs py-1 px-2 text-gray-500 bg-gray-50 rounded-sm">
                         <span className="bg-blue-50 rounded-full">
-                            <Clock className="text-blue-500 h-3 w-3 mr-1"/>
+                            <Clock className="text-blue-500 h-3.5 w-3.5 mr-1"/>
 
                       </span>
                         
@@ -1808,9 +1600,9 @@ const handleDeleteImage = async (postId: string) => {
                     {!scheduledPost.user_handle && (               
                   <TooltipExtended text="⚡Publish this post under a different social media account">
                     <button
-                       //onClick={() => handleEditPost(scheduledPost)}
-                      onClick={() => handleEditPost(scheduledPost)}
-                      disabled={copyingPostId === scheduledPost.id}
+                       onClick={() => handleEditPost(scheduledPost)}
+                       //className="p-1 rounded-md text-gray-500 bg-gray-50 hover:text-blue-500 hover:bg-blue-100 transition-colors"
+                         //className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-md transition-colors">
                       className={`flex text-xs px-2 py-1 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-500' : 'bg-blue-50 text-blue-500 hover:text-white hover:bg-blue-500'}`}>
                       {/*<SquarePen className="w-3 h-3" />*/}
                         <span className="text-xs">Publish Post</span>
@@ -1887,7 +1679,7 @@ const handleDeleteImage = async (postId: string) => {
                       <div className="flex-1 bg-gray-50 rounded-md w-full">
                           <button
                             onClick={() => handleNewPost(day.date, slot.time)}
-                            className={`flex border border-gray-200 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-300 hover:text-blue-300 hover:bg-blue-400 hover:text-white' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-500 hover:text-white'}`}>
+                            className={`flex rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-300 hover:text-blue-300 hover:bg-blue-400 hover:text-white' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-500 hover:text-white'}`}>
 
                             
                             <PlusCircle className="w-4 h-4" />
@@ -1989,7 +1781,7 @@ const handleDeleteImage = async (postId: string) => {
                       //console.log("Post successful, refreshing schedule data.");
                       fetchUserSchedule(); // <-- Call your fetch function here
                       } else {
-                       //console.log("Post failed or cancelled, not refreshing schedule data.");
+                       console.log("Post failed or cancelled, not refreshing schedule data.");
                       }
                       }}
     
