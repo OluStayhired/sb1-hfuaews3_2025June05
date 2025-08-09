@@ -19,6 +19,7 @@ import {
   ArrowRight,
   CalendarCheck,
   ChevronRight, 
+  Layers,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 //import { useNavigate } from 'react-router-dom';
@@ -37,6 +38,7 @@ import { TooltipHelp } from '../utils/TooltipHelp';
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { UpgradePlanModal } from './UpgradePlanModal'
 import { useProductTier } from '../hooks/useProductTierHook'
+import { OnboardingModal } from '../components/OnboardingModal'; // NEW: Import the OnboardingModal component
 
 interface DashboardMetrics {
   todayPosts: {
@@ -63,6 +65,11 @@ interface WelcomeGuideCompleteData {
   postContent?: string; 
   first_post?: string; 
   postContentId?: string;
+}
+
+interface UserPreferences {
+  on_boarding_active: boolean | null; // NEW: Add this property to your interface
+  // Add other user preference fields as needed for the dashboard
 }
 
 export function UserDashboard() {
@@ -93,7 +100,7 @@ export function UserDashboard() {
   const [selectedContentIdeaId, setSelectedContentIdeaId] = useState<string | null>(null); // To match selectedContentIdea prop
   const [currentPostIdeaRecord, setCurrentPostIdeaRecord] = useState<FirstPostIdeaRecord | null>(null); // To match postToUpdate prop
   const [isFirstPostModalOpen, setIsFirstPostModalOpen] = useState(false);
- //const [isCreateCalendarFormOpen, setIsCreateCalendarFormOpen] = useState(false) ;
+ //const [isCreateCalendarFormOpen, setIsCreateCalendarFormOpen] = useState(false);
 
   // Check Limits Based on Product Tier
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
@@ -102,6 +109,12 @@ export function UserDashboard() {
   const [modalMessage, setModalMessage] = useState('');
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  // State to control the visibility of the OnboardingModal
+  const [onboardingActive, setOnboardingActive] = useState<boolean | null>(null);
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false);
+  const [isLoadingDashboard, setIsLoadingDashboard] = useState(true); // Example dashboard loading state
+  const [onboardingError, setOnboardingError] = useState<string | null>(null);
 
 
   // Define a consistent primary color for easy  changes
@@ -189,7 +202,7 @@ useEffect(() => {
       // Decide whether to open WelcomeGuide based on post status
       if (post.in_progress === true && post.welcome_complete === false) {
 
-        //console.log('UserDashboard: In-progress first post found. Treating as completed, showing success page.');
+        console.log('UserDashboard: In-progress first post found. Treating as completed, showing success page.');
         setOnboardSuccessPostContent(post.first_post || null); // Pass content
         setShowOnboardSuccess(true);
         setIsWelcomeGuideOpen(false);
@@ -231,6 +244,59 @@ const twitterConnectedUser = connectedAccounts.find(acc => acc.social_channel ==
 const linkedinConnectedUser = connectedAccounts.find(acc => acc.social_channel === 'LinkedIn');  
 const blueskyConnectedUser = connectedAccounts.find(acc => acc.social_channel === 'Bluesky'); 
 
+
+ useEffect(() => {
+    const loadDashboardData = async () => {
+      setIsLoadingDashboard(true);
+      setOnboardingError(null); // Clear previous errors
+
+      if (!currentUserId) {
+        setIsLoadingDashboard(false);
+        setOnboardingError('User not authenticated.');
+        return;
+      }
+
+      try {
+        // Fetch the on_boarding_active value from user_preferences
+        const { data, error } = await supabase
+          .from('user_preferences')
+          .select('on_boarding_active') // Select only the desired column
+          .eq('user_id',currentUserId)
+          .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+          throw error;
+        }
+
+        // Set the onboardingActive state based on the fetched data
+        // Default to true if the column is null or not found (assuming active onboarding by default)
+        const fetchedOnboardingActive = data?.on_boarding_active ?? true;
+        setOnboardingActive(fetchedOnboardingActive);
+
+        // Simulate other dashboard data loading
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // NEW: Use the onboardingActive constant to decide whether to show the modal
+        // If on_boarding_active is true, show the modal
+        if (fetchedOnboardingActive) {
+          setShowOnboardingModal(true);
+        } else {
+          setShowOnboardingModal(false);
+        }
+
+      } catch (err: any) {
+        console.error('Error loading dashboard data or onboarding status:', err);
+        setOnboardingError(`Failed to load dashboard: ${err.message}`);
+        setOnboardingActive(false); // Ensure modal is closed on error
+      } finally {
+        setIsLoadingDashboard(false);
+      }
+    };
+
+    loadDashboardData();
+  }, [currentUserId]); // Re-run when user ID changes
+  
+
 //------------------ Start Upgrade Modal and Limits Checks Here --------------------------//
 //========================================================================================//  
   
@@ -251,6 +317,7 @@ const blueskyConnectedUser = connectedAccounts.find(acc => acc.social_channel ==
     showFirstTrialWarning,
     showSecondTrialWarning,
     showFinalTrialWarning,
+    //on_boarding_active,
     max_calendar,
     max_social_accounts,
     remainingCampaigns,
@@ -274,7 +341,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
     setModalMessage(''); // Clear previous modal message
     setIsUpgradeModalOpen(false);
 
-    //console.log(`[checkActionLimits] Action requested: ${action}`);
+    console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -297,7 +364,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
               if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsUpgradeModalOpen(true);
-        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
       break;
@@ -309,7 +376,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                 setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
                 setIsUpgradeModalOpen(true);
 
-                //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
 
               return false;
 
@@ -322,7 +389,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                   
                 setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
                 setIsUpgradeModalOpen(true);
-                //console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
           
                 return false;
               }
@@ -363,7 +430,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
   
 // --------- Start Helper function to handle connection success flow (for URL params) -------- //
 const handleConnectionSuccess = async (connectedChannel: string, contentFromModal?: string | null) => {
-    //console.log(`UserDashboard: Detected successful ${connectedChannel} connection.`);
+    console.log(`UserDashboard: Detected successful ${connectedChannel} connection.`);
     setIsLoadingPost(true); // Set loading state at the beginning
 
     const { data: { session } } = await supabase.auth.getSession();
@@ -375,11 +442,11 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
 
         if (contentFromModal !== undefined) { // Check if content was passed directly (from  Bluesky modal)
             postContentToUse = contentFromModal;
-            //console.log(`Using post content from modal for ${connectedChannel} connection.`);
+            console.log(`Using post content from modal for ${connectedChannel} connection.`);
 
         } else {
             // This path is for LinkedIn and Twitter  (via URL parameters)
-            //console.log(`Fetching post content for ${connectedChannel} connection from database.`);
+            console.log(`Fetching post content for ${connectedChannel} connection from database.`);
             const { data: postToUpdate, error: fetchError } = await supabase
                 .from('first_post_idea')
                 .select('id, welcome_complete, first_post')
@@ -403,12 +470,10 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                 if (updateError) {
                     console.error(`Error setting welcome_complete to true after ${connectedChannel} connection:`, updateError);
                 } else {
-                    //console.log(`Successfully updated welcome_complete to true for post ID: ${postIdToUpdate}`);
-                    console.log(`Successfully updated welcome_complete to true for post ID`);
+                    console.log(`Successfully updated welcome_complete to true for post ID: ${postIdToUpdate}`);
                 }
             } else {
-                //console.log(`No specific pending post found to mark welcome_complete after ${connectedChannel} connection (via URL param).`);
-                console.log(`No specific pending post found to mark welcome_complete`);
+                console.log(`No specific pending post found to mark welcome_complete after ${connectedChannel} connection (via URL param).`);
             }
         }
 
@@ -501,7 +566,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                 if (post.in_progress === true && post.welcome_complete === false) {
                     // Scenario: User started guide, generated post, but didn't explicitly finish/connect.
                     // Based on your instruction: Treat this as "completed enough" to show success.
-                    //console.log('UserDashboard: In-progress first post found. Treating as completed, showing success page.');
+                    console.log('UserDashboard: In-progress first post found. Treating as completed, showing success page.');
 
                     setFirstPostContent(post.first_post); // Keep content for OnboardSuccessPage
                     setFirstPostId(post.id);
@@ -529,7 +594,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
                     setIsWelcomeGuideOpen(false);
                 } else {
                     // Any other unexpected state of the post
-                    //console.log('UserDashboard: Post found in unexpected state. Opening WelcomeGuide for re-evaluation.');
+                    console.log('UserDashboard: Post found in unexpected state. Opening WelcomeGuide for re-evaluation.');
                     setFirstPostContent(post.first_post); // Pre-fill if content exists
                     setFirstPostId(post.id);
                     setIsWelcomeGuideOpen(true); // Open guide to let user decide
@@ -537,7 +602,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
             } else {
                 // Scenario: No post records found at all for this user.
                 // This means it's a truly new user, so open the WelcomeGuide.
-                //console.log('UserDashboard: No post history found. Opening WelcomeGuide for a fresh start.');
+                console.log('UserDashboard: No post history found. Opening WelcomeGuide for a fresh start.');
                 setFirstPostContent(null);
                 setFirstPostId(null);
                 setIsWelcomeGuideOpen(true); // <<< CHANGED: Ensure it opens for truly new users
@@ -558,7 +623,7 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
   
   
   const handleWelcomeGuideComplete = (dataFromGuide: WelcomeGuideCompleteData) => {
-    //console.log('Welcome Guide completed with data:', dataFromGuide);
+    console.log('Welcome Guide completed with data:', dataFromGuide);
     setIsWelcomeGuideOpen(false); // Always close the WelcomeGuide modal when it completes
 
     // Scenario 1: User chose to "Save and Close"
@@ -590,15 +655,15 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
           return; // Already busy with something
         }
 
-      //console.log("Starting limit check...");
+      console.log("Starting limit check...");
       const canProceed =  await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            //console.log("Limit check failed. Modal should be open. Returning.");
+            console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        //console.log("Limit check passed. Proceeding with campaign creation logic.");
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsCalendarListOpen(true);
       }
@@ -614,15 +679,15 @@ const handleConnectionSuccess = async (connectedChannel: string, contentFromModa
           return; // Already busy with something
         }
 
-      //console.log("Starting limit check...");
+      console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            //console.log("Limit check failed. Modal should be open. Returning.");
+            console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        //console.log("Limit check passed. Proceeding with campaign creation logic.");
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsFirstPostModalOpen(true);
       }
@@ -637,15 +702,15 @@ const handleOpenDraftPost = async () => {
           return; // Already busy with something
         }
 
-      //console.log("Starting limit check...");
+      console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            //console.log("Limit check failed. Modal should be open. Returning.");
+            console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        //console.log("Limit check passed. Proceeding with campaign creation logic.");
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsDraftPostsOpen(true);
       }
@@ -659,15 +724,15 @@ const handleOpenScheduledPost = async () => {
           return; // Already busy with something
         }
 
-      //console.log("Starting limit check...");
+      console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            //console.log("Limit check failed. Modal should be open. Returning.");
+            console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        //console.log("Limit check passed. Proceeding with campaign creation logic.");
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsScheduledPostsOpen(true);
       }
@@ -810,6 +875,12 @@ const handleOpenScheduledPost = async () => {
       } finally {
         setIsLoading(false);
       }
+      // Show Onboarding Modal here if it's TRUE
+      //console.log('Show Onboarding Activity: ', on_boarding_active)
+      //if(on_boarding_active === true) {
+       //}
+      setShowOnboardingModal(true);
+     
     };
 
     fetchDashboardMetrics();
@@ -821,15 +892,15 @@ const handleOpenScheduledPost = async () => {
           return; // Already busy with something
         }
 
-      //console.log("Starting limit check...");
+      console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            //console.log("Limit check failed. Modal should be open. Returning.");
+            console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         }
 
-        //console.log("Limit check passed. Proceeding with campaign creation logic.");
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         return;
        //-------------- End Checking Limits Here --------------- //
@@ -842,15 +913,15 @@ const handleOpenScheduledPost = async () => {
           return; // Already busy with something
         }
 
-      //console.log("Starting limit check...");
+      console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            //console.log("Limit check failed. Modal should be open. Returning.");
+            console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        //console.log("Limit check passed. Proceeding with campaign creation logic.");
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
          navigate('/dashboard/schedule');
       }
@@ -864,15 +935,15 @@ const handleOpenScheduledPost = async () => {
           return; // Already busy with something
         }
 
-      //console.log("Starting limit check...");
+      console.log("Starting limit check...");
       const canProceed = await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
-            //console.log("Limit check failed. Modal should be open. Returning.");
+            console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        //console.log("Limit check passed. Proceeding with campaign creation logic.");
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         navigate('/dashboard/campaign');
 
@@ -888,6 +959,16 @@ const handleOpenScheduledPost = async () => {
     setIsCalendarListOpen(false);
     // Navigate to the ShowCalendarContent route, passing the calendarName
     navigate(`/dashboard/calendars?calendar=${calendarName}`);
+  };
+
+  // Function to open the onboarding modal
+  const handleOpenOnboardingModal = () => {
+    setShowOnboardingModal(true);
+  };
+
+  // Function to close the onboarding modal (passed to the modal as a prop)
+  const handleCloseOnboardingModal = () => {
+    setShowOnboardingModal(false);
   };
   
   if (isLoading) {
@@ -919,9 +1000,25 @@ const handleOpenScheduledPost = async () => {
       */}
 
       <div className="mb-8">
+          {/* Placement of the trigger button for the Onboarding Modal */}
+          {/* This button gives users control to open the modal whenever they want */}
+        <div className="mb-6 flex justify-end"> {/* Align to the right */}
+
+  {onboardingActive && (
+                  <button
+                    onClick={handleOpenOnboardingModal}
+                    className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-50 transition-colors"
+                  >           
+                  <Layers className="w-4 h-4 text-green-700 mr-2"/>          
+                    View Onboarding Progress
+                  </button>
+    )}
+                </div>
         <div className="flex justify-between items-start mb-4"> {/* Added flex container */}
+           
           {/* Left-aligned text */}
             <div>
+             
               <h1 className="text-3xl font-extrabold text-gray-900 leading-tight">Hey!👋</h1>
               <p className="text-gray-600 mt-1 text-lg">Welcome back! Here's an overview of your social media activity.</p>
             </div>
@@ -1253,6 +1350,14 @@ const handleOpenScheduledPost = async () => {
           onClose={handleCloseUpgradeModal}
           message={modalMessage} 
         />
+
+      {showOnboardingModal && onboardingActive && (
+        <OnboardingModal
+          isOpen={showOnboardingModal}
+          onClose={handleCloseOnboardingModal}
+        />
+      )}
+    
   </div>
 );
 }
