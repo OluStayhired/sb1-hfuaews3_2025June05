@@ -429,8 +429,8 @@ const handleOpenActiveStep = async () => {
             <div className="text-center items-center space-y-4 p-4 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-lg hover:border-blue-300 transition-all group shadow-sm">
 
               {/*<div className="text-center items-center space-y-4 p-4">*/}
-                  <h3 className="text-2xl font-bold text-blue-800">{activeStep.title} 🎉</h3>
-                <p className="text-gray-600 text-lg">
+                  <h3 className="text-2xl font-bold text-blue-600">{activeStep.title}</h3>
+                <p className="text-gray-600 text-sm">
                   {activeStep.description}
                 </p>
                 
