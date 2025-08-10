@@ -697,7 +697,7 @@ const getWeekday = (date: Date): string => {
                   className={`w-full text-sm px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                       nameError ? 'border-red-300' : isNameUnique ? 'border-green-300' : 'border-gray-300'
                   }`}
-                  placeholder="Enter a name for your calendar"
+                  placeholder="Enter a name for your campaign"
                   required
                   />
                   {isCheckingName && (
