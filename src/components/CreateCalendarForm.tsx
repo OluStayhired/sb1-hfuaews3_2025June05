@@ -660,7 +660,7 @@ const getWeekday = (date: Date): string => {
             
             <div className="text-left">
               <div className="flex space-x-3 items-center mb-2">
-              <label className="block text-sm font-medium text-gray-700 flex items-center space-x-2">Calendar Name</label>
+              <label className="block text-sm font-medium text-gray-700 flex items-center space-x-2">Campaign Name</label>
 
                 <TooltipExtended text="⚡ Auto-Generate a content campaign name and description">
                 <button
@@ -716,7 +716,7 @@ const getWeekday = (date: Date): string => {
             <div className="text-left">
               {/*<label className="block text-sm font-medium text-gray-700 mb-2">Calendar Description</label>*/}
               <div className="flex space-x-3 items-center mb-2">
-                  <label className="block text-sm font-medium text-gray-700 flex items-center space-x-2">Calendar Description</label>
+                  <label className="block text-sm font-medium text-gray-700 flex items-center space-x-2">Campaign Description</label>
               
               </div>
               
