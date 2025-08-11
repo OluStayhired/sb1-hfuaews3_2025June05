@@ -19,6 +19,7 @@ import { TooltipExtended } from '../utils/TooltipExtended';
 import { getCompanyProblemAndAudience, CompanyInsightsResponse } from '../lib/firecrawl';
 import { UpgradePlanModal } from './UpgradePlanModal'
 import { useProductTier } from '../hooks/useProductTierHook'
+import { CreateCampaignHelpVideos } from './CreateCampaignHelpVideos'; // NEW: Import the video help component
 
 
 interface ViewCalendarProps {
@@ -712,6 +713,17 @@ const handleViewCalendarList = () => {
             />
         </div>
          )}
+
+               {/* NEW: Video Help Section - Placed after the main campaign creation area */}
+      {/* Add a top margin (mt-12) to provide visual separation */}
+          
+     {(calendarList.length === 0 || calendarList.length > 0)  && !isCreateCalendarFormOpen && !showCampaignList && !selectedCalendar && !isCampaignSuccessModalOpen && (
+                 
+                 <div className="mt-12">
+                   <CreateCampaignHelpVideos />
+                 </div>  
+               
+           )}
           
         </div>
         {/*End inside the white boarder*/}
