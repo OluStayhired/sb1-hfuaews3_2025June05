@@ -1259,7 +1259,7 @@ const handleOpenScheduledPost = async () => {
   {/*End New Main Metrics & Quick Actions*/}
 
       
-      {/* --- Quick Compose Button (Always Available) --- 
+      {/* --- Quick Compose Button (Always Available)  --- 
       <div className="mt-10 text-center">
         <button
           onClick={openWelcomeGuide}
