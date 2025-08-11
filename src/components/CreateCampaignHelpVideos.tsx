@@ -24,7 +24,8 @@ const helpVideos: Video[] = [
     //platform: 'vimeo',
     title: 'Coming Soon: Improve Your Campaign Posts with AI',
     description: 'Discover how to use AI to generate compelling post ideas and rewrite your content for maximum engagement.',
-    placeholderImage: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    //placeholderImage: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    placeholderImage: 'https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/SoSavvy%20Help%20Video%20Covers%20(1).png',
   },
 
   {
@@ -33,7 +34,8 @@ const helpVideos: Video[] = [
     //platform: 'vimeo',
     title: 'Coming Soon: Scheduling Masterclass - Plan & Publish',
     description: 'Master the art of scheduling posts, managing your content calendar, and automating your social media presence.',
-    placeholderImage: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    //placeholderImage: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    placeholderImage: 'https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/help_schedule_posts.png',
   },
 ];
 
@@ -86,7 +88,7 @@ export function CreateCampaignHelpVideos() {
   return (
     <div className="py-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-        Learn More with Video Tutorials
+      💡 Learn More with Video Tutorials
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {helpVideos.map((video) => (
