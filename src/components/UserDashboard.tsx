@@ -1196,7 +1196,7 @@ const handleOpenScheduledPost = async () => {
            bg-blue-500 border border-blue-500 rounded-md hover:border-blue-500 hover:bg-blue-600 transition-all group shadow-lg shadow-blue-500/60 hover:shadow-xl hover:shadow-blue-500/80"
             >
               <Sparkles className="w-4 h-4 mr-2 text-blue-100 fill-blue-500" /> {/* Reduced icon size */}
-                Start Generating Posts
+                Start Here!
               <ArrowRight className="ml-2 w-4 h-4 text-white transition-transform duration-300 group-hover:translate-x-1"/>
             </button>
         </TooltipExtended>
@@ -1248,7 +1248,7 @@ const handleOpenScheduledPost = async () => {
                     transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
         >
           <PlusCircle className="mr-2 w-4 h-4" />
-          <span>Schedule New Post</span>
+          <span>Schedule Posts</span>
           
         </button>
       </TooltipExtended>
