@@ -1160,8 +1160,8 @@ const handleDeleteImage = async (content: CalendarContent) => {
 // --- Logic to determine the tooltip message ---
   const duplicateTooltipText =
     currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0
-      ? `⚡Duplicate once expired - ${currentCalendarDaysLeft} Day${currentCalendarDaysLeft === 1 ? '' : 's'}`
-      : '⚡Copy this Calendar'; // Original message when enabled or no days left
+      ? `⚡Extend once expired - ${currentCalendarDaysLeft} Day${currentCalendarDaysLeft === 1 ? '' : 's'}`
+      : '⚡Extend this Calendar'; // Original message when enabled or no days left
 
 // Function to determine the tooltip message for the "Next" button
 const getScheduleButtonTooltip = () => {
@@ -1341,7 +1341,7 @@ const getScheduleButtonTooltip = () => {
                        }`}
             >
               <Copy className="h-4 w-4 mr-2" />
-              Duplicate All
+              Extend Campaign
             </button>
           </TooltipHelp>
 </div>        
