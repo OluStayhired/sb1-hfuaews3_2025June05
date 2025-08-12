@@ -191,7 +191,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
     setModalMessage(''); // Clear previous modal message
     setIsUpgradeModalOpen(false);
 
-    //console.log(`[checkActionLimits] Action requested: ${action}`);
+    console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -214,7 +214,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
               if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsUpgradeModalOpen(true);
-        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
       break;
@@ -226,7 +226,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                 setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
                 setIsUpgradeModalOpen(true);
 
-                //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
 
               return false;
 
@@ -239,7 +239,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                   
                 setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
                 setIsUpgradeModalOpen(true);
-                //console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
           
                 return false;
               }
@@ -282,18 +282,18 @@ const handleOpenActiveStep = async () => {
           return; // Already busy with something
         }
 
-      //console.log("Starting limit check...");
+      console.log("Starting limit check...");
       const canProceed =  await checkActionLimits('freeTrialEnded');
 
       if (!canProceed) {
             //setIsUpgradeModalOpen(true);
-            //console.log("Limit check failed. Modal should be open. Returning.");
+            console.log("Limit check failed. Modal should be open. Returning.");
 
             return; // This return is crucial and should prevent anything below from running
             
         } else {
 
-        //console.log("Limit check passed. Proceeding with campaign creation logic.");
+        console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         navigate(activeStep.path);
       }
@@ -392,13 +392,13 @@ const handleOpenActiveStep = async () => {
                       {/* Step Circle */}
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-colors duration-300
-                          ${isCompleted ? 'bg-green-100' : isActive ? 'border-8 border-blue-100 bg-blue-500 shadow-lg shadow-color-blue' : 'bg-gray-300'}`}
+                          ${isCompleted ? 'bg-blue-100' : isActive ? 'border-8 border-blue-100 bg-blue-500 shadow-lg shadow-color-blue' : 'bg-gray-300'}`}
                       >
                         {isCompleted ? (
-                          <CheckCircle2 className="w-6 h-6 text-green-700" />
+                          <CheckCircle2 className="w-6 h-6 text-blue-500" />
                         ) : (
                         <p className={`font-medium text-center whitespace-nowrap transition-colors duration-300
-                        ${isCompleted ? 'text-green-700' : isActive ? 'text-white' : 'text-white'}`}
+                        ${isCompleted ? 'text-blue-500' : isActive ? 'text-white' : 'text-white'}`}
                       >
                              {index + 1 }
                         </p>
@@ -407,7 +407,7 @@ const handleOpenActiveStep = async () => {
                       </div>
                       {/* Step Label */}
                       <p className={`mt-2 text-xs font-medium text-center whitespace-nowrap transition-colors duration-300
-                        ${isCompleted ? 'text-green-700' : isActive ? 'text-blue-700' : 'text-gray-500'}`}
+                        ${isCompleted ? 'text-blue-700' : isActive ? 'text-blue-700' : 'text-gray-500'}`}
                       >
                         {step.title}
                       </p>
@@ -416,7 +416,7 @@ const handleOpenActiveStep = async () => {
                     {index < onboardingSteps.length - 1 && (
                       <div
                         className={`flex-1 h-0.5 mx-2 transition-colors duration-300
-                          ${isCompleted ? 'bg-green-500' : (isActive || index < activeStepIndex) ? 'bg-blue-500' : 'bg-gray-300'}`}
+                          ${isCompleted ? 'bg-blue-500' : (isActive || index < activeStepIndex) ? 'bg-blue-500' : 'bg-gray-300'}`}
                       ></div>
                     )}
                   </React.Fragment>
@@ -436,6 +436,11 @@ const handleOpenActiveStep = async () => {
                 
                 {/* CTA Button */}
                 <button
+                  //onClick={() => {
+                    //navigate(activeStep.path);
+                    //{handleOpenActiveStep}
+                  //}}
+
                   onClick={handleOpenActiveStep}
                   className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg transform hover:scale-105"
                 >
@@ -447,12 +452,12 @@ const handleOpenActiveStep = async () => {
 
             {/* All Steps Completed Message */}
             {completedCount === totalSteps && (
-              <div className="text-center space-y-4 p-4 bg-green-50 rounded-lg border border-green-100 shadow-sm">
-                <h3 className="text-2xl font-bold text-green-800">Congratulations!</h3>
-                <p className="text-green-700 text-lg">You've completed all onboarding steps. You're all set!</p>
+              <div className="text-center space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-100 shadow-sm">
+                <h3 className="text-2xl font-bold text-blue-800">Congratulations! 🎉</h3>
+                <p className="text-blue-700 text-lg">You've completed all onboarding steps. You're all set!</p>
                 <button
                   onClick={onClose}
-                  className="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg transform hover:scale-105"
+                  className="inline-flex items-center px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-lg transform hover:scale-105"
                 >
                   <span>Start Using SoSavvy</span>
                   <ArrowRight className="w-5 h-5 ml-2" />
