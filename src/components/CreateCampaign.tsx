@@ -1,7 +1,7 @@
 //import React from 'react';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { PlusCircle } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { generateCalendar, generateListPost } from '../lib/gemini';
 import { useAuthStore } from '../auth';
@@ -20,6 +20,8 @@ import { getCompanyProblemAndAudience, CompanyInsightsResponse } from '../lib/fi
 import { UpgradePlanModal } from './UpgradePlanModal'
 import { useProductTier } from '../hooks/useProductTierHook'
 import { CreateCampaignHelpVideos } from './CreateCampaignHelpVideos'; // NEW: Import the video help component
+import VideoPillButton from './VideoPillButton';
+import VideoPlayerModal from './VideoPlayerModal';
 
 
 interface ViewCalendarProps {
@@ -120,10 +122,28 @@ export function ViewCalendars({ onCreateCalendarClick }: ViewCalendarProps) {
   const [companyWebsite, setCompanyWebsite] = useState('');
   const [insights, setInsights] = useState<CompanyInsightsResponse | null>(null);
 
+  // Check Limits Based on Product Tier
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [isCheckingLimits, setIsCheckingLimits] = useState(false);
   const [userMessage, setUserMessage] = useState('');
   const [modalMessage, setModalMessage] = useState('');
+
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState('');
+  const [currentPlayingVideoUrl, setCurrentPlayingVideoUrl] = useState('');
+
+
+// Handler to open the modal and set the video URL
+  const handlePlayVideo = (url: string) => {
+    setCurrentPlayingVideoUrl(url);
+    setIsVideoModalOpen(true);
+  };
+
+  // Handler to close the modal
+  const handleCloseVideoModal = () => {
+    setIsVideoModalOpen(false);
+    setCurrentPlayingVideoUrl('');
+  };
 
   
  
@@ -190,7 +210,9 @@ type ActionType = 'createCampaign' | 'addAccount' ;
     setIsUpgradeModalOpen(false);
   };
   
-
+const videoUrl = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/create_campaign_video_with_voice.mp4"; 
+const thumbnailUrl = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/square_help_create_campaign.png";
+  
 useEffect(() => {
   fetchUserIdAndEmail();
 
@@ -246,9 +268,9 @@ useEffect(() => {
       //const hasExceededCampaigns = userPreferences.total_campaign >= MAX_FREE_CAMPAIGNS;
       const hasExceededCampaigns = remainingCampaigns <= 0 ;       
 
-      ////console.log(`[checkActionLimits] Is Limited Account Type for Campaign: ${isLimitedCampaignAccountType}`);
-      ////console.log(`[checkActionLimits] Has Exceeded Campaigns: ${hasExceededCampaigns}`);
-      ////console.log(`[checkActionLimits] Full Condition: ${isLimitedCampaignAccountType && hasExceededCampaigns}`);
+      //console.log(`[checkActionLimits] Is Limited Account Type for Campaign: ${isLimitedCampaignAccountType}`);
+      //console.log(`[checkActionLimits] Has Exceeded Campaigns: ${hasExceededCampaigns}`);
+      //console.log(`[checkActionLimits] Full Condition: ${isLimitedCampaignAccountType && hasExceededCampaigns}`);
 
       if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
@@ -256,7 +278,7 @@ useEffect(() => {
         //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
-      ////console.log("[checkActionLimits] Campaign limits cleared. Continuing.");
+      //console.log("[checkActionLimits] Campaign limits cleared. Continuing.");
       break;
 
     case 'addAccount':
@@ -264,9 +286,9 @@ useEffect(() => {
       const isLimitedAccountAccountType = limitedAccountTypes.includes(userPreferences.account_type);
       const hasExceededAccounts = (userPreferences.social_accounts || 0) >= MAX_FREE_ACCOUNTS;
 
-      ////console.log(`[checkActionLimits] Is Limited Account Type for Add Account: ${isLimitedAccountAccountType}`);
-      ////console.log(`[checkActionLimits] Has Exceeded Accounts: ${hasExceededAccounts}`);
-      ////console.log(`[checkActionLimits] Full Condition: ${isLimitedAccountAccountType && hasExceededAccounts}`);
+      //console.log(`[checkActionLimits] Is Limited Account Type for Add Account: ${isLimitedAccountAccountType}`);
+      //console.log(`[checkActionLimits] Has Exceeded Accounts: ${hasExceededAccounts}`);
+      //console.log(`[checkActionLimits] Full Condition: ${isLimitedAccountAccountType && hasExceededAccounts}`);
 
       if (isLimitedAccountAccountType && hasExceededAccounts) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type} plan. Upgrade to connect more!`);
@@ -274,7 +296,7 @@ useEffect(() => {
         //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
         return false;
       }
-      ////console.log("[checkActionLimits] Account limits cleared. Continuing.");
+      //console.log("[checkActionLimits] Account limits cleared. Continuing.");
       break;
 
             default:
@@ -282,7 +304,7 @@ useEffect(() => {
                 return false; // Or throw error
         }
 
-        ////console.log("[checkActionLimits] All relevant checks passed. Returning true.");
+        //console.log("[checkActionLimits] All relevant checks passed. Returning true.");
         return true;
 
     } catch (e: any) {
@@ -320,7 +342,7 @@ const handleDiscoverAudience = async (): Promise<boolean> => {
 };
 
 const handleCreateCalendarClick = async () => {
-  ////console.log('Create Campaign button clicked in ViewCalendars!');
+  //console.log('Create Campaign button clicked in ViewCalendars!');
 
   setError(null);
 
@@ -356,7 +378,7 @@ const handleCreateCalendarClick = async () => {
 
   {/* Old version of the Create Calendar Click
   const handleCreateCalendarClick = () => {
-    //console.log('Create Campaign button clicked in ViewCalendars!');
+    console.log('Create Campaign button clicked in ViewCalendars!');
     setIsCreateCalendarFormOpen(true);
   };
   */}
@@ -387,8 +409,8 @@ const fetchCalendarList = async () => {
       `)
       .eq('email', currentUserEmail);
 
-        ////console.log("calendarData:", calendarData);
-        ////console.log("user?.handle:", user?.handle);
+        //console.log("calendarData:", calendarData);
+        //console.log("user?.handle:", user?.handle);
     
         if (calendarError) {
             console.error("calendarError:", calendarError);
@@ -574,7 +596,7 @@ const handleViewCalendarList = () => {
              
               
           {(calendarList.length === 0 || calendarList.length > 0)  && !isCreateCalendarFormOpen && !showCampaignList && !selectedCalendar && !isCampaignSuccessModalOpen ? (
-                <>
+                <> 
                    
                   <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
                     <CalendarPlus className="w-12 h-12 font-light text-blue-500" />
@@ -597,7 +619,7 @@ const handleViewCalendarList = () => {
                 />
               </div>
 
-                  <TooltipExtended text="⚡Generate from website (optional), or create manually.">
+  <TooltipExtended text="⚡Generate from website (optional), or create manually.">
   <button
     onClick={handleCreateCalendarClick} // Or handleCreateCampaign as we've been using
     disabled={isLoading || isCheckingLimits} // Button disabled during EITHER phase
@@ -619,7 +641,9 @@ const handleViewCalendarList = () => {
 </TooltipExtended>
 
                 </>
-              ) : null}        
+              ) : null}     
+
+          
              
               {/* Conditionally render the CreateCalendarForm */}
               {isCreateCalendarFormOpen && (
@@ -650,7 +674,7 @@ const handleViewCalendarList = () => {
               {selectedCalendar && currentUserEmail && (
                           <div className="mt-8 w-full">
                             
-                            {/*//console.log('Rendering ShowCalendarContent with calendar:', selectedCalendar, 'and email:', currentUserEmail, 'and onBackToList:', handleBackToList)*/}
+                            {/*console.log('Rendering ShowCalendarContent with calendar:', selectedCalendar, 'and email:', currentUserEmail, 'and onBackToList:', handleBackToList)*/}
                             
                               <ShowCalendarContent
                                 calendarName={selectedCalendar}
@@ -714,16 +738,27 @@ const handleViewCalendarList = () => {
         </div>
          )}
 
-               {/* NEW: Video Help Section - Placed after the main campaign creation area */}
+      {/* NEW: Video Help Section - Placed after the main campaign creation area */}
       {/* Add a top margin (mt-12) to provide visual separation */}
           
      {(calendarList.length === 0 || calendarList.length > 0)  && !isCreateCalendarFormOpen && !showCampaignList && !selectedCalendar && !isCampaignSuccessModalOpen && (
+
+  <div className="flex mt-12 justify-center items-center">
+       <VideoPillButton
+         videoTitle="Watch Video | Creating Campaigns"
+         videoDescription="Learn how to create campaigns."
+         thumbnailUrl={thumbnailUrl}
+         videoUrl={videoUrl}
+         onClick={handlePlayVideo}
+       />
+  </div>
+  
                  
-                 <div className="mt-12">
-                   <CreateCampaignHelpVideos />
-                 </div>  
-               
-           )}
+        //<div className="mt-12">
+          //<CreateCampaignHelpVideos />
+        //</div>  
+      
+  )}
           
         </div>
         {/*End inside the white boarder*/}
@@ -734,6 +769,14 @@ const handleViewCalendarList = () => {
           onClose={handleCloseUpgradeModal}
           message={modalMessage} 
         />
+
+      {/* Render the video modal if open */}
+      {isVideoModalOpen && (
+        <VideoPlayerModal
+          videoUrl={currentPlayingVideoUrl}
+          onClose={handleCloseVideoModal}
+        />
+      )}
       
     </div>
   );
