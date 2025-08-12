@@ -46,19 +46,20 @@ const VideoPillButton: React.FC<VideoButtonProps> = ({
         alt={`${videoTitle} thumbnail`}
         className="
           w-12 h-12         // Fixed width and height for the thumbnail (46x46 is approx 12 units in Tailwind rems)
-          rounded-md        // Slightly rounded corners for the thumbnail
+          rounded-full        // Slightly rounded corners for the thumbnail
           object-cover      // Ensure image covers the area without distortion
           flex-shrink-0     // Prevent image from shrinking
         "
       />
         <PlayCircle
-          className=" fill-black
+          className=" fill-blue-500 
             absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-            w-8 h-8 text-white // Icon size and color
-            bg-black bg-opacity-50 // Semi-transparent black background
+            w-12 h-12 text-white // Icon size and color
+            bg-blue-500 bg-opacity-50 // Semi-transparent blue background
+            hover:bg-blue-200 // Semi-transparent blue background
             rounded-full // Make it a circle
             p-1 // Padding inside the circle
-            pointer-events-none // Allow clicks to pass through to the button
+            //pointer-events-none // Allow clicks to pass through to the button
           "
         />
       </div>

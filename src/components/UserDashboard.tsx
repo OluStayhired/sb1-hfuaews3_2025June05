@@ -39,6 +39,8 @@ import { TooltipExtended } from '../utils/TooltipExtended';
 import { UpgradePlanModal } from './UpgradePlanModal'
 import { useProductTier } from '../hooks/useProductTierHook'
 import { OnboardingModal } from '../components/OnboardingModal'; // NEW: Import the OnboardingModal component
+import VideoPillButton from './VideoPillButton';
+import VideoPlayerModal from './VideoPlayerModal';
 
 interface DashboardMetrics {
   todayPosts: {
@@ -116,6 +118,33 @@ export function UserDashboard() {
   const [isLoadingDashboard, setIsLoadingDashboard] = useState(true); // Example dashboard loading state
   const [onboardingError, setOnboardingError] = useState<string | null>(null);
 
+  
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState('');
+  const [currentPlayingVideoUrl, setCurrentPlayingVideoUrl] = useState('');
+
+
+// Handler to open the modal and set the video URL
+  const handlePlayVideo = (url: string) => {
+    setCurrentPlayingVideoUrl(url);
+    setIsVideoModalOpen(true);
+  };
+
+  // Handler to close the modal
+  const handleCloseVideoModal = () => {
+    setIsVideoModalOpen(false);
+    setCurrentPlayingVideoUrl('');
+  };
+
+const videoUrlSchedule = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/help_video_schedule_manual_post.mp4"; 
+const thumbnailUrlSchedule = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/square_schedule_posts_manual.png";
+const videoDescriptionSchedule = "Learn the basics of scheduling posts"  ;
+const videoTitleSchedule = "Scheduling Posts";  
+
+const videoUrlCreateCampaign = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/create_campaign_video_with_voice.mp4"; 
+const thumbnailUrlCreateCampaign = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/square_help_create_campaign.png";  
+const videoDescriptionCreateCampaign = "Learn how to create campaigns" ;
+const videoTitleCreateCampaign = "Getting Started" ;
 
   // Define a consistent primary color for easy  changes
 const PRIMARY_COLOR_CLASSES = {
@@ -1023,27 +1052,34 @@ const handleOpenScheduledPost = async () => {
               <p className="text-gray-600 mt-1 text-lg">Welcome back! Here's an overview of your social media activity.</p>
             </div>
 
+         
+
           {/* Right-aligned Create New Campaign button */}
 
-          {/* To be used for something else
-        <TooltipExtended text="⚡Get a full calendar in seconds" >
-          <button
-              onClick={handleCreateCampaign}
-              //className={`inline-flex items-center px-4 py-2 rounded-full text-base font-semibold shadow-md
-                //  ${PRIMARY_COLOR_CLASSES.bg} text-white ${PRIMARY_COLOR_CLASSES.hoverBg}
-                  //transform transition-transform duration-200 hover:-translate-y-0.5
-                  //shadow-blue-500/30
-                  //`}
-
-            className="text-blue-500 font-medium inline-flex items-center px-4 py-2 rounded-full text-base
-            bg-gradient-to-r from-blue-50 to-blue-50 to-white border border-blue-200 rounded-lg hover:border-blue-400 transition-all group"
-            >
-              <Sparkles className="w-6 h-6 mr-2 text-blue-100 fill-blue-500" /> 
-                Generate Posts Today 🔥
-            </button>
-        </TooltipExtended>
-        */}
         </div>
+
+  <div className="flex mt-8 space-x-4 ">
+    <div>
+       <VideoPillButton
+         videoTitle={videoTitleCreateCampaign}
+         videoDescription={videoDescriptionCreateCampaign}
+         thumbnailUrl={thumbnailUrlCreateCampaign}
+         videoUrl={videoUrlCreateCampaign}
+         onClick={handlePlayVideo}
+       />
+    </div>      
+
+     <div>
+       <VideoPillButton
+         videoTitle={videoTitleSchedule}
+         videoDescription={videoDescriptionSchedule}
+         thumbnailUrl={thumbnailUrlSchedule}
+         videoUrl={videoUrlSchedule}
+         onClick={handlePlayVideo}
+       />
+    </div>
+</div>
+        
       </div>
 
       {/*Start New Main Metrics & Quick Actions */}
@@ -1253,13 +1289,14 @@ const handleOpenScheduledPost = async () => {
         </button>
       </TooltipExtended>
       </div>
+      
     </div>
   </div>
 </div>
   {/*End New Main Metrics & Quick Actions*/}
 
       
-      {/* --- Quick Compose Button (Always Available)  --- 
+      {/* --- Quick Compose Button (Always Available) --- 
       <div className="mt-10 text-center">
         <button
           onClick={openWelcomeGuide}
@@ -1355,6 +1392,14 @@ const handleOpenScheduledPost = async () => {
         <OnboardingModal
           isOpen={showOnboardingModal}
           onClose={handleCloseOnboardingModal}
+        />
+      )}
+
+    {/* Render the video modal if open */}
+      {isVideoModalOpen && (
+        <VideoPlayerModal
+          videoUrl={currentPlayingVideoUrl}
+          onClose={handleCloseVideoModal}
         />
       )}
     
