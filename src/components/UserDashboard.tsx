@@ -146,6 +146,11 @@ const thumbnailUrlCreateCampaign = "https://selrznkggmoxbpflzwjz.supabase.co/sto
 const videoDescriptionCreateCampaign = "Learn how to create campaigns" ;
 const videoTitleCreateCampaign = "Getting Started" ;
 
+const videoUrlCampaignOverview = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/quick_overview_create_campaigns.mp4"; 
+const thumbnailUrlCampaignOverview = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/get_quick_overview_of_campaigns.png";  
+const videoDescriptionCampaignOverview = "Save time, write better posts faster" ;
+const videoTitleCampaignOverview = "Quick Campaign Guide" ;  
+
   // Define a consistent primary color for easy  changes
 const PRIMARY_COLOR_CLASSES = {
   bg: 'bg-blue-600',
@@ -1078,6 +1083,16 @@ const handleOpenScheduledPost = async () => {
          onClick={handlePlayVideo}
        />
     </div>
+
+    <div>
+       <VideoPillButton
+         videoTitle={videoTitleCampaignOverview}
+         videoDescription={videoDescriptionCampaignOverview}
+         thumbnailUrl={thumbnailUrlCampaignOverview}
+         videoUrl={videoUrlCampaignOverview}
+         onClick={handlePlayVideo}
+       />
+    </div>    
 </div>
         
       </div>

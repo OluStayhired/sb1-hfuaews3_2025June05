@@ -25,6 +25,8 @@ import { TypingEffect } from './TypingEffect';
 import { useHooks } from '/src/context/HooksContext';
 import { uploadImageGetUrl } from '../utils/UploadImageGetUrl';
 import { deletePostImage } from '../utils/DeletePostImage';
+import VideoPillButton from './VideoPillButton';
+import VideoPlayerModal from './VideoPlayerModal';
 
 
 interface ShowCalendarContentProps {
@@ -104,6 +106,37 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [showCampaignExpiredCard, setShowCampaignExpiredCard] = useState(false);
 
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState('');
+  const [currentPlayingVideoUrl, setCurrentPlayingVideoUrl] = useState('');
+
+
+// Handler to open the modal and set the video URL
+  const handlePlayVideo = (url: string) => {
+    setCurrentPlayingVideoUrl(url);
+    setIsVideoModalOpen(true);
+  };
+
+  // Handler to close the modal
+  const handleCloseVideoModal = () => {
+    setIsVideoModalOpen(false);
+    setCurrentPlayingVideoUrl('');
+  };
+
+const videoUrlSchedule = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/help_video_schedule_manual_post.mp4"; 
+const thumbnailUrlSchedule = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/square_schedule_posts_manual.png";
+const videoDescriptionSchedule = "Learn the basics of scheduling posts"  ;
+const videoTitleSchedule = "Scheduling Posts";  
+
+const videoUrlCreateCampaign = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/create_campaign_video_with_voice.mp4"; 
+const thumbnailUrlCreateCampaign = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/square_help_create_campaign.png";  
+const videoDescriptionCreateCampaign = "Learn how to create campaigns" ;
+const videoTitleCreateCampaign = "Getting Started" ;
+
+const videoUrlCampaignOverview = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/quick_overview_create_campaigns.mp4"; 
+const thumbnailUrlCampaignOverview = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/get_quick_overview_of_campaigns.png";  
+const videoDescriptionCampaignOverview = "Save time, write better posts faster" ;
+const videoTitleCampaignOverview = "Quick Campaign Guide" ;  
 
   const handleCreateNewCampaign = () => {
     setShowCampaignInfo(false);
@@ -1344,23 +1377,38 @@ const getScheduleButtonTooltip = () => {
               Extend Campaign
             </button>
           </TooltipHelp>
-</div>        
+</div>    
         
 </div>
 
-{/*      
- <button
-    onClick={handleOpenBulkAddToCalendarModal}
-    className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
-      timeFilter === 'all'
-        ? 'bg-blue-500 text-white'
-        : 'bg-gray-900 text-white hover:bg-gray-500'
-    }`}
-  >
- <PlusCircle className="h-4 w-4 mr-2"/>
-    Schedule All
-  </button> 
-  */}
+
+
+      {/*Start Videos*/}
+
+      <div className="flex mt-8 space-x-4 ">
+    <div>
+       <VideoPillButton
+         videoTitle={videoTitleCampaignOverview}
+         videoDescription={videoDescriptionCampaignOverview}
+         thumbnailUrl={thumbnailUrlCampaignOverview}
+         videoUrl={videoUrlCampaignOverview}
+         onClick={handlePlayVideo}
+       />
+    </div>      
+
+   {/*<div>
+       <VideoPillButton
+         videoTitle={videoTitleSchedule}
+         videoDescription={videoDescriptionSchedule}
+         thumbnailUrl={thumbnailUrlSchedule}
+         videoUrl={videoUrlSchedule}
+         onClick={handlePlayVideo}
+       />
+    </div>
+    */}
+</div>
+
+   {/*End Videos */}
 
 
       
