@@ -6,7 +6,7 @@ import { format, parseISO, addWeeks, addDays, isWithinInterval, differenceInDays
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
-import { Calendar, Check, CalendarCheck, Edit2, Copy, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine, ImagePlus, ellipsis, info } from 'lucide-react';
+import { Calendar, Check, CalendarCheck, CalendarClock, Edit2, Copy, Info, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine, ImagePlus, ellipsis, info } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3 } from '../lib/gemini';
 import { ContentModal } from './ContentModal';
 import { AddToCalendarModal } from './AddToCalendarModal'
@@ -123,6 +123,28 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
     setCurrentPlayingVideoUrl('');
   };
 
+  const getDaysLeft = (calendarEndDate: string): number => {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const end = parseISO(calendarEndDate);
+      return Math.max(0, differenceInDays(end, today));
+    } catch (e) {
+      console.error('Error calculating days left:', e);
+      return 0;
+    }
+  };
+
+  const getStatusColor = (daysLeft: number): string => {
+    if (daysLeft === 0) return 'text-red-500 bg-red-50';
+    if (daysLeft < 7) return 'text-yellow-500 bg-yellow-50';
+    return 'text-green-500 bg-green-50';
+  };
+
+
+  const daysLeft = getDaysLeft(calendarEndDate);
+  const statusColor = getStatusColor(daysLeft);
+
 const videoUrlSchedule = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/help_video_schedule_manual_post.mp4"; 
 const thumbnailUrlSchedule = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/square_schedule_posts_manual.png";
 const videoDescriptionSchedule = "Learn the basics of scheduling posts"  ;
@@ -160,12 +182,9 @@ const videoTitleCampaignOverview = "Quick Campaign Guide" ;
   const checkSocials = async () => {
   const socials = await checkConnectedSocials();
   if (socials) {
-    console.log('Bluesky connected:');
-    console.log('LinkedIn connected:');
-    console.log('Twitter connected:');
-    //console.log('Bluesky connected:', socials.bluesky);
-    //console.log('LinkedIn connected:', socials.linkedin);
-    //console.log('Twitter connected:', socials.twitter);
+    console.log('Bluesky connected:', socials.bluesky);
+    console.log('LinkedIn connected:', socials.linkedin);
+    console.log('Twitter connected:', socials.twitter);
   }
 };
 
@@ -287,7 +306,7 @@ const handleConnectLinkedIn = () => {
   useEffect(() => {
     const fetchCalendarDetails = async () => {
       if (!calendarName || !userEmail) {
-        //console.log("Skipping fetchCalendarDetails: calendarName or userEmail is missing.");
+        console.log("Skipping fetchCalendarDetails: calendarName or userEmail is missing.");
         return;
       }
 
@@ -313,7 +332,7 @@ const handleConnectLinkedIn = () => {
           const parsedDbEndDate = parseISO(data.end_date);
             if (!isNaN(parsedDbEndDate.getTime())) {
                 calculatedEndDate = parsedDbEndDate;
-                //console.log(`Using database end_date for "${calendarName}":`, data.end_date);
+                console.log(`Using database end_date for "${calendarName}":`, data.end_date);
             } else {
                 console.warn(`Database end_date for "${calendarName}" is invalid:`, data.end_date);
             }
@@ -327,7 +346,7 @@ const handleConnectLinkedIn = () => {
                 // Deduce end_date: start_date + (calendar_days - 1)
                 // Subtract 1 because calendar_days typically includes the start day itself.
                 calculatedEndDate = addDays(parsedStartDate, calendarDays - 1);
-                //console.log(`Deducing end_date for "${calendarName}" from start_date (${data.start_date}) and calendarDays prop (${calendarDays}):`, calculatedEndDate.toISOString());
+                console.log(`Deducing end_date for "${calendarName}" from start_date (${data.start_date}) and calendarDays prop (${calendarDays}):`, calculatedEndDate.toISOString());
             } else {
                 console.warn(`Invalid start_date for deduction for "${calendarName}":`, data.start_date);
             }
@@ -412,13 +431,13 @@ const handleConnectLinkedIn = () => {
 
   
   const handleBackToCalendarList = () => {
-    //console.log("handleBackToCalendarList called");
+    console.log("handleBackToCalendarList called");
   // Clean up any state if needed
   setSelectedDay(null);
   setCopySuccess(null);
   // Call the parent's callback to switch views
    if (onBackToList) {
-      //console.log("Calling onBackToList");
+      console.log("Calling onBackToList");
   onBackToList();
   //fetchCalendarList();   
     } else {
@@ -429,7 +448,7 @@ const handleConnectLinkedIn = () => {
 const handleImproveContentAI = async (content: CalendarContent) => {
    // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -606,7 +625,7 @@ const handleHookPostV3 = async (content: CalendarContent, char_length: string) =
 
       // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -798,7 +817,7 @@ const handleOpenBulkAddToCalendarModal = async (content: CalendarContent) => {
 
         // Check if the campaign is expired
   if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -823,7 +842,7 @@ const handleEditCampaignPost = async (content: CalendarContent) => {
 
   // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -848,7 +867,7 @@ const handleCopyCampaignPost = async (content: CalendarContent) => {
 
      // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -897,7 +916,7 @@ const handleUploadImage = async (content: CalendarContent) => {
 
    // Check if the campaign is expired
     if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+    console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
     setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
     return; // Stop execution, do not proceed with LLM call
   }
@@ -1027,7 +1046,7 @@ const handleDeleteImage = async (content: CalendarContent) => {
       )
     );
 
-    //console.log('Image deleted and URL removed from database.');
+    console.log('Image deleted and URL removed from database.');
 
   } catch (err) {
     console.error('Error during image deletion process:', err);
@@ -1255,7 +1274,7 @@ const getScheduleButtonTooltip = () => {
     <div className="space-y-6">
       {/* Calendar Header */}
       <div className="bg-gradient-to-r from-white via-white via-blue-50 to-blue-100 border-1 border-transparent rounded-xl p-6 shadow-sm">
-
+        
       {/* Add the X button here */}
             <div className="flex justify-start mb-4 mt-[-16px]">
                 <button
@@ -1283,109 +1302,124 @@ const getScheduleButtonTooltip = () => {
        
           
 </div>
-
-{/* Today's Date */}   
-<div className="flex text-xs p-1.5 justify-lefy inline-block text-gray-500 rounded-full mt-2">
-            <span><Calendar className="w-4 h-4 text-blue-500 mr-1"/></span>
-            <span className="text-blue-500">{currentDayOfWeek}</span>
-            <span className="mx-0.5"></span>
-            <span className="text-blue-500">{currentDate}</span>
-     </div>
-        
-            
-{/* This Week Next Week Show All - Time Filter Section */}
       
-<div className="flex flex-wrap gap-2 mt-4">
-  <button
-    onClick={() => setTimeFilter('this-week')}
-    className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
-      timeFilter === 'this-week'
-        ? 'bg-blue-500 text-white'
-        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-    }`}
-  >
-    This Week's Posts
-  </button>
-  <button
-    onClick={() => setTimeFilter('next-week')}
-    className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
-      timeFilter === 'next-week'
-        ? 'bg-blue-500 text-white'
-        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-    }`}
-  >
-    Next Week's Posts
-  </button>
-  <button
-    onClick={() => setTimeFilter('all')}
-    className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
-      timeFilter === 'all'
-        ? 'bg-blue-500 text-white'
-        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-    }`}
-  >
-    View All Posts
-  </button>
-
-</div>
-
-{/* Add this section to show filter information */}
-{timeFilter !== 'all' && (
-  <div className="mt-6 text-left text-xs text-gray-500">
-    Showing {filteredContent.length} posts for {timeFilter === 'this-week' ? 'this week' : 'next week'}
-    <button
-      onClick={() => setTimeFilter('all')}
-      className="ml-2 text-blue-500 hover:text-blue-600"
-    >
-      Show all
-    </button>
-  </div>
-)}
-
-{/*End This Week Next Week Show All Filter*/}
-<div className="flex inline mt-6">
-<TooltipHelp  text = {getScheduleButtonTooltip()}>
- <button
-    onClick={handleOpenBulkAddToCalendarModal}
-    disabled = {currentCalendarDaysLeft === null || currentCalendarDaysLeft <= 0}
-    className={`flex  items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
-      currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0 ? 'opacity-50 cursor-not-allowed' :
-      timeFilter === 'all'
-        ? 'bg-blue-50 text-blue-500'
-        : 'bg-blue-50 text-blue-500 hover:bg-blue-100'
-    }`}
-  >
- <PlusCircle className="h-4 w-4 mr-2"/>
-    Schedule All
-  </button>          
-</TooltipHelp>
-  
-  
-{/* New Duplicate Button */}
-
-<TooltipHelp text={duplicateTooltipText}>
-            <button
-              onClick={handleDuplicateCalendar}
-              // Disable if currentCalendarDaysLeft is greater than 0
-              disabled={currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0}
-              className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ml-2
-                       bg-gray-100 text-gray-600 hover:bg-gray-200 ${
-                         currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0 ? 'opacity-50 cursor-not-allowed' : ''
-                       }`}
-            >
-              <Copy className="h-4 w-4 mr-2" />
-              Extend Campaign
-            </button>
-          </TooltipHelp>
-</div>    
         
-</div>
+<div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 p-1 w-full"> {/* Main Flex Container: Column on small, Row on medium+ */}
 
+  {/* Left Column: All information content */}
+  <div className="w-full md:w-1/2 flex flex-col items-start"> {/* This div now correctly wraps ALL left content */}
 
+    {/* Today's Date Section */}
+    <div className="flex text-xs p-1.5 inline-block text-gray-500 rounded-full mt-2">
+      <span><Calendar className="w-4 h-4 text-blue-500 mr-1"/></span>
+      <span className="text-blue-500">{currentDayOfWeek}</span>
+      <span className="mx-0.5"></span>
+      <span className="text-blue-500">{currentDate}</span>
+    </div>
 
-      {/*Start Videos*/}
+    {/* Time Filter Section */}
+    <div className="flex flex-wrap gap-2 mt-4">
+      <button
+        onClick={() => setTimeFilter('this-week')}
+        className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
+          timeFilter === 'this-week'
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+        }`}
+      >
+        This Week's Posts
+      </button>
+      <button
+        onClick={() => setTimeFilter('next-week')}
+        className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
+          timeFilter === 'next-week'
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+        }`}
+      >
+        Next Week's Posts
+      </button>
+      <button
+        onClick={() => setTimeFilter('all')}
+        className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
+          timeFilter === 'all'
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+        }`}
+      >
+        View All Posts
+      </button>
+    </div>
 
-      <div className="flex mt-8 space-x-4 ">
+    {/* Filter Information Section */}
+    {timeFilter !== 'all' && (
+      <div className="mt-6 text-left text-xs text-gray-500">
+        Showing {filteredContent.length} posts for {timeFilter === 'this-week' ? 'this week' : 'next week'}
+        <button
+          onClick={() => setTimeFilter('all')}
+          className="ml-2 text-blue-500 hover:text-blue-600"
+        >
+          Show all
+        </button>
+      </div>
+    )}
+
+    {/* Schedule & Duplicate Buttons Section */}
+    <div className="flex mt-6"> {/* Removed 'inline' as it's not needed with flex */}
+      <TooltipHelp text={getScheduleButtonTooltip()}>
+        <button
+          onClick={handleOpenBulkAddToCalendarModal}
+          disabled={currentCalendarDaysLeft === null || currentCalendarDaysLeft <= 0}
+          className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ${
+            currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0 ? 'opacity-50 cursor-not-allowed' :
+            timeFilter === 'all'
+              ? 'bg-blue-50 text-blue-500'
+              : 'bg-blue-50 text-blue-500 hover:bg-blue-100'
+          }`}
+        >
+          <PlusCircle className="h-4 w-4 mr-2"/>
+          Schedule All
+        </button>
+      </TooltipHelp>
+
+      {/* Duplicate Button */}
+      <TooltipHelp text={duplicateTooltipText}>
+        <button
+          onClick={handleDuplicateCalendar}
+          disabled={currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0}
+          className={`flex items-center px-4 py-2 space-x-2 rounded-md text-sm transition-colors ml-2
+                      bg-gray-100 text-gray-600 hover:bg-gray-200 ${
+                        currentCalendarDaysLeft !== null && currentCalendarDaysLeft > 0 ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+        >
+          <Copy className="h-4 w-4 mr-2" />
+          Extend Campaign
+        </button>
+      </TooltipHelp>
+    </div>
+  </div> {/* End Left Column */}
+
+   {/* Right Column: Image and Centered Text/Icon */}
+  {/* The outer div ensures it takes half width on medium+ and centers its immediate content */}
+  <div className="w-full md:w-1/2 flex justify-center items-center mt-8 md:mt-0">
+    {/* This inner div is now a flex column, centering its own contents */}
+    <div className="flex flex-col items-center text-center">
+      {/* Current Calendar Days Left Text */}
+      <span className="text-5xl text-blue-200 hover:text-blue-500 font-bold leading-none"> {/* Added leading-none for tighter line height */}
+        {currentCalendarDaysLeft} days left
+      </span>
+      <p className="text-2xl text-blue-200 hover:text-blue-500 mt-1 mb-4">for this campaign</p> {/* Adjusted margin */}
+
+      {/* CalendarClock Icon */}
+      <CalendarClock className="w-12 h-12 text-blue-200 hover:text-blue-500"/> 
+    </div> {/*End Right Column*/}
+  </div>
+
+</div> {/* End Main Flex Container */}  
+      </div>        
+
+        
+ <div className="flex mt-8 space-x-4 ">
     <div>
        <VideoPillButton
          videoTitle={videoTitleCampaignOverview}
@@ -1408,7 +1442,9 @@ const getScheduleButtonTooltip = () => {
     */}
 </div>
 
-   {/*End Videos */}
+
+
+        {/*End Videos */}
 
 
       
@@ -1572,7 +1608,7 @@ const getScheduleButtonTooltip = () => {
               </div> {/*End AI buttons here*/}
                 
           {/*removed date close DIV*/}
-              
+             
             </div>
 <div className="flex flex-col items-start">
             <h3 className="font-medium text-left text-sm text-gray-900 mb-1">{content.theme}</h3>
@@ -1780,6 +1816,9 @@ const getScheduleButtonTooltip = () => {
 
         
         ))}
+
+        
+        
       </div>
 
       {selectedContent && (
@@ -1859,6 +1898,14 @@ const getScheduleButtonTooltip = () => {
           //onCreateNewCampaign={handleCreateNewCampaignFromModal}
       />
   )}
+
+    {/* Render the video modal if open */}
+      {isVideoModalOpen && (
+        <VideoPlayerModal
+          videoUrl={currentPlayingVideoUrl}
+          onClose={handleCloseVideoModal}
+        />
+      )}      
       
     </div>
 
