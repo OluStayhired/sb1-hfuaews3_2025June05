@@ -1475,7 +1475,7 @@ const getScheduleButtonTooltip = () => {
         {filteredContent.map((content) => (
           <div
                 key={content.id}
-                className={`bg-white rounded-lg border hover:border hover:border-blue-400 shadow-sm p-4 transition-shadow relative ${
+                className={`bg-white rounded-lg border hover:border hover:border-blue-100 shadow-sm p-4 transition-shadow transition-colors duration-300 relative ${
                 isToday(parseISO(content.content_date)) ? 'border-blue-400 hover:border-blue-500' : 'border-transparent'
                   }`}
               >
