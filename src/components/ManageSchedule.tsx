@@ -1529,7 +1529,7 @@ const handleDeleteImage = async (postId: string) => {
                               //      hover:bg-white hover:border-0 w-full relative">
 
                           className="flex items-start space-x-3 p-1 bg-white rounded-md border border-blue-50 hover:border-blue-100
-                          w-full relative shadow-sm">
+                          w-full relative shadow-sm hover:shadow-md">
 
                           
 
