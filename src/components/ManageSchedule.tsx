@@ -1560,6 +1560,7 @@ const handleDeleteImage = async (postId: string) => {
                           
                 <div className="absolute  top-1 right-1 flex space-x-1 z-10">
 
+                {/*                    
                   {scheduledPost.user_handle && ( 
                          <button
                             onClick={() => handleNewPost(day.date, slot.time)}
@@ -1569,6 +1570,7 @@ const handleDeleteImage = async (postId: string) => {
                             <span>New Post</span>
                           </button>
                   )}
+                  */}
 
                   {scheduledPost.user_handle && ( 
                     <TooltipHelp text="Post now">
@@ -1789,6 +1791,18 @@ const handleDeleteImage = async (postId: string) => {
                           {/* Add Pause Post button in bottom right */}
                           <div className="flex space-x-2 justify-end mt-2">
 
+                  {/* NEW: New Post Button (New Location) */}
+                          {scheduledPost.user_handle && ( 
+                      <TooltipHelp text="create post">
+                         <button
+                            onClick={() => handleNewPost(day.date, slot.time)}
+                            className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500 rounded-md transition-colors"
+                          >
+                            <PlusCircle className="w-3 h-3 text-blue-500" />
+                            <span>New Post</span>
+                          </button>
+                      </TooltipHelp>
+                  )}
 
                     {/* NEW: Copy Post Button */}
               {scheduledPost.user_handle && (                                
