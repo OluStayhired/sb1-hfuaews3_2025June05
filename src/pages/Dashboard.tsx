@@ -1367,7 +1367,7 @@ if(path !== "settings") {
           </nav>
         </aside>
 
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto bg-white">
           <Routes>
             {/*<Route index element={<UserDashboard />} />*/}
             <Route path="compose" element={<ComposePosts />} />
