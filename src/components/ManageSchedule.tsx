@@ -1497,7 +1497,7 @@ const handleDeleteImage = async (postId: string) => {
                       className={`px-6 bg-gray-50 py-3 flex items-center justify-between transition-colors duration-200 ${
                           
                           slot.isDisabled ? 'bg-gray-100 opacity-50' :
-                          slot.isAvailable ? 'hover:bg-gray-100' : 'bg-gray-50' 
+                          slot.isAvailable ? 'hover:bg-customGray-75' : 'bg-gray-50' 
                           //slot.isAvailable ? 'bg-gray-50' : 'hover:bg-white' 
                           
                         

@@ -13,6 +13,12 @@ export default {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
+      colors: {
+        // Define your custom subtle gray hover shade
+        customGray: {
+          '75': '#F6F7F9', // Example hex value, find what looks best to you
+        },
+      },
     },
   },
 };
