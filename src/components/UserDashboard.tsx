@@ -1296,7 +1296,7 @@ const handleOpenScheduledPost = async () => {
       </div>
 
       {/* Call to Action Button */}
-      <div className="mt-auto">
+      <div className="mt-auto sm:mt-6">
       <TooltipExtended text="⚡Add your posts to existing time slots OR create new time slots" >
         <button
           onClick={handleSchedulePost}
