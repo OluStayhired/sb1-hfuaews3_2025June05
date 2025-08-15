@@ -1494,10 +1494,10 @@ const handleDeleteImage = async (postId: string) => {
                   <div 
                       key={slot.time} 
                       //key={slot.scheduledPost?.id}
-                      className={`px-6 bg-gray-50 py-3 flex items-center justify-between ${
+                      className={`px-6 bg-gray-50 py-3 flex items-center justify-between transition-colors duration-200 ${
                           
                           slot.isDisabled ? 'bg-gray-100 opacity-50' :
-                          slot.isAvailable ? 'hover:bg-white' : 'bg-gray-50' 
+                          slot.isAvailable ? 'hover:bg-gray-100' : 'bg-gray-50' 
                           //slot.isAvailable ? 'bg-gray-50' : 'hover:bg-white' 
                           
                         
@@ -1525,8 +1525,11 @@ const handleDeleteImage = async (postId: string) => {
                     slot.scheduledPosts.map((scheduledPost) => (
                         <div 
                             key={scheduledPost.id}
-                            className="flex items-start space-x-3 p-1 bg-white shadow-sm shadow-blue-100 rounded-md border 
-                                    hover:bg-white hover:border-0 w-full relative">
+                              //className="flex items-start space-x-3 p-1 bg-white shadow-sm shadow-blue-100 rounded-md border 
+                              //      hover:bg-white hover:border-0 w-full relative">
+
+                          className="flex items-start space-x-3 p-1 bg-white rounded-md border border-blue-50 hover:border-blue-100
+                          w-full relative shadow-sm">
 
                           
 
