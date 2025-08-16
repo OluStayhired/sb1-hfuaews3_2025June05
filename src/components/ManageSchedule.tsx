@@ -1855,7 +1855,7 @@ const handleDeleteImage = async (postId: string) => {
                        //onClick={() => handleEditPost(scheduledPost)}
                       onClick={() => handleEditPost(scheduledPost)}
                       disabled={copyingPostId === scheduledPost.id}
-                      className={`flex text-xs px-2 py-1 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-500' : 'bg-blue-50 text-blue-500 hover:text-white hover:bg-blue-500'}`}>
+                      className={`flex text-xs px-2 py-1 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-500' : 'bg-blue-500 text-white hover:text-white hover:bg-blue-600'}`}>  
                       {/*<SquarePen className="w-3 h-3" />*/}
                         <span className="text-xs">Publish Post</span>
                     </button>
