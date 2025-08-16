@@ -118,7 +118,8 @@ function ManageSchedule() {
   const [scrollPosition, setScrollPosition] = useState(0);
 
 const [isContentExpanded, setIsContentExpanded] = useState<{ [postId: string]: boolean }>({});
-  const [isThisPostExpanded, setIsThisPostExpanded] = useState(false);
+const [expandedPosts, setExpandedPosts] = useState<{ [postId: string]: boolean }>({});  
+//const [isThisPostExpanded, setIsThisPostExpanded] = useState(false);
 
   //LinkedIn VITE
   const VITE_LINKEDIN_POSTER_URL = import.meta.env.VITE_LINKEDIN_POSTER_URL;
@@ -142,9 +143,19 @@ const [isContentExpanded, setIsContentExpanded] = useState<{ [postId: string]: b
     fetchUserSchedule(); // Call fetchUserSchedule directly
   };  
 
-  const handleToggleExpansion = () => {
-  setIsThisPostExpanded(prev => !prev);
-};
+  //const handleToggleExpansion = () => {
+  //setIsThisPostExpanded(prev => !prev);
+//};
+
+// This function will toggle the expansion state for a specific post
+  const handleToggleExpansion = (postId: string) => {
+    //console.log("execute handleToggleExpansion", expandedPosts)
+    console.log("execute handleToggleExpansion for postId:", postId);
+    setExpandedPosts(prevState => ({
+      ...prevState,
+      [postId]: !prevState[postId] // Toggle the boolean for that postId
+    }));
+  };  
 
 const handleRescheduleClick = (postToReschedule: PostData) => {
   setSelectedPostForReschedule(postToReschedule);
@@ -1495,6 +1506,7 @@ const handleDeleteImage = async (postId: string) => {
               {/* Time Slots */}
               <div className="divide-y divide-gray-100">
                 {day.slots.map((slot) => (
+         
                   <div 
                       key={slot.time} 
                       //key={slot.scheduledPost?.id}
@@ -1526,13 +1538,17 @@ const handleDeleteImage = async (postId: string) => {
 
 
                   {slot.scheduledPosts && slot.scheduledPosts.length > 0 ? (
-                    slot.scheduledPosts.map((scheduledPost) => (
+                    slot.scheduledPosts.map((scheduledPost) => {
+                      
+                        const isThisPostExpanded = expandedPosts[scheduledPost.id] || false; 
+
+                  return (  //added a new return here since code is added at the top
                         <div 
                             key={scheduledPost.id}
                             //className="flex items-start space-x-3 p-1 bg-white shadow-sm shadow-blue-100 rounded-md border 
                               //      hover:bg-white hover:border-0 w-full relative">
 
-                          className="flex items-start space-x-3 p-1 bg-white rounded-md border border-blue-50 hover:border-blue-100
+                          className="flex  w-[350px] items-start space-x-3 p-1 bg-white rounded-md border border-blue-50 hover:border-blue-100
                                      w-full relative shadow-sm hover:shadow-md">
 
                           <div className="relative flex-shrink-0">
@@ -1736,21 +1752,22 @@ const handleDeleteImage = async (postId: string) => {
 
   <p
       // Add onClick to toggle expansion
-      onClick={handleToggleExpansion}
+      //onClick={handleToggleExpansion}
+      onClick={() => handleToggleExpansion(scheduledPost.id)}
       // Apply conditional classes based on expansion state
       className={`
-        line-clamp-none // Default to no clamp if you want content to expand fully
-        ${!isThisPostExpanded ? 'line-clamp-1' : ''} // Apply clamp only when NOT expanded
+        //line-clamp-none // Default to no clamp if you want content to expand fully
+        ${isThisPostExpanded ? 'line-clamp-none' : 'line-clamp-6'}
         cursor-pointer     // Indicate it's clickable
         overflow-hidden    // Ensure truncation works
         transition-all     // Enable all CSS property transitions
-        duration-300       // Set transition duration to 300ms (adjust as needed)
+        duration-700       // Set transition duration to 700ms (adjust as needed)
         ease-in-out        // Add an easing function for smoother animation
         leading-relaxed    // Improve readability of text blocks
         whitespace-pre-wrap  // <-- ADDED: Preserve whitespace and wrap text
-        sm:w-[350px]     // changed the minimum post width size
+        //sm:w-[350px]     // changed the minimum post width size
       `}
-      title={!isThisPostExpanded ? "Click to expand" : "Click to collapse"} // Useful for accessibility/tooltip
+      //title={!isThisPostExpanded ? "Click to expand" : "Click to collapse"} // Useful for accessibility/tooltip
     >
       {/* Show full content. The line-clamp will handle truncation */}
       {scheduledPost.full_content || scheduledPost.content}
@@ -1855,7 +1872,7 @@ const handleDeleteImage = async (postId: string) => {
                        //onClick={() => handleEditPost(scheduledPost)}
                       onClick={() => handleEditPost(scheduledPost)}
                       disabled={copyingPostId === scheduledPost.id}
-                      className={`flex text-xs px-2 py-1 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-500' : 'bg-blue-500 text-white hover:text-white hover:bg-blue-600'}`}>  
+                      className={`flex text-xs px-2 py-1 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-500' : 'bg-blue-500 text-white hover:text-white hover:bg-blue-600'}`}>
                       {/*<SquarePen className="w-3 h-3" />*/}
                         <span className="text-xs">Publish Post</span>
                     </button>
@@ -1924,8 +1941,10 @@ const handleDeleteImage = async (postId: string) => {
                           {/*End of Add Gray Line*/}
                           </div> 
                        </div>
-                
-                    ))) : (
+                ); // <--- This is the closing parenthesis for the `return (` statement
+                      } // just replaced 
+                    //) old version                       
+                    )) : (
                 
                     slot.isAvailable && (
                       <div className="flex-1 bg-gray-50 rounded-md w-full">
