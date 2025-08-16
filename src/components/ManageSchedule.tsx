@@ -1748,7 +1748,7 @@ const handleDeleteImage = async (postId: string) => {
         ease-in-out        // Add an easing function for smoother animation
         leading-relaxed    // Improve readability of text blocks
         whitespace-pre-wrap  // <-- ADDED: Preserve whitespace and wrap text
-        sm:min-w-[350px]     // changed the minimum post width size
+        sm:w-[350px]     // changed the minimum post width size
       `}
       title={!isThisPostExpanded ? "Click to expand" : "Click to collapse"} // Useful for accessibility/tooltip
     >
