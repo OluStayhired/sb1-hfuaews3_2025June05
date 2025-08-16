@@ -66,7 +66,7 @@ export function BulkAddToCalendarModal({ isOpen, onClose, calendarName, onSchedu
   const [contentLengthError, setContentLengthError] = useState<string | null>(null);
 
 
-  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   const getSelectedChannelTimezone = () => {
     const activeChannel = socialChannels.find(channel => channel.id === selectedChannel);
