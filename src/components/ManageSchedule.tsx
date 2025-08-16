@@ -1548,7 +1548,7 @@ const handleDeleteImage = async (postId: string) => {
                             //className="flex items-start space-x-3 p-1 bg-white shadow-sm shadow-blue-100 rounded-md border 
                               //      hover:bg-white hover:border-0 w-full relative">
 
-                          className="flex  w-[350px] items-start space-x-3 p-1 bg-white rounded-md border border-blue-50 hover:border-blue-100
+                          className="flex items-start space-x-3 p-1 bg-white rounded-md border border-blue-50 hover:border-blue-100
                                      w-full relative shadow-sm hover:shadow-md">
 
                           <div className="relative flex-shrink-0">
@@ -1765,7 +1765,7 @@ const handleDeleteImage = async (postId: string) => {
         ease-in-out        // Add an easing function for smoother animation
         leading-relaxed    // Improve readability of text blocks
         whitespace-pre-wrap  // <-- ADDED: Preserve whitespace and wrap text
-        //sm:w-[350px]     // changed the minimum post width size
+        sm:w-[350px]     // changed the minimum post width size
       `}
       //title={!isThisPostExpanded ? "Click to expand" : "Click to collapse"} // Useful for accessibility/tooltip
     >
