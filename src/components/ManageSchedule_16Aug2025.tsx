@@ -117,8 +117,7 @@ function ManageSchedule() {
   const containerRef = useRef(null);
   const [scrollPosition, setScrollPosition] = useState(0);
 
-const [isContentExpanded, setIsContentExpanded] = useState<{ [postId: string]: boolean }>({});
-  const [isThisPostExpanded, setIsThisPostExpanded] = useState(false);
+
 
   //LinkedIn VITE
   const VITE_LINKEDIN_POSTER_URL = import.meta.env.VITE_LINKEDIN_POSTER_URL;
@@ -142,9 +141,6 @@ const [isContentExpanded, setIsContentExpanded] = useState<{ [postId: string]: b
     fetchUserSchedule(); // Call fetchUserSchedule directly
   };  
 
-  const handleToggleExpansion = () => {
-  setIsThisPostExpanded(prev => !prev);
-};
 
 const handleRescheduleClick = (postToReschedule: PostData) => {
   setSelectedPostForReschedule(postToReschedule);
@@ -767,7 +763,7 @@ useEffect(() => {
   }    
     
     // Implementation for new post creation
-    //console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
+    console.log('Creating new post for:', format(date, 'PPP'), 'at', time);
     setSelectedDate(date);
     setSelectedTime(time);
     setIsModalOpen(true);
@@ -1341,7 +1337,7 @@ const handleDeleteImage = async (postId: string) => {
         }))
     );
 
-    //console.log(`Image URL removed from database for post ID: ${postId}.`);
+   //console.log(`Image URL removed from database for post ID: ${postId}.`);
 
   } catch (err) {
     console.error('Error during image URL deletion process:', err);
@@ -1529,11 +1525,13 @@ const handleDeleteImage = async (postId: string) => {
                     slot.scheduledPosts.map((scheduledPost) => (
                         <div 
                             key={scheduledPost.id}
-                            //className="flex items-start space-x-3 p-1 bg-white shadow-sm shadow-blue-100 rounded-md border 
+                              //className="flex items-start space-x-3 p-1 bg-white shadow-sm shadow-blue-100 rounded-md border 
                               //      hover:bg-white hover:border-0 w-full relative">
 
                           className="flex items-start space-x-3 p-1 bg-white rounded-md border border-blue-50 hover:border-blue-100
-                                     w-full relative shadow-sm hover:shadow-md">
+                          w-full relative shadow-sm hover:shadow-md">
+
+                          
 
                           <div className="relative flex-shrink-0">
                          <TooltipHelp text = {`${scheduledPost.user_display_name}`}>
@@ -1562,7 +1560,7 @@ const handleDeleteImage = async (postId: string) => {
                           
                 <div className="absolute  top-1 right-1 flex space-x-1 z-10">
 
-                  {/*
+                {/*                    
                   {scheduledPost.user_handle && ( 
                          <button
                             onClick={() => handleNewPost(day.date, slot.time)}
@@ -1572,7 +1570,8 @@ const handleDeleteImage = async (postId: string) => {
                             <span>New Post</span>
                           </button>
                   )}
-*/}
+                  */}
+
                   {scheduledPost.user_handle && ( 
                     <TooltipHelp text="Post now">
                     <button
@@ -1727,34 +1726,9 @@ const handleDeleteImage = async (postId: string) => {
 
 {/* Post Content */}
 <div className={`mt-6 text-sm ${day.isDisabledDay ? 'text-gray-300' : 'text-gray-900'}`}>
-
-  {/*
   <p className="line-clamp-1">
     {truncateText(scheduledPost.content, 60)}
   </p>
-  */}
-
-  <p
-      // Add onClick to toggle expansion
-      onClick={handleToggleExpansion}
-      // Apply conditional classes based on expansion state
-      className={`
-        line-clamp-none // Default to no clamp if you want content to expand fully
-        ${!isThisPostExpanded ? 'line-clamp-1' : ''} // Apply clamp only when NOT expanded
-        cursor-pointer     // Indicate it's clickable
-        overflow-hidden    // Ensure truncation works
-        transition-all     // Enable all CSS property transitions
-        duration-300       // Set transition duration to 300ms (adjust as needed)
-        ease-in-out        // Add an easing function for smoother animation
-        leading-relaxed    // Improve readability of text blocks
-        whitespace-pre-wrap  // <-- ADDED: Preserve whitespace and wrap text
-        sm:min-w-[350px]     // changed the minimum post width size
-      `}
-      title={!isThisPostExpanded ? "Click to expand" : "Click to collapse"} // Useful for accessibility/tooltip
-    >
-      {/* Show full content. The line-clamp will handle truncation */}
-      {scheduledPost.full_content || scheduledPost.content}
-    </p>
 
   {/* REWRITTEN: Image thumbnail/indicator with delete on hover */}
   {scheduledPost.photo_url && (
@@ -1817,8 +1791,8 @@ const handleDeleteImage = async (postId: string) => {
                           {/* Add Pause Post button in bottom right */}
                           <div className="flex space-x-2 justify-end mt-2">
 
-
-                  {scheduledPost.user_handle && ( 
+                  {/* NEW: New Post Button (New Location) */}
+                          {scheduledPost.user_handle && ( 
                       <TooltipHelp text="create post">
                          <button
                             onClick={() => handleNewPost(day.date, slot.time)}
@@ -1829,7 +1803,6 @@ const handleDeleteImage = async (postId: string) => {
                           </button>
                       </TooltipHelp>
                   )}
-
 
                     {/* NEW: Copy Post Button */}
               {scheduledPost.user_handle && (                                
@@ -1929,7 +1902,6 @@ const handleDeleteImage = async (postId: string) => {
                 
                     slot.isAvailable && (
                       <div className="flex-1 bg-gray-50 rounded-md w-full">
-                        
                           <button
                             onClick={() => handleNewPost(day.date, slot.time)}
                             className={`flex border border-gray-200 rounded-md items-center p-1 space-x-2 text-sm ${day.isDisabledDay ? 'text-gray-300 hover:text-blue-300 hover:bg-blue-400 hover:text-white' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-500 hover:text-white'}`}>
@@ -1938,7 +1910,6 @@ const handleDeleteImage = async (postId: string) => {
                             <PlusCircle className="w-4 h-4" />
                             <span>New Post</span>
                           </button>
-                        
                         </div>
                         )
                       )}           
