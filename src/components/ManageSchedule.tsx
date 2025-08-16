@@ -263,8 +263,8 @@ useEffect(() => {
 const checkSocials = async () => {
   const socials = await checkConnectedSocials();
   if (socials) {
-    //console.log('Bluesky connected:', socials.bluesky);
-    //console.log('LinkedIn connected:', socials.linkedin);
+    // console.log('Bluesky connected:', socials.bluesky);
+    // console.log('LinkedIn connected:', socials.linkedin);
   }
 };
 
