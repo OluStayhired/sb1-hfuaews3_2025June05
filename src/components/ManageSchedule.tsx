@@ -1425,7 +1425,7 @@ const handleDeleteImage = async (postId: string) => {
     <button
       onClick={() => handleViewModeChange('list')} // Explicitly set viewMode to 'list'
       className={`
-        flex items-center px-4 py-2 text-sm font-normal
+        flex items-center px-4 py-2 space-x-2 text-sm font-normal
         ${viewMode === 'list' // If viewMode is 'list', this button is active
           ? 'bg-blue-500 text-white'
           : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -1434,7 +1434,21 @@ const handleDeleteImage = async (postId: string) => {
         ${viewMode !== 'list' ? 'border-r border-gray-300' : ''} 
       `}
     >
-      <List className="w-4 h-4 mr-2" />
+
+  <span //className="p-1 bg-blue-50 rounded-full">
+          className={`
+        p-1 rounded-full
+        ${viewMode === 'list' // If viewMode is 'calendar', this button is active
+          ? 'bg-blue-500 text-white'
+          : 'bg-blue-50 text-blue-500 hover:bg-gray-50'
+        }
+        transition-colors duration-200
+      `}>
+      
+      <List className="w-4 h-4" />
+
+  </span>
+      
       <span>List View</span>
     </button>
 
@@ -1442,15 +1456,26 @@ const handleDeleteImage = async (postId: string) => {
     <button
       onClick={() => handleViewModeChange('calendar')} // Explicitly set viewMode to 'calendar'
       className={`
-        flex items-center px-4 py-2 text-sm font-normal
+        flex items-center space-x-2 px-4 py-2 text-sm font-normal
         ${viewMode === 'calendar' // If viewMode is 'calendar', this button is active
           ? 'bg-blue-500 text-white'
-          : 'bg-white text-gray-700 hover:bg-gray-50'
+          : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-blue-500'
         }
         transition-colors duration-200
       `}
     >
-      <Calendar className="w-4 h-4 mr-2" />
+      <span //className="p-1 bg-blue-50 rounded-full">
+          className={`
+        p-1 rounded-full
+        ${viewMode === 'calendar' // If viewMode is 'calendar', this button is active
+          ? 'bg-blue-500 text-white'
+          : 'bg-blue-50 text-blue-500 hover:bg-gray-50'
+        }
+        transition-colors duration-200
+      `}>
+        
+      <Calendar className="w-4 h-4" />
+      </span>
       <span>Calendar View</span>
     </button>
   </div>
