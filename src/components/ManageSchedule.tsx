@@ -1484,7 +1484,7 @@ const handleDeleteImage = async (postId: string) => {
   <TooltipHelp text="⚡Reset your local time if travelling"> 
   <button
     onClick={() => setIsTimezoneSelectorOpen(true)}
-    className="flex items-center space-x-2 px-4 py-2 hover:border-blue-400 hover:text-blue-500 hover:bg-gray-50 bg-white border border-gray-200 rounded-lg text-gray-600">
+    className="flex items-center space-x-2 px-4 py-2 hover:text-blue-500 hover:bg-gray-50 bg-white border border-gray-300 rounded-lg text-gray-600">
 
    <span className="p-1 bg-blue-50 rounded-full">
     <Clock className="w-4 h-4 text-blue-500" />
