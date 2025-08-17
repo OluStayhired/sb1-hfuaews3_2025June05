@@ -1857,7 +1857,7 @@ const handleDeleteImage = async (postId: string) => {
                           <div className="mt-4 border-t border-gray-100"></div>
   
                           {/* Add Pause Post button in bottom right */}
-                          <div className="flex space-x-2 justify-end mt-2">
+                          <div className="flex space-x-2 justify-start mt-2">
 
 
                   {scheduledPost.user_handle && ( 
@@ -1886,7 +1886,7 @@ const handleDeleteImage = async (postId: string) => {
                       ) : (
                         <Copy className="w-3 h-3" />
                       )}
-                      <span>Copy</span>
+                      <span>Copy Post</span>
                     </button> 
                     </TooltipHelp>
                   )}
