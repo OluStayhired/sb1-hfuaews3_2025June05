@@ -1408,7 +1408,7 @@ const handleOpenScheduledPost = async () => {
           message={modalMessage} 
         />
 
-      {showOnboardingModal && onboardingActive && (
+    {showOnboardingModal && onboardingActive && !isWelcomeGuideOpen && (
         <OnboardingModal
           isOpen={showOnboardingModal}
           onClose={handleCloseOnboardingModal}
