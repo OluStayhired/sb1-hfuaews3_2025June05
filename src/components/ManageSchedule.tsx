@@ -1428,7 +1428,7 @@ const handleDeleteImage = async (postId: string) => {
         flex items-center px-4 py-2 space-x-2 text-sm font-normal
         ${viewMode === 'list' // If viewMode is 'list', this button is active
           ? 'bg-blue-500 text-white'
-          : 'bg-white text-gray-700 hover:bg-gray-50'
+          : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-blue-500'
         }
         transition-colors duration-200
         ${viewMode !== 'list' ? 'border-r border-gray-300' : ''} 
