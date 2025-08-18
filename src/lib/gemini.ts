@@ -499,7 +499,7 @@ const getWeekday = (date: Date): string => {
   return date.toLocaleDateString('en-US', { weekday: 'long' });
 };
 
-  console.log('startDayofWeek :', {startDayofWeek});
+  //console.log('startDayofWeek :', {startDayofWeek});
   
   // Rate limiting
   await rateLimiter.checkAndWait();
@@ -590,7 +590,7 @@ export async function generateCalendarWithRetry(
   const cacheKey = JSON.stringify({ calendar_info, startDayofWeek, calendarDays });
   const cached = calendarCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log('Returning calendar from cache.');
+    //console.log('Returning calendar from cache.');
     return cached.response;
   }
 
@@ -598,7 +598,7 @@ const getWeekday = (date: Date): string => {
   return date.toLocaleDateString('en-US', { weekday: 'long' });
 };
 
-  console.log('startDayofWeek :', {startDayofWeek});
+  //console.log('startDayofWeek :', {startDayofWeek});
   
   // Rate limiting
   //await rateLimiter.checkAndWait();
@@ -717,8 +717,13 @@ export async function generateListPost(theme: string, topic: string, target_audi
     return cached.response;
   }
 
+  // Choose a random hook 
+  const chosenHookArchetype = getRandomHookArchetype();
+  
   // Rate limiting
   await rateLimiter.checkAndWait();
+
+  const selectedTone = getRandomTone(); // Ensure this function correctly returns a valid tone string
   
   // More structured prompt to prevent recursion
   const prompt = `
@@ -727,6 +732,8 @@ Act as an experienced social media content creator who specializes in creating p
 Analyze deeply the information in the ${content}, the ${theme} and ${topic} parameters to identify the most pressing and fears, wants and aspirations for ${target_audience} regarding ${topic} and ${theme}. Use your experience to focus on either the fears, frustrations, aspirations or wants for this post.
 
 Create a post that resonates with ${target_audience} about ${topic} based on ${content}.
+
+Tailor the language, tone, and examples to resonate deeply with a ${target_audience} audience about ${topic} based on ${content} , and maintain an **${selectedTone}** tone throughout the post.
 
 Use the ${content} as a guide, starting with a hook followed by a personal story.
 
@@ -739,8 +746,6 @@ keep the hook directly related to the identified key pain point and actionable, 
 
 then, transform the ${content} into a deeply relatable story to the audience ${target_audience}.
 
-conclude with a simple, conversational question that encourages engagement, but does not demand work from the user.
-
 follow the AIDA copywriting framework, emphasizing action and implementation.
 
 Follow the [Rules] below:
@@ -750,14 +755,17 @@ Follow the [Rules] below:
 - Use a first person singular grammar.
 - Keep to impactful and meaningful sentences, focusing on actionable advice.
 - Place each sentence in the post on a new line.
+- Add a space after each line. 
 - Start with a Hook that is a **declarative statement** directly describing a feeling or action related to the identified key pain point, using personal pronouns and conversational language. **Do not use any interrogative words or phrasing in the hook.**
 - Provide simple, conversational language.
 - Ban Generic Content
 - Ban hashtags
 - Ban bullet points.
+- Ban Generic Conversational Questions at the end
 - Keep it natural
   `;
-
+//Removed conveersational question 
+//conclude with a simple, conversational question that encourages engagement, but does not demand work from the user.
   try {
     const response = await generateContent(prompt);
     
@@ -1341,6 +1349,7 @@ Follow the [Rules] below:
 
 [Rules]:
 
+- Keep to ${char_length} Characters in total.
 - Place each sentence in the post on a new line.
 - Add a space after each line for readability
 - **Write in a clear, straightforward manner that a ninth grader could easily understand.**
@@ -1589,7 +1598,7 @@ export async function generateCalendarWithHooksRetry(
   const cacheKey = JSON.stringify({ calendar_info, startDayofWeek, calendarDays });
   const cached = calendarCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log('Returning calendar from cache.');
+    //console.log('Returning calendar from cache.');
     return cached.response;
   }
 
@@ -1597,7 +1606,7 @@ const getWeekday = (date: Date): string => {
   return date.toLocaleDateString('en-US', { weekday: 'long' });
 };
 
-  console.log('startDayofWeek :', {startDayofWeek});
+  //console.log('startDayofWeek :', {startDayofWeek});
   
   // Rate limiting
   //await rateLimiter.checkAndWait();
@@ -1618,17 +1627,9 @@ This content calendar MUST start with the day of the week as ${startDayofWeek}.
     7. Do not include any follow-up questions or suggestions
     8. Notes provide context or tips
     9. Content is engaging and platform appropriate
-
-Follow the [Rules] below:
-
-[Rules]:
-
-- Place each sentence in the post on a new line.
-- Add a space after each line for readability
-- Ban Generic Content
-- Ban hashtags
-- Ban bullet points.
-- Ban exclamation marks. 
+    10. Remove hashtags and generic content 
+    11. Place each sentence in the post on a new line.
+    12. Add a space after each line for readability
 
 Generate a ${calendarDays}-day content calendar in valid JSON format. 
 The first day in the calendar MUST have "day_of_week": "${startDayofWeek}".
