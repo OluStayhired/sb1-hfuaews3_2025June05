@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { format, addDays, parseISO } from 'date-fns';
-import { Plus, Clock, ChevronLeft, ChevronRight, Trash2, SquarePen, Send, PlusCircle, Calendar, List, CalendarClock, X, Loader2, ImagePlus, Copy, Video } from 'lucide-react';
+import { Plus, Clock, ChevronLeft, ChevronRight, Trash2, SquarePen, Send, PlusCircle, Calendar, List, CalendarClock, X, Loader2, ImagePlus, Copy } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { ReschedulePostModal } from '/src/components/ReschedulePostModal';
 import { SchedulePostModal } from '/src/components/SchedulePostModal';
@@ -22,7 +22,6 @@ import { TooltipHelp } from '../utils/TooltipHelp';
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { uploadImageGetUrl } from '../utils/UploadImageGetUrl';
 import { deletePostImage } from '../utils/DeletePostImage';
-import { uploadVideoGetUrl } from '../utils/UploadVideoGetUrl';
 
 
 // Add new interfaces for post data
@@ -38,8 +37,6 @@ interface PostData {
   content_time: string;
   content_date?: string; // recently added
   photo_url?: string | null;
-  video_url?: string | null;
-  video_thumbnail_url?: string;
   target_timezone?: string;
   social_channels?: {
     avatar_url: string | null;
@@ -122,11 +119,7 @@ function ManageSchedule() {
 
 const [isContentExpanded, setIsContentExpanded] = useState<{ [postId: string]: boolean }>({});
 const [expandedPosts, setExpandedPosts] = useState<{ [postId: string]: boolean }>({});  
-
- // --- NEW STATE & REF FOR VIDEO UPLOAD ---
-const [uploadingVideoId, setUploadingVideoId] = useState<string | null>(null); // New loading state for video uploads
-const videoFileInputRef = useRef<HTMLInputElement>(null); // New ref for video file input 
-const [deletingVideoId, setDeletingVideoId] = useState<string | null>(null);  
+//const [isThisPostExpanded, setIsThisPostExpanded] = useState(false);
 
   //LinkedIn VITE
   const VITE_LINKEDIN_POSTER_URL = import.meta.env.VITE_LINKEDIN_POSTER_URL;
@@ -533,7 +526,6 @@ const generateTimeSlots = (timesHHmm: string[]) => {
           content_date,
           content_time,
           photo_url,
-          video_url,
           schedule_status,
           draft_status,
           sent_post
@@ -1054,8 +1046,173 @@ const handleCopyPost = async (postToCopy: PostData) => {
     setCopyingPostId(null);
   }
 };
+
+// OLD WORKING: handleCopyPost function
+  {/*  
+const handleCopyPost = async (postToCopy: PostData) => {
+  if (!postToCopy?.id) {
+    console.error('Post ID is missing for copy operation.');
+    return;
+  }
+
+  // Set Current Scroll Position Here
+   if (containerRef.current) {
+      setScrollPosition(containerRef.current.scrollTop);
+    }
+
+  setCopyingPostId(postToCopy.id); // Set loading state for this specific post
+  setCopySuccessMessage(null); // Clear previous messages
+
+  try {
+    const { data: { session } = {} } = await supabase.auth.getSession();
+    if (!session?.user?.email || !session?.user?.id) {
+      throw new Error('No authenticated user found to copy post.');
+    }
+
+    // Create a new post object based on the original
+    // Define the properties you want to copy from the original post.
+    // Exclude avatar_url and any other fields not present in user_post_schedule.
+    
+      const {
+              //id,
+              user_id,
+              full_content,
+              content_time,
+              content_date, // recently added
+              photo_url,
+              social_channel,
+              user_display_name,
+              // Exclude avatar_url here, so it won't be copied
+              } = postToCopy;
+
+        const copiedPost = {
+            // Use the destructured variables to create the new object
+              user_id: session.user.id,
+              user_email: session.user.email,
+              full_content,
+              content_time,
+              content_date,
+              //platform,
+              photo_url,
+              social_channel,
+              user_display_name,
+              
+
+  // Add the new or overridden properties
+            created_at: new Date().toISOString(),
+            sent_post: false,
+            schedule_status: false,
+            draft_status: false,
+            posted_at: null,
+            social_post_id: null,
+            error_message: null,
+            //user_display_name: null,
+            
+};
+
+    // Insert the new copied post into the database
+    const { error: insertError } = await supabase
+      .from('user_post_schedule')
+      .insert(copiedPost);
+
+    if (insertError) {
+      console.error('Error inserting copied post into database:', insertError);
+      throw insertError;
+    }
+
+    // Optimistically update the UI: add the copied post to the schedule
+    setSchedules(prevSchedules => {
+      return prevSchedules.map(daySchedule => {
+        // Find the day corresponding to the copied post's date
+        if (format(daySchedule.date, 'yyyy-MM-dd') === copiedPost.content_date) {
+          // Add the copied post to the slots for that day
+          const updatedSlots = [...daySchedule.slots];
+          // added newSlot here 
+          //const newSlot = {
+          //time: copiedPost.content_time,
+          // isAvailable: true,
+          // scheduledPost: copiedPost,
+          // isDisabled: false,
+          //};
+
+          const newSlot = {
+                user_id: copiedPost.user_id,
+                user_email: copiedPost.user_email,
+                time: copiedPost.content_time,
+                isAvailable: true,
+                scheduledPost: {
+                ...copiedPost, // Use the copiedPost object here to include all its data
+                avatar_url: postToCopy.avatar_url, // Get avatar_url from the original post if needed
+                photo_url: copiedPost.photo_url, // Get photo_url from the copied post
+              },
+              isDisabled: false,
+            };
+          
+          const existingSlotIndex = updatedSlots.findIndex(
+            slot => slot.time === copiedPost.content_time
+          );
+
+          if (existingSlotIndex !== -1) {
+            // If a slot for this time already exists, update it (e.g., if it was empty)
+            updatedSlots[existingSlotIndex] = {
+              ...updatedSlots[existingSlotIndex],
+              scheduledPost: copiedPost,
+            };
+          } else {
+            // If no slot exists for this time, create a new one
+
+            {/* Start old else block
+            updatedSlots.push({
+              time: copiedPost.content_time,
+              isAvailable: true, // Assuming copied posts go into available slots
+              scheduledPost: copiedPost,
+              isDisabled: false, // Assuming it's an active slot
+            });
+            // Re-sort slots to maintain chronological order
+            updatedSlots.sort((a, b) => a.time.localeCompare(b.time));
+            // End old else block 
+            
+            //Start new Else Block
+             let inserted = false;
+            for (let i = 0; i < updatedSlots.length; i++) {
+              if (newSlot.time.localeCompare(updatedSlots[i].time) < 0) {
+                updatedSlots.splice(i, 0, newSlot); // Insert before current element
+                inserted = true;
+                break;
+              }
+            }
+            if (!inserted) {
+              updatedSlots.push(newSlot); // If it's the largest time, push to end
+            }
+            //End New else block
+          }
+          return { ...daySchedule, slots: updatedSlots };
+        }
+        // Refresh the schedule data to display the new post
+        //fetchUserSchedule(); // Removed full refresh here
+        return daySchedule;
+      });
+    });
+
+    setCopySuccessMessage('Post copied successfully!');
+    // Clear success message after a few seconds
+    setTimeout(() => setCopySuccessMessage(null), 3000);
+
+    // Optionally, re-fetch the entire schedule after a short delay for full consistency
+    // setTimeout(() => fetchUserSchedule(), 1000);
+
+  } catch (err: any) {
+    console.error('Error copying post:', err);
+    setCopySuccessMessage(`Failed to copy post: ${err.message || 'Unknown error'}`);
+    // Clear error message after a few seconds
+    setTimeout(() => setCopySuccessMessage(null), 5000);
+  } finally {
+    setCopyingPostId(null); // Clear loading state
+  }
+};
+*/}
   
-// ----------------------- End handle Copy Post Function -------------------------//  
+// ----------------------- ENd handle Copy Post FUnction -------------------------//  
   
 //------------------------ Start handle upload image to attach to post ------------------ //
 
@@ -1206,136 +1363,7 @@ const handleDeleteImage = async (postId: string) => {
 };
  
 //----------------------- end handle delete photo ------------------------------//  
-
-
-// ------------------------ Start handle upload video to attach to post ------------------ //
-
-// New handleUploadVideo function (identical pattern to handleUploadImage)
-const handleUploadVideo = (post: PostData) => {
-  currentPostIdRef.current = post.id;
-  videoFileInputRef.current?.click(); // Programmatically click the hidden video file input
-};
-
-// New handleVideoChange function (identical pattern to handleFileChange)
-const handleVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  const postId = currentPostIdRef.current;
-
-  if (!file || !postId) {
-    console.error('No file selected or postId is missing for video upload.');
-    return;
-  }
-
-  if (!file.type.startsWith('video/')) {
-    console.error('Selected file is not a video.');
-    return;
-  }
-
-  setUploadingVideoId(postId); // Set loading state for this specific post's video upload
-
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
-
-    if (!userId) {
-      console.error('User not authenticated. Cannot upload video.');
-      return;
-    }
-
-    // Call the NEWLY IMPORTED video upload utility
-    const videoUrl = await uploadVideoGetUrl(file, userId); 
-
-    // Update the video_url column for the specific post in Supabase
-    const { error: updateError } = await supabase
-      .from('user_post_schedule')
-      .update({ video_url: videoUrl }) // <-- UPDATING VIDEO_URL
-      .eq('id', postId);
-
-    if (updateError) {
-      console.error('Error updating video_url in database:', updateError);
-    } else {
-      console.log('Video uploaded and URL updated successfully:', videoUrl);
-      fetchUserSchedule(); // Refresh the schedule data to display the new video
-    }
-  } catch (error) {
-    console.error('Error during video upload process:', error);
-  } finally {
-    setUploadingVideoId(null); // Clear loading state
-    if (videoFileInputRef.current) {
-      videoFileInputRef.current.value = ''; // Clear the file input value
-    }
-    currentPostIdRef.current = null; // Clear the stored postId
-  }
-};
-
-// ------------------------ End handle upload video to attach to post --------------------//  
-
-// ------------------------ Start Handle Delete Video to attach to post ----------------- //
-const handleDeleteVideo = async (postId: string) => { // New function for video deletion
-  // Implement your video deletion logic here.
-  // This would typically involve:
-  // 1. Setting deletingVideoId to postId
-  // 2. Calling Supabase Storage to delete the video file (e.g., supabase.storage.from('user-post-videos').remove([...]))
-  // 3. Updating the user_post_schedule table to set video_url to null for the given postId
-  // 4. Calling fetchUserSchedule()
-  // 5. Clearing deletingVideoId
-  console.log(`Deleting video for post ID: ${postId}`);
-  setDeletingVideoId(postId);
-  try {
-    // Example: Fetch post to get video_url for deletion
-    const { data: postData, error: fetchError } = await supabase
-      .from('user_post_schedule')
-      .select('video_url')
-      .eq('id', postId)
-      .single();
-
-    if (fetchError || !postData?.video_url) {
-      console.error('Failed to fetch video URL for deletion or video URL is missing:', fetchError);
-      return;
-    }
-
-    // Extract path from public URL
-    const videoUrl = postData.video_url;
-    const pathSegments = videoUrl.split('/public/');
-    if (pathSegments.length < 2) {
-      console.error('Invalid video URL for path extraction:', videoUrl);
-      return;
-    }
-    const bucketNameAndPath = pathSegments[1]; // e.g., 'user-post-videos/user_id/videos/filename.mp4'
-    const [bucketName, ...filePathParts] = bucketNameAndPath.split('/');
-    const filePathInBucket = filePathParts.join('/');
-
-    // Delete from storage
-    const { error: storageError } = await supabase.storage
-      .from(bucketName)
-      .remove([filePathInBucket]); // Supabase remove expects an array of paths
-
-    if (storageError) {
-      console.error('Error deleting video from storage:', storageError);
-      throw storageError;
-    }
-
-    // Update database to clear video_url
-   const { error: updateError } = await supabase
-      .from('user_post_schedule')
-      .update({ video_url: null }) // <-- Also clear thumbnail URL
-      .eq('id', postId);
-
-    if (updateError) {
-      console.error('Error clearing video_url in database:', updateError);
-      throw updateError;
-    }
-
-    console.log('Video deleted successfully for post ID:', postId);
-    fetchUserSchedule();
-  } catch (error) {
-    console.error('Error during video deletion process:', error);
-  } finally {
-    setDeletingVideoId(null);
-  }
-};  
   
-// ------------------------ End Handle Delete Video to attach to post ----------------- //  
   
   if (isLoading) {
     return (
@@ -1364,6 +1392,31 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
               )}
       
             </div>
+
+          
+          {/*     
+          <div className="flex items-center space-x-4">
+            <button
+                onClick={() => handleViewModeChange(viewMode === 'list' ? 'calendar' : 'list')}
+                className="flex space-x-2 items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:border-blue-400 hover:text-blue-500"
+>
+                {viewMode === 'list' ? (
+                  <Calendar className="w-4 h-4" />
+                    ) : (
+                  <List className="w-4 h-4" />
+                  )}
+                <span>{viewMode === 'list' ? 'Calendar View' : 'List View'}</span>
+              </button>
+
+
+            <button 
+              onClick={() => setIsTimezoneSelectorOpen(true)}      
+              className="flex items-center space-x-2 px-4 py-2 hover:border-blue-400 hover:text-blue-500 hover:bg-gray-50 bg-white border border-gray-200 rounded-lg text-gray-600">
+              <Clock className="w-4 h-4" />
+              <span>Timezone: {userTimezone}</span>
+            </button>
+          </div>
+       */}
 
 <div className="flex items-center space-x-4">
   {/* Segmented control for View Mode */}
@@ -1508,14 +1561,6 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
   style={{ display: 'none' }} // Hide the input
 />
 
-<input
-  type="file"
-  ref={videoFileInputRef} // Use the new ref
-  onChange={handleVideoChange} // Use the new handler
-  accept="video/*" // Only allow video files
-  style={{ display: 'none' }} // Hide the input
-/>                      
-
 
                   {slot.scheduledPosts && slot.scheduledPosts.length > 0 ? (
                     slot.scheduledPosts.map((scheduledPost) => {
@@ -1558,6 +1603,17 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
                           
                 <div className="absolute  top-1 right-1 flex space-x-1 z-10">
 
+                  {/*
+                  {scheduledPost.user_handle && ( 
+                         <button
+                            onClick={() => handleNewPost(day.date, slot.time)}
+                            className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500 rounded-md transition-colors"
+                          >
+                            <PlusCircle className="w-3 h-3 text-blue-500" />
+                            <span>New Post</span>
+                          </button>
+                  )}
+*/}
                   {scheduledPost.user_handle && ( 
                     <TooltipHelp text="Post now">
                     <button
@@ -1575,23 +1631,28 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
                     </TooltipHelp>  
 
                      )}
-
-                  {scheduledPost.user_handle && (
-                      <TooltipHelp text="Add video">
-                        <button
-                          onClick={() => handleUploadVideo(scheduledPost)} // Call new function
-                          disabled={uploadingVideoId === scheduledPost.id} // Use new loading state
-                          className="p-1 flex-1 items-center rounded-md text-gray-500 bg-gray-50 hover:text-pink-700 hover:bg-pink-100 transition-colors"
-                        >
-                        {uploadingVideoId === scheduledPost.id ? (
-                          <Loader2 className="w-3 h-3 animate-spin" /> // Show spinner while uploading
-                           ) : (
-                          <Video className="w-3 h-3" /> // Use a video icon (e.g., from Lucide React)
-                            )}
-                         </button>
-                      </TooltipHelp>
+                  
+                  {/* NEW: Copy Post Button */}
+                  {/*
+                  {scheduledPost.user_handle && ( //is NULL or recently copied So REMOVE copy option
+                    <button
+                      //onClick={() => handleCopyPost(slot.scheduledPost)}
+                      onClick={() => handleCopyPost(scheduledPost)}
+                      //disabled={copyingPostId === slot.scheduledPost.id}
+                      disabled={copyingPostId === scheduledPost.id}
+                      className="p-1 rounded-md text-gray-500 bg-gray-50 hover:text-purple-500 hover:bg-purple-100 transition-colors"
+                      title="Copy post"
+                    >
+                      {copyingPostId === scheduledPost.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Copy className="w-3 h-3" />
+                      )}
+                    </button>
                     )}
-             
+                */}
+
+                  
           {scheduledPost.user_handle && ( 
               <TooltipHelp text="Add image">
                     <button
@@ -1634,6 +1695,20 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
                   </TooltipHelp>
                      )}
 
+                  {/*                  
+          {!scheduledPost.user_handle && (               
+                  <TooltipHelp text="Update social account">
+                    <button
+                       onClick={() => handleEditPost(scheduledPost)}
+                       //className="p-1 rounded-md text-gray-500 bg-gray-50 hover:text-blue-500 hover:bg-blue-100 transition-colors"
+                         className="ml-auto flex items-center space-x-1 px-2 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 hover:text-white rounded-md transition-colors"
+                     >
+                        <SquarePen className="w-3 h-3" />
+                        <span className="text-xs">Continue</span>
+                    </button>
+                  </TooltipHelp>
+                
+           )} */}
 
               {!scheduledPost.user_handle && (               
                  
@@ -1776,73 +1851,6 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
       </div>
     </div>
   )}
-{/*-------------------- End Image Delete Button and Functionality ------------------------- */}
-
-{/*-------------------- Start Video Delete Button and Functionality ------------------------- */}
-
- {/* NEW: Video Thumbnail/Indicator with Delete on Hover (Identical Structure) */}
-  
-      {scheduledPost.video_url && (
-  console.log(`Attempting to render video for post ID: ${scheduledPost.id}, video_url: ${scheduledPost.video_url}, poster: https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/calendar_list_campaign.png`),
-        <div className="
-          relative mt-1 group
-          w-48 h-48 shadow-md rounded-lg border border-gray-200
-          overflow-hidden cursor-pointer
-        ">
-          <video
-            src={scheduledPost.video_url}
-            controls={false} // No controls for thumbnail view
-            className="
-              w-full h-full object-cover
-              transition-opacity duration-300
-              group-hover:opacity-50
-            "
-            title="Video attached"
-            loop // Loops the video
-            muted // Mutes the video for autoplay
-            playsInline // Allows video to play inline on iOS
-            preload="metadata" // Preloads only metadata, not entire video
-            //poster={scheduledPost.video_thumbnail_url || "https://placehold.co/96x96/e0e0e0/555555?text=Video"}
-            //poster="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/calendar_list_campaign.png"
-          />
-
-          {/* Delete button overlay for video */}
-          <div
-            className="
-              absolute inset-0
-              flex items-center justify-center
-              bg-black bg-opacity-50
-              opacity-0
-              group-hover:opacity-100
-              transition-opacity duration-300
-              rounded-lg
-              p-1
-            "
-          >
-            <button
-              type="button"
-              onClick={() => handleDeleteVideo(scheduledPost.id)} // Call the new handleDeleteVideo function
-              className="relative
-                bg-red-600 text-white px-2 py-1 rounded-md
-                hover:bg-red-700 transition-colors
-                text-xs font-semibold
-                flex items-center justify-center
-                disabled:opacity-50 disabled:cursor-not-allowed
-              "
-              disabled={deletingVideoId === scheduledPost.id} // Disable if this post's video is being deleted
-            >
-              {deletingVideoId === scheduledPost.id ? (
-                <Loader2 className="w-3 h-3 animate-spin mr-1" />
-              ) : (
-                <Trash2 className="w-3 h-3 mr-1" />
-              )}
-              Delete Video
-            </button>
-          </div>
-        </div>
-      )}
-  {/*-------------------- End Video Delete Button and Functionality ------------------------- */}
-  
 </div>                    
 
                           {/* Add gray line divider here */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Loader2, X, Unplug, Users, UserCheck, Clock, Zap, UserPlus, PlusCircle, Video } from 'lucide-react';
+import { Plus, Loader2, X, Unplug, Users, UserCheck, Clock, Zap, UserPlus, PlusCircle } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import BlueskyLogoWhite from '../images/bluesky-logo-white.svg';
@@ -23,45 +23,13 @@ interface AccessAccountsProps {
   refreshDashboardAccounts: () => void;
 }
 
-interface ConnectedAccountCardProps {
-    account: SocialAccount;
-    // accountType is typically redundant if account.social_channel is used
-    // If accountType is still used for name/logo, you might keep it.
-    // For simplicity, I'm assuming account.social_channel is the primary source.
-    accountType?: { name: string, social_channel: string }; // Optional if solely derived from 'account'
-    onDisconnect: (id: string, socialChannel: string) => void;
-    isLoading: boolean; // General loading for the page/accounts list
-    disconnectingAccount: string | null;
-    onTimezoneChange?: (account: SocialAccount) => void; // Optional if not implemented yet
-
-    // NEW PROPS FOR TWITTER VIDEO UPLOAD
-    // These should only be passed if account.social_channel === 'Twitter'
-    onConnectTwitterVideo?: () => void; // Function to trigger OAuth 1.0a flow
-    isConnectingTwitterVideo?: boolean; // Loading state for video connection
-    hasTwitterVideoConnected?: boolean; // Indicates if OAuth 1.0a is fully connected for this Twitter account
-    twitterVideoConnectError?: string | null; // Error message for video connection
-}
-
 //--------------- Adding Dynamic Functions For Rendering Connected Accounts ---------------------------- //
 
 // Reusable component for displaying a connected social account card
 //const ConnectedAccountCard = ({ account, accountType, onDisconnect, isLoading, disconnectingAccount, onTimezoneChange }) => {
-const ConnectedAccountCard = ({ 
-  account, 
-  accountType, 
-  onDisconnect, 
-  isLoading, 
-  disconnectingAccount, 
-  onTimezoneChange, 
-
-// NEW PROPS
-    onConnectTwitterVideo,
-    isConnectingTwitterVideo,
-    hasTwitterVideoConnected,
-    twitterVideoConnectError,
-}) => {
+const ConnectedAccountCard = ({ account, accountType, onDisconnect, isLoading, disconnectingAccount, onTimezoneChange }) => {
   // Debugging log: Check the account prop when it renders
-  console.log('ConnectedAccountCard rendering with account:', account);
+  //console.log('ConnectedAccountCard rendering with account:', account);
   if (account && account.social_channel === undefined) {
     console.error('social_channel is UNDEFINED for account:', account);
   }
@@ -75,9 +43,9 @@ const ConnectedAccountCard = ({
       case 'linkedin': return LinkedInLogo; // Placeholder, replace with actual SVG if available
       case 'twitter': return XLogo;
       case 'threads': return ThreadsLogo; // New Threads logo
-      case 'instagram': return InstagramLogo; // Placeholder, replace with actual SVG if available
-      case 'pinterest': return PinterestLogo; // Placeholder, replace with actual SVG if available
-      case 'tiktok': return TikTokLogo; // Placeholder, replace with actual SVG if available
+      //case 'instagram': return InstagramLogo; // Placeholder, replace with actual SVG if available
+      //case 'pinterest': return PinterestLogo; // Placeholder, replace with actual SVG if available
+      //case 'tiktok': return TikTokLogo; // Placeholder, replace with actual SVG if available
       default: return null; // Or a generic placeholder logo
     }
   };
@@ -103,15 +71,6 @@ const ConnectedAccountCard = ({
     onDisconnect(account.id, account.social_channel);
     //refreshDashboardAccounts();
   };
-
-  // Determine if this is a Twitter account and if video connection is needed/enabled
-    //const isTwitterAccount = account.social_channel.toLowerCase() === 'twitter';
-    const isTwitterAccount = account.social_channel.toLowerCase() === 'twitter';
-    // The `hasTwitterVideoConnected` prop should be passed from the parent based on checking
-    // account.oauth1_access_token and account.oauth1_access_token_secret
-    const showEnableVideoButton = isTwitterAccount && !hasTwitterVideoConnected;
-
-
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-white p-6 rounded-lg border border-blue-100 hover:border hover:border-blue-300">
@@ -173,52 +132,6 @@ const ConnectedAccountCard = ({
           </TooltipHelp>
         </div>
       </div>
-      {/*--------------- Start Section for Twitter Enable Videos ---------------*/}
-
-        {/* NEW: Conditional rendering for "Enable Video Uploads" button */}
-      {/*showEnableVideoButton && onConnectTwitterVideo && (*/}
-
-      {isTwitterAccount && onConnectTwitterVideo && (
-                <div className="mt-4 pt-4 border-t border-blue-100">
-                    <p className="mb-2 text-sm text-gray-600">
-                        To post videos to Twitter, you need to enable additional permissions.
-                    </p>
-                    <button
-                        onClick={onConnectTwitterVideo}
-                        disabled={isConnectingTwitterVideo}
-                        className={`
-                            w-half py-2 px-4 rounded-md text-white font-medium text-sm
-                            transition-colors duration-200 ease-in-out
-                            flex items-center justify-center space-x-2
-                            ${isConnectingTwitterVideo
-                                ? 'bg-blue-300 cursor-not-allowed'
-                                : 'bg-blue-500 hover:bg-blue-600'
-                            }
-                        `}
-                    >
-                        {isConnectingTwitterVideo ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                            <Video className="w-4 h-4" />
-                        )}
-                        <span>{isConnectingTwitterVideo ? 'Enabling Video...' : 'Enable Video Uploads'}</span>
-                    </button>
-                    {twitterVideoConnectError && (
-                        <p className="text-red-500 text-xs mt-2 text-center">
-                            {twitterVideoConnectError}
-                        </p>
-                    )}
-                </div>
-        )} 
-            {isTwitterAccount && hasTwitterVideoConnected && (
-                <div className="mt-4 pt-4 border-t border-blue-100">
-                    <p className="text-green-600 font-medium text-center text-sm">
-                        Video Uploads Enabled for Twitter! 🎬
-                    </p>
-                </div>
-            )}
-
-      {/*----------------End Section for Twitter Enable Videos ----------------*/}
     </div>
   );
 };
@@ -282,22 +195,9 @@ const ConnectAccountCard = ({ accountType, onConnect, isLoading }) => {
   );
 };
 
+
+
 //---------------End Adding Dynamic Functions For Rendering Connected Accounts ------------------------ //
-
-
-
-// ------------- Start Adding Functions to Manage OAuth1.0 ----------------//
-
-// Utility to generate a random string for state parameter (if not already defined)
-const generateRandomString = (length) => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-};
-//------------- End Adding Functions to Manage OAuth1.0 ------------------//
 
 interface SocialAccount {
   id: string;
@@ -308,8 +208,6 @@ interface SocialAccount {
   avatar_url: string | null;
   social_channel: string;
   timezone: string;
-  oauth1_access_token?: string; // NEW: OAuth 1.0a token
-  oauth1_access_token_secret?: string; // OAuth 1.0a Secret
 }
 
 interface EditSocialUserTimezoneModalProps {
@@ -371,7 +269,6 @@ export function AccessAccounts({
   //Twitter VITE
   const VITE_TWITTER_CLIENT_ID = import.meta.env.VITE_TWITTER_CLIENT_ID;
   const VITE_TWITTER_REDIRECT_URI = import.meta.env.VITE_TWITTER_REDIRECT_URI;
-  const VITE_TWITTER_OAUTH1_REQUEST_TOKEN_URL = import.meta.env.VITE_TWITTER_OAUTH1_REQUEST_TOKEN_URL;
   
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -383,12 +280,6 @@ export function AccessAccounts({
   const [showTooltip, setShowTooltip] = useState(false);
 
   const [userTimezone, setUserTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
-
-  // New Twitter Video State Management List
-  const [hasOAuth2Connected, setHasOAuth2Connected] = useState(false); // Indicates if OAuth 2.0 is done
-  const [connectingTwitterVideo, setConnectingTwitterVideo] = useState(false);
-  const [hasOAuth1VideoConnected, setHasOAuth1VideoConnected] = useState(false);
-  const [twitterVideoConnectError, setTwitterVideoConnectError] = useState<string | null>(null);
   
   const navigate = useNavigate(); 
   
@@ -494,64 +385,6 @@ const FREE_TRIAL_DAYS =   daysUntilTrialExpires
 type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
 
 
-//----------------- Start Adding New Twitter OAuth1.0 Functions ------------------ //
-
-// Helper to fetch user's connection status (including OAuth 1.0a)
-  const fetchTwitterConnectionStatus = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) {
-      setHasOAuth2Connected(false);
-      setHasOAuth1VideoConnected(false);
-      return;
-    }
-
-    const { data: socialChannel, error } = await supabase
-      .from('social_channels')
-      .select('access_token, oauth1_access_token, oauth1_access_token_secret') // Select relevant tokens
-      .eq('user_id', session.user.id)
-      .eq('social_channel', 'Twitter')
-      .single();
-
-    if (error || !socialChannel) {
-      console.error('Error fetching social channel status:', error);
-      setHasOAuth2Connected(false);
-      setHasOAuth1VideoConnected(false);
-      return;
-    }
-
-    // Determine connection status based on token presence
-    setHasOAuth2Connected(!!socialChannel.access_token);
-    setHasOAuth1VideoConnected(!!socialChannel.oauth1_access_token && !!socialChannel.oauth1_access_token_secret);
-  };
-
-  // Run status fetch on component mount and after any OAuth redirects
-  useEffect(() => {
-    fetchTwitterConnectionStatus();
-
-    // Check URL for success/error messages from OAuth 1.0a callback
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('twitter_oauth1_video_success') === 'true') {
-      console.log('Twitter video connection successful!');
-      setTwitterVideoConnectError(null);
-      // Clean URL params (optional but good for user experience)
-      urlParams.delete('twitter_oauth1_video_success');
-      window.history.replaceState({}, document.title, "?" + urlParams.toString());
-      fetchTwitterConnectionStatus(); // Re-fetch status to update UI
-    } else if (urlParams.has('error') && urlParams.get('error')?.startsWith('oauth1')) {
-      const errorMsg = urlParams.get('error') || 'Unknown error during video connection.';
-      console.error('Twitter video connection error:', errorMsg);
-      setTwitterVideoConnectError(`Failed to enable video uploads: ${errorMsg}`);
-      // Clean URL params (optional)
-      urlParams.delete('error');
-      urlParams.delete('details');
-      window.history.replaceState({}, document.title, "?" + urlParams.toString());
-    }
-  }, []); 
-
-//----------------- End Adding New Twitter OAuth1.0 Function --------------------//  
-
-  
-
 //----------- Start Check Limits Function -------------------- //
 // This refined function checks limits specific to the requested action
 
@@ -561,7 +394,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
     setModalMessage(''); // Clear previous modal message
     setIsProPlanLimitModalOpen(false);
 
-    console.log(`[checkActionLimits] Action requested: ${action}`);
+    //console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -585,7 +418,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
               if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsProPlanLimitModalOpen(true);
-        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
       break;
@@ -597,7 +430,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                 setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
                 setIsProPlanLimitModalOpen(true);
 
-                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
 
               return false;
 
@@ -610,7 +443,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                   
                 setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
                 setIsProPlanLimitModalOpen(true);
-                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+                //console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
           
                 return false;
               }
@@ -657,15 +490,15 @@ const handleOpenConnectSocialModal = async () => {
           return; // Already busy with something
         }
 
-      console.log("Starting limit check...");
+      //console.log("Starting limit check...");
       const canProceed =  await checkActionLimits('addAccount');
 
       if (!canProceed) {
-            console.log("Limit check failed. Modal should be open. Returning.");
+            //console.log("Limit check failed. Modal should be open. Returning.");
             return; // This return is crucial and should prevent anything below from running
         } else {
 
-        console.log("Limit check passed. Proceeding with campaign creation logic.");
+        //console.log("Limit check passed. Proceeding with campaign creation logic.");
         setUserMessage('');
         setIsConnectSocialModalOpen(true);
       }
@@ -673,95 +506,10 @@ const handleOpenConnectSocialModal = async () => {
        //-------------- End Checking Limits Here --------------- //
   
 }
-
-
-//------------------------ Start handleconnect Twitter Video  --------------------//
-// NEW FUNCTION: handleConnectTwitterVideo (OAuth 1.0a Flow Initiation)
- const handleConnectTwitterVideo = async (twitterAccountId: string) => {
-    console.log(`handleConnectTwitterVideo: initiated for OAuth 1.0a video connection for account ID: ${twitterAccountId}.`);
-    setConnectingTwitterVideo(true);
-    setTwitterVideoConnectError(null); 
-
-    try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError || !session?.user) {
-        console.error('handleConnectTwitterVideo: No authenticated user found or session error:', sessionError);
-        setConnectingTwitterVideo(false);
-        setTwitterVideoConnectError('You must be logged in to connect your Twitter account for video uploads.');
-        return;
-      }
-
-      // Ensure currentUserId is available
-      if (!currentUserId || !currentUserEmail) {
-        console.error('handleConnectTwitterVideo: User ID or Email not available.');
-        setConnectingTwitterVideo(false);
-        setTwitterVideoConnectError('User session information missing. Please try logging in again.');
-        return;
-      }
-
-      const frontendOrigin = window.location.origin; 
-      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const uniqueState = generateRandomString(32); 
-
-      const oauth1CallbackUrl = import.meta.env.VITE_TWITTER_OAUTH1_CALLBACK_URL;
-      const oauth1RequestTokenUrl = import.meta.env.VITE_TWITTER_OAUTH1_REQUEST_TOKEN_URL; // NEW ENVIRONMENT VARIABLE
-
-      if (!oauth1CallbackUrl || !oauth1RequestTokenUrl) {
-          console.error('handleConnectTwitterVideo: Missing Twitter OAuth 1.0a environment variables (callback or request token URL).');
-          setTwitterVideoConnectError('App configuration error: Twitter OAuth 1.0a URLs are missing.');
-          setConnectingTwitterVideo(false);
-          return;
-      }
-
-      console.log(`handleConnectTwitterVideo: Calling twitter-oauth1-request-token Edge Function at: ${oauth1RequestTokenUrl}`);
-      const requestTokenResponse = await fetch(oauth1RequestTokenUrl, { // USE NEW ENV VAR HERE
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: currentUserId,
-          email: currentUserEmail,
-          frontendOrigin: frontendOrigin,
-          userTimezone: userTimezone,
-          oauth1CallbackUrl: oauth1CallbackUrl,
-          state: uniqueState,
-        }),
-      });
-
-      if (!requestTokenResponse.ok) {
-        const errorData = await requestTokenResponse.json().catch(() => ({ message: 'Unknown error fetching request token.' }));
-        console.error('handleConnectTwitterVideo: Error fetching OAuth 1.0a request token:', requestTokenResponse.status, requestTokenResponse.statusText, errorData);
-        setTwitterVideoConnectError(`Failed to prepare video connection (${requestTokenResponse.status}): ${errorData.message || requestTokenResponse.statusText}`);
-        setConnectingTwitterVideo(false);
-        return;
-      }
-
-      const { twitterAuthUrl } = await requestTokenResponse.json();
-      
-      if (twitterAuthUrl) {
-        console.log('handleConnectTwitterVideo: Redirecting user to Twitter OAuth 1.0a authorization URL:', twitterAuthUrl);
-        window.location.href = twitterAuthUrl;
-      } else {
-        console.error('handleConnectTwitterVideo: Twitter authorization URL not received from Edge Function.');
-        setTwitterVideoConnectError('Failed to get Twitter authorization URL for video connection.');
-        setConnectingTwitterVideo(false);
-      }
-
-    } catch (error: any) {
-      console.error('handleConnectTwitterVideo: An unexpected error occurred:', error);
-      setTwitterVideoConnectError(`An unexpected error occurred: ${error.message}`);
-    } finally {
-      // The loading state will be reset upon page reload after redirection,
-      // or explicitly set to false if an error occurs *before* redirection.
-    }
-  };
-  
-//----------------------- End handleconnect Twitter Video ----------------------//  
   
 //handleconnect Twitter
 const handleConnectTwitter = async () => {
-  console.log('handleConnectTwitter: initiated');
+  //console.log('handleConnectTwitter: initiated');
   setTwitterLoading(true); // Start loading indicator
 
   try {
@@ -810,7 +558,7 @@ const handleConnectTwitter = async () => {
         return;
       }
 
-      console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
+      //console.log('handleConnectTwitter: OAuth state and code_verifier stored successfully:', uniqueState);
 
     } catch (dbError) {
       console.error('handleConnectTwitter: Unexpected error storing OAuth data:', dbError);
@@ -844,7 +592,7 @@ const handleConnectTwitter = async () => {
                     `code_challenge=${encodeURIComponent(code_challenge)}&` + // Send the code challenge
                     `code_challenge_method=S256`; // Indicate the challenge method
 
-    console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
+    //console.log('handleConnectTwitter: Redirecting user to Twitter authorization URL:', authUrl);
 
     // 7. Redirect the user's browser to Twitter's authorization page
     //    The Edge Function will take over when Twitter redirects back to REDIRECT_URI
@@ -899,7 +647,7 @@ const handleConnectThreads = async () => {
         return;
       }
 
-      console.log('OAuth state stored successfully:', uniqueState);
+      //console.log('OAuth state stored successfully:', uniqueState);
 
     } catch (error) {
       console.error('Unexpected error storing OAuth state:', error);
@@ -925,7 +673,7 @@ const handleConnectThreads = async () => {
                   `state=${encodeURIComponent(uniqueState)}&` + // Send the state to Meta
                   `scope=${scopeParam}`;
 
-  console.log('Redirecting user to Meta authorization URL:', authUrl);
+  //console.log('Redirecting user to Meta authorization URL:', authUrl);
 
   // 6. Redirect the user's browser to Meta's authorization page
   //    The Edge Function will take over when Meta redirects back to REDIRECT_URI
@@ -935,14 +683,14 @@ const handleConnectThreads = async () => {
   
 //helper functions for checking Bluesky account status
 const handleConnectBluesky = () => {
-    console.log('Connecting to Bluesky');
+    //console.log('Connecting to Bluesky');
   setIsBlueskyModalOpen(true);
 };  
 
 const handleConnectLinkedIn = async () => {
-  console.log('Connecting to LinkedIn...');
-  console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
-  console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
+  //console.log('Connecting to LinkedIn...');
+  //console.log('LinkedIn Client ID:', VITE_LINKEDIN_CLIENT_ID);
+  //console.log('LinkedIn Redirect URI:', VITE_LINKEDIN_REDIRECT_URI);
 
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -950,7 +698,7 @@ const handleConnectLinkedIn = async () => {
       console.error('No authenticated user found. User must be logged in to connect LinkedIn.');
       return;
     }
-    console.log('Authenticated user ID:', session.user.id);
+    //console.log('Authenticated user ID:', session.user.id);
 
     const currentUserId = session.user.id;
     const currentUserEmail = session.user.email;
@@ -975,7 +723,7 @@ const handleConnectLinkedIn = async () => {
         return;
       }
 
-      console.log('OAuth state stored successfully:', uniqueState);
+      //console.log('OAuth state stored successfully:', uniqueState);
 
     } catch (error) {
       console.error('Unexpected error storing OAuth state:', error);
@@ -992,7 +740,7 @@ const handleConnectLinkedIn = async () => {
                             `scope=${scopeParam}&` +
                             `state=${encodeURIComponent(uniqueState)}`;
 
-    console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
+    //console.log('Redirecting user to LinkedIn authorization URL:', linkedInAuthUrl);
 
     window.location.href = linkedInAuthUrl;
 
@@ -1041,12 +789,12 @@ const handleConnectLinkedIn = async () => {
 
 
 const refreshConnectedAccounts = async () => {
-    console.log('Refreshing connected accounts...');
+    //console.log('Refreshing connected accounts...');
     try {
       const { data: { session } } = await supabase.auth.getSession();
      
       if (!session?.user?.id) {
-        console.log('No authenticated user ID found for refresh.');
+        //console.log('No authenticated user ID found for refresh.');
         // Clear accounts if user logs out
         setConnectedAccounts([]);
         setLinkedinUser(null);
@@ -1058,7 +806,7 @@ const refreshConnectedAccounts = async () => {
       }
       const currentUserId = session?.user?.id; 
 
-      console.log(`Workspaceing connected accounts for user ID: ${currentUserId}`);
+      //console.log(`Workspaceing connected accounts for user ID: ${currentUserId}`);
       const { data, error } = await supabase
         .from('social_channels')
         .select('*')
@@ -1071,7 +819,7 @@ const refreshConnectedAccounts = async () => {
         throw error; // Throw to be caught by the outer catch if needed
       }
 
-      console.log('Fetched connected accounts data:', data);
+      //console.log('Fetched connected accounts data:', data);
 
       // Update the main list of connected accounts
       setConnectedAccounts(data || []); // Handle null case
@@ -1128,11 +876,11 @@ const refreshConnectedAccounts = async () => {
      useEffect(() => {
        
         if (currentUserId) {
-            console.log('currentUserId detected, calling refreshConnectedAccounts...');
+            //console.log('currentUserId detected, calling refreshConnectedAccounts...');
             refreshConnectedAccounts();
         } else {
             
-            console.log('currentUserId is null, clearing connected accounts state...');
+            //console.log('currentUserId is null, clearing connected accounts state...');
             setConnectedAccounts([]);
             setLinkedinUser(null);
             setThreadsUser(null);
@@ -1148,7 +896,7 @@ const refreshConnectedAccounts = async () => {
   //---------- Handle Disconnect Social Accounts ---------------//
 
   const handleDisconnectTwitter = async () => {
-  console.log('Attempting to disconnect Twitter account...');
+  //console.log('Attempting to disconnect Twitter account...');
 
   // Check if the Twitter account state has data and if the user is authenticated
   if (!twitterUser?.id || !currentUserId) {
@@ -1181,7 +929,7 @@ const refreshConnectedAccounts = async () => {
       throw updateError; // Propagate the error to the catch block
     }
 
-    console.log(`Successfully marked Twitter account (${twitterUser.handle}) as inactive in DB.`);
+    //console.log(`Successfully marked Twitter account (${twitterUser.handle}) as inactive in DB.`);
 
     // Refresh the list of connected accounts to update the UI
     await refreshConnectedAccounts();
@@ -1198,7 +946,7 @@ const refreshConnectedAccounts = async () => {
 };  
 
   const handleDisconnectLinkedIn = async () => {
-  console.log('Attempting to disconnect LinkedIn account...');
+  //console.log('Attempting to disconnect LinkedIn account...');
 
   if (!linkedinUser?.id || !currentUserId) {
     console.error('No connected LinkedIn account found in state or user not authenticated.');
@@ -1225,7 +973,7 @@ const refreshConnectedAccounts = async () => {
       throw updateError;
     }
 
-    console.log(`Successfully marked LinkedIn account (${linkedinUser.handle}) as inactive in DB.`);
+    //console.log(`Successfully marked LinkedIn account (${linkedinUser.handle}) as inactive in DB.`);
 
     await refreshConnectedAccounts();
     
@@ -1373,7 +1121,7 @@ const handleRequestMoreBskyAcct = async () => {
     if (existingAccounts && existingAccounts.length > 0) {
       setIsModalOpen(true);
     } else {
-      console.log('Please connect a Bluesky account first');
+      //console.log('Please connect a Bluesky account first');
     }
 
   } catch (err) {
@@ -1388,10 +1136,10 @@ const handleBlueskyButtonClick = async () => {
   const hasActiveSession = await checkActiveBlueskySession();
   
   if (hasActiveSession) {
-    console.log('Executing handleRequestMoreBskyAcct')
+    //console.log('Executing handleRequestMoreBskyAcct')
     handleRequestMoreBskyAcct();
   } else {
-    console.log('Executing handleConnectBluesky')
+    //console.log('Executing handleConnectBluesky')
     handleConnectBluesky();
   }
 };    
@@ -1832,12 +1580,6 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     isLoading={isLoading} // Use general loading for dynamic accounts
                     disconnectingAccount={disconnectingAccount} // Use general disconnecting for dynamic accounts
                     // onTimezoneChange={handleTimezoneOpenModal} // Pass if you implement this for dynamic accounts
-
-                    // Pass Twitter-specific props if it's a Twitter account
-                    onConnectTwitterVideo={account.social_channel === 'Twitter' ? () => handleConnectTwitterVideo(account.id) : undefined}
-                    isConnectingTwitterVideo={account.social_channel === 'Twitter' ? connectingTwitterVideo : false}
-                    hasTwitterVideoConnected={account.social_channel === 'Twitter' ? (!!account.oauth1_access_token && !!account.oauth1_access_token_secret) : false}
-                    twitterVideoConnectError={account.social_channel === 'Twitter' ? twitterVideoConnectError : null}
                   />
                 ))
               ) : (
