@@ -177,7 +177,7 @@ const ConnectedAccountCard = ({
 
         {/* NEW: Conditional rendering for "Enable Video Uploads" button */}
       {/*showEnableVideoButton && onConnectTwitterVideo && (*/}
-
+      {/*
       {isTwitterAccount && onConnectTwitterVideo && (
                 <div className="mt-4 pt-4 border-t border-blue-100">
                     <p className="mb-2 text-sm text-gray-600">
@@ -217,8 +217,10 @@ const ConnectedAccountCard = ({
                     </p>
                 </div>
             )}
-
+*/}
+      
       {/*----------------End Section for Twitter Enable Videos ----------------*/}
+      
     </div>
   );
 };
