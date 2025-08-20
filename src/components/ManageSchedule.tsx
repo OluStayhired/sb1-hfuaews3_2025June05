@@ -1576,7 +1576,7 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
 
                      )}
 
-                  {scheduledPost.user_handle && (
+                  {scheduledPost.user_handle && scheduledPost.social_channel === 'LinkedIn' && (
                       <TooltipHelp text="Add video">
                         <button
                           onClick={() => handleUploadVideo(scheduledPost)} // Call new function
