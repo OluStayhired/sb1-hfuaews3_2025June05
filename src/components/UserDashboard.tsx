@@ -1064,7 +1064,7 @@ const handleOpenScheduledPost = async () => {
         </div>
 
   <div className="flex mt-8 space-x-4 ">
-  <TooltipExtended text="⚡Watch (1min) | See how weeks of client-engaging content gets created in seconds.">
+  <TooltipExtended text="⚡Watch | See how weeks of client-engaging content gets created in seconds.(1min)">
     <div>
        <VideoPillButton
          videoTitle={videoTitleCreateCampaign}
@@ -1075,7 +1075,7 @@ const handleOpenScheduledPost = async () => {
        />
     </div>     
     </TooltipExtended>  
-<TooltipExtended text="⚡Watch (1min) | Learn how one campaign can generate months of content on demand">
+<TooltipExtended text="⚡Watch | Learn how one campaign can generate months of content on demand.(1min)">
      <div>
        <VideoPillButton
          videoTitle={videoTitleSchedule}
@@ -1087,7 +1087,7 @@ const handleOpenScheduledPost = async () => {
     </div>
 </TooltipExtended>
 
-<TooltipExtended text="⚡Watch (2mins) | Go beyond just campaigns, get SoSavvy to write platform specific posts">    
+<TooltipExtended text="⚡Watch | Go beyond just campaigns, get SoSavvy to write platform specific posts.(2mins)">    
     <div>
        <VideoPillButton
          videoTitle={videoTitleCampaignOverview}
