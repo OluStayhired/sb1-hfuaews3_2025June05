@@ -64,6 +64,7 @@ export function PostNowWarningModal({ 
   const VITE_LINKEDIN_POSTER_URL = import.meta.env.VITE_LINKEDIN_POSTER_URL;
   const VITE_TWITTER_POSTER_URL = import.meta.env.VITE_TWITTER_POSTER_URL;
   const VITE_LINKEDIN_PHOTO_POSTER_URL = import.meta.env.VITE_LINKEDIN_PHOTO_POSTER_URL;
+  const VITE_LINKEDIN_VIDEO_POSTER_URL = import.meta.env.VITE_LINKEDIN_VIDEO_POSTER_URL;
   const VITE_TWITTER_PHOTO_POSTER_URL = import.meta.env.VITE_TWITTER_PHOTO_POSTER_URL;
 
 // Helper to upload image
@@ -234,6 +235,49 @@ const handlePhotoPostOnLinkedIn = useCallback(async (id: string): Promise<boolea
         setIsPosting(false);
     }
 }, [VITE_LINKEDIN_PHOTO_POSTER_URL]);  
+
+
+const handleVideoPostOnLinkedIn = useCallback(async (id: string): Promise<boolean> => {
+    //console.log('handleVideoPostOnLinkedIn: Triggering Edge Function for postId:', id);
+    setIsPosting(true); // Assuming setIsPosting is a state setter in your component
+    setError(null); // Assuming setError is a state setter in your component
+
+    if (!VITE_LINKEDIN_VIDEO_POSTER_URL) { // Use the video-specific URL
+        console.error('handleVideoPostOnLinkedIn: LinkedIn video poster Edge Function URL not configured.');
+        setError('LinkedIn video posting service is not configured.');
+        setIsPosting(false);
+        return false;
+    }
+
+    try {
+        const response = await fetch(VITE_LINKEDIN_VIDEO_POSTER_URL, { // Call the video poster Edge Function
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ postId: id }),
+        });
+
+        //console.log('handleVideoPostOnLinkedIn: Edge Function response status:', response.status);
+        const responseBody = await response.json().catch(() => null);
+        //console.log('handleVideoPostOnLinkedIn: Edge Function response body:', responseBody);
+
+        if (!response.ok) {
+            console.error('handleVideoPostOnLinkedIn: Edge Function reported an error:', response.status, responseBody || response.statusText);
+            const errorMessage = responseBody?.error || responseBody?.message || response.statusText || 'Failed to post video to LinkedIn.';
+            setError(`Video posting failed: ${errorMessage}`);
+            return false;
+        }
+
+        //console.log('handleVideoPostOnLinkedIn: Edge Function indicates success/handled for video post.');
+        return true;
+
+    } catch (err: any) { // Explicitly type catch variable
+        console.error('handleVideoPostOnLinkedIn: Network or unexpected error calling Edge Function:', err);
+        setError(err instanceof Error ? err.message : 'Failed to connect to video posting service.');
+        return false;
+    } finally {
+        setIsPosting(false);
+    }
+}, [VITE_LINKEDIN_VIDEO_POSTER_URL]); // Dependency array for useCallback  
 
 // Posting to Twitter via Edge Function
 const handlePostOnTwitter = useCallback(async (id: string): Promise<boolean> => {
@@ -478,7 +522,7 @@ const handlePostPhotoOnBluesky = useCallback(async (id: string): Promise<boolean
                 return false; // Exit if image upload fails
             }
         } else {
-            console.log('handlePostPhotoOnBluesky: No photo_url found, proceeding with text-only post.');
+            //console.log('handlePostPhotoOnBluesky: No photo_url found, proceeding with text-only post.');
         }
 
         // Prepare the post payload for Bluesky
@@ -554,7 +598,8 @@ const handlePostNow = useCallback(async () => {
             case 'LinkedIn':
                 //console.log('handlePostNow: Dispatching to LinkedIn handler');
                 //postSuccessful = await handlePostOnLinkedIn(postId);
-                postSuccessful = await handlePhotoPostOnLinkedIn(postId);
+                //postSuccessful = await handlePhotoPostOnLinkedIn(postId);
+                postSuccessful = await handleVideoPostOnLinkedIn(postId);
                 break;
             case 'Twitter':
                 //console.log('handlePostNow: Dispatching to Twitter handler');
