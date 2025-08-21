@@ -229,29 +229,27 @@ const handleGetStartedClick = () => {
 
       <main className="max-w-7xl mx-auto px-6 pt-20 pb-32">
         <div className="text-center px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-16 md:py-20 lg:py-24">
-            {/*start alternative header */}
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-bold mb-2 sm:mb-3"> 
+          {/*start alternative header */}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-6xl leading-tight font-bold mb-2 sm:mb-3"> 
             <p>
-              <span className="inline-block bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text mt-6">
-                Get Leads <br className="sm:hidden" /> on Social Media  <br className="sm:hidden" /> {/* This is the key change! */}
-       <p className="block font-semibold sm:font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-700 leading-tight mt-1 sm:mt-1">
-         without chasing likes
+              <span className="inline-block bg-gradient-to-l from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text mt-6">
+                Replace your <br className="sm:hidden" /> social media manager <br className="sm:hidden" /> 
+    <p className="block font-semibold text-xl sm:font-semibold text-2xl sm:text-3xl md:text-3xl lg:text-4xl text-gray-700 leading-tight mt-1 sm:mt-1">
+         {/* with unstoppable <br className="sm:hidden" /> online presence */}
+         Let SoSavvy write and schedule <br className="sm:hidden block" /> posts for you!
          </p>
               </span>
             </p>
           </h1>
           {/*end alternative header*/}
-          
-           {/*
-        <p className="mt-10 text-base sm:text-3xl md:text-2xl text-gray-700 sm:font-normal font-normal mb-8 sm:mb-10">
-            SoSavvy writes & schedules months of customer-engaging posts <br className="hidden sm:inline" />
-           to <span className="underline underline-offset-4" style={{ textDecorationColor: '#2563eb' }}>grow inquiries</span> on LinkedIn, Twitter(X) and Bluesky🔥
-      </p>*/}
 
-<p className="mt-10 text-base sm:text-3xl md:text-2xl text-gray-700 sm:font-normal font-normal mb-8 sm:mb-10">
-            SoSavvy writes & schedules months of customer-engaging posts <br className="hidden sm:inline" />
-           to grow inquiries on LinkedIn, Twitter(X) and Bluesky🔥
+          {/* Start Supporting Message */}
+
+          <p className="mt-10 text-base sm:text-3xl md:text-2xl text-gray-700 sm:font-normal font-normal mb-8 sm:mb-10">
+    Turn your website into months of <br className="sm:hidden" /> engaging content for X & LinkedIn, <br className="sm:hidden" /> in minutes 🔥
       </p>
+
+          {/* End Supporting Message */}
 
   <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center mx-auto w-fit"> 
     {/* Adjusted button layout for mobile */}
