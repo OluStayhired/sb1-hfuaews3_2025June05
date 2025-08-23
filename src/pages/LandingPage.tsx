@@ -582,7 +582,38 @@ const handleGetStartedClick = () => {
             <Sparkles className="w-4 h-4" />
                 <span>How it Works</span>
           </div>
-        </section>        
+        </section>  
+
+ {/*----------------- Start Create Campaign Video Section for SoSavvy ----------------------- */}
+        <section className="mt-16 text-center">
+        <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">
+            SoSavvy reads your website <br className="sm:hidden"/> and 
+            <br className="hidden sm:block"/>builds the right content 
+            <br className="sm:hidden"/> for your goals 🔥
+        </h2>
+        <p className="text-xl sm:text-2xl text-gray-700 mb-12 max-w-3xl mx-auto">
+            Watch how weeks of linkedin and twitter posts are created in seconds!
+          
+          </p>
+        <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
+          {/* Outer div for responsive aspect ratio (16:9 - 56.25%) */}
+          <div style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
+              <video
+              src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-videos/sosavvy_video_to_gif.mp4"
+              className="absolute top-0 left-0 w-full h-full object-cover"
+              controls           // Shows playback controls (play/pause, volume, fullscreen)
+              autoPlay           // Starts playing automatically (often requires 'muted')
+              loop               // Loops the video automatically
+              muted              // Essential for autoplay to work in most browsers
+              playsInline        // Recommended for mobile browsers to play video inline
+      >
+    
+             
+             </video>   
+          </div>
+        </div>
+      </section>
+{/*-------------------------- End Create Campaign Video Section for SoSavvy -------------------------------- */}              
 
 {/* Start How it Works Section */}
 <section className="mt-8 text-center">

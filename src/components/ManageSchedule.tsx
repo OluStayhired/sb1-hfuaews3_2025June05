@@ -1516,7 +1516,7 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
   style={{ display: 'none' }} // Hide the input
 />                      
 
-
+<div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4"> {/*Start New Grid wrapper for max 2 posts per slot*/}
                   {slot.scheduledPosts && slot.scheduledPosts.length > 0 ? (
                     slot.scheduledPosts.map((scheduledPost) => {
                       
@@ -1978,7 +1978,7 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
                         </div>
                         )
                       )}           
-                                
+                     </div> {/*Close New Div controlling grid implementation*/}           
                     </div>                        
                   </div>
                
