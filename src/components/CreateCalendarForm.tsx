@@ -636,7 +636,7 @@ const getWeekday = (date: Date): string => {
       onSuccess(formData.calendarName);
     } catch (err) {
   console.error('Error creating calendar:', err);
-  let errorMessage = 'Failed to create calendar. Please try again.';
+  let errorMessage = 'Failed to create campaign. Please try again.';
   
   if (err.message.includes('Invalid calendar data format')) {
     errorMessage = 'The generated calendar data was not in the correct format. Please try again.';
@@ -946,7 +946,7 @@ const getWeekday = (date: Date): string => {
       disabled={loading || (step === 2 && formData.selectedGoals.length !== 3)}
       className="ml-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 transition-colors flex items-center space-x-2"
     >
-      <span>{step === 3 ? 'Create Calendar' : 'Next'}</span>
+      <span>{step === 3 ? 'Create Campaign' : 'Next'}</span>
     </button>
   </TooltipExtended>
 ) : (
@@ -956,7 +956,7 @@ const getWeekday = (date: Date): string => {
     disabled={loading || (step === 2 && formData.selectedGoals.length !== 3)}
     className="ml-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 transition-colors flex items-center space-x-2"
   >
-    <span>{step === 3 ? 'Create Calendar' : 'Next'}</span>
+    <span>{step === 3 ? 'Create Campaign' : 'Next'}</span>
   </button>
  // </TooltipExtended>
 )}
