@@ -758,7 +758,7 @@ const renderContentStep = () => (
                   <span className="space-x-2">
                     {/* Use a flex container to align the label and button horizontally */}
                     <div className="flex items-center space-x-2 mb-2">
-                      <label className="text-xs font-medium text-gray-700"> {/* Removed 'block' and 'mb-2' */}
+                      <label className="text-sm font-medium text-gray-700"> {/* Removed 'block' and 'mb-2' */}
                           Edit Post
                       </label>
 
