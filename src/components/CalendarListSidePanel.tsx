@@ -334,6 +334,7 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
           onCreateNewCampaign={handleCreateNewCampaignFromModal}
       />
     </div>
+    
     </>
   );
 }
