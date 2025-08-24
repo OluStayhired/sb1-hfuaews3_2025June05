@@ -793,7 +793,7 @@ const renderContentStep = () => (
                     placeholder="Write your post content..."
                   />
 
-{/*
+{/* Removed Button inside text area
                 {selectedCalendar && (
                   <button
                       onClick={handleGenerateContent}
