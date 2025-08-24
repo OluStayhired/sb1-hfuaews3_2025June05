@@ -694,40 +694,32 @@ const renderContentStep = () => (
               <>
                 {/* Calendar Selection */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">
-                    Campaign
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Content Campaign
                   </label>
               {hasActiveCalendars ? ( 
                    <div className="grid grid-cols-2 gap-3 text-sm">
-      {calendars.map((calendar) => (
-        <button
-            key={calendar.calendar_name}
-            //onClick={() => {
-              //const newSelectedCalendar = selectedCalendar === calendar.calendar_name ? null : calendar.calendar_name;
-              //setSelectedCalendar(newSelectedCalendar);
-    
-              // If a calendar is selected, set the calendar object
-              //if (newSelectedCalendar) {
-              //  setSelectedCalendarObject(calendar);
-              //} else {
-              //  setSelectedCalendarObject(null);
-             // }
-            //}}
-            className={`flex space-x-2 items-center p-2 rounded-lg border transition-colors ${
-                selectedCalendar === calendar.calendar_name
-                    ? 'border-blue-500 bg-blue-50'
+                {calendars.map((calendar) => (
+                  <button
+                    key={calendar.calendar_name}
+          
+                    className={`flex space-x-2 font-normal items-center p-2 rounded-lg  ${
+                      selectedCalendar === calendar.calendar_name
+                    ? 'bg-gray-50 text-gray-500 font-normal hover:bg-gray-100'
                     : 'border-gray-200 hover:border-blue-300'
-            }`}
-          >
-          <span className="p-1 bg-blue-100 rounded-full">
-          <Megaphone className="w-4 h-4 text-blue-500" />
+                  }`}
+                >
+          <span className="p-1 bg-gray-100 rounded-full">
+          <Megaphone className="w-4 h-4 text-gray-400" />
           </span> 
           <span>
-              <h3 className="font-medium text-gray-900 hover:text-blue-500">{calendar.calendar_name}</h3>
+              <h3 className="font-normal text-left text-gray-500 hover:text-gray-700">{calendar.calendar_name}</h3>
               <p className="text-sm text-gray-500 mt-1">{calendar.description}</p>
             </span>
         </button>
+                     
       ))}
+
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center p-1 border border-dashed border-gray-300 rounded-lg bg-gray-50">
