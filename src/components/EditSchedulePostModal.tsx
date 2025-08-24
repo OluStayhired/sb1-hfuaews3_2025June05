@@ -770,7 +770,7 @@ const renderContentStep = () => (
                             disabled={isGenerating}
                             // Removed 'relative right-2 top-2' as flex will handle positioning
                             className="p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-white hover:bg-blue-500 transition-colors shadow-md transition duration-200 flex space-x-1"
-                            title="Generate post with AI"
+                            //title="Generate post with AI"
                             >
                           {isGenerating ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -793,23 +793,6 @@ const renderContentStep = () => (
                     placeholder="Write your post content..."
                   />
 
-{/* Removed Button inside text area
-                {selectedCalendar && (
-                  <button
-                      onClick={handleGenerateContent}
-                      disabled={isGenerating}
-                      className="absolute right-2 top-2 p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
-                      title="Generate post with AI"
-                    >
-                      {isGenerating ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <Sparkles className="w-3 h-3 text-white" />
-                        )}
-                    //<span className="text-xs">Generate Post</span>
-                      </button>
-                    )}
-*/}
                 </div>
 
                 
