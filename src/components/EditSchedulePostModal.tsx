@@ -755,9 +755,36 @@ const renderContentStep = () => (
 
                 {/* Post Content */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">
-                    Edit Post
-                  </label>
+                  <span className="space-x-2">
+                    {/* Use a flex container to align the label and button horizontally */}
+                    <div className="flex items-center space-x-2 mb-2">
+                      <label className="text-xs font-medium text-gray-700"> {/* Removed 'block' and 'mb-2' */}
+                          Edit Post
+                      </label>
+
+                       
+                        {selectedCalendar && (
+                      <TooltipHelp text="⚡ Rewrite Post with AI">
+                          <button
+                            onClick={handleGenerateContent}
+                            disabled={isGenerating}
+                            // Removed 'relative right-2 top-2' as flex will handle positioning
+                            className="p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-white hover:bg-blue-500 transition-colors shadow-md transition duration-200 flex space-x-1"
+                            title="Generate post with AI"
+                            >
+                          {isGenerating ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              // Assuming Sparkles is imported
+                            <Sparkles className="w-3 h-3" /> 
+                            )}
+                          </button>
+                </TooltipHelp>
+                        )}
+                    </div>
+                </span>
+
+                  {/* This is the end of the DIV */}
               <div className="relative">
                   <textarea
                     value={postContent}
@@ -766,6 +793,7 @@ const renderContentStep = () => (
                     placeholder="Write your post content..."
                   />
 
+{/*
                 {selectedCalendar && (
                   <button
                       onClick={handleGenerateContent}
@@ -778,9 +806,10 @@ const renderContentStep = () => (
                         ) : (
                           <Sparkles className="w-3 h-3 text-white" />
                         )}
-                    {/*<span className="text-xs">Generate Post</span>*/}
+                    //<span className="text-xs">Generate Post</span>
                       </button>
                     )}
+*/}
                 </div>
 
                 
