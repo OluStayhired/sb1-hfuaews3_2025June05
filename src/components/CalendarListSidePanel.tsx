@@ -143,7 +143,26 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
+    //<div className="fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
+      
+    // Starting the change for the overlay
+    <>
+    {/* Overlay for the rest of the screen */}
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+      onClick={onClose} // Clicking outside closes the panel
+    ></div>
+
+   {/* The actual side panel content */}
+    <div
+      className={`
+        fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-r border-gray-200 z-50
+        transform transition-transform duration-1000 ease-in-out
+        ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+      `}
+    >
+      {/*Ending the part for the changes*/}
+      
       <div className="p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
@@ -315,6 +334,7 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
           onCreateNewCampaign={handleCreateNewCampaignFromModal}
       />
     </div>
+    </>
   );
 }
 
