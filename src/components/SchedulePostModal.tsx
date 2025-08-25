@@ -741,9 +741,9 @@ const renderContentStep = () => (
                   <button
                     key={channel.id}
                     onClick={() => setSelectedChannel(channel.id)}
-                    className={`flex items-center space-x-3 px-3 py-3 rounded-full border transition-colors ${
+                    className={`flex items-center space-x-3 p-1 rounded-full border transition-colors ${
                       selectedChannel === channel.id
-                        ? 'border-blue-300 bg-blue-50 text-blue-700'
+                        ? 'border-blue-300 bg-blue-100 text-blue-700'
                         : 'border-gray-100 hover:border-blue-300 hover:bg-blue-50'
                     }`}
                   >
