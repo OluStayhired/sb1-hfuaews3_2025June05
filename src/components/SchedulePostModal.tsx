@@ -778,9 +778,11 @@ const renderContentStep = () => (
                 {/* Calendar Selection */}
                 <div>
                   <div className="flex space-x-2 items-center">
+                    {/*
                     <span className="bg-blue-50 rounded-full p-1 mb-2">
                       <Megaphone className="w-4 h-4 text-blue-500"/>
                     </span>
+                  */}
                       <label className="block text-xs font-medium text-gray-700 mb-2">
                           Select Campaign (Optional)
                       </label>
@@ -862,13 +864,32 @@ const renderContentStep = () => (
                 )}
 
                 {/* Post Content */}
-                <div>
-                  <div className="flex space-x-2 items-center">
-                    <span className="bg-blue-50 rounded-full p-1 mb-2"> <Edit2 className="w-4 h-4 text-blue-500"/></span>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">
-                      Write Post
-                  </label>
-                  </div>
+                 <div>
+                  <span className="space-x-2">
+                    <div className="flex space-x-2 items-center">
+                      <label className="flex text-sm font-medium text-gray-700 mb-2">
+                        Write Post
+                      </label>
+                      
+                      {/* Generate Post Button - Only shown when a calendar is selected */}
+
+                      {/*Added the button here for AI ReWrite*/}
+                      {selectedCalendar && (
+                        <TooltipHelp text="⚡ Rewrite Post with AI">
+                          <button
+                            onClick={handleGenerateContent}
+                            disabled={isGenerating}
+                            className="p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-white hover:bg-blue-500 transition-colors shadow-md transition duration-200 flex space-x-1 mb-2">
+                              {isGenerating ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                <Sparkles className="w-3 h-3" />
+                            )}
+                          </button>
+                        </TooltipHelp>
+                      )}                
+                    </div>
+                  </span>   
                 
                   <div className="relative">
                     
@@ -879,24 +900,7 @@ const renderContentStep = () => (
                     placeholder="Write your own post ..."
                   />
 
-
-{/* Generate Post Button - Only shown when a calendar is selected */}
-    {selectedCalendar && (
-      <button
-        onClick={handleGenerateContent}
-        disabled={isGenerating}
-        className="absolute right-2 top-2 p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
-        title="Generate post with AI"
-      >
-        {isGenerating ? (
-          <Loader2 className="w-3 h-3 animate-spin" />
-        ) : (
-          <Sparkles className="w-3 h-3 text-white" />
-        )}
-        {/*<span className="text-xs">Generate Post</span>*/}
-      </button>
-    )}
-  </div>
+          </div>
 
                     
                   <div className="flex justify-end mt-1">
