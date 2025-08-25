@@ -803,12 +803,13 @@ const renderContentStep = () => (
                 setSelectedCalendarObject(null);
                 }
                 }}
-                className={`flex space-x-2 items-center p-2 rounded-lg border transition-colors ${
-                selectedCalendar === calendar.calendar_name
-                    ? 'border-blue-500 bg-blue-50'
-                     : 'border-gray-200 hover:border-blue-300'
-                  }`}
-                >
+                className={`flex space-x-2 text-left items-center p-2 rounded-lg transition-colors transition-group ${
+                  selectedCalendar === calendar.calendar_name
+                      //? 'border-blue-500 bg-blue-50'
+                       ? 'text-blue-500 bg-blue-50'
+                       : 'border border-gray-200 hover:border-blue-300'
+                    }`}
+                  >
           <span className="p-1 bg-gray-100 rounded-full">
               <Calendar className="w-2.5 h-2.5 text-gray-300" />
           </span> 
