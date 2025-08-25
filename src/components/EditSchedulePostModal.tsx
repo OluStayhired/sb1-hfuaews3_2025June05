@@ -649,14 +649,15 @@ const renderContentStep = () => (
 
                 {/*----------------------------Start New Social Channels Map-------------------------------*/}
 
-              {socialChannels.map((channel) => (
+                {socialChannels.map((channel) => (
+              <TooltipHelp text={channel.display_name}> 
                   <button
                     key={channel.id}
                     onClick={() => setSelectedChannel(channel.id)}
-                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg border transition-colors ${
+                    className={`flex items-center space-x-3 p-1 rounded-full border transition-colors ${
                       selectedChannel === channel.id
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-blue-300'
+                        ? 'border-blue-200 bg-blue-100 text-blue-700'
+                        : 'border-gray-100 hover:border-blue-300'
                     }`}
                   >
                     
@@ -664,7 +665,7 @@ const renderContentStep = () => (
                       <img
                         src={channel.avatar_url || `https://ui-avatars.com/api/?name=${channel.handle}`}
                         alt={channel.handle}
-                        className="w-8 h-8 rounded-full"
+                        className="w-10 h-10 rounded-full"
                       />
                       <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
                         <img
@@ -679,11 +680,14 @@ const renderContentStep = () => (
                         />
                       </div>
                     </div>
+                    {/*
                     <div className="text-left">
                       <p className="font-medium">{channel.display_name || channel.handle}</p>
                       <p className="text-xs text-gray-500">@{channel.handle}</p>
                     </div>
+                    */}
                   </button>
+                </TooltipHelp>
                 ))}
                 
                 {/* ------------------------------ End New Social Channels Map ----------------------------*/}
