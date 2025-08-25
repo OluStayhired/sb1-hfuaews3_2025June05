@@ -810,11 +810,13 @@ const renderContentStep = () => (
                        : 'border border-gray-200 hover:border-blue-300'
                     }`}
                   >
-          <span className="p-1 bg-gray-100 rounded-full">
+          {/*<span className="p-1 bg-gray-100 rounded-full">
               <Calendar className="w-2.5 h-2.5 text-gray-300" />
           </span> 
+                  */}
+
           <span>
-              <h3 className="font-medium text-gray-900 hover:text-blue-500">{calendar.calendar_name}</h3>
+              <h3 className="font-normal hover:text-blue-500">{calendar.calendar_name}</h3>
               <p className="text-sm text-gray-500 mt-1">{calendar.description}</p>
             </span>
         </button>
