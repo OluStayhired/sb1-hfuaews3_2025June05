@@ -732,16 +732,19 @@ const renderContentStep = () => (
                 <label className="block text-sm font-medium text-gray-700 mb-2">               
                 Choose Account
               </label>
-                </div>
-              <div className="flex flex-wrap gap-3">
+            </div>
+       {/*---------------- Start Displaying Avatar and Handle ----------------------------*/}              
+       <div className="flex flex-wrap gap-3">
                 {socialChannels.map((channel) => (
+
+            <TooltipHelp text={channel.display_name}>
                   <button
                     key={channel.id}
                     onClick={() => setSelectedChannel(channel.id)}
-                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg border transition-colors ${
+                    className={`flex items-center space-x-3 px-3 py-3 rounded-full border transition-colors ${
                       selectedChannel === channel.id
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-blue-300'
+                        ? 'border-blue-300 bg-blue-50 text-blue-700'
+                        : 'border-gray-100 hover:border-blue-300 hover:bg-blue-50'
                     }`}
                   >
                     
@@ -749,7 +752,7 @@ const renderContentStep = () => (
                       <img
                         src={channel.avatar_url || `https://ui-avatars.com/api/?name=${channel.handle}`}
                         alt={channel.handle}
-                        className="w-8 h-8 rounded-full"
+                        className="w-10 h-10 rounded-full"
                       />
                       <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
                         <img
@@ -764,14 +767,19 @@ const renderContentStep = () => (
                         />
                       </div>
                     </div>
+                    {/*
                     <div className="text-left">
                       <p className="font-medium">{channel.display_name || channel.handle}</p>
                       <p className="text-xs text-gray-500">@{channel.handle}</p>
                     </div>
+                    */}
                   </button>
+              </TooltipHelp>
                 ))}
               </div>
             </div>
+
+          {/*---------------- End Displaying Avatar and Handle ----------------------------*/}
 
             {selectedChannel && (
               <>
