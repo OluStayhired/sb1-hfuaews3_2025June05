@@ -1529,7 +1529,7 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
                               //      hover:bg-white hover:border-0 w-full relative">
 
                           className="flex items-start space-x-3 p-1 bg-white rounded-md border border-blue-50 hover:border-blue-100
-                                     w-full relative shadow-sm hover:shadow-md">
+                                     w-full relative shadow-sm hover:shadow-md self-start">
 
                           <div className="relative flex-shrink-0">
                          <TooltipHelp text = {`${scheduledPost.user_display_name}`}>
