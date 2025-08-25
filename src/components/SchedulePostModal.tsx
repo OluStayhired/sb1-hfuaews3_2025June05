@@ -783,7 +783,7 @@ const renderContentStep = () => (
                       <Megaphone className="w-4 h-4 text-blue-500"/>
                     </span>
                   */}
-                      <label className="block text-xs font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                           Select Campaign (Optional)
                       </label>
                   </div>   
