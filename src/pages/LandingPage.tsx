@@ -467,7 +467,7 @@ const handleGetStartedClick = () => {
       hover:border-blue-300 transition-all group rounded-full shadow-sm ">
       <div className="relative">
         <img
-          src="https://i.imghippo.com/files/qLzj4161JaA.jpg"
+          src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/ericka_bates_linkedin.jpg"
           alt="Ericka Bates"
           className="w-10 h-10 rounded-full object-cover"
         />
