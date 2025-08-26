@@ -478,7 +478,7 @@ useEffect(() => {
         {/* TOP ROW: Account Type/Features (left) and Button (right) */}
         <div className="flex items-start justify-between w-full">
             {/* Left side (top): Account Type and Plan Features */}
-            <div className="pr-4"> {/* Added pr-4 for spacing from the button */}
+            <div className="pr-4"> {/* Added pr-4 for spacing from the button  */}
                 <span className="p-2 text-blue-600 bg-blue-100 rounded-lg font-bold">{userPreferences.account_type} 🚀</span>
 
               {userPreferences.account_type === "Free Plan" && 
