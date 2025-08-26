@@ -266,19 +266,20 @@ export function ContentModal({
               <button
                 onClick={handleImproveAIContent}
                 disabled={isImproving}
-                className="absolute right-2 top-2 p-1 flex items-center space-x-1 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 text-white hover:from-indigo-300 hover:via-purple-400 hover:to-blue-500 rounded-md shadow-md transition duration-200"
+                className="absolute right-2 top-2 p-1 flex items-center space-x-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 rounded-md transition duration-200"
               >
+
                 <span className="flex items-center space-x-1">
                   
                   <span>
                     {isImproving ? (
                       <Loader2 className="w-3 h-3 text-white animate-spin" />
                     ) : (
-                      <Sparkles className="w-3 h-3 text-white"/>
+                      <Sparkles className="w-3 h-3 text-blue-500"/>
                     )}
                   </span>
                   
-                  <span className="text-xs">make it better</span>
+                  <span className="text-xs text-blue-500">make it better</span>
                 </span>
               </button>
             </div>
@@ -291,18 +292,6 @@ export function ContentModal({
               </span>
             </div>
           </div>
-
-          {/*
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Call to Action</label>
-            <input
-              type="text"
-              value={editedContent.call_to_action}
-              onChange={(e) => setEditedContent({...editedContent, call_to_action: e.target.value})}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          */}
           
         </div>
 

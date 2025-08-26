@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext'; // Import useAuth to get the c
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { format } from 'date-fns';
+import { useProductTier } from '../hooks/useProductTierHook';
 
 // Define interfaces for subscription details
     interface UserSubscriptionDetails {
@@ -41,6 +42,7 @@ interface UserPreferences {
   problems: string | null;
   company_website: string | null;
   account_type: string | null;
+  user_tenure: string | null;
 }
 
 // Renamed the component from SettingsModal to SettingsPage
@@ -57,6 +59,7 @@ export function SettingsPage() {
     problems: '',
     company_website: '',
     account_type: '',
+    user_tenure: '',
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -75,6 +78,9 @@ export function SettingsPage() {
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
   const [subscriptionError, setSubscriptionError] = useState<string | null>(null);
 
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
   
   const navigate = useNavigate();
    // Access the authenticated user
@@ -88,6 +94,60 @@ export function SettingsPage() {
    const handleUpgradePlan = () => {
     navigate('/dashboard/pricing');
   };
+
+
+// --- START FIX ---
+// Call fetchUserIdAndEmail when the component mounts or when the `user` object from AuthContext changes
+  useEffect(() => {
+    const fetchUserAndSetState = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setCurrentUserEmail(session.user.email);
+          setCurrentUserId(session.user.id);
+        } else {
+          console.warn('No user found in session for SettingsPage.');
+          setCurrentUserEmail(null);
+          setCurrentUserId(null);
+        }
+      } catch (error) {
+        console.error('Error fetching user session in SettingsPage:', error);
+        setCurrentUserEmail(null);
+        setCurrentUserId(null);
+      }
+    };
+
+    fetchUserAndSetState();
+  }, [user]); // Add 'user' as a dependency so it re-runs if the auth state changes
+// --- END FIX ---
+  
+
+//---- NEW Hook to Capture all Account Type Paramenters -----//
+    const {
+    isLoading: isProductLoading, //changed from isLoading
+    error: errorProduct, //changed from error
+    //userPreferences,
+    productTierDetails,
+    isFreePlan,
+    isEarlyAdopter, // New variable
+    isTrialUser,
+    isPaidPlan,
+    canCreateMoreCampaigns,
+    canAddMoreSocialAccounts,
+    isTrialExpiringSoon,
+    daysUntilTrialExpires,
+    showFirstTrialWarning,
+    showSecondTrialWarning,
+    showFinalTrialWarning,
+    //on_boarding_active,
+    max_calendar,
+    max_social_accounts,
+    remainingCampaigns,
+    remainingSocialAccounts,
+  } = useProductTier(supabase, currentUserEmail);  
+
+
+  const free_user_days = daysUntilTrialExpires;
   
   // Removed isOpen prop and its effect dependency
   useEffect(() => {
@@ -123,6 +183,7 @@ export function SettingsPage() {
             problem: data.problem || '',
             company_website: data.company_website || '',
             account_type: data.account_type || '',
+            user_tenure: data.user_tenure || '',
           });
         } else {
           // No preferences found, use defaults
@@ -419,6 +480,10 @@ useEffect(() => {
             {/* Left side (top): Account Type and Plan Features */}
             <div className="pr-4"> {/* Added pr-4 for spacing from the button */}
                 <span className="p-2 text-blue-600 bg-blue-100 rounded-lg font-bold">{userPreferences.account_type} 🚀</span>
+
+              {userPreferences.account_type === "Free Plan" && 
+                 <span className="p-2 ml-4 font-semibold text-sm bg-red-500 text-white rounded-lg animate-pulse">{daysUntilTrialExpires} Trial Days Left </span>}
+                  
                 <p className="text-sm text-gray-500 mt-2">
                     {userPreferences.account_type === "Pro Plan" && <><br/><strong>Full Premium Features</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 🔥 </>}
                     {userPreferences.account_type === "Free Plan" && <><br/> <strong>Get Pro Plan</strong> | 20 Campaigns | 8 Social Accounts | Unlimited AI Rewrites 👉 </>}
@@ -471,6 +536,8 @@ useEffect(() => {
                     </TooltipExtended>
                 )}
             </span>
+
+          
         </div>
 
         {/* BOTTOM ROW: Price Display Section (aligned left, below top content) */}

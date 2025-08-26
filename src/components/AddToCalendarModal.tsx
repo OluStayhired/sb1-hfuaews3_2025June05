@@ -456,45 +456,47 @@ const getNextButtonTooltip = () => {
         <label className="text-left block text-sm font-medium text-gray-700 mb-2">
           Choose Account
         </label>
-        <div className="flex flex-wrap gap-3">
-          {socialChannels.map((channel) => (
-            <button
-              key={channel.id}
-              onClick={() => setSelectedChannel(channel.id)}
-              className={`flex items-center space-x-3 px-4 py-2 rounded-lg border transition-colors ${
-                selectedChannel === channel.id
-                  ? 'border-blue-500 bg-blue-50 text-blue-500'
-                  : 'border-gray-200 hover:border-blue-300'
-              }`}
-            >
-              <div className="relative">
-                <img
-                  src={channel.avatar_url || `https://ui-avatars.com/api/?name=${channel.handle}`}
-                  alt={channel.handle}
-                  className="w-8 h-8 rounded-full"
-                />
-                <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
-                  <img
-                    src={
-                    channel.social_channel === 'Bluesky' 
-                    ? BlueskyLogo  
-                    : channel.social_channel === 'LinkedIn'
-                    ? LinkedInLogo
-                    : XLogo  
-                    }
-                    alt={channel.social_channel}
-                    className="w-3 h-3"
-                  />
-                </div>
+  {/*---------------- Start Displaying Avatar and Handle ----------------------------*/}              
+              <div className="flex flex-wrap gap-3">
+                {socialChannels.map((channel) => (
+
+            <TooltipHelp text={channel.display_name}>
+                  <button
+                    key={channel.id}
+                    onClick={() => setSelectedChannel(channel.id)}
+                    className={`flex items-center space-x-3 p-1 rounded-full border transition-colors ${
+                      selectedChannel === channel.id
+                        ? 'border-blue-300 bg-blue-50 text-blue-700'
+                        : 'border-gray-100 hover:border-blue-300 hover:bg-blue-50'
+                    }`}
+                  >
+                    
+                    <div className="relative">
+                      <img
+                        src={channel.avatar_url || `https://ui-avatars.com/api/?name=${channel.handle}`}
+                        alt={channel.handle}
+                        className="w-10 h-10 rounded-full"
+                      />
+                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm">
+                        <img
+                          src={channel.social_channel === 'Bluesky' 
+                                ? BlueskyLogo  
+                                : channel.social_channel === 'LinkedIn'
+                                ? LinkedInLogo
+                                : XLogo  
+                              }
+                          alt={channel.social_channel}
+                          className="w-3 h-3"
+                        />
+                      </div>
+                    </div>
+                  </button>
+              </TooltipHelp>
+                ))}
               </div>
-              <div className="text-left">
-                <p className="font-medium">{channel.display_name || channel.handle}</p>
-                <p className="text-xs text-gray-500">@{channel.handle}</p>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
+            </div>
+
+          {/*---------------- End Displaying Avatar and Handle ----------------------------*/}
 
       <div>
 
@@ -504,23 +506,25 @@ const getNextButtonTooltip = () => {
                 Post Content
               </label>
 
-            <TooltipHelp text="AI Rewrite ⚡">
+            <TooltipHelp text="⚡ Rewrite with AI">
             <button
                 onClick={handleImproveAIContent}
                 disabled={isImproving}
-                className="p-1 flex items-center space-x-1 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 text-white hover:from-indigo-300 hover:via-purple-400 hover:to-blue-500 rounded-md shadow-md transition duration-200"
+               className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
+                             
+              
                 <span className="flex items-center space-x-1">
                   
                   <span>
                     {isImproving ? (
                       <Loader2 className="w-3 h-3 text-white animate-spin" />
                     ) : (
-                      <Sparkles className="w-3 h-3 text-white"/>
+                      <Sparkles className="w-3 h-3 text-blue-500"/>
                     )}
                   </span>
                   
-                  <span className="text-xs">make it better</span>
+                  <span className="text-xs text-blue-500">make it better</span>
                 </span>
               </button>
           </TooltipHelp>
