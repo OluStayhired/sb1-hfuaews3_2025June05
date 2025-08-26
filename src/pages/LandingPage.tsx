@@ -311,15 +311,14 @@ const handleGetStartedClick = () => {
         style={{ animationDelay: '4s', animationDuration: '5s' }}
         onError={(e) => { e.target.onerror = null; e.target.src = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/marketing_exec.png"; }}
       />
-      {/* Image 4: Bottom-left, larger floating rectangle 
+      {/* Image 4: Bottom-left, larger floating rectangle */}
       <img
-        src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/accountant_image.png"
+        src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/the_startup_founder.png"
         alt="Abstract orange shape"
-        className="hidden sm:block absolute bottom-12 left-8 animate-float opacity-50 w-40 h-40 sm:w-40 sm:h-40 rounded-xl transform -rotate-6 z-30"
+        className="hidden sm:block absolute bottom-12 left-1/4 animate-float opacity-80 w-40 h-40 sm:w-40 sm:h-40 rounded-xl transform -rotate-6 z-30"
         style={{ animationDelay: '1s', animationDuration: '8s' }}
-        onError={(e) => { e.target.onerror = null; e.target.src = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/accountant_image.png"; }}
+        onError={(e) => { e.target.onerror = null; e.target.src = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/the_startup_founder.png"; }}
       />
-      */}
       {/* Image 5: Mid-left, medium floating circle */}
       <img
         src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/accountant_image.png"
@@ -363,7 +362,7 @@ const handleGetStartedClick = () => {
         
 {/*-------------------- End images Added for effect -----------------------------*/}    
 
-        {/*Start Social Media Icons*/}
+        {/*Start Social Media Icons
           <div className="flex justify-center items-center space-x-8 mt-8">
             <div className="flex items-center border-8 border-gray-100 p-3 bg-gray-900 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
               <img src={BlueskyLogoWhite} alt="Bluesky" className="w-9 h-9 rounded-lg" />
@@ -372,11 +371,13 @@ const handleGetStartedClick = () => {
               <img src={LinkedInSolidLogoWhite} alt="LinkedIn" className="w-9 h-9 rounded-lg" />
             </div>
 
-            {/*<div className="flex items-center p-2 bg-blue-100 hover:bg-gray-200 space-x-2 text-blue-700 rounded-tl-xl rounded-br-xl">*/}
+            
             <div className="flex items-center border-8 border-gray-100 p-3 bg-gray-900 hover:bg-blue-100 space-x-2 text-blue-700 rounded-full">
               <img src={XLogo} alt="Twitter" className="w-9 h-9 rounded-lg" />
             </div>
           </div>
+
+          */}
 
         {/*End Social Media Icons*/}
 
