@@ -229,14 +229,16 @@ const handleGetStartedClick = () => {
 
       <main className="max-w-7xl mx-auto px-6 pt-20 pb-32">
         <div className="text-center px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-16 md:py-20 lg:py-24">
-          {/*start alternative header */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-6xl leading-tight font-bold mb-2 sm:mb-3"> 
+
+            {/*start alternative header */}
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-6xl leading-tight font-bold mb-2 sm:mb-3"> 
             <p>
               <span className="inline-block bg-gradient-to-l from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text mt-6">
-                Fire your <br className="sm:hidden" /> social media manager <br className="sm:hidden" /> 
+                Fire your <br className="sm:hidden" /> social media manager <br className="sm:hidden" />
+                
     <p className="block font-semibold text-xl sm:font-semibold text-2xl sm:text-3xl md:text-3xl lg:text-4xl text-gray-700 leading-tight mt-1 sm:mt-1">
          {/* with unstoppable <br className="sm:hidden" /> online presence */}
-         Let SoSavvy write and schedule <br className="sm:hidden block" /> posts for you!
+         Let SoSavvy write and<br className="sm:hidden block" /> schedule all your posts! 
          </p>
               </span>
             </p>
@@ -274,10 +276,92 @@ const handleGetStartedClick = () => {
            
            <span>Get Started</span>
           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-</button>
+      </button>
 
   </div>
 </div>
+
+{/*------------------- Start Images Added for Effect -----------------------------*/}
+
+ {/* Background Images - Absolutely positioned for "scattered" effect with animations */}
+      {/* IMPORTANT: These images now have a higher z-index (z-30) to appear on top of the content div (z-20) */}
+      {/* Replace placeholder URLs with your actual image URLs (e.g., from Supabase) */}
+
+      {/* Image 1: Top-left, floating circle */}
+      <img
+        src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/agency_owner_img.png"
+        //alt="Abstract blue shape"
+        className="hidden sm:block absolute top-8 left-1/4 animate-float opacity-80 w-40 h-40 sm:w-40 sm:h-40 rounded-md  z-30"
+        style={{ animationDelay: '0s', animationDuration: '6s' }}
+        onError={(e) => { e.target.onerror = null; e.target.src = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/agency_owner_img.png"; }}
+      />
+      {/* Image 2: Bottom-right, floating rounded rectangle */}
+      <img
+        src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/investor_image.png"
+        alt="Abstract pink shape"
+        className="hidden sm:block absolute bottom-16 right-1/4 animate-float opacity-80 w-32 h-32 sm:w-32 sm:h-32 rounded-xl transform rotate-12 z-30"
+        style={{ animationDelay: '2s', animationDuration: '7s' }}
+        onError={(e) => { e.target.onerror = null; e.target.src = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/investor_image.png"; }}
+      />
+      {/* Image 3: Mid-right, smaller floating circle */}
+      <img
+        src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/marketing_exec.png"
+        alt="Abstract green shape"
+        className="hidden sm:block absolute top-1/3 right-10 animate-float opacity-80 w-32 h-32 sm:w-32 sm:h-32 rounded-full z-30"
+        style={{ animationDelay: '4s', animationDuration: '5s' }}
+        onError={(e) => { e.target.onerror = null; e.target.src = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/marketing_exec.png"; }}
+      />
+      {/* Image 4: Bottom-left, larger floating rectangle 
+      <img
+        src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/accountant_image.png"
+        alt="Abstract orange shape"
+        className="hidden sm:block absolute bottom-12 left-8 animate-float opacity-50 w-40 h-40 sm:w-40 sm:h-40 rounded-xl transform -rotate-6 z-30"
+        style={{ animationDelay: '1s', animationDuration: '8s' }}
+        onError={(e) => { e.target.onerror = null; e.target.src = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/accountant_image.png"; }}
+      />
+      */}
+      {/* Image 5: Mid-left, medium floating circle */}
+      <img
+        src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/accountant_image.png"
+        alt="Abstract red shape"
+        className="hidden sm:block absolute top-1/2 left-10 transform -translate-y-1/2 animate-float opacity-80 w-28 h-28 sm:w-36 sm:h-36 rounded-full z-30"
+        style={{ animationDelay: '3s', animationDuration: '6.5s' }}
+        onError={(e) => { e.target.onerror = null; e.target.src = "https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/accountant_image.png"; }}
+      />
+      {/* Image 6: Top-right, smaller floating shape (rounded-lg rotated 45deg for a diamond look) */}
+      <img
+        src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/law_practice_owner.png"
+        alt="Abstract purple shape"
+        className="hidden sm:block absolute top-16 right-1/4 animate-float opacity-80 w-40 h-40 sm:w-40 sm:h-40 rounded-lg transform rotate-15 z-30"
+        style={{ animationDelay: '5s', animationDuration: '5.5s' }}
+        onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/80x80/eef2ff/4338ca?text=Shape6"; }}
+      />
+
+      {/* Custom CSS for float animation */}
+      <style>{`
+        @keyframes float {
+          0% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-15px) rotate(5deg); /* Move up and slightly rotate */
+          }
+          100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+        }
+        .animate-float {
+          animation-name: float;
+          animation-iteration-count: infinite; /* Keeps repeating indefinitely */
+          animation-timing-function: ease-in-out; /* Smooth start and end */
+          animation-direction: alternate; /* Plays forward then backward for a smooth loop */
+        }
+      `}</style>
+
+
+
+        
+{/*-------------------- End images Added for effect -----------------------------*/}    
 
         {/*Start Social Media Icons*/}
           <div className="flex justify-center items-center space-x-8 mt-8">
