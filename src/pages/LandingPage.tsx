@@ -248,8 +248,8 @@ const handleGetStartedClick = () => {
           {/* Start Supporting Message */}
 
           <p className="mt-10 text-base sm:text-3xl md:text-2xl text-gray-700 sm:font-normal font-normal mb-8 sm:mb-10">
-    Turn your website into months of <br className="sm:hidden" /> engaging content for X & LinkedIn, <br className="sm:hidden" /> in minutes 🔥
-      </p>
+            Turn your website into months of <br className="sm:hidden" /> engaging content <br className="sm:block" /> for X and LinkedIn, <br className="sm:hidden" /> in minutes 🔥
+          </p>
 
           {/* End Supporting Message */}
 
@@ -424,7 +424,7 @@ const handleGetStartedClick = () => {
       hover:border-blue-300 transition-all group">
       <div className="relative">
         <img
-          src="https://i.imghippo.com/files/beBY1349jQo.jpg"
+          src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/eric_rafat_linkedin.jpg"
           alt="Eric Rafat"
           className="w-10 h-10 rounded-full object-cover"
         />
@@ -446,7 +446,7 @@ const handleGetStartedClick = () => {
     <div className="hidden sm:inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm hover:border-blue-300 transition-all group rounded-full shadow-sm ">
       <div className="relative">
         <img
-          src="https://i.imghippo.com/files/mcUX9191eo.jpg"
+          src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/julia_yuvchenko_linkedin.jpg"
           alt="Julia Yuvchenko"
           className="w-10 h-10 rounded-full object-cover"
         />
@@ -487,7 +487,7 @@ const handleGetStartedClick = () => {
     <div className="hidden sm:inline-flex items-center space-x-3 px-6 py-3 rounded-full shadow-sm bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-full shadow-sm hover:border-blue-300 transition-all group">
       <div className="relative">
         <img
-          src="https://i.imghippo.com/files/cGvb7319MV.jpg"
+          src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/jon_hillis_linkedin.jpg"
           alt="Jonathan Hillis"
           className="w-10 h-10 rounded-full object-cover"
         />
@@ -507,7 +507,7 @@ const handleGetStartedClick = () => {
       hover:border-blue-300 transition-all group rounded-full shadow-sm">
       <div className="relative">
         <img
-          src="https://i.imghippo.com/files/wQ7409qJU.jpg"
+          src="https://selrznkggmoxbpflzwjz.supabase.co/storage/v1/object/public/user-post-images/travis_street_bluesky.jpg"
           alt="Travis Street"
           className="w-10 h-10 rounded-full object-cover"
         />
