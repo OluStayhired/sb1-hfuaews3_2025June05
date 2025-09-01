@@ -5,7 +5,7 @@ import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import { format, parse } from 'date-fns';
-import { generateListPost, generateHookPostV3, generateLinkedInHookPostV3} from '../lib/gemini';
+import { generateListPost } from '../lib/gemini';
 import { Sparkles } from 'lucide-react';
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { TooltipHelp } from '../utils/TooltipHelp';
@@ -58,23 +58,6 @@ interface ContentData {
   topic: string;
 }
 
-interface CalendarContent {
-  id: string;
-  theme: string;
-  topic: string;
-  content: string;
-  call_to_action: string;
-  day_of_week: string;
-  day: number;
-  calendar_name: string;
-  description: string;
-  created_at: string;
-  updated_at: string;
-  content_date: Date;
-  target_audience?: string;
-  photo_url?: string | null; 
-}
-
 export function EditSchedulePostModal({ 
   isOpen, 
   onClose, 
@@ -83,7 +66,6 @@ export function EditSchedulePostModal({
   onError
 }: EditSchedulePostModalProps) {
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingCharLength, setLoadingCharLength] = useState<number | null>(null);
   const [socialChannels, setSocialChannels] = useState<SocialChannel[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<string | null>(null);
   const [calendars, setCalendars] = useState<CalendarOption[]>([]);
@@ -112,11 +94,6 @@ export function EditSchedulePostModal({
     social_goals?: string[];
     start_date?: string;
     } | null>(null);
-
-  const [showTypingEffect, setShowTypingEffect] = useState(false);
-  const [typingContentId, setTypingContentId] = useState<string | null>(null); // To track which content item is typing
-  const [currentTypingText, setCurrentTypingText] = useState(''); // The text currently being typed
-  
   const [campaignDateMismatch, setCampaignDateMismatch] = useState(false);
   const [campaignStartDate, setCampaignStartDate] = useState<Date | null>(null);
 
@@ -135,7 +112,7 @@ export function EditSchedulePostModal({
     if (selectedChannel) {
       const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
       if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
+        //console.log('Selected Social Channel:', activeAccount.social_channel); 
         switch (activeAccount.social_channel) {
           case 'Bluesky':
             setMaxLength(300);
@@ -472,116 +449,6 @@ const handleGenerateContent = async () => {
   }
 };  
 
-
-const handleHookPostV3 = async (postContent: contentData, char_length: string) => {
-
- 
-  if (!selectedCalendar) return;
-  
-  const uniqueKey = `${selectedCalendarObject?.id}_${char_length}`;
-  
-  try {
-    
-    //add typing effect state management here
-    setTypingContentId(selectedCalendarObject?.id); // Set the ID of the content item that will be typing
-    setCurrentTypingText(''); // Clear previous text for typing effect
-    setShowTypingEffect(true); // Activate the typing effect
-    setLoadingCharLength(uniqueKey);
-    
-    // Generate improved content
-    const improvedContent = await generateHookPostV3(
-      selectedTheme || '',
-      selectedTopic || '',
-      selectedCalendarObject?.target_audience || '', 
-      postContent || '',
-      char_length
-    );
-
-    //console.log('executing the Hook Posts Here')
-
-    //if (improvedContent.error) throw new Error(improvedContent.error);
-
-     if (!improvedContent.error) {
-      setPostContent(improvedContent.text);
-    }
-
-    //Add new state variable sets here
-     // 3. API call is complete, hide spinner and prepare for typing effect
-    setLoadingCharLength(null); // Hide the spinner
-    setCurrentTypingText(improvedContent.text); // Set the text to be typed
-    setTypingContentId(selectedCalendarObject?.id);             // Indicate which item is typing
-    setShowTypingEffect(true); 
-
-
-  } catch (err) {
-    console.error('Error improving content:', err);
-    // Could add error state/toast here
-
-    //moved set charlength here
-    setLoadingCharLength(null); 
-    setShowTypingEffect(false); // Hide typing effect on error
-    setTypingContentId(null);
-    setCurrentTypingText(''); // Clear typing text
-  } finally {
-    
-  }
-};  
-// ------------- End Standard HooksV3Post -----------------//
-
-const handleLinkedInHookPostV3 = async (postContent: contentData, char_length: string) => {
-
- 
-  if (!selectedCalendar) return;
-  
-  const uniqueKey = `${selectedCalendarObject?.id}_${char_length}`;
-  
-  try {
-    
-    //add typing effect state management here
-    setTypingContentId(selectedCalendarObject?.id); // Set the ID of the content item that will be typing
-    setCurrentTypingText(''); // Clear previous text for typing effect
-    setShowTypingEffect(true); // Activate the typing effect
-    setLoadingCharLength(uniqueKey);
-    
-    // Generate improved content
-    const improvedContent = await generateHookPostV3(
-      selectedTheme || '',
-      selectedTopic || '',
-      selectedCalendarObject?.target_audience || '', 
-      postContent || '',
-      char_length
-    );
-
-    //console.log('executing the Hook Posts Here')
-
-    //if (improvedContent.error) throw new Error(improvedContent.error);
-
-     if (!improvedContent.error) {
-      setPostContent(improvedContent.text);
-    }
-
-    //Add new state variable sets here
-     // 3. API call is complete, hide spinner and prepare for typing effect
-    setLoadingCharLength(null); // Hide the spinner
-    setCurrentTypingText(improvedContent.text); // Set the text to be typed
-    setTypingContentId(selectedCalendarObject?.id);             // Indicate which item is typing
-    setShowTypingEffect(true); 
-
-
-  } catch (err) {
-    console.error('Error improving content:', err);
-    // Could add error state/toast here
-
-    //moved set charlength here
-    setLoadingCharLength(null); 
-    setShowTypingEffect(false); // Hide typing effect on error
-    setTypingContentId(null);
-    setCurrentTypingText(''); // Clear typing text
-  } finally {
-    
-  }
-};      
-
   const handleUpdateToStartDate = () => {
   if (campaignStartDate) {
     setSelectedDate(campaignStartDate);
@@ -782,7 +649,7 @@ const renderContentStep = () => (
 
                 {/*----------------------------Start New Social Channels Map-------------------------------*/}
 
-              {socialChannels.map((channel) => (
+                {socialChannels.map((channel) => (
               <TooltipHelp text={channel.display_name}> 
                   <button
                     key={channel.id}
@@ -836,18 +703,16 @@ const renderContentStep = () => (
                   </label>
               {hasActiveCalendars ? ( 
                    <div className="grid grid-cols-2 gap-3 text-sm">
-      {calendars.map((calendar) => (
-
-  
-        <button
-            key={calendar.calendar_name}
+                {calendars.map((calendar) => (
+                  <button
+                    key={calendar.calendar_name}
           
-            className={`flex space-x-2 font-normal items-center p-2 rounded-lg  ${
-                selectedCalendar === calendar.calendar_name
+                    className={`flex space-x-2 font-normal items-center p-2 rounded-lg  ${
+                      selectedCalendar === calendar.calendar_name
                     ? 'bg-gray-50 text-gray-500 font-normal hover:bg-gray-100'
                     : 'border-gray-200 hover:border-blue-300'
-            }`}
-          >
+                  }`}
+                >
           <span className="p-1 bg-gray-100 rounded-full">
           <Megaphone className="w-4 h-4 text-gray-400" />
           </span> 
@@ -856,8 +721,9 @@ const renderContentStep = () => (
               <p className="text-sm text-gray-500 mt-1">{calendar.description}</p>
             </span>
         </button>
-       
+                     
       ))}
+
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center p-1 border border-dashed border-gray-300 rounded-lg bg-gray-50">
@@ -896,102 +762,33 @@ const renderContentStep = () => (
                   <span className="space-x-2">
                     {/* Use a flex container to align the label and button horizontally */}
                     <div className="flex items-center space-x-2 mb-2">
-                      <label className="text-xs font-medium text-gray-700"> {/* Removed 'block' and 'mb-2' */}
+                      <label className="text-sm font-medium text-gray-700"> {/* Removed 'block' and 'mb-2' */}
                           Edit Post
                       </label>
 
-                       {/*Added the button here for AI ReWrite*/}
+                       
                         {selectedCalendar && (
-                          <TooltipHelp text="⚡ Rewrite with AI">
-                            <button
-                              onClick={handleGenerateContent}
-                              disabled={isGenerating}
-                    
-                              className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md mb-2">  
-                                {isGenerating ? (
-                                    <Loader2 className="w-3 h-3 animate-spin" />
-                                      ) : (
-                                    <Sparkles className="w-3 h-3" />
-                                  )}
-                                <span className="text-xs">AI Rewrite</span>
-                              </button>
-                          </TooltipHelp>
-                          )}
-
-                   {/*Started adding more buttons for LinkedIn, Twitter and Bluesky*/}
-            
-                        {selectedCalendar && (
-                          
-                          <TooltipHelp  text="⚡Adapt for LinkedIn">
-                            <button
-                
-                              onClick={() => handleLinkedInHookPostV3(selectedCalendarObject?.content, 1000)}
-                              disabled={loadingCharLength === `${selectedCalendarObject?.id}_1000`}
-             
-                              className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md mb-2"
-                                >    
-                
-                              {loadingCharLength === `${selectedCalendarObject?.id}_1000` ? (
-                                <Loader2 className="w-3 h-3 animate-spin" />
-                                  ) : (
-              
-                                    <img src={LinkedInLogo} className="w-3 h-3" />
-                
-                                   )}
-                                    <span className="text-xs">LinkedIn</span>
-                                </button>
-                             </TooltipHelp>    
-                            )}   
-
-                        {selectedCalendar && (
-                          
-                            <TooltipHelp  text="⚡Adapt for Bluesky">
-                              <button
-                                  onClick={() => handleHookPostV3(selectedCalendarObject?.content, 300)}
-                                  disabled={loadingCharLength === `${selectedCalendarObject?.id}_300`}
-             
-                                  className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md mb-2"
-              >    
-                
-                                  {loadingCharLength === `${selectedCalendarObject?.id}_300` ? (
-                                  <Loader2 className="w-3 h-3 animate-spin" />
-                                    ) : (
-              
-                                    <img src={BlueskyLogo} className="w-3 h-3" />
-                
-                                     )}
-                                      <span className="text-xs">Bluesky</span>
-                                  </button>
-                                 </TooltipHelp>    
-                                )}   
-
-                              {selectedCalendar && (
-                          
-                                <TooltipHelp  text="⚡Adapt for Twitter">
-                                  <button
-                
-                                    onClick={() => handleHookPostV3(selectedCalendarObject?.content, 280)}
-                                    disabled={loadingCharLength === `${selectedCalendarObject?.id}_280`}
-             
-                                    className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md mb-2"
-              >    
-                
-                                    {loadingCharLength === `${selectedCalendarObject?.id}_280` ? (
-                                    <Loader2 className="w-3 h-3 animate-spin" />
-                                      ) : (
-              
-                                      <img src={XLogo} className="w-3 h-3" />
-                
-                                       )}
-                                      <span className="text-xs">Twitter</span>
-                                    </button>
-                                   </TooltipHelp>    
-                                  )}    
+                      <TooltipHelp text="⚡ Rewrite Post with AI">
+                          <button
+                            onClick={handleGenerateContent}
+                            disabled={isGenerating}
+                            // Removed 'relative right-2 top-2' as flex will handle positioning
+                            className="p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-white hover:bg-blue-500 transition-colors shadow-md transition duration-200 flex space-x-1"
+                            //title="Generate post with AI"
+                            >
+                          {isGenerating ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              // Assuming Sparkles is imported
+                            <Sparkles className="w-3 h-3" /> 
+                            )}
+                          </button>
+                </TooltipHelp>
+                        )}
                     </div>
                 </span>
 
                   {/* This is the end of the DIV */}
-                  
               <div className="relative">
                   <textarea
                     value={postContent}
@@ -1000,24 +797,6 @@ const renderContentStep = () => (
                     placeholder="Write your post content..."
                   />
 
-                {/*
-                {selectedCalendar && (
-                  <button
-                      onClick={handleGenerateContent}
-                      disabled={isGenerating}
-                      //className="absolute right-2 top-2 p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
-                      className="absolute right-2 top-2 p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-white hover:bg-blue-500 transition-colors rounded-md shadow-md transition duration-200 flex items-center space-x-1"
-                      title="Generate post with AI"
-                    >
-                      {isGenerating ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <Sparkles className="w-3 h-3" />
-                        )}
-                    //<span className="text-xs">Generate Post</span>
-                      </button>
-                    )}
-                  */}
                 </div>
 
                 
