@@ -1136,7 +1136,7 @@ const renderContentStep = () => (
 
     const renderScheduleStep = () => (
         <div className="space-y-6">
-            {/* Schedule Time */}
+            {/* Schedule  Time */}
             <div>
                 <div className="flex space-x-2 items-center">
                     <span className="bg-blue-50 rounded-full p-1 mb-2">
