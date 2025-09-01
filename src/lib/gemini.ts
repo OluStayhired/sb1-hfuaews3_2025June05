@@ -1283,34 +1283,35 @@ Follow the [Rules] below:
 
 //------- End generateHooksPostV3_old without HooksData -------------//
 
+
 //------- start generateHooksPostV3 without HooksData -------------//
 
 export async function generateHookPostV3(
-    theme: string,
-    topic: string,
-    target_audience: string,
-    content: string,
-    char_length: string,
-    maxRetries: number = 5,
-    initialDelayMs: number = 1000
+  theme: string,
+  topic: string,
+  target_audience: string,
+  content: string,
+  char_length: string,
+  maxRetries: number = 5,
+  initialDelayMs: number = 1000
 ): Promise<GeminiResponse> {
 
-  // Choose a random hook 
-  const chosenHookArchetype = getRandomHookArchetype();
-  
-    // Cache key now depends only on inputs that define the desired output
-    const cacheKey = JSON.stringify({ target_audience, content, theme, topic, char_length });
-    const cached = calendarCache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-        return cached.response;
-    }
+// Choose a random hook 
+const chosenHookArchetype = getRandomHookArchetype();
 
-    // Rate limiting
-    await rateLimiter.checkAndWait();
+  // Cache key now depends only on inputs that define the desired output
+  const cacheKey = JSON.stringify({ target_audience, content, theme, topic, char_length });
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      return cached.response;
+  }
 
-    const selectedTone = getRandomTone(); // Ensure this function correctly returns a valid tone string
+  // Rate limiting
+  await rateLimiter.checkAndWait();
 
-    // The refined prompt that guides the LLM to create its own hook
+  const selectedTone = getRandomTone(); // Ensure this function correctly returns a valid tone string
+
+  // The refined prompt that guides the LLM to create its own hook
 const prompt = `Act a world-class copywriter and social media content strategist. 
 
 **IMPORTANT: The information in the 'Details' section below is for your internal processing and understanding only. Do NOT include any part of this 'Details' section or its contents in your final output.**
@@ -1339,7 +1340,6 @@ Tailor the language, tone, and examples to resonate deeply with a ${target_audie
 3. Craft language that is not just simple, but **resonate as genuinely human and relatable**, avoiding industry jargon unless it's universally understood by a ${target_audience} at a 'ninth-grade' comprehension level. The goal is conversational authority, not academic complexity.
 4. Follow proven frameworks (AIDA, PAS, Hook-Point-Action, etc.), **interpreting them with strategic nuance for social context.**
 5. Keep to ${char_length} Characters in total.
-6. Conclude with a **strategically subtle CTA** that **invites further engagement or thought**, rather than demanding action. It should feel like a natural next step in the conversation, building curiosity or encouraging a small, low-commitment interaction that nurtures the lead without overt sales pressure.
 
 **Every sentence should contribute to a coherent strategic narrative that gently guides the ${target_audience} from problem awareness to potential solution discovery, fostering trust and establishing expertise.**
 
@@ -1357,6 +1357,8 @@ Follow the [Rules] below:
 - Ban hashtags
 - Ban bullet points.
 - Ban exclamation marks. 
+- Ban Call to Action Questions
+- Ban Call to Action Statements
 - Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
 - Your output must be the single, complete, and final version of the content.
 - Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
@@ -1365,52 +1367,183 @@ Follow the [Rules] below:
 
 `;
 
-   let currentRetry = 0;
-  let delayTime = initialDelayMs;
+ let currentRetry = 0;
+let delayTime = initialDelayMs;
 
-  while (currentRetry < maxRetries) {
-    try {
-      await rateLimiter.checkAndWait();
+while (currentRetry < maxRetries) {
+  try {
+    await rateLimiter.checkAndWait();
 
-      //const response = await model.generateContent(prompt);
-      
-      const response = await generateContent(prompt);
-      
-      calendarCache.set(cacheKey, {
-        response,
-        timestamp: Date.now()
-      });
+    //const response = await model.generateContent(prompt);
+    
+    const response = await generateContent(prompt);
+    
+    calendarCache.set(cacheKey, {
+      response,
+      timestamp: Date.now()
+    });
 
-      return response;
+    return response;
 
-    } catch (error: any) {
-      const isRetryableError =
-        error.status === 503 ||
-        error.status === 429 ||
-        (error.message && (error.message.includes('503') || error.message.includes('429')));
-      const isNetworkError = error.message && error.message.includes('Failed to fetch');
+  } catch (error: any) {
+    const isRetryableError =
+      error.status === 503 ||
+      error.status === 429 ||
+      (error.message && (error.message.includes('503') || error.message.includes('429')));
+    const isNetworkError = error.message && error.message.includes('Failed to fetch');
 
-      if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
-        currentRetry++;
-        console.warn(
-          `Gemini API call failed (Error: ${error.status || error.message}). ` +
-          `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
-        );
-        await sleep(delayTime);
-        delayTime *= 2;
-        delayTime = delayTime * (1 + Math.random() * 0.2);
-        delayTime = Math.min(delayTime, 30000);
-      } else {
-        console.error(`Post generation failed after ${currentRetry} retries:`, error);
-        throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
-      }
+    if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+      currentRetry++;
+      console.warn(
+        `Gemini API call failed (Error: ${error.status || error.message}). ` +
+        `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+      );
+      await sleep(delayTime);
+      delayTime *= 2;
+      delayTime = delayTime * (1 + Math.random() * 0.2);
+      delayTime = Math.min(delayTime, 30000);
+    } else {
+      console.error(`Post generation failed after ${currentRetry} retries:`, error);
+      throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
     }
   }
+}
 
-  throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
 }
 
 //------- End generateHooksPostV3 without HooksData -------------//
+
+
+//------- start generateLinkedInHooksPostV3 without HooksData -------------//
+
+export async function generateLinkedInHookPostV3(
+  theme: string,
+  topic: string,
+  target_audience: string,
+  content: string,
+  char_length: string,
+  maxRetries: number = 5,
+  initialDelayMs: number = 1000
+): Promise<GeminiResponse> {
+
+// Choose a random hook 
+const chosenHookArchetype = getRandomHookArchetype();
+
+  // Cache key now depends only on inputs that define the desired output
+  const cacheKey = JSON.stringify({ target_audience, content, theme, topic, char_length });
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      return cached.response;
+  }
+
+  // Rate limiting
+  await rateLimiter.checkAndWait();
+
+  const selectedTone = getRandomTone(); // Ensure this function correctly returns a valid tone string
+
+  // The refined prompt that guides the LLM to create its own hook
+const prompt = `Act a world-class copywriter and social media content strategist. 
+
+**IMPORTANT: The information in the 'Details' section below is for your internal processing and understanding only. Do NOT include any part of this 'Details' section or its contents in your final output.**
+
+Your job is to write high-performing content for ${content} 
+
+[Details]:
+- Target audience: [${target_audience}]
+- Platform: [LinkedIn or X]
+- Content type: [viral social media thread]
+- Goal: [engagement, clicks, conversions or leads]
+
+Instructions:
+
+**Beyond surface-level analysis, deeply dissect** the provided ${topic}, ${theme}, and ${content}, considering the overarching **business objective** and the **psychological triggers** within the ${target_audience}. Deduce not just a fitting, but the **most strategically impactful** writing approach that subtly guides the reader towards the specific Goal expressed in [Details].
+
+**Crucially, the hook MUST be generated using the following archetype description, ensuring it immediately captures attention by tapping into a core pain point or aspiration of the ${target_audience}, and sets the stage for the value to follow:**
+
+Archetype: ${chosenHookArchetype.name}
+Description: ${chosenHookArchetype.description.replace('target audience', target_audience).replace('topic', topic).replace('content', content)}
+
+Tailor the language, tone, and examples to resonate deeply with a ${target_audience} audience, and maintain an **${selectedTone}** tone throughout the post.
+
+1. Start with a scroll-stopping hook as the first sentence.
+2. Weave a narrative that **authentically articulates a profound pain point or challenge faced by the ${target_audience}**, making them feel truly understood. Transition seamlessly from this pain to a **subtle demonstration of value or a glimpse of transformation**, applying principles of persuasion that build trust rather than push a sale.
+3. Craft language that is not just simple, but **resonate as genuinely human and relatable**, avoiding industry jargon unless it's universally understood by a ${target_audience} at a 'ninth-grade' comprehension level. The goal is conversational authority, not academic complexity.
+4. Follow proven frameworks (AIDA, PAS, Hook-Point-Action, etc.), **interpreting them with strategic nuance for social context.**
+5. Keep to a minimum of ${char_length} Characters in total.
+
+**Every sentence should contribute to a coherent strategic narrative that gently guides the ${target_audience} from problem awareness to potential solution discovery, fostering trust and establishing expertise.**
+
+Write like a human. No fluff. No cringe. Make it hit.
+
+Follow the [Rules] below:
+
+[Rules]:
+
+- Keep to a minimum of ${char_length} Characters in total.
+- Place each sentence in the post on a new line.
+- Add a space after each line for readability
+- **Write in a clear, straightforward manner that a ninth grader could easily understand.**
+- Ban Generic Content
+- Ban hashtags
+- Ban bullet points.
+- Ban exclamation marks. 
+- Ban Call to Action Questions
+- Ban Call to Action Statements
+- Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
+- Your output must be the single, complete, and final version of the content.
+- Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
+- Do NOT use numbered lists or headings to present multiple content options.
+- Do NOT expose any part of the prompt. 
+
+`;
+
+ let currentRetry = 0;
+let delayTime = initialDelayMs;
+
+while (currentRetry < maxRetries) {
+  try {
+    await rateLimiter.checkAndWait();
+
+    //const response = await model.generateContent(prompt);
+    
+    const response = await generateContent(prompt);
+    
+    calendarCache.set(cacheKey, {
+      response,
+      timestamp: Date.now()
+    });
+
+    return response;
+
+  } catch (error: any) {
+    const isRetryableError =
+      error.status === 503 ||
+      error.status === 429 ||
+      (error.message && (error.message.includes('503') || error.message.includes('429')));
+    const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+    if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+      currentRetry++;
+      console.warn(
+        `Gemini API call failed (Error: ${error.status || error.message}). ` +
+        `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+      );
+      await sleep(delayTime);
+      delayTime *= 2;
+      delayTime = delayTime * (1 + Math.random() * 0.2);
+      delayTime = Math.min(delayTime, 30000);
+    } else {
+      console.error(`Post generation failed after ${currentRetry} retries:`, error);
+      throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+    }
+  }
+}
+
+throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}
+
+//------- End generateLinkedInHooksPostV3 without HooksData -------------//
 
 
 //------- start generate name and description for campaign -------- //
