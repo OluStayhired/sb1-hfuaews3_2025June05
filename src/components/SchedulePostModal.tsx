@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
-import { generateListPost } from '../lib/gemini';
+import { generateListPost, generateHookPostV3, generateLinkedInHookPostV3} from '../lib/gemini';
 import { format, parse } from 'date-fns';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { TooltipExtended } from '../utils/TooltipExtended';
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { uploadImageGetUrl } from '../utils/UploadImageGetUrl';
 import { deletePostImage } from '../utils/DeletePostImage';
+import { TypingEffect } from './TypingEffect'; 
 
 interface SchedulePostModalProps {
   isOpen: boolean;
@@ -44,8 +45,26 @@ interface ContentData {
   topic: string;
 }
 
+interface CalendarContent {
+  id: string;
+  theme: string;
+  topic: string;
+  content: string;
+  call_to_action: string;
+  day_of_week: string;
+  day: number;
+  calendar_name: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+  content_date: Date;
+  target_audience?: string;
+  photo_url?: string | null; 
+}
+
 export function SchedulePostModal({ isOpen, onClose, selectedDate, selectedTime, onSchedule, onScheduleError }: SchedulePostModalProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingCharLength, setLoadingCharLength] = useState<number | null>(null);
   const [socialChannels, setSocialChannels] = useState<SocialChannel[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<string | null>(null);
   const [calendars, setCalendars] = useState<CalendarOption[]>([]);
@@ -82,6 +101,10 @@ export function SchedulePostModal({ isOpen, onClose, selectedDate, selectedTime,
   social_goals?: string[];
   start_date?: string;
 } | null>(null);
+
+const [showTypingEffect, setShowTypingEffect] = useState(false);
+const [typingContentId, setTypingContentId] = useState<string | null>(null); // To track which content item is typing
+const [currentTypingText, setCurrentTypingText] = useState(''); // The text currently being typed
 
 const getSelectedChannelTimezone = () => {
     const activeChannel = socialChannels.find(channel => channel.id === selectedChannel);
@@ -396,7 +419,111 @@ const handleGenerateContent = async () => {
     setIsGenerating(false);
   }
 };
+
+const handleHookPostV3 = async (postContent: contentData, char_length: string) => {
+
+ 
+  if (!selectedCalendar) return;
   
+  const uniqueKey = `${selectedCalendarObject?.id}_${char_length}`;
+  
+  try {
+    
+    //add typing effect state management here
+    setTypingContentId(selectedCalendarObject?.id); // Set the ID of the content item that will be typing
+    setCurrentTypingText(''); // Clear previous text for typing effect
+    setShowTypingEffect(true); // Activate the typing effect
+    setLoadingCharLength(uniqueKey);
+    
+    // Generate improved content
+    const improvedContent = await generateHookPostV3(
+      selectedTheme || '',
+      selectedTopic || '',
+      selectedCalendarObject?.target_audience || '', 
+      postContent || '',
+      char_length
+    );
+
+    //console.log('executing the Hook Posts Here')
+
+    //if (improvedContent.error) throw new Error(improvedContent.error);
+
+     if (!improvedContent.error) {
+      setPostContent(improvedContent.text);
+    }
+
+    //Add new state variable sets here
+     // 3. API call is complete, hide spinner and prepare for typing effect
+    setLoadingCharLength(null); // Hide the spinner
+    setCurrentTypingText(improvedContent.text); // Set the text to be typed
+    setTypingContentId(selectedCalendarObject?.id);             // Indicate which item is typing
+    setShowTypingEffect(true); 
+
+
+  } catch (err) {
+    console.error('Error improving content:', err);
+    // Could add error state/toast here
+
+    //moved set charlength here
+    setLoadingCharLength(null); 
+    setShowTypingEffect(false); // Hide typing effect on error
+    setTypingContentId(null);
+    setCurrentTypingText(''); // Clear typing text
+  } finally {
+    
+  }
+};  
+// ------------- End Standard HooksV3Post -----------------//
+
+const handleLinkedInHookPostV3 = async (postContent: contentData, char_length: string) => {
+
+ 
+  if (!selectedCalendar) return;
+  
+  const uniqueKey = `${selectedCalendarObject?.id}_${char_length}`;
+  
+  try {
+    
+    //add typing effect state management here
+    setTypingContentId(selectedCalendarObject?.id); // Set the ID of the content item that will be typing
+    setCurrentTypingText(''); // Clear previous text for typing effect
+    setShowTypingEffect(true); // Activate the typing effect
+    setLoadingCharLength(uniqueKey);
+    
+    // Generate improved content
+    const improvedContent = await generateHookPostV3(
+      selectedTheme || '',
+      selectedTopic || '',
+      selectedCalendarObject?.target_audience || '', 
+      postContent || '',
+      char_length
+    );
+
+     if (!improvedContent.error) {
+      setPostContent(improvedContent.text);
+    }
+
+    //Add new state variable sets here
+     // 3. API call is complete, hide spinner and prepare for typing effect
+    setLoadingCharLength(null); // Hide the spinner
+    setCurrentTypingText(improvedContent.text); // Set the text to be typed
+    setTypingContentId(selectedCalendarObject?.id);             // Indicate which item is typing
+    setShowTypingEffect(true); 
+
+
+  } catch (err) {
+    console.error('Error improving content:', err);
+    // Could add error state/toast here
+
+    //moved set charlength here
+    setLoadingCharLength(null); 
+    setShowTypingEffect(false); // Hide typing effect on error
+    setTypingContentId(null);
+    setCurrentTypingText(''); // Clear typing text
+  } finally {
+    
+  }
+};   
 
 const handleUpdateToStartDate = () => {
   if (campaignStartDate) {
@@ -885,20 +1012,95 @@ const renderContentStep = () => (
                       {/* Generate Post Button - Only shown when a calendar is selected */}
 
                       {/*Added the button here for AI ReWrite*/}
-                      {selectedCalendar && (
-                        <TooltipHelp text="⚡ Rewrite Post with AI">
-                          <button
-                            onClick={handleGenerateContent}
-                            disabled={isGenerating}
-                            className="p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-white hover:bg-blue-500 transition-colors shadow-md transition duration-200 flex space-x-1 mb-2">
-                              {isGenerating ? (
-                                <Loader2 className="w-3 h-3 animate-spin" />
-                                    ) : (
-                                <Sparkles className="w-3 h-3" />
+                     {/*Added the button here for AI ReWrite*/}
+              {selectedCalendar && (
+                <TooltipHelp text="⚡ Rewrite with AI">
+                      <button
+                        onClick={handleGenerateContent}
+                        disabled={isGenerating}
+                        //className="p-1 bg-blue-100 rounded-md items-center text-blue-500 hover:text-white hover:bg-blue-500 transition-colors shadow-md transition duration-200 flex space-x-1 mb-2">
+                        className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md mb-2">  
+                          {isGenerating ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                                  ) : (
+                              <Sparkles className="w-3 h-3" />
                             )}
-                          </button>
-                        </TooltipHelp>
-                      )}                
+                        <span className="text-xs">AI Rewrite</span>
+                        </button>
+                </TooltipHelp>
+                )}
+
+            {/*Started adding more buttons for LinkedIn, Twitter and Bluesky*/}
+            
+              {selectedCalendar && (
+                          
+                <TooltipHelp  text="⚡Adapt for LinkedIn">
+                  <button
+                
+                    onClick={() => handleLinkedInHookPostV3(selectedCalendarObject?.content, 1000)}
+                    disabled={loadingCharLength === `${selectedCalendarObject?.id}_1000`}
+             
+                    className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md mb-2"
+              >    
+                
+                    {loadingCharLength === `${selectedCalendarObject?.id}_1000` ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                
+
+                      <img src={LinkedInLogo} className="w-3 h-3" />
+                
+                 )}
+                <span className="text-xs">LinkedIn</span>
+              </button>
+             </TooltipHelp>    
+                      )}   
+
+          {selectedCalendar && (
+                          
+                <TooltipHelp  text="⚡Adapt for Bluesky">
+                  <button
+                
+                    onClick={() => handleHookPostV3(selectedCalendarObject?.content, 300)}
+                    disabled={loadingCharLength === `${selectedCalendarObject?.id}_300`}
+             
+                    className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md mb-2"
+              >    
+                
+                    {loadingCharLength === `${selectedCalendarObject?.id}_300` ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+              
+                      <img src={BlueskyLogo} className="w-3 h-3" />
+                
+                 )}
+                <span className="text-xs">Bluesky</span>
+              </button>
+             </TooltipHelp>    
+                      )}   
+
+        {selectedCalendar && (
+                          
+                <TooltipHelp  text="⚡Adapt for Twitter">
+                  <button
+                
+                    onClick={() => handleHookPostV3(selectedCalendarObject?.content, 280)}
+                    disabled={loadingCharLength === `${selectedCalendarObject?.id}_280`}
+             
+                    className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md mb-2"
+              >    
+                
+                    {loadingCharLength === `${selectedCalendarObject?.id}_280` ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+              
+                      <img src={XLogo} className="w-3 h-3" />
+                
+                 )}
+                <span className="text-xs">Twitter</span>
+              </button>
+             </TooltipHelp>    
+                      )}    
                     </div>
                   </span>   
                 
