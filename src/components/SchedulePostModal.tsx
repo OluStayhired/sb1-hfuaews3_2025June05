@@ -112,43 +112,19 @@ const getSelectedChannelTimezone = () => {
     return activeChannel?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   };
 
-//const getSelectedChannelVerified = () => {
-  //  const twitterStatus = socialChannels.find(channel => channel.id === selectedChannel);
-    //return twitterStatus?.twitter_verified   
- //}; 
 
-//const is_verified=getSelectedChannelVerified();  
-  
+const truncateText = (text: string, maxLength: number = 25): string => {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+};
   
    const handleCreateCampaign = () => {
     navigate('/dashboard/campaign');
     onClose();
   };
 
-  {/*
- useEffect(() => {
-    if (selectedChannel) {
-      const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
-      if (activeAccount) {
-        console.log('Selected Social Channel:', activeAccount.social_channel); 
-        switch (activeAccount.social_channel) {
-          case 'Bluesky':
-            setMaxLength(300);
-            break;
-          case 'Twitter':
-            setMaxLength(280);
-            break;
-          case 'LinkedIn':
-            setMaxLength(3000);
-            break;
-          default:
-            setMaxLength(300); // Default
-        }
-      }
-    }
-  }, [selectedChannel, socialChannels]);  
-*/}
-
+  
 //New UseEffect to include Premium Twitter
    useEffect(() => {
     if (selectedChannel) {
@@ -951,7 +927,9 @@ const renderContentStep = () => (
                   */}
 
           <span>
-              <h3 className="font-normal hover:text-blue-500">{calendar.calendar_name}</h3>
+              <TooltipHelp text={`⚡${calendar.calendar_name}`}>
+                  <h3 className="font-normal hover:text-blue-500">{truncateText(calendar.calendar_name,35)}</h3>
+              </TooltipHelp>
               <p className="text-sm text-gray-500 mt-1">{calendar.description}</p>
             </span>
         </button>
