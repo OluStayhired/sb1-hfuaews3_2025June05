@@ -1383,7 +1383,7 @@ const onModalScheduleError = (error: any) => {
           </>
         )}
 
-{/* ----  Start the First Line Reader Checker ----- */}
+{/* ----  Start the First Line Reader Checker  ----- */}
 
           <FirstLineProgress />
                 {firstLineLength <= MAX_FIRST_LINE ? (
