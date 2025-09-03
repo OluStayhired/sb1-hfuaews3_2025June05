@@ -37,8 +37,13 @@ interface SocialAccount {
 interface ScheduledPostData {
   content_date: string; // ISO date string from database
   content_time: string; // HH:mm:ss string from database
-  // Add other properties you might want to display
-}
+  // Add ot
+  
+// Helper function to calculate first line length
+const calculateFirstLineLength = (text: string): number => {
+  const firstLine = text.split('\n')[0];
+  return firstLine.length;
+};  
 
 function ComposePosts() {
   const [content, setContent] = useState('');
@@ -71,6 +76,8 @@ function ComposePosts() {
   const [notificationDetails, setNotificationDetails] = useState<{ date: Date; time: string } | null>(null);
   const [isDraftSuccessModalOpen, setIsDraftSuccessModalOpen] = useState(false);
 
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
 
   const [max_length, setMaxLength] = useState(300);
 
@@ -95,6 +102,62 @@ function ComposePosts() {
 
   // --- NEW: Use useLocation hook to access navigation state ---
   const location = useLocation();
+
+  const [firstLineLength, setFirstLineLength] = useState(() => calculateFirstLineLength(content));
+
+  //First Line Implementation
+   const MAX_FIRST_LINE = 40;
+
+  // Reset form when modal closes
+  useEffect(() => {
+    //if (!isOpen) {
+      setEditedContent(content);
+      setFirstLineLength(calculateFirstLineLength(content));
+    //}
+  }, [content]);
+
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newContent = e.target.value;
+    
+    setEditedContent({
+      ...editedContent,
+      content: newContent
+    });
+
+    setFirstLineLength(calculateFirstLineLength(newContent));
+
+    setOptimisticContent(prev => 
+      prev.map(content => 
+        content.id === editedContent.id 
+          ? {...content, content: newContent}
+          : content
+      )
+    );
+  };
+
+  const getFirstLineColor = (length: number) => {
+    if (length <= 35) return 'bg-green-500';
+    if (length > 35 && length <= MAX_FIRST_LINE) return 'bg-yellow-500';
+    return 'bg-red-500';
+  };
+
+  const FirstLineProgress = () => {
+    const percentage = Math.min((firstLineLength / MAX_FIRST_LINE) * 100, 100);
+    const color = getFirstLineColor(firstLineLength);
+
+    return (
+      <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden mt-2">
+        <div 
+          className={`absolute left-0 top-0 h-full transition-all duration-200 ${color}`}
+          style={{ width: `${percentage}%` }}
+        />
+        <div className="absolute right-0 -top-4 text-xs text-gray-500">
+          {firstLineLength}/{MAX_FIRST_LINE} first line
+        </div>
+      </div>
+    );
+  };
 
   // --- NEW: useEffect to check for draftContent in location.state ---
   useEffect(() => {
@@ -1319,6 +1382,28 @@ const onModalScheduleError = (error: any) => {
             </form>
           </>
         )}
+
+{/* ----  Start the First Line Reader Checker ----- */}
+
+          <FirstLineProgress />
+                {firstLineLength <= MAX_FIRST_LINE ? (
+                  <p className="text-xs text-green-500">
+                    First line readability tracker
+                  </p>
+                ) : (
+                  <p className="text-xs text-red-500">
+                    First line should be under {MAX_FIRST_LINE} characters for better readability
+                  </p>
+                )}
+
+                {isUpdating && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                  </div>
+                )}
+
+{/* ----  End the First Line Reader Checker ----- */}
+
       </div>
 
       <NoSocialModal
