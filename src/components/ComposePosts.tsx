@@ -138,10 +138,11 @@ function ComposePosts() {
   };
 
   const getFirstLineColor = (length: number) => {
-    if (length <= 35) return 'bg-green-500';
-    if (length > 35 && length <= MAX_FIRST_LINE) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (length <= 35) return 'bg-green-300';
+    if (length > 35 && length <= MAX_FIRST_LINE) return 'bg-yellow-300';
+    return 'bg-red-300';
   };
+
 
   const FirstLineProgress = () => {
     const percentage = Math.min((firstLineLength / MAX_FIRST_LINE) * 100, 100);
