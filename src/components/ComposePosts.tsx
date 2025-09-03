@@ -37,13 +37,14 @@ interface SocialAccount {
 interface ScheduledPostData {
   content_date: string; // ISO date string from database
   content_time: string; // HH:mm:ss string from database
-  // Add ot
-  
+  // Add other properties you might want to display
+}
+
 // Helper function to calculate first line length
 const calculateFirstLineLength = (text: string): number => {
   const firstLine = text.split('\n')[0];
   return firstLine.length;
-};  
+};
 
 function ComposePosts() {
   const [content, setContent] = useState('');
