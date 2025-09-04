@@ -1382,10 +1382,7 @@ const onModalScheduleError = (error: any) => {
                 </div>
               </div>
             </form>
-          </>
-        )}
-
-{/* ----  Start the First Line Reader Checker  ----- */}
+            {/* ----  Start the First Line Reader Checker  ----- */}
 
           <FirstLineProgress />
                 {firstLineLength <= MAX_FIRST_LINE ? (
@@ -1405,6 +1402,8 @@ const onModalScheduleError = (error: any) => {
                 )}
 
 {/* ----  End the First Line Reader Checker ----- */}
+          </>
+        )}
 
       </div>
 
