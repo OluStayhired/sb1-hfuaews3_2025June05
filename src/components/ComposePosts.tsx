@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check } from 'lucide-react';
+import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -1242,13 +1242,13 @@ const onModalScheduleError = (error: any) => {
 
           {/* ----------------- Start Add button to show sent posts ---------------- */}  
                     
-         <TooltipHelp text={`⚡ re-write sent posts`}>   
+         <TooltipHelp text={`⚡ recycle posts`}>   
             <button
                onClick={handleOpenSentPostModal}        
                className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
                 
             >
-            <Send className="w-4 h-4" />
+            <Recycle className="w-4 h-4" />
         </button>
        </TooltipHelp>
 

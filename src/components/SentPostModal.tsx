@@ -1,6 +1,6 @@
 // src/components/SentPostModal.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Loader2, ArrowRight, ArrowLeft, Trash2, Clock, Send, PlusCircle, Search } from 'lucide-react';
+import { X, Loader2, ArrowRight, ArrowLeft, Trash2, Clock, Send, PlusCircle, Search, Recycle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -271,7 +271,7 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <div className="p-2 items-center bg-blue-50 rounded-full">
-                <Send className="h-5 w-5 text-blue-500" />
+                <Recycle className="h-5 w-5 text-blue-500" />
               </div>
               <h2 className="text-lg font-semibold text-gray-900">Sent Posts ({totalSentCount})</h2>
             </div>
@@ -358,7 +358,7 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
               {Object.entries(sentPosts).length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-gray-500">
                   <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
-                    <Send className="w-12 h-12 font-light text-blue-500" />
+                    <Recycle className="w-12 h-12 font-light text-blue-500" />
                   </div>
                   <p className="text-gray-600 mb-3 mt-4">No sent posts found 😔</p>
                   <p className="text-gray-400 mb-4 text-sm">Start scheduling and sending posts!</p>
@@ -426,12 +426,12 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
                         
                         <div className="flex justify-end mt-3 space-x-2">
                           <button
-                            //onClick={() => handleViewPost(post)}
+                            
                             onClick={() => handleEditSentPost(post.full_content, post.social_channel, post.user_handle)}
                             className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center"
                           >
                             <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                            <span>Re-Write ✍️</span>
+                            <span>Recycle Post ♻️</span>
                           </button>
 
                           {/*
