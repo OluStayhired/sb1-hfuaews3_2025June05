@@ -18,7 +18,6 @@ import { format, parse } from 'date-fns';
 import { ScheduleDraftPost } from '/src/components/ScheduleDraftPost';
 import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
-import { SentPostModal } from './SentPostModal';
 import { improveComment, generateHookPostV3 } from '../lib/gemini';
 import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
@@ -81,7 +80,6 @@ function ComposePosts() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
 
-
   const [max_length, setMaxLength] = useState(300);
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
@@ -97,11 +95,6 @@ function ComposePosts() {
   const [error, setError] = useState('');
   const [totalDraftCount, setTotalDraftCount] = useState(0); // New state variable
 
-  //Sent Post State Management
-  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false); // Existing state for Drafts Modal
-  const [isSentPostModalOpen, setIsSentPostModalOpen] = useState(false); // NEW: State for Sent Posts Modal
-
-
     // Check Limits Based on Product Tier
   const [isProPlanLimitModalOpen, setIsProPlanLimitModalOpen] = useState(false);
   const [isCheckingLimits, setIsCheckingLimits] = useState(false);
@@ -110,6 +103,7 @@ function ComposePosts() {
 
   // --- NEW: Use useLocation hook to access navigation state ---
   const location = useLocation();
+
   const [firstLineLength, setFirstLineLength] = useState(() => calculateFirstLineLength(content));
 
   //First Line Implementation
@@ -148,6 +142,7 @@ function ComposePosts() {
     if (length > 35 && length <= MAX_FIRST_LINE) return 'bg-yellow-300';
     return 'bg-red-300';
   };
+
 
   const FirstLineProgress = () => {
     const percentage = Math.min((firstLineLength / MAX_FIRST_LINE) * 100, 100);
@@ -409,15 +404,6 @@ useEffect(() => {
       }
     }
   }, [activeAccountId, connectedAccounts]);  
-
-  // NEW: Functions to manage the Sent Posts Modal
-  const handleOpenSentPostModal = () => {
-    setIsSentPostModalOpen(true);
-  };
-
-  const handleCloseSentPostModal = () => {
-    setIsSentPostModalOpen(false);
-  };
             
 
   const handleRequestMoreBlueskyAccounts = () => {
@@ -782,20 +768,20 @@ if (!activeAccountId) {
       // --- STEP 1: Create a pending post record in the database ---
       // This record will hold the content and link it to the user and social channel
       // Use your standard Supabase client here (not the service role one) as this is frontend
-      console.log('handleSubmit: Creating pending post record in user_post_schedule...');
+      //console.log('handleSubmit: Creating pending post record in user_post_schedule...');
       // Ensure currentUserId is available in this scope
       if (!currentUserId) {
           console.error('handleSubmit: Current user ID is not available.');
            // TODO: Show an authentication error to the user
            throw new Error('User not authenticated');
       }
-      //console.log('currentUserId: ', currentUserId);
-      //console.log('currentUserEmail: ', currentUserEmail);
-      //console.log('activeAccount.social_channel: ', activeAccount.social_channel);
-      //console.log('Account_Id: ', activeAccount.id);
-      //console.log('user_handle: ', activeAccount.handle);
-      //console.log('full_content: ', postContent);
-      //console.log('display_name: ', activeAccount.display_name);
+      ////console.log('currentUserId: ', currentUserId);
+      ////console.log('currentUserEmail: ', currentUserEmail);
+      ////console.log('activeAccount.social_channel: ', activeAccount.social_channel);
+      ////console.log('Account_Id: ', activeAccount.id);
+      ////console.log('user_handle: ', activeAccount.handle);
+      ////console.log('full_content: ', postContent);
+      ////console.log('display_name: ', activeAccount.display_name);
       
       
       const { data: newPostData, error: insertError } = await supabase
@@ -1025,27 +1011,6 @@ if (!activeAccountId) {
   }
 };
 
-const handleEditSentPost = (content: string, socialChannel: string, userHandle: string) => {
-  // Always set the content in the textarea
-  setContent(content);
-
-  // Attempt to find the exact account that originated the draft
-  const matchingAccount = connectedAccounts.find(
-    (acc) => acc.social_channel === socialChannel && acc.handle === userHandle
-  );
-
-  if (matchingAccount) {
-    // If a matching connected account is found, set it as active
-    setActiveAccountId(matchingAccount.id);
-    //console.log(`Edit continued for account: ${userHandle} on ${socialChannel}. Tab set.`);
-    // UX improvement: Optionally, provide a temporary visual confirmation to the user
-    // e.g., a toast notification: "Draft loaded! Account set to @yourhandle (Platform)"
-  } else {
-    // If no matching account is found among the currently connected ones
-    console.warn(`Edit loaded, but original account not found: ${userHandle} on ${socialChannel}.`);
-  }
-};  
-
   // Truncate display name to 5 characters
   const truncateDisplayName = (name: string | null, handle: string): string => {
     if (!name) return handle.substring(0, 5);
@@ -1122,6 +1087,15 @@ const onModalScheduleError = (error: any) => {
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
 
+        {/*
+        <div className="flex items-center space-x-2 mb-6"> 
+          <div className="p-2 bg-blue-100 rounded-md"> 
+            <FileEdit className="w-5 h-5 text-blue-500"/> 
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900">Draft Post</h2>
+        </div>
+        */}
+
         {isLoading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
@@ -1181,7 +1155,7 @@ const onModalScheduleError = (error: any) => {
                     {/* Add Account Button */}
                     {/*<TooltipHelp text="Add accounts">*/}
                     
-                  <TooltipHelp text={`⚡ add upto ${MAX_FREE_ACCOUNTS} accounts`}>
+                  <TooltipHelp text={`Add upto ${MAX_FREE_ACCOUNTS} accounts`}>
                     <button
                         onClick={(e) => {
                         e.stopPropagation();
@@ -1199,61 +1173,45 @@ const onModalScheduleError = (error: any) => {
                           }
                           
                         }}
-
-                       className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+                        className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
                      
-                    >
-                    
-                      <Plus className="w-4 h-4"/>              
-                    </button>
+                        >
+                        
+                          <Plus className="w-4 h-4"/>              
+                        </button>
+                          </TooltipHelp>
+                        
+                        
+    
+                    {/* Start Add a button to open the ContentCampaignModal */}
+                    <TooltipHelp text="Browse ideas">
+                        <button
+                          onClick={handleOpenContentCalendarModal}
+                          className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors" >
+                            <Lightbulb className="w-4 h-4"/>
+                          </button>
                       </TooltipHelp>
                     
-                    
-
-                {/* Start Add a button to open the ContentCampaignModal */}
-                <TooltipHelp text="⚡ browse ideas">
-                    <button
-                      onClick={handleOpenContentCalendarModal}
-                      className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors" >
-                        <Lightbulb className="w-4 h-4"/>
-                      </button>
-                  </TooltipHelp>
-                
-                {/* ------------------------ End Add a button to open the ContentCampaignModal --------------------- */}
-
-          {/*-------------------- Start Add button to show draft posts ------------------------------ */}  
-          
-          <TooltipHelp text={`⚡ (${totalDraftCount}) saved drafts `}>
-            
-            <button
-                onClick={() => {
-                  setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
-                  setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
-                }}
+                    {/* End Add a button to open the ContentCampaignModal */}
+    
+              {/* Start Add button to show draft posts */}  
               
-               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
-                // Added 'items-center' to the button's class for vertical alignment
-            >
-            <FileEdit className="w-4 h-4" />
-        </button>
-       </TooltipHelp>
-
-         {/* End Add button to show draft posts */}
-
-          {/* ----------------- Start Add button to show sent posts ---------------- */}  
-                    
-         <TooltipHelp text={`⚡ re-write sent posts`}>   
-            <button
-               onClick={handleOpenSentPostModal}        
-               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+              <TooltipHelp text={`(${totalDraftCount}) saved drafts `}>
                 
-            >
-            <Send className="w-4 h-4" />
-        </button>
-       </TooltipHelp>
-
-                    {/*----------------- End Add button to show draft posts --------------------------- */}
-                    
+                <button
+                    onClick={() => {
+                      setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
+                      setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
+                    }}
+                  
+                   className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+                    // Added 'items-center' to the button's class for vertical alignment
+                >
+                <FileEdit className="w-4 h-4" />
+            </button>
+           </TooltipHelp>
+    
+                        {/* End Add button to show draft posts */}
                     
                   </>
                 ) : (
@@ -1319,7 +1277,41 @@ const onModalScheduleError = (error: any) => {
                 {/*End Add AI Button*/}
 
                 {/*start linkedin button */}
-          
+
+                {/*
+                <button
+                  type="button"
+                    onClick={handleGenerateContent}
+                    disabled={isGenerating || !activeAccountId || !content.trim() || isPosting}
+                    // Remove the outer conditional rendering for the button itself
+                  className={`
+                              absolute right-10 top-2 p-1 rounded-md shadow-md
+                              transition duration-200 flex items-center space-x-1
+                            ${
+                        content.trim() // If content exists, apply active styles
+                          ? 'bg-gray-100 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600'
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                            }
+                      ${
+                        (isGenerating || !activeAccountId || !content.trim() || isPosting)
+                          ? 'opacity-70' // Reduce opacity when disabled by any condition
+                          : ''
+                        }
+                      `}
+                      >
+                    {isGenerating ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                        <TooltipHelp text="⚡ Adapt for LinkedIn">
+                                      <>
+                
+                <img src={LinkedInLogo} className="w-3 h-3" />
+                </>
+                        </TooltipHelp>
+                          )}
+                    </button>
+              */}
+                    
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <div className="text-sm text-gray-500">
@@ -1389,28 +1381,9 @@ const onModalScheduleError = (error: any) => {
                   
                 </div>
               </div>
-          
             </form>
-             <FirstLineProgress />
-                {firstLineLength <= MAX_FIRST_LINE ? (
-                  <p className="text-xs text-green-500">
-                    First line readability tracker
-                  </p>
-                ) : (
-                  <p className="text-xs text-red-500">
-                    First line should be under {MAX_FIRST_LINE} characters for better readability
-                  </p>
-                )}
+            {/* ----  Start the First Line Reader Checker  ----- */}
 
-                {isUpdating && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-                  </div>
-                )}
-          </>
-        )}
-
-        {/*
           <FirstLineProgress />
                 {firstLineLength <= MAX_FIRST_LINE ? (
                   <p className="text-xs text-green-500">
@@ -1427,8 +1400,11 @@ const onModalScheduleError = (error: any) => {
                     <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
                   </div>
                 )}
-*/}
-        
+
+{/* ----  End the First Line Reader Checker ----- */}
+          </>
+        )}
+
       </div>
 
       <NoSocialModal
@@ -1502,13 +1478,6 @@ const onModalScheduleError = (error: any) => {
           onClose={() => setIsDraftPostModalOpen(false)}
           onContinueDraft={handleContinueDraft}
          />
-
-      {/* NEW: Sent Posts Modal */}
-        <SentPostModal
-          isOpen={isSentPostModalOpen}
-          onClose={handleCloseSentPostModal}
-          onEditSentPost={handleEditSentPost}
-        />
 
        {/* Upgrade Modal After Free Trial Runs Out */}
       <ProPlanLimitModal
