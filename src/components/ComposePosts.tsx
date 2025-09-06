@@ -1277,7 +1277,7 @@ const onModalScheduleError = (error: any) => {
 
             {/* Compose Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 p-6">             
+              <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 p-8">             
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
@@ -1294,11 +1294,11 @@ const onModalScheduleError = (error: any) => {
                     disabled={isGenerating || !activeAccountId || !content.trim() || isPosting}
                     // Remove the outer conditional rendering for the button itself
                   className={`
-                              absolute right-2 top-2 p-1 rounded-md shadow-md
+                              absolute right-8 top-1 p-1 rounded-md shadow-md
                               transition duration-200 flex items-center space-x-1
                             ${
                         content.trim() // If content exists, apply active styles
-                          ? 'bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600'
+                          ? 'bg-gradient-to-br from-blue-300 via-blue-400 to-blue-500 text-white hover:from-blue-600 hover:via-blue-700 hover:to-blue-800'
                           : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                             }
                       ${
