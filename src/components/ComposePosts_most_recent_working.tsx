@@ -9,7 +9,6 @@ import { NoSocialModal } from './NoSocialModal';
 import { ConnectSocialModal } from './ConnectSocialModal';
 import { AddSocialTabModal } from './AddSocialTabModal';
 import { supabase } from '../lib/supabase';
-import { TooltipExtended } from '../utils/TooltipExtended';
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { MoreBlueskyAccounts } from './MoreBlueskyAccounts'; 
 import { MoreTwitterAccounts } from './MoreTwitterAccounts';
@@ -20,7 +19,7 @@ import { ScheduleDraftPost } from '/src/components/ScheduleDraftPost';
 import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
 import { SentPostModal } from './SentPostModal';
-import { improveComment, rewritePostForLinkedIn, rewritePostForTwitter, generateHookPostV3 } from '../lib/gemini';
+import { improveComment, generateHookPostV3 } from '../lib/gemini';
 import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
 import { useProductTier } from '../hooks/useProductTierHook'
@@ -34,9 +33,7 @@ interface SocialAccount {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
-  twitter_verified: boolean;
 }
-
 
 interface ScheduledPostData {
   content_date: string; // ISO date string from database
@@ -70,7 +67,6 @@ function ComposePosts() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingLinkedIn, setIsGeneratingLinkedIn] = useState(false);
-  const [isGeneratingTwitter, setIsGeneratingTwitter] = useState(false);
   const [campaignContent, setCampaignContent] = useState<Array<{ theme: string; topic: string; content: string }> | null>(null);
   const { processedContent, facets } = generateBlueskyFacetsForLinks(content);
   const [isSchedulingPost, setIsSchedulingPost] = useState(false);
@@ -190,56 +186,6 @@ function ComposePosts() {
 
 const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
 
-//New UseEffect to include Premium Twitter
-   useEffect(() => {
-    if (activeAccountId) {
-      //const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
-      const activeSocialAccount = connectedAccounts.find(account => account.id === activeAccountId);
-      if (activeSocialAccount) {
-        //console.log('Selected Social Channel:', activeSocialAccount.social_channel); 
-        switch (activeSocialAccount.social_channel) {
-          case 'Bluesky':
-            setMaxLength(300);
-            break;
-          case 'Twitter':
-                // Use activeAccount.twitter_verified directly here
-                if (activeSocialAccount.twitter_verified) {
-                    setMaxLength(25000); // Premium Twitter limit
-                } else {
-                    setMaxLength(280); // Free Twitter limit
-                }
-            break;
-          case 'LinkedIn':
-            setMaxLength(3000);
-            break;
-          default:
-            setMaxLength(300); // Default
-        }
-      }
-    }
-  }, [activeAccountId, connectedAccounts]);    
-
-  // Use this to determine whether to try to post or not
-  const canProceedToPost = () => {
-  return activeAccountId && content.trim().length > 0 && content.trim().length < max_length ;
-};
-
-// Function to determine the tooltip message for the "Next" button
-const getNextButtonTooltip = () => {
-  if (!activeAccountId) {
-    return "Please choose a social channel to continue.";
-  }
-  if (content.trim().length === 0) {
-    return "Write a post to enable the post button";
-  }
-  // Check if content length is greater than or equal to max_length, which disables the button
-  if (content.trim().length >= max_length) {
-    return "You've exceeded the maximum character limit for this social account.";
-  }
-  // If none of the above conditions are met, the button should be enabled, so no tooltip needed for disabled state.
-  return "";
-};  
-
 // Add this useEffect to fetch the user ID when the component mounts
 useEffect(() => {
   const fetchUserId = async () => {
@@ -316,7 +262,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
             setUserMessage('Could not retrieve account details. Please try again.');
             return false;
         }
-   
+        //const limitedAccountTypes = ['Free Plan', 'Early Adopter']; // Define the types that have this limit
       const limitedAccountTypes = ['Pro Plan']; // Define the types that have this limit
          switch (action) {
             case 'createCampaign':
@@ -387,6 +333,10 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
 
 //------------------ End Upgrade Modal and Limits Checks Here --------------------------//
 //========================================================================================//
+
+//const toolTipMessage = {`Add upto ${MAX_FREE_ACCOUNTS} accounts`}
+
+//<TooltipHelp text={`⚡Connect ${accountType.name}`}>
   
 const fetchDraftPosts = useCallback(async () => {
         try {
@@ -596,6 +546,10 @@ useEffect(() => {
       return false;
     }
     
+    // Create a new BskyAgent instance
+    //const agent = new BskyAgent({
+      //service: 'https://bsky.social'
+    //});
     
     // Login with the account credentials
     // Note: We need the app_password from the database
@@ -614,6 +568,16 @@ useEffect(() => {
       return false;
     }
 
+    {/*
+    // Post the content
+    const postResult = await agent.post({
+      text: content,
+      // You can add additional parameters like:
+      // langs: ['en'],
+      // facets: [], // For mentions, links, etc.
+      // embed: {}, // For images, quotes, etc.
+    });
+    */}
 
     const postResult = await agent.post({
         text: processedContent, // Use the processedContent
@@ -818,13 +782,20 @@ if (!activeAccountId) {
       // --- STEP 1: Create a pending post record in the database ---
       // This record will hold the content and link it to the user and social channel
       // Use your standard Supabase client here (not the service role one) as this is frontend
-      //console.log('handleSubmit: Creating pending post record in user_post_schedule...');
+      console.log('handleSubmit: Creating pending post record in user_post_schedule...');
       // Ensure currentUserId is available in this scope
       if (!currentUserId) {
           console.error('handleSubmit: Current user ID is not available.');
            // TODO: Show an authentication error to the user
            throw new Error('User not authenticated');
       }
+      //console.log('currentUserId: ', currentUserId);
+      //console.log('currentUserEmail: ', currentUserEmail);
+      //console.log('activeAccount.social_channel: ', activeAccount.social_channel);
+      //console.log('Account_Id: ', activeAccount.id);
+      //console.log('user_handle: ', activeAccount.handle);
+      //console.log('full_content: ', postContent);
+      //console.log('display_name: ', activeAccount.display_name);
       
       
       const { data: newPostData, error: insertError } = await supabase
@@ -1104,53 +1075,6 @@ const handleGenerateContent = async () => {
   }
 };
 
-// Add this function to handle content generation
-const handleGenerateLinkedInContent = async () => {
-   if (!content.trim()) return; 
-  
-  try {
-    setIsGeneratingLinkedIn(true);
-    
-    // Get the theme and topic from the selected calendar content
-    const improvedContent = await rewritePostForLinkedIn(content, 1000);
-
-    if (!improvedContent.error) {
-       setContent(improvedContent.text);
-    } else {
-      console.error('Error improving content:', improvedContent.error);
-      // Optionally show an error message to the user
-    }
-  } catch (err) {
-    console.error('Error generating content:', err);
-  } finally {
-    setIsGeneratingLinkedIn(false);
-  }
-};  
-
-
-// Add this function to handle content generation
-const handleGenerateTwitterContent = async () => {
-   if (!content.trim()) return; 
-  
-  try {
-    setIsGeneratingTwitter(true);
-    
-    // Get the theme and topic from the selected calendar content
-    const improvedContent = await rewritePostForTwitter(content, 500);
-
-    if (!improvedContent.error) {
-       setContent(improvedContent.text);
-    } else {
-      console.error('Error improving content:', improvedContent.error);
-      // Optionally show an error message to the user
-    }
-  } catch (err) {
-    console.error('Error generating content:', err);
-  } finally {
-    setIsGeneratingTwitter(false);
-  }
-};    
-
 // New handleSchedulePost function
 const handleSchedulePost = () => {
   if (!activeAccountId || !content.trim()) {
@@ -1365,7 +1289,6 @@ const onModalScheduleError = (error: any) => {
                 {/*Add AI button here*/}
 
                 <button
-                  id= "Blueskybutton"
                   type="button"
                     onClick={handleGenerateContent}
                     disabled={isGenerating || !activeAccountId || !content.trim() || isPosting}
@@ -1375,7 +1298,7 @@ const onModalScheduleError = (error: any) => {
                               transition duration-200 flex items-center space-x-1
                             ${
                         content.trim() // If content exists, apply active styles
-                            ? 'bg-gray-50 text-gray-50 hover:bg-white hover:to-blue-800'
+                          ? 'bg-gradient-to-br from-blue-300 via-blue-400 to-blue-500 text-white hover:from-blue-600 hover:via-blue-700 hover:to-blue-800'
                           : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                             }
                       ${
@@ -1386,83 +1309,14 @@ const onModalScheduleError = (error: any) => {
                       `}
                       >
                     {isGenerating ? (
-                        <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
+                        <Loader2 className="w-3 h-3 animate-spin" />
                           ) : (
-                        <TooltipHelp text="⚡ Rewrite for Bluesky">
-                        {/*<Sparkles className="w-3 h-3" />*/}
-                          <img src={BlueskyLogo} className="w-3 h-3" />
+                        <TooltipHelp text="⚡ Quick Rewrite">
+                        <Sparkles className="w-3 h-3" />
                         </TooltipHelp>
                           )}
                     </button>
                 {/*End Add AI Button*/}
-
-                {/*Start New LinkedIn button*/}
-                <button
-                  id= "LinkedInbutton"
-                  type="button"
-                    onClick={handleGenerateLinkedInContent}
-                    disabled={isGeneratingLinkedIn || !activeAccountId || !content.trim() || isPosting}
-                    // Remove the outer conditional rendering for the button itself
-                  className={`
-                              absolute right-16 top-1 p-1 rounded-md shadow-md
-                              transition duration-200 flex items-center space-x-1
-                            ${
-                        content.trim() // If content exists, apply active styles
-                          ? 'bg-gray-50 text-gray-50 hover:bg-white'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                            }
-                      ${
-                        (isGeneratingLinkedIn || !activeAccountId || !content.trim() || isPosting)
-                          ? 'opacity-70' // Reduce opacity when disabled by any condition
-                          : ''
-                        }
-                      `}
-                      >
-                    {isGeneratingLinkedIn ? (
-                        <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
-                          ) : (
-                        <TooltipHelp text="⚡ Rewrite for LinkedIn">
-                          {/*<Sparkles className="w-3 h-3" />*/}
-                          <img src={LinkedInLogo} className="w-3 h-3" />
-                        </TooltipHelp>
-                          )}
-                    </button>
-                {/*End New LinkedIn AI Button*/}
-
-
-             {/*Start New Twitter button*/}
-                <button
-                  type="button"
-                    onClick={handleGenerateTwitterContent}
-                    disabled={isGeneratingTwitter || !activeAccountId || !content.trim() || isPosting}
-                    // Remove the outer conditional rendering for the button itself
-                  className={`
-                              absolute right-24 top-1 p-1 rounded-md shadow-md
-                              transition duration-200 flex items-center space-x-1
-                            ${
-                        content.trim() // If content exists, apply active styles
-                          ? 'bg-gray-50 text-gray-50 hover:bg-white hover:to-blue-800'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                            }
-                      ${
-                        (isGeneratingTwitter || !activeAccountId || !content.trim() || isPosting)
-                          ? 'opacity-70' // Reduce opacity when disabled by any condition
-                          : ''
-                        }
-                      `}
-                      >
-                    {isGeneratingTwitter ? (
-                        <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
-                          ) : (
-                        <TooltipHelp text="⚡ Rewrite for Twitter(X)">
-                          {/*<Sparkles className="w-3 h-3" />*/}
-                          <img src={XLogo} className="w-3 h-3" />
-                          
-                        </TooltipHelp>
-                          )}
-                    </button>
-                {/*End New Twitter AI Button*/}
-                
 
                 {/*start linkedin button */}
           
@@ -1512,11 +1366,11 @@ const onModalScheduleError = (error: any) => {
                     )}
                   </button>
 
-           <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToPost()}>                    
+                    
                   <button
                     key={activeAccount?.id || 'no-account'}
                     type="submit"
-                    disabled={!activeAccountId || !content.trim() || isPosting || !canProceedToPost()}
+                    disabled={!activeAccountId || !content.trim() || isPosting}
                     className="px-4 py-2 bg-blue-500 text-sm text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2 disabled:bg-blue-300 disabled:cursor-not-allowed"
                   >
                     {isPosting ? (
@@ -1531,7 +1385,6 @@ const onModalScheduleError = (error: any) => {
                       </>
                     )}
                   </button>
-           </TooltipExtended>
                   </div>
                   
                 </div>
@@ -1556,6 +1409,25 @@ const onModalScheduleError = (error: any) => {
                 )}
           </>
         )}
+
+        {/*
+          <FirstLineProgress />
+                {firstLineLength <= MAX_FIRST_LINE ? (
+                  <p className="text-xs text-green-500">
+                    First line readability tracker
+                  </p>
+                ) : (
+                  <p className="text-xs text-red-500">
+                    First line should be under {MAX_FIRST_LINE} characters for better readability
+                  </p>
+                )}
+
+                {isUpdating && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                  </div>
+                )}
+*/}
         
       </div>
 
@@ -1582,6 +1454,8 @@ const onModalScheduleError = (error: any) => {
         onRequestMoreTwitterAccounts={handleRequestMoreTwitterAccounts}
         isPaidPlan={isPaidPlan}
         remainingSocialAccounts={remainingSocialAccounts}
+        //onConnectBluesky={handleConnectBluesky}
+        //onConnectLinkedIn={handleConnectLinkedIn}
       />
 
       <MoreBlueskyAccounts 

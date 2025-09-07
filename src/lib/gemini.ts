@@ -1284,6 +1284,258 @@ Follow the [Rules] below:
 //------- End generateHooksPostV3_old without HooksData -------------//
 
 
+// ------- Start Improve Existing Comment for LinkedIn (ImprovePostforLinkedIn) -------//
+
+export async function rewritePostForLinkedIn(
+  
+  content: string,  
+  char_length: string,
+  maxRetries: number = 5,
+  initialDelayMs: number = 1000
+
+): Promise<GeminiResponse> {
+
+// Choose a random hook 
+const chosenHookArchetype = getRandomHookArchetype();
+
+  // Cache key now depends only on inputs that define the desired output
+  const cacheKey = JSON.stringify({ content });
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      return cached.response;
+  }
+
+  // Rate limiting
+  await rateLimiter.checkAndWait();
+
+  const selectedTone = getRandomTone(); // Ensure this function correctly returns a valid tone string
+  const prompt = `You are a world-class copywriter and social media content strategist. Your job is to read short-form posts and Improve them significantly while maintaining the core message:
+  
+**IMPORTANT: The information in the 'Details' section below is for your internal processing and understanding only. Do NOT include any part of this 'Details' section or its contents in your final output.**
+
+Your task is to write high-performing content for ${content} 
+
+- Platform: [LinkedIn]
+- Content type: [viral social media thread]
+- Goal: [engagement, clicks, conversions or leads]
+
+Instructions:
+
+**Beyond surface-level analysis, deeply dissect** the content provided in ${content} deduce and extract its overarching **business objective** and the **psychological triggers**. Create not just a fitting, but the **most strategically impactful** writing approach that subtly guides the reader towards a specific Goal you've decided upon based on [Details].
+
+**Crucially, the hook MUST be generated using the following archetype description, ensuring it immediately captures attention and sets the stage for the value to follow:**
+
+Archetype: ${chosenHookArchetype.name}
+Description: ${chosenHookArchetype.description.replace('content', content)}
+
+Maintain an **${selectedTone}** tone throughout the post.
+
+1. Start with a scroll-stopping hook as the first sentence.
+2. Weave a narrative that **authentically captures and articulates the message being shared within the target audience in ${content}**, making them feel truly understood. Transition seamlessly from this pain to a **subtle demonstration of value or a glimpse of transformation**, applying principles of persuasion that build trust rather than push a sale.
+3. Craft language that is not just simple, but **resonate as genuinely human and relatable**, avoiding industry jargon and communicate at a 'ninth-grade' comprehension level. The goal is conversational authority, not academic complexity.
+4. Follow proven frameworks (AIDA, PAS, Hook-Point-Action, Before After Bridges etc.), **interpreting them with strategic nuance for social context.**
+5. Keep to a minimum of ${char_length} Characters in total.
+
+**Every sentence should contribute to a coherent strategic narrative that gently guides the reader from problem awareness to potential solution discovery, fostering trust and establishing expertise.**
+
+Write like a human. No fluff. No cringe. Make it hit.
+
+Follow the [Rules] below:
+
+[Rules]:
+
+- Keep to a minimum of ${char_length} Characters in total.
+- Place each sentence in the post on a new line.
+- Add a space after each line for readability
+- **Write in a clear, straightforward manner that a ninth grader could easily understand.**
+- Ban Generic Content
+- Ban hashtags
+- Ban bullet points.
+- Ban exclamation marks. 
+- Ban Call to Action Questions
+- Ban Call to Action Statements
+- Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
+- Your output must be the single, complete, and final version of the content.
+- Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
+- Do NOT use numbered lists or headings to present multiple content options.
+- Do NOT expose any part of the prompt. 
+
+`;
+
+ let currentRetry = 0;
+ let delayTime = initialDelayMs;
+
+while (currentRetry < maxRetries) {
+  try {
+    await rateLimiter.checkAndWait();
+
+    //const response = await model.generateContent(prompt);
+    
+    const response = await generateContent(prompt);
+    
+    calendarCache.set(cacheKey, {
+      response,
+      timestamp: Date.now()
+    });
+
+    return response;
+
+  } catch (error: any) {
+    const isRetryableError =
+      error.status === 503 ||
+      error.status === 429 ||
+      (error.message && (error.message.includes('503') || error.message.includes('429')));
+    const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+    if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+      currentRetry++;
+      console.warn(
+        `Gemini API call failed (Error: ${error.status || error.message}). ` +
+        `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+      );
+      await sleep(delayTime);
+      delayTime *= 2;
+      delayTime = delayTime * (1 + Math.random() * 0.2);
+      delayTime = Math.min(delayTime, 30000);
+    } else {
+      console.error(`Post generation failed after ${currentRetry} retries:`, error);
+      throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+    }
+  }
+}
+
+throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}
+
+// ------ End Improve existing Post for LinkedIn (ImprovePostforLinkedIn) --------//
+
+
+// ------- Start Improve Existing Comment for LinkedIn (ImprovePostforLinkedIn) -------//
+
+export async function rewritePostForTwitter(
+
+  content: string,  
+  char_length: string,
+  maxRetries: number = 5,
+  initialDelayMs: number = 1000
+
+): Promise<GeminiResponse> {
+
+// Choose a random hook 
+const chosenHookArchetype = getRandomHookArchetype();
+
+  // Cache key now depends only on inputs that define the desired output
+  const cacheKey = JSON.stringify({ content });
+  const cached = calendarCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      return cached.response;
+  }
+
+  // Rate limiting
+  await rateLimiter.checkAndWait();
+
+  const selectedTone = getRandomTone(); // Ensure this function correctly returns a valid tone string
+  const prompt = `You are a world-class copywriter and social media content strategist. Your job is to read short-form posts and Improve them significantly while maintaining the core message:
+  
+**IMPORTANT: The information in the 'Details' section below is for your internal processing and understanding only. Do NOT include any part of this 'Details' section or its contents in your final output.**
+
+Your task is to write high-performing content for ${content} 
+
+- Platform: [LinkedIn]
+- Content type: [viral social media thread]
+- Goal: [engagement, clicks, conversions or leads]
+
+Instructions:
+
+**Beyond surface-level analysis, deeply dissect** the content provided in ${content} deduce and extract its overarching **business objective** and the **psychological triggers**. Create not just a fitting, but the **most strategically impactful** writing approach that subtly guides the reader towards a specific Goal you've decided upon based on [Details].
+
+**Crucially, the hook MUST be generated using the following archetype description, ensuring it immediately captures attention and sets the stage for the value to follow:**
+
+Archetype: ${chosenHookArchetype.name}
+Description: ${chosenHookArchetype.description.replace('content', content)}
+
+Maintain an **${selectedTone}** tone throughout the post.
+
+1. Start with a scroll-stopping hook as the first sentence.
+2. Weave a narrative that **authentically captures and articulates the message being shared within the target audience in ${content}**, making them feel truly understood. Transition seamlessly from this pain to a **subtle demonstration of value or a glimpse of transformation**, applying principles of persuasion that build trust rather than push a sale.
+3. Craft language that is not just simple, but **resonate as genuinely human and relatable**, avoiding industry jargon and communicate at a 'ninth-grade' comprehension level. The goal is conversational authority, not academic complexity.
+4. Follow proven frameworks (AIDA, PAS, Hook-Point-Action, Before After Bridges etc.), **interpreting them with strategic nuance for social context.**
+5. Keep to a maximum of ${char_length} Characters in total.
+
+**Every sentence should contribute to a coherent strategic narrative that gently guides the reader from problem awareness to potential solution discovery, fostering trust and establishing expertise.**
+
+Write like a human. No fluff. No cringe. Make it hit.
+
+Follow the [Rules] below:
+
+[Rules]:
+
+- Keep to a maximum of ${char_length} Characters in total.
+- Place each sentence in the post on a new line.
+- Add a space after each line for readability
+- **Write in a clear, straightforward manner that a ninth grader could easily understand.**
+- Ban Generic Content
+- Ban hashtags
+- Ban bullet points.
+- Ban exclamation marks. 
+- Ban Call to Action Questions
+- Ban Call to Action Statements
+- Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
+- Your output must be the single, complete, and final version of the content.
+- Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
+- Do NOT use numbered lists or headings to present multiple content options.
+- Do NOT expose any part of the prompt. 
+
+`;
+
+ let currentRetry = 0;
+ let delayTime = initialDelayMs;
+
+while (currentRetry < maxRetries) {
+  try {
+    await rateLimiter.checkAndWait();
+
+    //const response = await model.generateContent(prompt);
+    
+    const response = await generateContent(prompt);
+    
+    calendarCache.set(cacheKey, {
+      response,
+      timestamp: Date.now()
+    });
+
+    return response;
+
+  } catch (error: any) {
+    const isRetryableError =
+      error.status === 503 ||
+      error.status === 429 ||
+      (error.message && (error.message.includes('503') || error.message.includes('429')));
+    const isNetworkError = error.message && error.message.includes('Failed to fetch');
+
+    if ((isRetryableError || isNetworkError) && currentRetry < maxRetries - 1) {
+      currentRetry++;
+      console.warn(
+        `Gemini API call failed (Error: ${error.status || error.message}). ` +
+        `Retrying in ${delayTime / 1000}s... (Attempt ${currentRetry}/${maxRetries})`
+      );
+      await sleep(delayTime);
+      delayTime *= 2;
+      delayTime = delayTime * (1 + Math.random() * 0.2);
+      delayTime = Math.min(delayTime, 30000);
+    } else {
+      console.error(`Post generation failed after ${currentRetry} retries:`, error);
+      throw new Error(`Failed to generate first post: ${error.message || 'Unknown error occurred.'}`);
+    }
+  }
+}
+
+throw new Error("Max retries exhausted for first post generation (wait 5 mins and try again).");
+}
+
+// ------ End Improve existing Post for Twitter (ImprovePostforTwitter) --------//
+
+
 //------- start generateHooksPostV3 without HooksData -------------//
 
 export async function generateHookPostV3(
