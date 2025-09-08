@@ -81,7 +81,7 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [isBlueskyModalOpen, setIsBlueskyModalOpen] = useState(false);
   const [isDateWarningModalOpen, setIsDateWarningModalOpen] = useState(false);
   const [invalidDate, setInvalidDate] = useState<Date | null>(null);
-  const [timeFilter, setTimeFilter] = useState<'this-week' | 'next-week' | 'all' | null>('this-week');
+  const [timeFilter, setTimeFilter] = useState<'this-week' | 'next-week' | 'all' | null>('all');
   const [showCampaignInfo, setShowCampaignInfo] = useState(true);
   const [showCampaignInfoModal, setShowCampaignInfoModal] = useState(true);
   const [selectedCampaignForModal, setSelectedCampaignForModal] = useState<CalendarContent | null>(null); 
