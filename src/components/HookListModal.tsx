@@ -1,6 +1,6 @@
 // src/components/HookListModal.tsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { X, Loader2, Search, Copy, PlusCircle, ArrowLeft, ArrowRight, Check, Sparkles, BookText } from 'lucide-react';
+import { X, Loader2, Search, Copy, PlusCircle, ArrowLeft, ArrowRight, Check, Sparkles, BookText, XCircle } from 'lucide-react';
 import { ArrowLeftSquare } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { TooltipHelp } from '../utils/TooltipHelp';
@@ -216,7 +216,7 @@ export function HookListModal({
 
   if (!isOpen) return null;
 
-{/*
+  {/*
   const totalFilteredHooks = searchQuery.trim()
     ? allHooks.filter(hook => hook.toLowerCase().includes(searchQuery.toLowerCase())).length
     : allHooks.length;
@@ -226,7 +226,7 @@ const totalFilteredHooks = searchQuery.trim()
   ? allHooks.filter(hook => hook.hooks.toLowerCase().includes(searchQuery.toLowerCase())).length
   : allHooks.length;
 const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
-
+  
   return (
     <>
       {/* Overlay for the rest of the screen */}
@@ -307,12 +307,12 @@ const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
                     <BookText className="w-12 h-12 font-light text-blue-500" />
                   </div>
                   <p className="text-gray-600 mb-3 mt-4">No hooks available 😔</p>
-                  <p className="text-gray-400 mb-4 text-sm">Email Support team - team@sosavvy.so</p>
+                  <p className="text-gray-400 mb-4 text-sm">We're working to add more hooks . . .</p>
                   <button
                     onClick={onClose}
-                    className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    className="inline-flex text-sm items-center px-2 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                   >
-                    <PlusCircle className="w-4 h-4 mr-2" />
+                    <XCircle className="w-4 h-4 mr-1" />
                     <span>Close</span>
                   </button>
                 </div>
