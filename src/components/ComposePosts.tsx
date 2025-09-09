@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2 } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -25,6 +25,7 @@ import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
 import { useProductTier } from '../hooks/useProductTierHook'
 import { ProPlanLimitModal } from './ProPlanLimitModal';
+import { HookListModal } from './HookListModal';
 
 
 
@@ -104,6 +105,8 @@ function ComposePosts() {
   //Sent Post State Management
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false); // Existing state for Drafts Modal
   const [isSentPostModalOpen, setIsSentPostModalOpen] = useState(false); // NEW: State for Sent Posts Modal
+  const [isHookListModalOpen, setIsHookListModalOpen] = useState(false); // NEW: State for HookListModal
+
 
 
     // Check Limits Based on Product Tier
@@ -468,7 +471,35 @@ useEffect(() => {
   const handleCloseSentPostModal = () => {
     setIsSentPostModalOpen(false);
   };
-            
+
+   // NEW: Functions to manage the Hook List Modal
+  const handleOpenHookListModal = () => {
+    setIsHookListModalOpen(true);
+  };
+
+  const handleCloseHookListModal = () => {
+    setIsHookListModalOpen(false);
+  };
+
+  // NEW: Function to handle using a hook from HookListModal
+  const handleUseHook = (hookContent: string) => {
+    // Prepend the hook content to the existing post content
+    setContent(hookContent + '\n' + content);
+    // The HookListModal will close itself via its internal logic after calling this
+  };
+
+   // NEW: Function to handle updating content from HookListModal (e.g., after generating killer hook)
+  //const handleUpdateComposeContent = (killercontent: string) => {
+   // setContent(content);
+  //};
+
+  const handleRewriteHook = (revisedHook: string) => {
+    //setContent('');
+    //setContent(rewrittenContent);
+    //setContent(revisedHook + '\n' + '\n' + '\n');
+    setContent(revisedHook + '\n\n\n');
+    //setIsContentCalendarModalOpen(false);
+  };
 
   const handleRequestMoreBlueskyAccounts = () => {
    setShowAddSocialTabModal(false); 
@@ -1328,7 +1359,23 @@ const onModalScheduleError = (error: any) => {
         </button>
        </TooltipHelp>
 
-                    {/*----------------- End Add button to show draft posts --------------------------- */}
+      {/*----------------- End Add button to show sent posts --------------------------- */}
+
+                    
+       {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
+
+       <TooltipHelp text={`⚡ add killer hooks`}>   
+         <button
+            onClick={handleOpenHookListModal} 
+            className="ml-2 px-2 py-2 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"    
+            >
+           <BookText className="w-4 h-4" />
+           
+           {/*Add Hook 🪝*/}
+        </button>
+       </TooltipHelp>     
+
+    {/* ----------------- End Add button Add Hooks to Posts ---------------- */}                      
                     
                     
                   </>
@@ -1462,7 +1509,21 @@ const onModalScheduleError = (error: any) => {
                           )}
                     </button>
                 {/*End New Twitter AI Button*/}
+
+
+              {/*Start New Delete button*/}
                 
+                <button
+                  
+                  type="button"
+                    onClick={() => setContent('')}
+                   className="absolute right-32 top-1 p-1 bg-red-100 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
+                  <TooltipHelp text="⚡ Clear Text">
+                   <Trash2 className="w-3 h-3 text-red-500" />       
+                    </TooltipHelp>
+                  </button>
+                 
+                {/*End New Deletewitter AI Button*/}
 
                 {/*start linkedin button */}
           
@@ -1634,6 +1695,15 @@ const onModalScheduleError = (error: any) => {
           isOpen={isSentPostModalOpen}
           onClose={handleCloseSentPostModal}
           onEditSentPost={handleEditSentPost}
+        />
+
+       {/* NEW: Hook List Modal */}
+        <HookListModal
+          isOpen={isHookListModalOpen}
+          onClose={handleCloseHookListModal}
+          onUseHook={handleUseHook} 
+          currentComposeContent={content} 
+          onRewriteHook={handleRewriteHook} 
         />
 
        {/* Upgrade Modal After Free Trial Runs Out */}

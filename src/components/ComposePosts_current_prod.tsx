@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check } from 'lucide-react';
+import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -9,6 +9,7 @@ import { NoSocialModal } from './NoSocialModal';
 import { ConnectSocialModal } from './ConnectSocialModal';
 import { AddSocialTabModal } from './AddSocialTabModal';
 import { supabase } from '../lib/supabase';
+import { TooltipExtended } from '../utils/TooltipExtended';
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { MoreBlueskyAccounts } from './MoreBlueskyAccounts'; 
 import { MoreTwitterAccounts } from './MoreTwitterAccounts';
@@ -18,7 +19,8 @@ import { format, parse } from 'date-fns';
 import { ScheduleDraftPost } from '/src/components/ScheduleDraftPost';
 import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
-import { improveComment, generateHookPostV3 } from '../lib/gemini';
+import { SentPostModal } from './SentPostModal';
+import { improveComment, rewritePostForLinkedIn, rewritePostForTwitter, generateHookPostV3 } from '../lib/gemini';
 import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
 import { useProductTier } from '../hooks/useProductTierHook'
@@ -32,7 +34,9 @@ interface SocialAccount {
   display_name: string | null;
   avatar_url: string | null;
   social_channel: string;
+  twitter_verified: boolean;
 }
+
 
 interface ScheduledPostData {
   content_date: string; // ISO date string from database
@@ -66,6 +70,7 @@ function ComposePosts() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingLinkedIn, setIsGeneratingLinkedIn] = useState(false);
+  const [isGeneratingTwitter, setIsGeneratingTwitter] = useState(false);
   const [campaignContent, setCampaignContent] = useState<Array<{ theme: string; topic: string; content: string }> | null>(null);
   const { processedContent, facets } = generateBlueskyFacetsForLinks(content);
   const [isSchedulingPost, setIsSchedulingPost] = useState(false);
@@ -79,6 +84,7 @@ function ComposePosts() {
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
+
 
   const [max_length, setMaxLength] = useState(300);
 
@@ -95,6 +101,11 @@ function ComposePosts() {
   const [error, setError] = useState('');
   const [totalDraftCount, setTotalDraftCount] = useState(0); // New state variable
 
+  //Sent Post State Management
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false); // Existing state for Drafts Modal
+  const [isSentPostModalOpen, setIsSentPostModalOpen] = useState(false); // NEW: State for Sent Posts Modal
+
+
     // Check Limits Based on Product Tier
   const [isProPlanLimitModalOpen, setIsProPlanLimitModalOpen] = useState(false);
   const [isCheckingLimits, setIsCheckingLimits] = useState(false);
@@ -103,7 +114,6 @@ function ComposePosts() {
 
   // --- NEW: Use useLocation hook to access navigation state ---
   const location = useLocation();
-
   const [firstLineLength, setFirstLineLength] = useState(() => calculateFirstLineLength(content));
 
   //First Line Implementation
@@ -143,7 +153,6 @@ function ComposePosts() {
     return 'bg-red-300';
   };
 
-
   const FirstLineProgress = () => {
     const percentage = Math.min((firstLineLength / MAX_FIRST_LINE) * 100, 100);
     const color = getFirstLineColor(firstLineLength);
@@ -180,6 +189,56 @@ function ComposePosts() {
   
 
 const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
+
+//New UseEffect to include Premium Twitter
+   useEffect(() => {
+    if (activeAccountId) {
+      //const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
+      const activeSocialAccount = connectedAccounts.find(account => account.id === activeAccountId);
+      if (activeSocialAccount) {
+        //console.log('Selected Social Channel:', activeSocialAccount.social_channel); 
+        switch (activeSocialAccount.social_channel) {
+          case 'Bluesky':
+            setMaxLength(300);
+            break;
+          case 'Twitter':
+                // Use activeAccount.twitter_verified directly here
+                if (activeSocialAccount.twitter_verified) {
+                    setMaxLength(25000); // Premium Twitter limit
+                } else {
+                    setMaxLength(280); // Free Twitter limit
+                }
+            break;
+          case 'LinkedIn':
+            setMaxLength(3000);
+            break;
+          default:
+            setMaxLength(300); // Default
+        }
+      }
+    }
+  }, [activeAccountId, connectedAccounts]);    
+
+  // Use this to determine whether to try to post or not
+  const canProceedToPost = () => {
+  return activeAccountId && content.trim().length > 0 && content.trim().length < max_length ;
+};
+
+// Function to determine the tooltip message for the "Next" button
+const getNextButtonTooltip = () => {
+  if (!activeAccountId) {
+    return "Please choose a social channel to continue.";
+  }
+  if (content.trim().length === 0) {
+    return "Write a post to enable the post button";
+  }
+  // Check if content length is greater than or equal to max_length, which disables the button
+  if (content.trim().length >= max_length) {
+    return "You've exceeded the maximum character limit for this social account.";
+  }
+  // If none of the above conditions are met, the button should be enabled, so no tooltip needed for disabled state.
+  return "";
+};  
 
 // Add this useEffect to fetch the user ID when the component mounts
 useEffect(() => {
@@ -257,7 +316,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
             setUserMessage('Could not retrieve account details. Please try again.');
             return false;
         }
-        //const limitedAccountTypes = ['Free Plan', 'Early Adopter']; // Define the types that have this limit
+   
       const limitedAccountTypes = ['Pro Plan']; // Define the types that have this limit
          switch (action) {
             case 'createCampaign':
@@ -328,10 +387,6 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
 
 //------------------ End Upgrade Modal and Limits Checks Here --------------------------//
 //========================================================================================//
-
-//const toolTipMessage = {`Add upto ${MAX_FREE_ACCOUNTS} accounts`}
-
-//<TooltipHelp text={`⚡Connect ${accountType.name}`}>
   
 const fetchDraftPosts = useCallback(async () => {
         try {
@@ -404,6 +459,15 @@ useEffect(() => {
       }
     }
   }, [activeAccountId, connectedAccounts]);  
+
+  // NEW: Functions to manage the Sent Posts Modal
+  const handleOpenSentPostModal = () => {
+    setIsSentPostModalOpen(true);
+  };
+
+  const handleCloseSentPostModal = () => {
+    setIsSentPostModalOpen(false);
+  };
             
 
   const handleRequestMoreBlueskyAccounts = () => {
@@ -532,10 +596,6 @@ useEffect(() => {
       return false;
     }
     
-    // Create a new BskyAgent instance
-    //const agent = new BskyAgent({
-      //service: 'https://bsky.social'
-    //});
     
     // Login with the account credentials
     // Note: We need the app_password from the database
@@ -554,16 +614,6 @@ useEffect(() => {
       return false;
     }
 
-    {/*
-    // Post the content
-    const postResult = await agent.post({
-      text: content,
-      // You can add additional parameters like:
-      // langs: ['en'],
-      // facets: [], // For mentions, links, etc.
-      // embed: {}, // For images, quotes, etc.
-    });
-    */}
 
     const postResult = await agent.post({
         text: processedContent, // Use the processedContent
@@ -775,13 +825,6 @@ if (!activeAccountId) {
            // TODO: Show an authentication error to the user
            throw new Error('User not authenticated');
       }
-      ////console.log('currentUserId: ', currentUserId);
-      ////console.log('currentUserEmail: ', currentUserEmail);
-      ////console.log('activeAccount.social_channel: ', activeAccount.social_channel);
-      ////console.log('Account_Id: ', activeAccount.id);
-      ////console.log('user_handle: ', activeAccount.handle);
-      ////console.log('full_content: ', postContent);
-      ////console.log('display_name: ', activeAccount.display_name);
       
       
       const { data: newPostData, error: insertError } = await supabase
@@ -1011,6 +1054,27 @@ if (!activeAccountId) {
   }
 };
 
+const handleEditSentPost = (content: string, socialChannel: string, userHandle: string) => {
+  // Always set the content in the textarea
+  setContent(content);
+
+  // Attempt to find the exact account that originated the draft
+  const matchingAccount = connectedAccounts.find(
+    (acc) => acc.social_channel === socialChannel && acc.handle === userHandle
+  );
+
+  if (matchingAccount) {
+    // If a matching connected account is found, set it as active
+    setActiveAccountId(matchingAccount.id);
+    //console.log(`Edit continued for account: ${userHandle} on ${socialChannel}. Tab set.`);
+    // UX improvement: Optionally, provide a temporary visual confirmation to the user
+    // e.g., a toast notification: "Draft loaded! Account set to @yourhandle (Platform)"
+  } else {
+    // If no matching account is found among the currently connected ones
+    console.warn(`Edit loaded, but original account not found: ${userHandle} on ${socialChannel}.`);
+  }
+};  
+
   // Truncate display name to 5 characters
   const truncateDisplayName = (name: string | null, handle: string): string => {
     if (!name) return handle.substring(0, 5);
@@ -1039,6 +1103,53 @@ const handleGenerateContent = async () => {
     setIsGenerating(false);
   }
 };
+
+// Add this function to handle content generation
+const handleGenerateLinkedInContent = async () => {
+   if (!content.trim()) return; 
+  
+  try {
+    setIsGeneratingLinkedIn(true);
+    
+    // Get the theme and topic from the selected calendar content
+    const improvedContent = await rewritePostForLinkedIn(content, 1000);
+
+    if (!improvedContent.error) {
+       setContent(improvedContent.text);
+    } else {
+      console.error('Error improving content:', improvedContent.error);
+      // Optionally show an error message to the user
+    }
+  } catch (err) {
+    console.error('Error generating content:', err);
+  } finally {
+    setIsGeneratingLinkedIn(false);
+  }
+};  
+
+
+// Add this function to handle content generation
+const handleGenerateTwitterContent = async () => {
+   if (!content.trim()) return; 
+  
+  try {
+    setIsGeneratingTwitter(true);
+    
+    // Get the theme and topic from the selected calendar content
+    const improvedContent = await rewritePostForTwitter(content, 500);
+
+    if (!improvedContent.error) {
+       setContent(improvedContent.text);
+    } else {
+      console.error('Error improving content:', improvedContent.error);
+      // Optionally show an error message to the user
+    }
+  } catch (err) {
+    console.error('Error generating content:', err);
+  } finally {
+    setIsGeneratingTwitter(false);
+  }
+};    
 
 // New handleSchedulePost function
 const handleSchedulePost = () => {
@@ -1086,15 +1197,6 @@ const onModalScheduleError = (error: any) => {
   return (
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
-
-        {/*
-        <div className="flex items-center space-x-2 mb-6"> 
-          <div className="p-2 bg-blue-100 rounded-md"> 
-            <FileEdit className="w-5 h-5 text-blue-500"/> 
-          </div>
-          <h2 className="text-xl font-semibold text-gray-900">Draft Post</h2>
-        </div>
-        */}
 
         {isLoading ? (
           <div className="flex justify-center py-8">
@@ -1155,7 +1257,7 @@ const onModalScheduleError = (error: any) => {
                     {/* Add Account Button */}
                     {/*<TooltipHelp text="Add accounts">*/}
                     
-                  <TooltipHelp text={`Add upto ${MAX_FREE_ACCOUNTS} accounts`}>
+                  <TooltipHelp text={`⚡ add upto ${MAX_FREE_ACCOUNTS} accounts`}>
                     <button
                         onClick={(e) => {
                         e.stopPropagation();
@@ -1173,45 +1275,61 @@ const onModalScheduleError = (error: any) => {
                           }
                           
                         }}
-                        className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+
+                       className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
                      
-                        >
-                        
-                          <Plus className="w-4 h-4"/>              
-                        </button>
-                          </TooltipHelp>
-                        
-                        
-    
-                    {/* Start Add a button to open the ContentCampaignModal */}
-                    <TooltipHelp text="Browse ideas">
-                        <button
-                          onClick={handleOpenContentCalendarModal}
-                          className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors" >
-                            <Lightbulb className="w-4 h-4"/>
-                          </button>
+                    >
+                    
+                      <Plus className="w-4 h-4"/>              
+                    </button>
                       </TooltipHelp>
                     
-                    {/* End Add a button to open the ContentCampaignModal */}
-    
-              {/* Start Add button to show draft posts */}  
-              
-              <TooltipHelp text={`(${totalDraftCount}) saved drafts `}>
+                    
+
+                {/* Start Add a button to open the ContentCampaignModal */}
+                <TooltipHelp text="⚡ browse ideas">
+                    <button
+                      onClick={handleOpenContentCalendarModal}
+                      className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors" >
+                        <Lightbulb className="w-4 h-4"/>
+                      </button>
+                  </TooltipHelp>
                 
-                <button
-                    onClick={() => {
-                      setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
-                      setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
-                    }}
-                  
-                   className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
-                    // Added 'items-center' to the button's class for vertical alignment
-                >
-                <FileEdit className="w-4 h-4" />
-            </button>
-           </TooltipHelp>
-    
-                        {/* End Add button to show draft posts */}
+                {/* ------------------------ End Add a button to open the ContentCampaignModal --------------------- */}
+
+          {/*-------------------- Start Add button to show draft posts ------------------------------ */}  
+          
+          <TooltipHelp text={`⚡ (${totalDraftCount}) saved drafts `}>
+            
+            <button
+                onClick={() => {
+                  setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
+                  setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
+                }}
+              
+               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+                // Added 'items-center' to the button's class for vertical alignment
+            >
+            <FileEdit className="w-4 h-4" />
+        </button>
+       </TooltipHelp>
+
+         {/* End Add button to show draft posts */}
+
+          {/* ----------------- Start Add button to show sent posts ---------------- */}  
+                    
+         <TooltipHelp text={`⚡ recycle posts`}>   
+            <button
+               onClick={handleOpenSentPostModal}        
+               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+                
+            >
+            <Recycle className="w-4 h-4" />
+        </button>
+       </TooltipHelp>
+
+                    {/*----------------- End Add button to show draft posts --------------------------- */}
+                    
                     
                   </>
                 ) : (
@@ -1235,7 +1353,7 @@ const onModalScheduleError = (error: any) => {
 
             {/* Compose Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 p-6">             
+              <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 p-8">             
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
@@ -1247,16 +1365,17 @@ const onModalScheduleError = (error: any) => {
                 {/*Add AI button here*/}
 
                 <button
+                  id= "Blueskybutton"
                   type="button"
                     onClick={handleGenerateContent}
                     disabled={isGenerating || !activeAccountId || !content.trim() || isPosting}
                     // Remove the outer conditional rendering for the button itself
                   className={`
-                              absolute right-2 top-2 p-1 rounded-md shadow-md
+                              absolute right-8 top-1 p-1 rounded-md shadow-md
                               transition duration-200 flex items-center space-x-1
                             ${
                         content.trim() // If content exists, apply active styles
-                          ? 'bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600'
+                            ? 'bg-gray-50 text-gray-50 hover:bg-white hover:to-blue-800'
                           : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                             }
                       ${
@@ -1267,51 +1386,86 @@ const onModalScheduleError = (error: any) => {
                       `}
                       >
                     {isGenerating ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
+                        <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
                           ) : (
-                        <TooltipHelp text="⚡ Quick Rewrite">
-                        <Sparkles className="w-3 h-3" />
+                        <TooltipHelp text="⚡ Rewrite for Bluesky">
+                        {/*<Sparkles className="w-3 h-3" />*/}
+                          <img src={BlueskyLogo} className="w-3 h-3" />
                         </TooltipHelp>
                           )}
                     </button>
                 {/*End Add AI Button*/}
 
-                {/*start linkedin button */}
-
-                {/*
+                {/*Start New LinkedIn button*/}
                 <button
+                  id= "LinkedInbutton"
                   type="button"
-                    onClick={handleGenerateContent}
-                    disabled={isGenerating || !activeAccountId || !content.trim() || isPosting}
+                    onClick={handleGenerateLinkedInContent}
+                    disabled={isGeneratingLinkedIn || !activeAccountId || !content.trim() || isPosting}
                     // Remove the outer conditional rendering for the button itself
                   className={`
-                              absolute right-10 top-2 p-1 rounded-md shadow-md
+                              absolute right-16 top-1 p-1 rounded-md shadow-md
                               transition duration-200 flex items-center space-x-1
                             ${
                         content.trim() // If content exists, apply active styles
-                          ? 'bg-gray-100 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600'
+                          ? 'bg-gray-50 text-gray-50 hover:bg-white'
                           : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                             }
                       ${
-                        (isGenerating || !activeAccountId || !content.trim() || isPosting)
+                        (isGeneratingLinkedIn || !activeAccountId || !content.trim() || isPosting)
                           ? 'opacity-70' // Reduce opacity when disabled by any condition
                           : ''
                         }
                       `}
                       >
-                    {isGenerating ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
+                    {isGeneratingLinkedIn ? (
+                        <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
                           ) : (
-                        <TooltipHelp text="⚡ Adapt for LinkedIn">
-                                      <>
-                
-                <img src={LinkedInLogo} className="w-3 h-3" />
-                </>
+                        <TooltipHelp text="⚡ Rewrite for LinkedIn">
+                          {/*<Sparkles className="w-3 h-3" />*/}
+                          <img src={LinkedInLogo} className="w-3 h-3" />
                         </TooltipHelp>
                           )}
                     </button>
-              */}
-                    
+                {/*End New LinkedIn AI Button*/}
+
+
+             {/*Start New Twitter button*/}
+                <button
+                  type="button"
+                    onClick={handleGenerateTwitterContent}
+                    disabled={isGeneratingTwitter || !activeAccountId || !content.trim() || isPosting}
+                    // Remove the outer conditional rendering for the button itself
+                  className={`
+                              absolute right-24 top-1 p-1 rounded-md shadow-md
+                              transition duration-200 flex items-center space-x-1
+                            ${
+                        content.trim() // If content exists, apply active styles
+                          ? 'bg-gray-50 text-gray-50 hover:bg-white hover:to-blue-800'
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                            }
+                      ${
+                        (isGeneratingTwitter || !activeAccountId || !content.trim() || isPosting)
+                          ? 'opacity-70' // Reduce opacity when disabled by any condition
+                          : ''
+                        }
+                      `}
+                      >
+                    {isGeneratingTwitter ? (
+                        <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
+                          ) : (
+                        <TooltipHelp text="⚡ Rewrite for Twitter(X)">
+                          {/*<Sparkles className="w-3 h-3" />*/}
+                          <img src={XLogo} className="w-3 h-3" />
+                          
+                        </TooltipHelp>
+                          )}
+                    </button>
+                {/*End New Twitter AI Button*/}
+                
+
+                {/*start linkedin button */}
+          
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <div className="text-sm text-gray-500">
@@ -1358,11 +1512,11 @@ const onModalScheduleError = (error: any) => {
                     )}
                   </button>
 
-                    
+           <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToPost()}>                    
                   <button
                     key={activeAccount?.id || 'no-account'}
                     type="submit"
-                    disabled={!activeAccountId || !content.trim() || isPosting}
+                    disabled={!activeAccountId || !content.trim() || isPosting || !canProceedToPost()}
                     className="px-4 py-2 bg-blue-500 text-sm text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2 disabled:bg-blue-300 disabled:cursor-not-allowed"
                   >
                     {isPosting ? (
@@ -1377,14 +1531,14 @@ const onModalScheduleError = (error: any) => {
                       </>
                     )}
                   </button>
+           </TooltipExtended>
                   </div>
                   
                 </div>
               </div>
+          
             </form>
-            {/* ----  Start the First Line Reader Checker  ----- */}
-
-          <FirstLineProgress />
+             <FirstLineProgress />
                 {firstLineLength <= MAX_FIRST_LINE ? (
                   <p className="text-xs text-green-500">
                     First line readability tracker
@@ -1400,11 +1554,9 @@ const onModalScheduleError = (error: any) => {
                     <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
                   </div>
                 )}
-
-{/* ----  End the First Line Reader Checker ----- */}
           </>
         )}
-
+        
       </div>
 
       <NoSocialModal
@@ -1430,8 +1582,6 @@ const onModalScheduleError = (error: any) => {
         onRequestMoreTwitterAccounts={handleRequestMoreTwitterAccounts}
         isPaidPlan={isPaidPlan}
         remainingSocialAccounts={remainingSocialAccounts}
-        //onConnectBluesky={handleConnectBluesky}
-        //onConnectLinkedIn={handleConnectLinkedIn}
       />
 
       <MoreBlueskyAccounts 
@@ -1478,6 +1628,13 @@ const onModalScheduleError = (error: any) => {
           onClose={() => setIsDraftPostModalOpen(false)}
           onContinueDraft={handleContinueDraft}
          />
+
+      {/* NEW: Sent Posts Modal */}
+        <SentPostModal
+          isOpen={isSentPostModalOpen}
+          onClose={handleCloseSentPostModal}
+          onEditSentPost={handleEditSentPost}
+        />
 
        {/* Upgrade Modal After Free Trial Runs Out */}
       <ProPlanLimitModal
