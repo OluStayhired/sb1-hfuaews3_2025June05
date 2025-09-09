@@ -216,10 +216,16 @@ export function HookListModal({
 
   if (!isOpen) return null;
 
+{/*
   const totalFilteredHooks = searchQuery.trim()
     ? allHooks.filter(hook => hook.toLowerCase().includes(searchQuery.toLowerCase())).length
     : allHooks.length;
   const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
+*/}
+const totalFilteredHooks = searchQuery.trim()
+  ? allHooks.filter(hook => hook.hooks.toLowerCase().includes(searchQuery.toLowerCase())).length
+  : allHooks.length;
+const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
 
   return (
     <>
