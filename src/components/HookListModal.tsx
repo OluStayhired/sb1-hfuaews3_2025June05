@@ -321,14 +321,14 @@ const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
                   <div key={index} className="bg-white p-3 rounded-lg border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all relative">
                     {/* NEW: Display hook_category */}
                     {hookItem.hook_category && (
-                      <span className="absolute text-xs top-2 left-3 px-2 py-0.5 text-xs font-medium bg-gradient-to-r from-blue-50 to-white text-blue-700 rounded-md">
+                      <span className="mb-3 relative text-sm top-2 px-1 py-0.5 font-medium bg-gradient-to-r from-blue-50 to-white text-gray-800 rounded-md">
                         
                         {hookItem.hook_category}
                       </span>
                     )}
                     
                     {/* NEW: Adjust mt-5 to accommodate category pill */}
-                    <p className="mt-5 p-1 text-xs bg-blue-50 rounded-md text-blue-600 whitespace-pre-wrap hover:bg-blue-100">{hookItem.hooks}</p>
+                    <p className="mt-5 p-1 text-xs bg-gray-50 rounded-md text-gray-600 whitespace-pre-wrap hover:bg-gray-100">{hookItem.hooks}</p>
 
                     {/* NEW: Display example_hook */}
                     {hookItem.example_hook && (
