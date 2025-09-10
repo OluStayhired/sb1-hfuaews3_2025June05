@@ -642,7 +642,7 @@ const handleLinkedInButtonClick = async () => {
   
    // free plans and early adopters  
     if (!isPaidPlan) {  
-        if (hasActiveSession) {        
+        if (hasActiveLinkedInSession) {        
             handleRequestMoreLinkedInAcct();
       } else {
             handleConnectLinkedIn();
@@ -659,7 +659,7 @@ const handleTwitterButtonClick = async () => {
   
      // free plans and early adopters  
     if (!isPaidPlan) {  
-        if (hasActiveSession) {        
+        if (hasActiveTwitterSession) {        
             handleRequestMoreTwitterAcct();
       } else {
              handleConnectTwitter();
