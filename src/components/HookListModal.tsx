@@ -229,11 +229,12 @@ const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
   
   return (
     <>
-      {/* Overlay for the rest of the screen */}
+      {/* Overlay for the rest of the screen (adds dark overlay)
       <div
         className="fixed inset-0 bg-black bg-opacity-50 z-40"
         onClick={onClose}
       ></div>
+       */}
 
       {/* The actual side panel content */}
       <div

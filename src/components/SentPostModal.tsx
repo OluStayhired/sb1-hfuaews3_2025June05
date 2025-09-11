@@ -243,7 +243,7 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
 
  const handleEditSentPost = (content: string, socialChannel: string, userHandle: string) => {
     onEditSentPost(content, socialChannel, userHandle);
-    onClose();
+    //onClose(); // Do Not Auto Close Since You may want to view several posts
   };
 
 
@@ -253,11 +253,13 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
 
   return (
     <>
-      {/* Overlay for the rest of the screen */}
+       {/* Overlay for the rest of the screen
       <div
         className="fixed inset-0 bg-black bg-opacity-50 z-40"
         onClick={onClose}
       ></div>
+
+       */}
 
       {/* The actual side panel content */}
       <div
