@@ -177,7 +177,7 @@ const videoTitleCampaignOverview = "Quick Campaign Guide" ;
 
     const handleCloseCampaignInfoModal = () => {
     setShowCampaignInfoModal(false);
-    setSelectedCampaignForModal(null); // Clear selected campaign when closing
+    setSelectedCampaignForModal(null); // Clear selected campaign when closing.
   };
 
   const checkSocials = async () => {
