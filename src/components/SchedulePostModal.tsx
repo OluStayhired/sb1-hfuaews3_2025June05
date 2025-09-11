@@ -245,7 +245,7 @@ useEffect(() => {
         if (channelsError) throw channelsError;
         setSocialChannels(channels || []);
 
-        // NEW: Check if there is only one social channel available
+        // NEW: Check if there is only one social channel available.
           if (channels && channels.length === 1) {
            setSelectedChannel(channels[0].id); // Immediately set selectedChannel to that channel
           }
