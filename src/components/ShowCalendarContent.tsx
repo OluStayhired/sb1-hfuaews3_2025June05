@@ -1894,17 +1894,17 @@ const getScheduleButtonTooltip = () => {
               <div className="space-x-2 flex-wrap opacity-30 group-hover:opacity-100 transition-opacity duration-300">
 
             {/*<TooltipHelp  text = "⚡LinkedIn Max Limit 600 ">*/}
-          <TooltipHelp  text = {`⚡${content.content.length}/600 chars`}>
+          <TooltipHelp  text = {`⚡${content.content.length}/3000 chars`}>
        <div className={`items-center space-x-1 text-xs text-blue-500 rounded-full p-1.5 inline-flex items-left
-              ${content.content.length > 600 ? 'bg-red-50' : 'bg-gray-100'
+              ${content.content.length > 3000 ? 'bg-red-50' : 'bg-gray-100'
               }`}>
               
               {/*{content.call_to_action}*/}
               <img src={LinkedInLogo} className="w-3 h-3" />
               <span className={`text-xs ${
-              content.content.length > 600 ? 'text-red-300 hover:text-red-400' : 'text-gray-400 hover:text-gray-500'
+              content.content.length > 3000 ? 'text-red-300 hover:text-red-400' : 'text-gray-400 hover:text-gray-500'
               }`}>
-                {(600 - content.content.length)} chars
+                {(3000 - content.content.length)} chars
                 </span>
             </div>
             </TooltipHelp>
