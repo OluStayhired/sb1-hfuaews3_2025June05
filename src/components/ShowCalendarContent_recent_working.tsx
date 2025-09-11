@@ -8,9 +8,8 @@ import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import { Calendar, Check, CalendarCheck, CalendarClock, Edit2, Copy, Info, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine, ImagePlus, ellipsis, info } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3 } from '../lib/gemini';
-import { generateLinkedInHookPostV3 } from '../lib/gemini';
 import { ContentModal } from './ContentModal';
-import { AddToCalendarModal } from './AddToCalendarModal';
+import { AddToCalendarModal } from './AddToCalendarModal'
 import { checkConnectedSocials, checkPlatformConnection } from '../utils/checkConnectedSocial';
 import { CreateBlueskyModal } from './CreateBlueskyModal';
 import { NoSocialModal } from './NoSocialModal';
@@ -235,8 +234,8 @@ const validateAndSetDate = (date: Date) => {
 
   const contentDateObj = parseISO(content.content_date);    
 
-////console.log('current date: ', content.content_date)  
-////console.log('today: ', today)    
+//console.log('current date: ', content.content_date)  
+//console.log('today: ', today)    
   
   if (contentDateObj < today) {
     // Date is in the past, show warning modal
@@ -515,7 +514,7 @@ const handleHookPost = async (content: CalendarContent, char_length: string) => 
       char_length
     );
 
-    ////console.log('executing the Hook Posts Here')
+    //console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error);
 
@@ -572,7 +571,7 @@ const handleHookPostV2 = async (content: CalendarContent, char_length: string) =
       char_length
     );
 
-    ////console.log('executing the Hook Posts Here')
+    //console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error);
 
@@ -778,87 +777,6 @@ const handleHookPostV3 = async (content: CalendarContent, char_length: string) =
 };    
 
 
-const handleLinkedInHookPostV3 = async (content: CalendarContent, char_length: string) => {
-
-      // Check if the campaign is expired
-    if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
-    //console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
-    setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
-    return; // Stop execution, do not proceed with LLM call
-  }
-
-  const uniqueKey = `${content.id}_${char_length}`;
-  
-  try {
-    //setIsImproving(content.id);
-    
-    //add typing effect state management here
-    setTypingContentId(content.id); // Set the ID of the content item that will be typing
-    setCurrentTypingText(''); // Clear previous text for typing effect
-    setShowTypingEffect(true); // Activate the typing effect
-
-    setLoadingCharLength(uniqueKey);
-    
-    // Generate improved content
-    const improvedContent = await generateLinkedInHookPostV3(
-      //hooksData,
-      content.theme,
-      content.topic,
-      content.target_audience || '', // Add target_audience to interface if not present
-      content.content,
-      char_length
-    );
-
-    //console.log('executing the Hook Posts Here')
-
-    if (improvedContent.error) throw new Error(improvedContent.error);
-
-    //Add new state variable sets here
-     // 3. API call is complete, hide spinner and prepare for typing effect
-    setLoadingCharLength(null); // Hide the spinner
-    setCurrentTypingText(improvedContent.text); // Set the text to be typed
-    setTypingContentId(content.id);             // Indicate which item is typing
-    setShowTypingEffect(true); 
-
-    // Update in Supabase
-    const { error: updateError } = await supabase
-      .from('content_calendar')
-      .update({ 
-        content: improvedContent.text,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', content.id);
-
-    if (updateError) throw updateError;
-
-    // Optimistic update
-    setCalendarContent(prev => 
-      prev.map(item => 
-        item.id === content.id 
-          ? { ...item, content: improvedContent.text }
-          : item
-      )
-    );
-
-    // Set the text for the TypingEffect component to start typing
-    setCurrentTypingText(improvedContent.text);
-
-  } catch (err) {
-    console.error('Error improving content:', err);
-    // Could add error state/toast here
-
-    //moved set charlength here
-    setLoadingCharLength(null);
-    
-    setShowTypingEffect(false); // Hide typing effect on error
-    setTypingContentId(null);
-    setCurrentTypingText(''); // Clear typing text
-  } finally {
-    //setLoadingCharLength(null);
-  }
-};  
-
-  
 const formatContentText = (text: string): string[] => {
   return text
     .replace(/([A-Za-z])\.([A-Za-z])/g, '$1[dot]$2') // Handle abbreviations
@@ -1640,10 +1558,10 @@ const getScheduleButtonTooltip = () => {
             <div className="flex justify-between items-start mb-3">
               <div>
                 <span className="text-xs font-semibold text-blue-500">
-                  {new Date(content.content_date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} 
-                </span>                
+                {new Date(content.content_date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} </span>
+                
               </div>
-             
+              
               </div>
 
         <div className="flex flex-col items-start mb-4">  {/*start AI Buttons Here */}
@@ -1652,14 +1570,22 @@ const getScheduleButtonTooltip = () => {
                 <TooltipHelp  text = "⚡Write from the heart">
               <button
                 onClick={() => handleImproveContentAITyping(content)}
-                
+                //onClick={() => handleHookPost(content, 700)}
+                //disabled={loadingCharLength === `${content.id}_700`}
                 disabled={isImproving === content.id}
                
+
+                //className="p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
+                //title="Improve Post"
+              //>
 
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
                 
-                       
+                
+                
+                {/*loadingCharLength === `${content.id}_700` ? (*/}
+                
                 {isImproving === content.id ? (
                   <Loader2 className="w-3 h-3 animate-spin" />
                 ) : (
@@ -1674,15 +1600,23 @@ const getScheduleButtonTooltip = () => {
                 </TooltipHelp>
 
               <TooltipHelp  text = "⚡Adapt for LinkedIn">
-              <button           
-                onClick={() => handleLinkedInHookPostV3(content, 1000)}
-                disabled={loadingCharLength === `${content.id}_1000`}
+              <button
+                //onClick={() => handleImproveContentAI(content)}
+                onClick={() => handleHookPostV3(content, 700)}
+                disabled={loadingCharLength === `${content.id}_700`}
+                //disabled={isImproving === content.id}
+               
+
+                //className="p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
+                //title="Improve Post"
+              //>
+
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
                 
                 {/*isImproving === content.id ? (*/}
                 
-                {loadingCharLength === `${content.id}_1000` ? (
+                {loadingCharLength === `${content.id}_700` ? (
                   <Loader2 className="w-3 h-3 animate-spin" />
                 ) : (
                 
@@ -1699,18 +1633,28 @@ const getScheduleButtonTooltip = () => {
 
                 <TooltipHelp  text = "⚡Adapt for Bluesky">
               <button
-                
+                //onClick={() => handleImproveContentAI(content)}
                 onClick={() => handleHookPostV3(content, 300)}
                 disabled={loadingCharLength === `${content.id}_300`}
+                //disabled={isImproving === content.id}
+               
+
+                //className="p-1 bg-gradient-to-br from-indigo-300 via-purple-400 to-blue-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-blue-600 rounded-md shadow-md transition duration-200 flex items-center space-x-1"
+                //title="Improve Post"
+              //>
+
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
-                
+                //title="Improve Post"
               >
                 
+                {/*isImproving === content.id ? (*/}
                 
                 {loadingCharLength === `${content.id}_300` ? (
                 
                   <Loader2 className="w-3 h-3 animate-spin" />
                 ) : (
+                //<Sparkles className="w-3 h-3 text-white" />
+
                 <img src={BlueskyLogo} className="w-3 h-3" />
                 
                  )}
