@@ -8,7 +8,7 @@ import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import { Calendar, Check, CalendarCheck, CalendarClock, Edit2, Copy, Info, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine, ImagePlus, ellipsis, info } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3 } from '../lib/gemini';
-import { generateLinkedInHookPostV3 } from '../lib/gemini';
+import { generateLinkedInHookPostV3 } from '../lib/geminiLinkedIn';
 import { ContentModal } from './ContentModal';
 import { AddToCalendarModal } from './AddToCalendarModal';
 import { checkConnectedSocials, checkPlatformConnection } from '../utils/checkConnectedSocial';
