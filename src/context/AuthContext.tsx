@@ -199,7 +199,7 @@ export const useAuth = () => {
     setIsLoading(true);
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
+      options: { scopes: 'openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/generative-language.tuning https://www.googleapis.com/auth/generative-language.tuning.readonly https://www.googleapis.com/auth/generative-language.retriever https://www.googleapis.com/auth/generative-language.retriever.readonly https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/contacts.other.readonly',
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
