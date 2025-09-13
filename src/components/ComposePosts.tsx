@@ -484,6 +484,7 @@ useEffect(() => {
   // NEW: Function to handle using a hook from HookListModal
   const handleUseHook = (hookContent: string) => {
     // Prepend the hook content to the existing post content
+    setContent('');
     setContent(hookContent + '\n' + content);
     // The HookListModal will close itself via its internal logic after calling this
   };
