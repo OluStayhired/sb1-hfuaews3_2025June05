@@ -497,7 +497,7 @@ useEffect(() => {
     //setContent('');
     //setContent(rewrittenContent);
     //setContent(revisedHook + '\n' + '\n' + '\n');
-    setContent(revisedHook + '\n\n\n');
+    setContent(revisedHook + '\n\n\n' + content);
     //setIsContentCalendarModalOpen(false);
   };
 
