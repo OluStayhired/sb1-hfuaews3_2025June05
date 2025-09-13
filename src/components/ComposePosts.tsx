@@ -499,7 +499,7 @@ useEffect(() => {
     setContent('');
     //setContent(rewrittenContent);
     //setContent(revisedHook + '\n' + '\n' + '\n');
-    setContent(revisedHook + '\n' + '\n' + content);
+    setContent(revisedHook + '\n' + content);
     console.log("executed handleRewriteHook")
     //setIsContentCalendarModalOpen(false);
   };
