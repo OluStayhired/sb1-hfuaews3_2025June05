@@ -484,9 +484,9 @@ useEffect(() => {
   // NEW: Function to handle using a hook from HookListModal
   const handleUseHook = (hookContent: string) => {
     // Prepend the hook content to the existing post content
-    setContent('');
+    //setContent('');
     setContent(hookContent + '\n\n' + content);
-    console.log("executed handleUseHook")
+    //console.log("executed handleUseHook")
     // The HookListModal will close itself via its internal logic after calling this
   };
 
@@ -499,7 +499,7 @@ useEffect(() => {
     setContent('');
     //setContent(rewrittenContent);
     //setContent(revisedHook + '\n' + '\n' + '\n');
-    setContent(revisedHook + '\n\n\n');
+    setContent(revisedHook + '\n' + '\n' + content);
     console.log("executed handleRewriteHook")
     //setIsContentCalendarModalOpen(false);
   };
