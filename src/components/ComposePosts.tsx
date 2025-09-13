@@ -494,10 +494,10 @@ useEffect(() => {
   //};
 
   const handleRewriteHook = (revisedHook: string) => {
-    //setContent('');
+    setContent('');
     //setContent(rewrittenContent);
     //setContent(revisedHook + '\n' + '\n' + '\n');
-    setContent(revisedHook + '\n\n\n' + content);
+    setContent(revisedHook + '\n\n' + content);
     //setIsContentCalendarModalOpen(false);
   };
 
