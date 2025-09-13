@@ -1,4 +1,5 @@
 // src/components/ShowCalendarContent.tsx
+
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { format, parseISO, addWeeks, addDays, isWithinInterval, differenceInDays, startOfWeek, endOfWeek } from 'date-fns';
@@ -92,7 +93,7 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
   const [showTypingEffect, setShowTypingEffect] = useState(false);
   const [typingContentId, setTypingContentId] = useState<string | null>(null); // To track which content item is typing
   const [currentTypingText, setCurrentTypingText] = useState(''); // The text currently being typed
-  const [expandedPosts, setExpandedPosts] = useState<Record<string, boolean>>({});
+
   // New state for calendar end date and days left
   const [calendarEndDate, setCalendarEndDate] = useState<Date | null>(null);
   const [currentCalendarDaysLeft, setCurrentCalendarDaysLeft] = useState<number | null>(null);
@@ -123,14 +124,6 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
     setCurrentPlayingVideoUrl('');
   };
 
-   const handleToggleExpansion = (id: string) => {
-    //console.log("execute handleToggleExpansion for postId:", id);
-    setExpandedPosts(prevState => ({
-      ...prevState,
-      [id]: !prevState[id] // Toggle the boolean for that Id
-    }));
-  };  
-
   const getDaysLeft = (calendarEndDate: string): number => {
     try {
       const today = new Date();
@@ -148,12 +141,6 @@ export function ShowCalendarContent({ calendarName, userEmail, onBackToList}: Sh
     if (daysLeft < 7) return 'text-yellow-500 bg-yellow-50';
     return 'text-green-500 bg-green-50';
   };
-
-const truncateText = (text: string, maxLength: number = 25): string => {
-  if (!text) return '';
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + '...';
-};
 
 
   const daysLeft = getDaysLeft(calendarEndDate);
@@ -190,7 +177,7 @@ const videoTitleCampaignOverview = "Quick Campaign Guide" ;
 
     const handleCloseCampaignInfoModal = () => {
     setShowCampaignInfoModal(false);
-    setSelectedCampaignForModal(null); // Clear selected campaign when closing
+    setSelectedCampaignForModal(null); // Clear selected campaign when closing.
   };
 
   const checkSocials = async () => {
@@ -248,8 +235,8 @@ const validateAndSetDate = (date: Date) => {
 
   const contentDateObj = parseISO(content.content_date);    
 
-//console.log('current date: ', content.content_date)  
-//console.log('today: ', today)    
+////console.log('current date: ', content.content_date)  
+////console.log('today: ', today)    
   
   if (contentDateObj < today) {
     // Date is in the past, show warning modal
@@ -392,7 +379,46 @@ const handleConnectLinkedIn = () => {
 
   // End - New useEffect to fetch calendar end date and calculate days left
 
- 
+  {/* Old useEffect to fetch calendar end date and calculate days left
+  useEffect(() => {
+    const fetchCalendarDetails = async () => {
+      if (!calendarName || !userEmail) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('calendar_questions')
+          .select('end_date')
+          .eq('calendar_name', calendarName)
+          .eq('email', userEmail)
+          .single();
+
+        if (error) {
+          console.error('Error fetching calendar end date:', error);
+          setCalendarEndDate(null);
+          setCurrentCalendarDaysLeft(null);
+          return;
+        }
+
+        if (data?.end_date) {
+          const endDate = parseISO(data.end_date);
+          setCalendarEndDate(endDate);
+          const daysLeft = differenceInDays(endDate, new Date());
+          setCurrentCalendarDaysLeft(daysLeft);
+        } else {
+          setCalendarEndDate(null);
+          setCurrentCalendarDaysLeft(null);
+        }
+      } catch (err) {
+        console.error('Unexpected error fetching calendar details:', err);
+        setCalendarEndDate(null);
+        setCurrentCalendarDaysLeft(null);
+      }
+    };
+
+    fetchCalendarDetails();
+  }, [calendarName, userEmail]);
+
+  */}
 
     const handleBulkScheduleSuccess = () => {
     fetchCalendarContent(); // Refresh the calendar content
@@ -412,7 +438,7 @@ const handleConnectLinkedIn = () => {
   setCopySuccess(null);
   // Call the parent's callback to switch views
    if (onBackToList) {
-      console.log("Calling onBackToList");
+      //console.log("Calling onBackToList");
   onBackToList();
   //fetchCalendarList();   
     } else {
@@ -489,7 +515,7 @@ const handleHookPost = async (content: CalendarContent, char_length: string) => 
       char_length
     );
 
-    //console.log('executing the Hook Posts Here')
+    ////console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error);
 
@@ -546,7 +572,7 @@ const handleHookPostV2 = async (content: CalendarContent, char_length: string) =
       char_length
     );
 
-    //console.log('executing the Hook Posts Here')
+    ////console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error);
 
@@ -1560,6 +1586,17 @@ const getScheduleButtonTooltip = () => {
          onClick={handlePlayVideo}
        />
     </div>      
+
+   {/*<div>
+       <VideoPillButton
+         videoTitle={videoTitleSchedule}
+         videoDescription={videoDescriptionSchedule}
+         thumbnailUrl={thumbnailUrlSchedule}
+         videoUrl={videoUrlSchedule}
+         onClick={handlePlayVideo}
+       />
+    </div>
+    */}
 </div>
 
 
@@ -1590,16 +1627,9 @@ const getScheduleButtonTooltip = () => {
         />
       )}
 
-           
+          
         
-        {filteredContent.map((content) => {
-
-         const isThisPostExpanded = expandedPosts[content.id] || false;
-        //const isThisPostExpanded = expandedPosts[content.id] !== undefined ? expandedPosts[content.id] : content.length < 500;
-
-  // Started a New Return to manage Extended Posts
-      return(
-  
+        {filteredContent.map((content) => (
           <div
                 key={content.id}
                 className={`bg-white rounded-lg border hover:border hover:border-blue-100 shadow-sm p-4 transition-shadow transition-colors duration-300 relative ${
@@ -1711,28 +1741,47 @@ const getScheduleButtonTooltip = () => {
           {/*removed date close DIV*/}
              
             </div>
-
-            
-              
-            
-            
-<div className="flex group-hover:flex flex-col items-start">
-  
+<div className="flex flex-col items-start">
             <h3 className="font-medium text-left text-sm text-gray-900 mb-1">{content.theme}</h3>
             <p className="text-xs text-left items-left text-gray-900 mb-2 inline-block">
               {content.topic}
             </p>
   
-  {/*=====================Start Buttons above Text ======================================================================*/}
-  
-     <div className="flex mb-2 space-x-1 z-1000000000"> 
+            <p className={`pt-12 p-1 bg-gray-50 hover:bg-gray-100 rounded-md text-xs text-left text-gray-500 mb-8 whitespace-pre-wrap break-words leading-relaxed relative self-stretch ${
+  isImproving === content.id ? 'opacity-50' : ''
+}`} >
+     {/* Conditional rendering for TypingEffect */}
+      {showTypingEffect && typingContentId === content.id ? (
+        <TypingEffect
+          text={currentTypingText}
+          speed={10} // Adjust typing speed as needed
+          onComplete={() => {
+            setShowTypingEffect(false);
+            setTypingContentId(null);
+            setCurrentTypingText(''); // Clear typing text after completion
+          }}
+        />
+      ) : (  
+        
+  // Display the full content directly if not currently typing for this item   
+  formatContentText(content.content).map((sentence, index) => (
+    <p key={index} className="leading-relaxed mb-3">{sentence}</p>
+      )))}         
+    {isImproving === content.id && (
+  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
+      <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+    </div>
+            )}
+
+              {/*<div className="absolute top-2 right-2 flex space-x-2">*/}
+
+  <div className="absolute top-1 left-1 flex space-x-1 z-10">
 
     <TooltipHelp  text = "⚡ Send to Calendar">
       <button
               onClick={() => handleAddToCalendar(content)}
-              className="inline-flex items-center border border-gray-300 items-left px-1 py-1 bg-gray-100 text-gray-500 rounded-md 
-                        hover:bg-blue-500 hover:text-white hover:border hover:border-blue-500 transition-colors"
-                  >
+              className="inline-flex items-center border border-gray-300 items-left px-1 py-1 bg-gray-100 text-gray-500 rounded-md hover:bg-blue-500 hover:text-white hover:border hover:border-blue-500 transition-colors"
+          >
                       <PlusCircle className="w-3.5 h-3.5 mr-1" />
                        <span className="text-xs">Schedule Post</span>
               </button>  
@@ -1742,8 +1791,7 @@ const getScheduleButtonTooltip = () => {
     <TooltipHelp  text = "Copy Post">
               <button
                   onClick={() => handleCopyCampaignPost(content)}
-              className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 
-                        hover:text-gray-300 transition-colors">
+              className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 hover:text-gray-300 transition-colors">
                 <Copy className="w-3 h-3" />
                        {copySuccess === content.id && (
                     <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs bg-green-100 text-green-500 px-2 py-1 rounded">
@@ -1756,8 +1804,7 @@ const getScheduleButtonTooltip = () => {
     <TooltipHelp  text = "Edit Post">
                <button
                     onClick={() => handleEditCampaignPost(content)}
-              className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 
-                         hover:text-gray-300 transition-colors"
+              className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 hover:text-gray-300 transition-colors"
           >
                       <SquarePen className="w-3 h-3" />
                  
@@ -1768,8 +1815,7 @@ const getScheduleButtonTooltip = () => {
                <button
                     onClick={() => handleUploadImage(content)} // Call the new handleUploadImage function
                     disabled={uploadingImageId === content.id} // Disable if this post is uploading
-              className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 
-                         hover:text-gray-300 transition-colors"
+              className="inline-flex items-center px-1 py-1 bg-gray-100 text-gray-400 rounded-md hover:bg-gray-100 hover:text-gray-300 transition-colors"
           >
                   {uploadingImageId === content.id ? (
                         <Loader2 className="w-3 h-3 animate-spin" />
@@ -1789,64 +1835,14 @@ const getScheduleButtonTooltip = () => {
               </button>  
       </TooltipHelp>
             </div>  
-  
- {/*=============================End Buttons above Text ==============================================================*/} 
-            <p 
-              //onClick={() => handleToggleExpansion(content.id)}
+        </p>
 
-              onClick={(e) => {
-                    e.stopPropagation(); // Prevents the div's onClick from firing
-                    handleToggleExpansion(content.id)}}
-              
-              
-              className={`
-                      ${isThisPostExpanded ? 'line-clamp-none' : 'line-clamp-6'}
-                      ${isThisPostExpanded ? '' : 'cursor-pointer'}     // Indicate it's clickable
-                          //overflow-hidden    // Ensure truncation works
-                          transition-all     // Enable all CSS property transitions
-                          duration-700       // Set transition duration to 700ms (adjust as needed)
-                          ease-in-out        // Add an easing function for smoother animation
-                          //leading-relaxed    // Improve readability of text blocks
-                          //whitespace-pre-wrap  // <-- ADDED: Preserve whitespace and wrap text
-                          pt-12 p-1 bg-gray-50 
-                          hover:bg-gray-100 
-                          rounded-md text-xs 
-                          text-left text-gray-500 mb-8 
-                          whitespace-pre-wrap 
-                          break-words 
-                          leading-relaxed 
-                          relative self-stretch ${
-  isImproving === content.id ? 'opacity-50' : ''
-}`} >
-     {/* Conditional rendering for TypingEffect */}
-      {showTypingEffect && typingContentId === content.id ? (
-        <TypingEffect
-          text={currentTypingText}
-          speed={10} // Adjust typing speed as needed
-          onComplete={() => {
-            setShowTypingEffect(false);
-            setTypingContentId(null);
-            setCurrentTypingText(''); // Clear typing text after completion
-          }}
-        />
-      ) : (  
-        
-  // Display the full content directly if not currently typing for this item   
-  formatContentText(content.content).map((sentence, index) => (
-    <p key={index} className="leading-relaxed mb-3">
-      {sentence} 
-      
-      </p>
-      )))}         
-    {isImproving === content.id && (
-  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
-      <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-    </div>
-            )}
-
-    </p> {/*Added a new P here to control just the content*/}
-  
-
+   {/* ----------------- Start Display the image if photo_url exists --------------- */}
+        {/*content.photo_url && (
+          <div className="mt-4">
+            <img src={content.photo_url} alt="Post attachment" className="max-w-full h-auto rounded-md" />
+          </div>
+        )*/}
   {/* ----------------- Start Display the image if photo_url exists --------------- */}
 {content.photo_url && (
   <div className="mb-8 group relative w-full h-auto max-w-sm mx-auto">
@@ -1869,12 +1865,14 @@ const getScheduleButtonTooltip = () => {
     >
       <button
         type="button"
+        //onClick={handleDeleteImage}
         onClick={() => handleDeleteImage(content)}
         className="
           bg-red-600 text-white px-4 py-2 rounded-lg
           hover:bg-red-700 transition-colors
           text-sm font-semibold
         "
+        // disabled={deletingImage}
       >
         Delete Photo
       </button>
@@ -1883,15 +1881,23 @@ const getScheduleButtonTooltip = () => {
 )}
     
 {/* ---------------- End Added Display Image if photo_url exists ----------------- */}
+
+
   
       </div>
             
+            {/*<div className="absolute bottom-2 left-2 flex items-center space-x-2 ml-1">*/}
             <div className="absolute bottom-2 left-2 flex items-center space-x-2 ml-1 group">
+
+              
+              {/*<div className="space-x-2 flex-wrap">*/}
               <div className="space-x-2 flex-wrap opacity-30 group-hover:opacity-100 transition-opacity duration-300">
-                
-                <TooltipHelp  text = {`⚡${content.content.length}/3000 chars`}>
-                 <div className={`items-center space-x-1 text-xs text-blue-500 rounded-full p-1.5 inline-flex items-left
-                          ${content.content.length > 3000 ? 'bg-red-50' : 'bg-gray-100'}`}>
+
+            {/*<TooltipHelp  text = "⚡LinkedIn Max Limit 600 ">*/}
+          <TooltipHelp  text = {`⚡${content.content.length}/3000 chars`}>
+       <div className={`items-center space-x-1 text-xs text-blue-500 rounded-full p-1.5 inline-flex items-left
+              ${content.content.length > 3000 ? 'bg-red-50' : 'bg-gray-100'
+              }`}>
               
               {/*{content.call_to_action}*/}
               <img src={LinkedInLogo} className="w-3 h-3" />
@@ -1939,13 +1945,8 @@ const getScheduleButtonTooltip = () => {
             
       </div>
 
-        ) // Ended the new Return that includes the extendedPosts Variable
         
-        //) changed this to } (see below)
-
-      }
-  
-      )}
+        ))}
 
         
         
@@ -2025,6 +2026,7 @@ const getScheduleButtonTooltip = () => {
           isOpen={showCampaignInfoModal}
           onClose={handleCloseCampaignInfoModal}
           campaignName={calendarName}
+          //onCreateNewCampaign={handleCreateNewCampaignFromModal}
       />
   )}
 
