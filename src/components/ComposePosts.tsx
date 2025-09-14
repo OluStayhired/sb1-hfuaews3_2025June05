@@ -484,24 +484,16 @@ useEffect(() => {
   // NEW: Function to handle using a hook from HookListModal
   const handleUseHook = (hookContent: string) => {
     // Prepend the hook content to the existing post content
-    //setContent('');
     setContent(hookContent + '\n\n' + content);
     //console.log("executed handleUseHook")
-    // The HookListModal will close itself via its internal logic after calling this
   };
 
    // NEW: Function to handle updating content from HookListModal (e.g., after generating killer hook)
-  //const handleUpdateComposeContent = (killercontent: string) => {
-   // setContent(content);
-  //};
 
   const handleRewriteHook = (revisedHook: string) => {
     setContent('');
-    //setContent(rewrittenContent);
-    //setContent(revisedHook + '\n' + '\n' + '\n');
     setContent(revisedHook + '\n' + content);
-    console.log("executed handleRewriteHook")
-    //setIsContentCalendarModalOpen(false);
+    //console.log("executed handleRewriteHook")
   };
 
   const handleRequestMoreBlueskyAccounts = () => {
