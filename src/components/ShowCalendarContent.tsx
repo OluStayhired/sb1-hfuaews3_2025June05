@@ -1808,7 +1808,7 @@ const getScheduleButtonTooltip = () => {
                           ease-in-out        // Add an easing function for smoother animation
                           //leading-relaxed    // Improve readability of text blocks
                           //whitespace-pre-wrap  // <-- ADDED: Preserve whitespace and wrap text
-                          pt-12 p-1 bg-gray-50 
+                          pt-4 p-1 bg-gray-50 
                           hover:bg-gray-100 
                           rounded-md text-xs 
                           text-left text-gray-500 mb-8 

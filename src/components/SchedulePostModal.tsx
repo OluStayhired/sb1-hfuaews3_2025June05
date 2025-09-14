@@ -4,7 +4,8 @@ import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
-import { generateListPost, generateHookPostV3, generateLinkedInHookPostV3} from '../lib/gemini';
+import { generateListPost, generateHookPostV3 } from '../lib/gemini';
+import { generateLinkedInHookPostV3 } from '../lib/geminiLinkedIn';
 import { format, parse } from 'date-fns';
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import { useNavigate } from 'react-router-dom';
@@ -472,7 +473,7 @@ const handleLinkedInHookPostV3 = async (postContent: contentData, char_length: s
     setLoadingCharLength(uniqueKey);
     
     // Generate improved content
-    const improvedContent = await generateHookPostV3(
+    const improvedContent = await generateLinkedInHookPostV3(
       selectedTheme || '',
       selectedTopic || '',
       selectedCalendarObject?.target_audience || '', 
