@@ -470,6 +470,10 @@ useEffect(() => {
 
   const handleCloseSentPostModal = () => {
     setIsSentPostModalOpen(false);
+    setIsHookListModalOpen(false);
+    setIsDraftPostModalOpen(false);
+    setIsContentCalendarModalOpen(false);
+    setIsContentCalendarModalOpen(false);
   };
 
    // NEW: Functions to manage the Hook List Modal
@@ -477,8 +481,13 @@ useEffect(() => {
     setIsHookListModalOpen(true);
   };
 
+  
   const handleCloseHookListModal = () => {
     setIsHookListModalOpen(false);
+    setIsDraftPostModalOpen(false);
+    setIsContentCalendarModalOpen(false);
+    setIsSentPostModalOpen(false);
+    setIsContentCalendarModalOpen(false);
   };
 
   // NEW: Function to handle using a hook from HookListModal
@@ -988,8 +997,13 @@ if (!activeAccountId) {
   }
 };
 
+
   const handleCloseContentCalendarModal = () => {
     setIsContentCalendarModalOpen(false);
+    setIsHookListModalOpen(false);
+    setIsDraftPostModalOpen(false);
+    setIsContentCalendarModalOpen(false);
+    setIsSentPostModalOpen(false);    
   };
 
   const handleSaveDraft = async (e: React.FormEvent) => {
