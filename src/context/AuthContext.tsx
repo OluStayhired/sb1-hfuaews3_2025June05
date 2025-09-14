@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe(); // Clean up the subscription on unmount
     };
-  }, []); // Empty dependency array means this effect runs ONLY once on mount
+  }, []); // Empty dependency array means this effect runs ONLY once on mount..
 
 
 
