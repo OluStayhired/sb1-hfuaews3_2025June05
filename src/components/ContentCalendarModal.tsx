@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Lightbulb, X, Sparkles, Copy, Loader2, PlusCircle } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3} from '../lib/gemini';
+import { generateLinkedInHookPostV3 } from '../lib/geminiLinkedIn';
 import { useNavigate, Navigate } from 'react-router-dom';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -172,7 +173,36 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
   }
 };    
    
- 
+const handleLinkedInHookPostV3 = async (item: ContentItem, char_length: string) => {
+
+  const uniqueKey = `${item.id}_${char_length}`;
+  setLoadingProcess(uniqueKey);
+
+  
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  
+  try {
+    
+  const improvedContent = await generateLinkedInHookPostV3(  
+      item.theme,
+      item.topic,
+      item.target_audience || '', // Add target_audience to interface if not present
+      item.content,
+      char_length
+    );
+
+    if (improvedContent.error) throw new Error(improvedContent.error)
+      else {
+        onRewriteContent(improvedContent.text);
+      }
+
+  } catch (err) {
+    console.error('Error improving content:', err);
+    // Could add error state/toast here
+  } finally {
+    setLoadingProcess(null);
+  }
+};    
 
   const handleCreateCampaign = () => {
     navigate('/dashboard/campaign');
@@ -268,18 +298,18 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
                   {/*------------------- Start all the social media buttons --------------------*/}
 
 
-                 <TooltipHelp  text = "⚡Rewrite for LinkedIn">
+                  <TooltipHelp  text="⚡Rewrite for LinkedIn">
               <button
                 
                 onClick={() => {
-                    ////console.log('Clicked LinkedIn. item.id:', item.id, 'char_length:', '700');
-                    handleHookPostV3(item, '700')}}
-                disabled={loadingProcess === `${item.id}_700`|| isHooksLoading || hooksError !== null}
+                    //console.log('Clicked LinkedIn. item.id:', item.id, 'char_length:', '700');
+                    handleLinkedInHookPostV3(item, '1000')}}
+                disabled={loadingProcess === `${item.id}_1000`|| isHooksLoading || hooksError !== null}
                
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
                 
-                {loadingProcess === `${item.id}_700` ? (
+                {loadingProcess === `${item.id}_1000` ? (
                 <>
                 {
                 
@@ -289,7 +319,6 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
                 </>  
                 ) : (
               <>
-                {/*//console.log('Not Loading LinkedIn, loadingProcess:', loadingProcess, 'Expected:', `${item.id}_700`)*/}
                 <img src={LinkedInLogo} className="w-3 h-3" />
                 </>
                  )}
