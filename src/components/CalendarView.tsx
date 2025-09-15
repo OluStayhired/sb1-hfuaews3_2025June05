@@ -46,7 +46,7 @@ interface TimeSlot {
   //active_time: boolean;
 }
 
-// Update DaySchedule interface to include posts
+// Update DaySchedule interface to include  posts
 interface DaySchedule {
   date: Date;
   dayOfWeek: string;
