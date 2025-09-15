@@ -8,6 +8,7 @@ import XLogo from '../images/x-logo.svg';
 import { Calendar, Check, CalendarCheck, CalendarClock, Edit2, Copy, Info, Loader2, Megaphone, ArrowLeft, X, Sparkles, SquarePen, Send, Clock, PlusCircle, CheckCircle, Heart, Combine, ImagePlus, ellipsis, info } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3 } from '../lib/gemini';
 import { generateLinkedInHookPostV3 } from '../lib/geminiLinkedIn';
+import { generateTwitterHookPostV3 } from '../lib/geminiTwitter';
 import { ContentModal } from './ContentModal';
 import { AddToCalendarModal } from './AddToCalendarModal';
 import { checkConnectedSocials, checkPlatformConnection } from '../utils/checkConnectedSocial';
@@ -831,6 +832,86 @@ const handleLinkedInHookPostV3 = async (content: CalendarContent, char_length: s
     //setLoadingCharLength(null);
   }
 };  
+
+const handleTwitterHookPostV3 = async (content: CalendarContent, char_length: string) => {
+
+  // Check if the campaign is expired
+if (currentCalendarDaysLeft === null || currentCalendarDaysLeft < 0) {
+console.log('Campaign expired or days left is null/negative. Showing CampaignInfoCard modal.');
+setShowCampaignInfoModal(true); // Set state to show the CampaignInfoCard modal
+return; // Stop execution, do not proceed with LLM call
+}
+
+const uniqueKey = `${content.id}_${char_length}`;
+
+try {
+//setIsImproving(content.id);
+
+//add typing effect state management here
+setTypingContentId(content.id); // Set the ID of the content item that will be typing
+setCurrentTypingText(''); // Clear previous text for typing effect
+setShowTypingEffect(true); // Activate the typing effect
+
+setLoadingCharLength(uniqueKey);
+
+// Generate improved content
+const improvedContent = await generateTwitterHookPostV3(
+  //hooksData,
+  content.theme,
+  content.topic,
+  content.target_audience || '', // Add target_audience to interface if not present
+  content.content,
+  char_length
+);
+
+//console.log('executing the Hook Posts Here')
+
+if (improvedContent.error) throw new Error(improvedContent.error);
+
+//Add new state variable sets here
+ // 3. API call is complete, hide spinner and prepare for typing effect
+setLoadingCharLength(null); // Hide the spinner
+setCurrentTypingText(improvedContent.text); // Set the text to be typed
+setTypingContentId(content.id);             // Indicate which item is typing
+setShowTypingEffect(true); 
+
+// Update in Supabase
+const { error: updateError } = await supabase
+  .from('content_calendar')
+  .update({ 
+    content: improvedContent.text,
+    updated_at: new Date().toISOString()
+  })
+  .eq('id', content.id);
+
+if (updateError) throw updateError;
+
+// Optimistic update
+setCalendarContent(prev => 
+  prev.map(item => 
+    item.id === content.id 
+      ? { ...item, content: improvedContent.text }
+      : item
+  )
+);
+
+// Set the text for the TypingEffect component to start typing
+setCurrentTypingText(improvedContent.text);
+
+} catch (err) {
+console.error('Error improving content:', err);
+// Could add error state/toast here
+
+//moved set charlength here
+setLoadingCharLength(null);
+
+setShowTypingEffect(false); // Hide typing effect on error
+setTypingContentId(null);
+setCurrentTypingText(''); // Clear typing text
+} finally {
+//setLoadingCharLength(null);
+}
+};    
 
   
 const formatContentText = (text: string): string[] => {
@@ -1690,7 +1771,7 @@ const getScheduleButtonTooltip = () => {
 
             <TooltipHelp  text = "⚡Adapt for Twitter">
               <button
-                onClick={() => handleHookPostV3(content, 280)}
+                onClick={() => handleTwitterHookPostV3(content, 280)}
                 disabled={loadingCharLength === `${content.id}_280`}
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
