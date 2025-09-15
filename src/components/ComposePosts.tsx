@@ -1539,7 +1539,7 @@ const onModalScheduleError = (error: any) => {
           
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm mt-4 text-gray-500">
                   <span className={`text-sm ${
                           content.length > max_length  
                               ? 'text-red-500 bg-red-50 rounded-full p-2' 
