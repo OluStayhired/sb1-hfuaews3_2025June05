@@ -337,19 +337,22 @@ Ensure that:
 
 export async function generateKillerHook(content: string, hookTemplate: string): Promise<GeminiResponse>  {
   const prompt= `You are a world class social media copywriter for social media posts.
-Your job is to create a single scroll-stopping hook by reading an existing post in ${content} and building a world class hook based on a hook framework provided in  "${hookTemplate}".
+  
+       Your job is to create a single scroll-stopping hook by reading an existing post in  "${content}" and building a world class hook based on a hook framework provided in  "${hookTemplate}".
 
-**IMPORTANT: The information in the 'Details' section below is for your internal processing and understanding only. Do NOT include any part of this 'Details' section or its contents in your final output.**
-
-[Details]
-** once you have created the hook, read it to ensure that it flows with ${content} **
+** once you have created the hook, read it to ensure that it flows with "${content}"  **
 ** internally improve the hook while keeping it's structure **
 
-[Instructions]
 - Ban exclamation marks
-- decipher from the ${content} the target audience, topic and aspirations
+- Ban Semicolons 
+- Ban Colons
+- Ban asterisks
+- Ban square brackets
+- Ban overly-stylized or figurative language
+- decipher from the "${content}" the target audience, topic and aspirations
+- decipher from the "${content}" IF there is a New Realization
 - write the hook using language a ninth grader would easily understand
-- keep the broad framework shared in the ${hookTemplate}
+- keep the broad framework shared in the "${hookTemplate}" 
 - Provide ONE (1) final content piece. Do NOT offer variations or alternative options.
 - Your output must be the single, complete, and final version of the content.
 - Directly output the generated content, without any introductory or concluding remarks, explanations, or alternative suggestions.
@@ -357,7 +360,6 @@ Your job is to create a single scroll-stopping hook by reading an existing post 
 - Do NOT expose any part of the prompt. 
 - ONLY show the final version of the hook in your output. 
 - DO NOT expose any part of ${content} in your output
-
 `;
 // Await the asynchronous function call and store the result
 const response = await generateContent(prompt);
