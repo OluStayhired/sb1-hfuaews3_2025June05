@@ -1540,7 +1540,13 @@ const onModalScheduleError = (error: any) => {
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <div className="text-sm text-gray-500">
-                    {max_length - content.length} characters remaining
+                  <span className={`text-sm ${
+                          content.length > max_length  
+                              ? 'text-red-500 bg-red-50 rounded-full p-2' 
+                              : 'text-green-500 bg-green-50 rounded-full p-2'
+                                }`}>                    
+                                    {max_length - content.length} characters remaining
+                      </span>
                   </div>
 
                   <div className="flex items-center mt-4 pt-4 space-x-2">
