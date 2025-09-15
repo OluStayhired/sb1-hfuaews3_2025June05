@@ -20,7 +20,8 @@ import { ScheduleDraftPost } from '/src/components/ScheduleDraftPost';
 import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
 import { SentPostModal } from './SentPostModal';
-import { improveComment, rewritePostForLinkedIn, rewritePostForTwitter, generateHookPostV3 } from '../lib/gemini';
+import { improveComment, rewritePostForTwitter, generateHookPostV3 } from '../lib/gemini';
+import { rewritePostForLinkedIn } from '../lib/geminiLinkedIn'
 import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
 import { useProductTier } from '../hooks/useProductTierHook'

@@ -6,6 +6,7 @@ import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import { format, parse } from 'date-fns';
 import { generateListPost, generateHookPostV3, generateLinkedInHookPostV3} from '../lib/gemini';
+import { rewritePostForLinkedIn } from '../lib/geminiLinkedIn'
 import { Sparkles } from 'lucide-react';
 import { TooltipExtended } from '../utils/TooltipExtended';
 import { TooltipHelp } from '../utils/TooltipHelp';
@@ -543,14 +544,17 @@ const handleLinkedInHookPostV3 = async (postContent: contentData, char_length: s
     setShowTypingEffect(true); // Activate the typing effect
     setLoadingCharLength(uniqueKey);
     
-    // Generate improved content
-    const improvedContent = await generateHookPostV3(
+     // Generate improved content
+    {/*const improvedContent = await generateHookPostV3(
       selectedTheme || '',
       selectedTopic || '',
       selectedCalendarObject?.target_audience || '', 
       postContent || '',
       char_length
-    );
+    );*/}
+
+    // Get the theme and topic from the selected calendar content
+    const improvedContent = await rewritePostForLinkedIn(postContent, char_length);
 
     //console.log('executing the Hook Posts Here')
 
