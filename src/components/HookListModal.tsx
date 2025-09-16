@@ -334,7 +334,8 @@ const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
                     {/* NEW: Display example_hook */}
                     {hookItem.example_hook && (
                       <div className="mt-2 p-1 bg-gray-100 rounded-md">
-                        <p className="text-xs text-gray-600">Example: {hookItem.example_hook}</p>
+                        {/*<p className="text-xs text-gray-600">Example: {hookItem.example_hook}</p>*/}
+                        <p className="text-xs text-gray-400 italic">{hookItem.example_hook}</p>
                       </div>
                     )}
 
