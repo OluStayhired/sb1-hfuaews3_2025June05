@@ -331,7 +331,7 @@ const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
                     {/* NEW: Adjust mt-5 to accommodate category pill */}
                     <p className="mt-5 p-1 text-xs bg-gray-50 rounded-md text-gray-600 whitespace-pre-wrap hover:bg-gray-100">{hookItem.hooks}</p>
 
-                    {/* NEW: Display example_hook */}
+                    {/* NEW: Display example_hook*/}
                     {hookItem.example_hook && (
                       <div className="mt-2 p-1 bg-gray-100 rounded-md">
                         {/*<p className="text-xs text-gray-600">Example: {hookItem.example_hook}</p>*/}
