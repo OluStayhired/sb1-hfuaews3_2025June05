@@ -86,7 +86,8 @@ function ComposePosts() {
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
-  const [copySuccessMap, setCopySuccessMap] = useState<{ [key: string]: boolean }>({});
+  //const [copySuccessMap, setCopySuccessMap] = useState<{ [key: string]: boolean }>({});
+  const [copySuccessMap, setCopySuccessMap] = useState(false);
 
 
   const [max_length, setMaxLength] = useState(300);
