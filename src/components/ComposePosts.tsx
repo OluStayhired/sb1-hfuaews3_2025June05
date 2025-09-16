@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2 } from 'lucide-react';
+import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2 } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -86,6 +86,7 @@ function ComposePosts() {
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
+  const [copySuccessMap, setCopySuccessMap] = useState<{ [key: string]: boolean }>({});
 
 
   const [max_length, setMaxLength] = useState(300);
@@ -505,6 +506,16 @@ useEffect(() => {
     setContent(revisedHook + '\n' + content);
     //console.log("executed handleRewriteHook")
   };
+
+  const handleCopyToClipboard = async (text: string) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setCopySuccessMap(() => (true));
+          setTimeout(() => setCopySuccessMap(false), 2000);
+        } catch (err) {
+          console.error('Failed to copy text:', err);
+        }
+      };
 
   const handleRequestMoreBlueskyAccounts = () => {
    setShowAddSocialTabModal(false); 
@@ -1533,7 +1544,19 @@ const onModalScheduleError = (error: any) => {
                     </TooltipHelp>
                   </button>
                  
-                {/*End New Deletewitter AI Button*/}
+                {/*End New Delete AI Button*/}
+
+                <button                  
+                  type="button"
+                    //onClick={() => setContent('')}
+                   onClick={() => handleCopyToClipboard(content)}
+                   className="absolute right-40 top-1 p-1 bg-gray-100 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
+                  <TooltipHelp text={copySuccessMap ? "Copied!" : "⚡Copy Text"}>
+                   <Copy className="w-3 h-3 text-gray-400" />       
+                  </TooltipHelp>
+              </button>
+                 
+                {/*End New Copy Text Button*/}
 
                 {/*start linkedin button */}
           
