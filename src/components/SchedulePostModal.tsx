@@ -905,7 +905,7 @@ const renderContentStep = () => (
                       </label>
                   </div>   
               {hasActiveCalendars ? ( 
-                   <div className="grid grid-cols-2 gap-3 text-sm">
+                   <div className="grid grid-cols-3 text-sm">
       {calendars.map((calendar) => (
         <button
             key={calendar.calendar_name}
