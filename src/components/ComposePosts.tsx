@@ -1539,7 +1539,7 @@ const onModalScheduleError = (error: any) => {
                   
                   type="button"
                     onClick={() => setContent('')}
-                   className="absolute right-32 top-1 p-1 bg-red-100 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
+                   className="absolute right-32 top-1 p-1 bg-red-100 hover:bg-red-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
                   <TooltipHelp text="⚡ Clear Text">
                    <Trash2 className="w-3 h-3 text-red-500" />       
                     </TooltipHelp>
@@ -1551,9 +1551,9 @@ const onModalScheduleError = (error: any) => {
                   type="button"
                     //onClick={() => setContent('')}
                    onClick={() => handleCopyToClipboard(content)}
-                   className="absolute right-40 top-1 p-1 bg-gray-100 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
+                   className="absolute right-40 top-1 p-1 bg-blue-100 hover:bg-blue-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
                   <TooltipHelp text={copySuccessMap ? "Copied!" : "⚡Copy Text"}>
-                   <Copy className="w-3 h-3 text-gray-400" />       
+                   <Copy className="w-3 h-3 text-blue-500" />       
                   </TooltipHelp>
               </button>
                  
