@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Loader2, X, Unplug, Users, UserCheck, Clock, Zap, UserPlus, PlusCircle, Video } from 'lucide-react';
+import { Plus, Loader2, X, Unplug, Users, UserCheck, Clock, Zap, UserPlus, PlusCircle, Video, BadgeCheck, Award } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import BlueskyLogoWhite from '../images/bluesky-logo-white.svg';
@@ -17,6 +17,8 @@ import { useProductTier } from '../hooks/useProductTierHook'
 import { AddSocialTabModal } from './AddSocialTabModal';
 import { ConnectSocialModal } from './ConnectSocialModal';
 import { ProPlanLimitModal } from './ProPlanLimitModal';
+import { getLinkedInTokenDaysRemaining } from '../utils/tokenUtils';
+import { format } from 'date-fns';
 
 // Define AccessAccountsProps interface based on your usage
 interface AccessAccountsProps {
@@ -113,6 +115,28 @@ const ConnectedAccountCard = ({
 
 
 
+   // Helper function to display token status
+  const renderTokenStatus = (account: SocialAccount) => {
+    if (account.social_channel === 'LinkedIn' && account.linkedin_expires_at) {
+      const expiresAtDate = new Date(account.linkedin_expires_at);
+      const now = new Date();
+
+      if (expiresAtDate < now) {
+        return <span className="text-red-500 text-sm">Token Expired! (Reconnect Now)</span>;
+      }
+
+      // Calculate days remaining. Note: expiresInSeconds is not directly available here,
+      // so we calculate days from the stored timestamp.
+      const daysRemaining = Math.max(0, Math.ceil((expiresAtDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+
+      if (daysRemaining <= 7) {
+        return <span className="text-yellow-500 text-sm">{daysRemaining} days left</span>;
+      }
+      return <span className="text-gray-500 text-sm">Active: {daysRemaining} days left</span>;
+    }
+    return null;
+  }; 
+
   return (
     <div className="bg-gradient-to-r from-blue-50 to-white p-6 rounded-lg border border-blue-100 hover:border hover:border-blue-300">
       <div className="flex items-center justify-between">
@@ -153,6 +177,18 @@ const ConnectedAccountCard = ({
               </button>
             </TooltipHelp>
           )}
+
+          {account.social_channel === 'LinkedIn' && (
+           <TooltipHelp text="⚡LinkedIn Access Token Status">
+                    <button 
+                      className="flex items-center px-2 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
+                      <BadgeCheck className="w-3.5 h-3.5 mr-1" />               
+                      <span className="mr-1"> {renderTokenStatus(account)} </span>
+                    </button>
+            </TooltipHelp>
+            )}
+
+
           <span className="flex items-center px-2 py-1 bg-green-100 text-green-700 rounded-full text-sm">
             <Zap className="w-3.5 h-3.5 mr-1" />
             <span className="mr-1">Connected </span>
@@ -1145,7 +1181,32 @@ const refreshConnectedAccounts = async () => {
     // This effect should re-run whenever currentUserId changes
     }, [currentUserId]); 
 
+ //---------- Start Handle render Display Token Status --------------- //
 
+// Helper function to display token status
+const renderTokenStatus = (account: SocialAccount) => {
+  if (account.social_channel === 'LinkedIn' && account.linkedin_expires_at) {
+    const expiresAtDate = new Date(account.linkedin_expires_at);
+    const now = new Date();
+
+    if (expiresAtDate < now) {
+      return <span className="text-red-500 text-sm">Token Expired! (Reconnect Now)</span>;
+    }
+
+    // Calculate days remaining. Note: expiresInSeconds is not directly available here,
+    // so we calculate days from the stored timestamp.
+    const daysRemaining = Math.max(0, Math.ceil((expiresAtDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+
+    if (daysRemaining <= 7) {
+      return <span className="text-yellow-500 text-sm">Token Active: {daysRemaining} days left</span>;
+    }
+    //return <span className="text-green-500 text-xs">Active</span>;
+    return <span className="text-gray-500 text-sm">Token Active: {daysRemaining} days left</span>;
+  }
+  return null;
+};
+
+//--------- End Handle render Display Token Startus -------------- //
 
   //---------- Handle Disconnect Social Accounts ---------------//
 
@@ -1635,6 +1696,19 @@ const handleSaveTimezone = async (newTimezone: string) => {
                     </button>
                   </TooltipHelp>
                   )}
+
+                {linkedinUser.social_channel === 'LinkedIn' && (    
+                  <TooltipHelp text="⚡LinkedIn Access Token Status">
+                    <button 
+                      //onClick={() => handleTimezoneOpenModal(linkedinUser.handle)} 
+                      className="flex items-center px-2 py-1 bg-gray-100 text-gray-500 rounded-full text-sm">
+                      <BadgeCheck className="w-3.5 h-3.5 mr-1" />
+                      <span className="mr-1"> {renderTokenStatus(linkedinUser)} </span>
+                      
+                    </button>
+                  </TooltipHelp>
+              )}
+
                   <span className="flex items-center px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
                     <Zap className="w-3.5 h-3.5 mr-1" />
                     <span className="mr-1">Connected </span>
