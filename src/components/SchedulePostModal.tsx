@@ -905,7 +905,7 @@ const renderContentStep = () => (
                       </label>
                   </div>   
               {hasActiveCalendars ? ( 
-                   <div className="grid grid-cols-3 text-sm">
+                   <div className="grid grid-cols-3 gap-4 text-sm">
       {calendars.map((calendar) => (
         <button
             key={calendar.calendar_name}
@@ -920,7 +920,7 @@ const renderContentStep = () => (
                 setSelectedCalendarObject(null);
                 }
                 }}
-                className={`flex w-fit space-x-2 text-left items-center p-2 rounded-lg transition-colors transition-group ${
+                className={`flex w-full space-x-2 text-left items-center p-2 rounded-lg transition-colors transition-group ${
                   selectedCalendar === calendar.calendar_name
                       //? 'border-blue-500 bg-blue-50'
                        ? 'text-blue-500 bg-blue-50'
