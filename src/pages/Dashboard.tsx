@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { CalendarCheck, Sparkles, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target, Combine, PlusCircle, LayoutGrid, FileEdit, CalendarClock } from 'lucide-react';
+import { CalendarCheck, Sparkles, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, 
+  PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target, Combine, 
+  PlusCircle, LayoutGrid, FileEdit, CalendarClock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ComposePosts from '../components/ComposePosts';
 import ManageSchedule from '../components/ManageSchedule';
@@ -32,6 +34,8 @@ import { TooltipHelp } from '../utils/TooltipHelp';
 import { CalendarList } from '../components/CalendarList';
 import { useProductTier } from '../hooks/useProductTierHook'
 import { UpgradePlanModal } from '../components/UpgradePlanModal'
+import { AddBlogPage } from '../components/AddBlogPage';
+import { BlogManagementPage } from '../pages/BlogManagementPage';
 
 
 function Dashboard() {
@@ -435,7 +439,7 @@ useEffect(() => {
   };
 }, [isBlueskyAuthenticated]);
 
-
+const isBlogAdmin = currentUserEmail === "olu@prelo.io";
 
   
   const menuItems = [
@@ -445,7 +449,7 @@ useEffect(() => {
     { icon: <UserPlus className="w-4 h-4" />, label: 'Connect Accounts', path: 'accounts' },
     { icon: <Clock className="w-4 h-4" />, label: 'Add Schedule', path: 'slots' },
     { icon: <Settings className="w-4 h-4" />, label: 'Account Settings', path: 'settings' },
-    
+    ...(isBlogAdmin ? [{ icon: <FileEdit className="w-4 h-4" />, label: 'Blog Admin', path: 'manageblogs' }] : []),
   ];
 
   const handleLogout = async () => {
@@ -1385,6 +1389,8 @@ if(path !== "settings") {
             <Route path="accounts" element={<AccessAccounts refreshDashboardAccounts={refreshConnectedAccounts} />} />
             <Route path="slots" element={<ManageScheduleSlots />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="blogs" element={<AddBlogPage />} />
+            <Route path="manageblogs" element={<BlogManagementPage />} />
             <Route path="onboarding-success" element={<OnboardSuccessPage />} />
             <Route path="campaign/createcalendarform" element={<CreateCalendarForm />} />
             <Route path="success" element={<PaymentSuccessPage />} />
