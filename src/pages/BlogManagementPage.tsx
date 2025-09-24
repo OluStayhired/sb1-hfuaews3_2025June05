@@ -60,7 +60,7 @@ export function BlogManagementPage() {
           {mode === 'view_edit' && (
             <button
               onClick={handleCreateNewBlog}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
             >
               <PlusCircle className="w-5 h-5" />
               <span>Create New Blog</span>
@@ -69,7 +69,7 @@ export function BlogManagementPage() {
           {mode === 'add_new' && (
             <button
               onClick={handleCancelAddBlog}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-colors flex items-center space-x-2"
+              className="px-4 py-2 text-sm bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-colors flex items-center space-x-2"
             >
               <X className="w-5 h-5" />
               <span>Cancel Add Blog</span>
@@ -77,7 +77,7 @@ export function BlogManagementPage() {
           )}
           <button
             onClick={handleOpenBlogListPanel}
-            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2"
+            className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2"
           >
             <BookText className="w-5 h-5" />
             <span>Open Blog List</span>

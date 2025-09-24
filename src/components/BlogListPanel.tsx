@@ -4,6 +4,7 @@ import { X, Loader2, Search, BookText, ArrowLeft, ArrowRight, Tag, List, Image, 
 import { supabase } from '../lib/supabase';
 import { format } from 'date-fns';
 import { TooltipExtended } from '../utils/TooltipExtended';
+import { TooltipHelp } from '../utils/TooltipHelp';
 
 interface BlogListPanelProps {
   isOpen: boolean;
@@ -83,6 +84,7 @@ export function BlogListPanel({ isOpen, onClose, onSelectBlog, selectedBlogId }:
           featured_image_url,
           author_name,
           created_at,
+          published,
           blog_post_categories!left(categories_id) // Use left join to filter by category
         `, { count: 'exact' });
 
@@ -112,6 +114,7 @@ export function BlogListPanel({ isOpen, onClose, onSelectBlog, selectedBlogId }:
         featured_image_url: item.featured_image_url,
         author_name: item.author_name,
         created_at: item.created_at,
+        published: item.published
       }));
 
       setBlogPosts(mappedData);
@@ -146,6 +149,41 @@ export function BlogListPanel({ isOpen, onClose, onSelectBlog, selectedBlogId }:
   const handleCategoryFilter = (categoryId: number | null) => {
     setSelectedCategory(categoryId);
     setCurrentPage(1); // Reset to first page on new filter
+  };
+
+  // NEW: handleBlogPostStatus function
+  const handleBlogPostStatus = async (blogId: number, newStatus: boolean) => {
+    try {
+      // Optimistic UI update
+      setBlogPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === blogId ? { ...post, published: newStatus } : post
+        )
+      );
+
+      const { error: updateError } = await supabase
+        .from('blog_post')
+        .update({ published: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', blogId);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      // If successful, the optimistic update is correct.
+      // If you want to be absolutely sure, you could re-fetch the single post or the entire list.
+      // For now, we'll rely on the optimistic update.
+      console.log(`Blog post ${blogId} status updated to published: ${newStatus}`);
+    } catch (err: any) {
+      console.error('Error updating blog post status:', err);
+      setError(`Failed to update status for blog post ${blogId}: ${err.message}`);
+      // Revert optimistic update on error
+      setBlogPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === blogId ? { ...post, published: !newStatus } : post
+        )
+      );
+    }
   };
 
   if (!isOpen) return null;
@@ -255,10 +293,28 @@ export function BlogListPanel({ isOpen, onClose, onSelectBlog, selectedBlogId }:
                       <span>By {post.author_name || 'Unknown'}</span>
                       <span>{format(new Date(post.created_at), 'dd MMM, yyyy')}</span>
                     </div>
-                    <div className="mt-3 flex justify-end">
+                    <div className="mt-3 space-x-2 flex justify-end">
+
+                   <TooltipHelp text={post.published ? '⚡Set to Draft':'⚡Click to Publish'}  >
+                    <button
+                         onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering onSelectBlog
+                          handleBlogPostStatus(post.id, !post.published);
+                        }}
+
+                        className={`px-3 py-1.5 text-xs rounded-lg transition-colors transition-duration:700 // Base styles
+                            ${post.published
+                                  ? 'bg-green-100 text-green-500 hover:bg-green-200'
+                                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                            }`}
+                      >
+                       {post.published ?  'Published' : 'Draft'}             
+                      </button>
+                     </TooltipHelp> 
+                      
                       <button
                         onClick={() => onSelectBlog(post.id)} // NEW: Call onSelectBlog
-                        className="px-3 py-1.5 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
                       >
                         Open
                       </button>
