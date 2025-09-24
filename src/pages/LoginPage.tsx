@@ -36,7 +36,8 @@ function LoginPage() {
     //console.log('Google Sign In clicked (no functionality)');
     // No actual functionality
   //};
-const homepageUrl = "/";
+//const homepageUrl = "/";
+const homepageUrl = "https://www.sosavvy.so"
   
 const handleGoogleLogin = async () => {
   try {
@@ -114,8 +115,15 @@ const handleSubmit = async (e: React.FormEvent) => {
                      no-underline hover:no-underline text-white
                      transition-colors duration-200"
         >          
-              <span className="flex grow space-x-2 items-center text-left text-sm font-semibold">
+              {/*<span className="flex grow space-x-2 items-center text-left text-sm font-semibold">
                 <ArrowLeft className="w-3.5 h-3.5"/>
+                <span> Back Home</span>
+              </span>
+              */}
+              <span className="flex space-x-2 items-center text-left text-sm font-semibold">
+                <div className="flex-shrink-0 p-2 bg-white bg-opacity-20 rounded-full">
+                <ArrowLeft className="w-3.5 h-3.5"/>
+                </div>
                 <span> Back Home</span>
               </span>
     </a>
