@@ -13,7 +13,7 @@ class VideoBlot extends BlockEmbed {
     const url = typeof value === 'string' ? value : value.url;
     
     // Set the class attribute using setAttribute
-    node.setAttribute('class', 'aspect-w-4 aspect-h-3 my-4'); // <--- CORRECTED LINE
+    node.setAttribute('class', 'aspect-w-16 aspect-h-9 my-4'); // <--- CORRECTED LINE
     
     const iframe = document.createElement('iframe');
     iframe.setAttribute('src', DOMPurify.sanitize(url));

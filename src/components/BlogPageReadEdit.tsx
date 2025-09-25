@@ -202,7 +202,7 @@ export function BlogPageReadEdit({ blogId, onOpenBlogListPanel, isBlogListPanelO
 
         // Create a new block with a div wrapping the video
             const videoHtml = `
-          <div class="aspect-w-3 aspect-h-4 my-4">
+          <div class="aspect-w-16 aspect-h-9 my-4">
             <iframe src="${embedUrl}" class="w-full h-full rounded-md" frameborder="0" allowfullscreen></iframe>
           </div>
         `;
