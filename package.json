@@ -13,6 +13,8 @@
     "@atproto/api": "^0.14.20",
     "@google/generative-ai": "^0.24.0",
     "@supabase/supabase-js": "^2.49.4",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.19",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "lucide-react": "^0.344.0",
