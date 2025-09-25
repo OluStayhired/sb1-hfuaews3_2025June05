@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid'; // For unique IDs for images
+import VideoBlot from './VideoBlot';
 
 // --- Interfaces for Data Structures (Mirroring assumed DB schema) ---
 
@@ -157,40 +158,41 @@ export function AddBlogPage() {
     };
   }, []);
 
+
   // --- NEW: Custom Video Handler ---
-    const videoHandler = useCallback(() => {
-      const url = prompt('Enter YouTube or Vimeo URL:');
-      if (url) {
-        const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-        const quillEditor = quillRef.current?.getEditor();
-        const range = quillEditor?.getSelection();
-    
-        if (quillEditor && range) {
-          let embedUrl = '';
-          if (youtubeMatch && youtubeMatch[1]) {
-            embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}?showinfo=0`;
-          } else {
-            embedUrl = url;
-          }
-    
-          if (embedUrl) {
-            // Get the current content and selection
-            const content = quillEditor.getContents();
-            const index = range.index;
-    
-            // Create a new block with a div wrapping the video
-            const videoHtml = `
-              <div class="aspect-w-16 aspect-h-9 my-4">
-                <iframe src="${embedUrl}" class="w-full h-full rounded-md" frameborder="0" allowfullscreen></iframe>
-              </div>
-            `;
-    
-            // Insert the new HTML block
-            quillEditor.clipboard.dangerouslyPasteHTML(index, videoHtml);
-          }
-        }
-      }
-    }, []);
+  const videoHandler = useCallback(() => {
+  const url = prompt('Enter YouTube or Vimeo URL:');
+  if (url) {
+    const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    const quillEditor = quillRef.current?.getEditor();
+    const range = quillEditor?.getSelection();
+
+    if (quillEditor && range) {
+      let embedUrl = '';
+      if (youtubeMatch && youtubeMatch[1]) {
+        embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}?showinfo=0`;
+      } else {
+        embedUrl = url;
+      }
+
+      if (embedUrl) {
+        // Get the current content and selection
+        const content = quillEditor.getContents();
+        const index = range.index;
+
+        // Create a new block with a div wrapping the video
+        const videoHtml = `
+          <div class="aspect-w-3 aspect-h-4 my-4">
+            <iframe src="${embedUrl}" class="w-full h-full rounded-md" frameborder="0" allowfullscreen></iframe>
+          </div>
+        `;
+
+        // Insert the new HTML block
+        quillEditor.clipboard.dangerouslyPasteHTML(index, videoHtml);
+      }
+    }
+  }
+}, []);
 
   // --- Helper: Extract Images from HTML Content ---
   const extractImagesFromHtml = (htmlContent: string): { url: string; alt: string }[] => {
@@ -395,26 +397,26 @@ export function AddBlogPage() {
     }
   };
 
- // --- ReactQuill Modules and Formats ---
- const modules = React.useMemo(() => ({
-  toolbar: {
-    container: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'script': 'sub' }, { 'script': 'super' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
-      [{ 'direction': 'rtl' }],
-      [{ 'align': [] }],
-      ['link', 'image', 'video'], // Include image and video buttons
-      ['clean']
-    ],
-    handlers: {
-      image: imageHandler, // Custom image handler
-      video: videoHandler,
+  // --- ReactQuill Modules and Formats ---
+  const modules = React.useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+        [{ 'align': [] }],
+        ['link', 'image', 'video'], // Include image and video buttons
+        ['clean']
+      ],
+      handlers: {
+        image: imageHandler, // Custom image handler
+        video: videoHandler,
+      },
     },
-  },
-}), [imageHandler, videoHandler]);
+  }), [imageHandler, videoHandler]);
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike', 'blockquote',
@@ -495,7 +497,7 @@ export function AddBlogPage() {
             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
               <div className="space-y-1 text-center">
                 {formData.featured_image_url && (
-                  <img src={formData.featured_image_url} alt="Featured Preview" className="mx-auto h-32 w-auto object-cover mb-4 rounded-md" />
+                  <img src={formData.featured_image_url} alt="Featured Preview" className="mx-auto h-96 w-auto object-cover mb-4 rounded-md" />
                 )}
                 <ImagePlus className="mx-auto h-12 w-12 text-gray-400" />
                 <div className="flex text-sm text-gray-600">

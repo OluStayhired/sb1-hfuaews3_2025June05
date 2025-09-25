@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import ReactQuill from 'react-quill';
+//import { ReactQuill } from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import {
   Edit, Save, Loader2, X, ImagePlus, Tag, List,
@@ -11,6 +12,9 @@ import {
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { TooltipHelp } from '../utils/TooltipHelp';
+import  VideoBlot  from './VideoBlot';
+
+Quill.register(VideoBlot, true);
 
 // --- Interfaces for Data Structures ---
 
@@ -25,6 +29,7 @@ interface BlogPost {
   created_at: string;
   updated_at: string | null;
   user_id: string;
+  published: boolean;
   categories: { id: number; name: string }[];
   tags: { id: number; name: string }[];
   inline_images: { id: number; image_url: string; alt_text: string | null }[];
@@ -167,39 +172,50 @@ export function BlogPageReadEdit({ blogId, onOpenBlogListPanel, isBlogListPanelO
   }, []);
 
   // --- NEW: Custom Video Handler ---
-    const videoHandler = useCallback(() => {
-      const url = prompt('Enter YouTube or Vimeo URL:');
-      if (url) {
-        const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-        const quillEditor = quillRef.current?.getEditor();
-        const range = quillEditor?.getSelection();
-    
-        if (quillEditor && range) {
-          let embedUrl = '';
-          if (youtubeMatch && youtubeMatch[1]) {
-            embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}?showinfo=0`;
-          } else {
-            embedUrl = url;
-          }
-    
-          if (embedUrl) {
-            // Get the current content and selection
-            const content = quillEditor.getContents();
-            const index = range.index;
-    
-            // Create a new block with a div wrapping the video
-            const videoHtml = `
-              <div class="aspect-w-16 aspect-h-9 my-4">
-                <iframe src="${embedUrl}" class="w-full h-full rounded-md" frameborder="0" allowfullscreen></iframe>
-              </div>
-            `;
-    
-            // Insert the new HTML block
-            quillEditor.clipboard.dangerouslyPasteHTML(index, videoHtml);
-          }
-        }
-      }
-    }, []);
+  const videoHandler = useCallback(() => {
+    const url = prompt('Enter YouTube or Vimeo URL:');
+    if (url) {
+      // Regex to extract the video ID from different YouTube URL formats
+      const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+      const quillEditor = quillRef.current?.getEditor();
+      const range = quillEditor?.getSelection();
+
+      if (quillEditor && range) {
+        let embedUrl = '';
+        if (youtubeMatch && youtubeMatch[1]) {
+          // It's a YouTube URL, create the embed URL
+          embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}?showinfo=0`;
+        } else {
+          // Fallback or handle other video types
+          embedUrl = url;
+        }
+
+        //if (embedUrl) {
+          //quillEditor.insertEmbed(range.index, 'video', embedUrl);
+          //quillEditor.setSelection(range.index + 1, 0);
+        //}
+
+         if (embedUrl) {
+            // Get the current content and selection
+            const content = quillEditor.getContents();
+            const index = range.index;
+
+        // Create a new block with a div wrapping the video
+            const videoHtml = `
+          <div class="aspect-w-3 aspect-h-4 my-4">
+            <iframe src="${embedUrl}" class="w-full h-full rounded-md" frameborder="0" allowfullscreen></iframe>
+          </div>
+        `;
+
+            // Insert the new HTML block
+            quillEditor.clipboard.dangerouslyPasteHTML(index, videoHtml);
+          }
+
+
+        
+      }
+    }
+  }, []);
 
   // --- Helper: Extract Images from HTML Content ---
   const extractImagesFromHtml = (htmlContent: string): { url: string; alt: string }[] => {
@@ -408,11 +424,14 @@ export function BlogPageReadEdit({ blogId, onOpenBlogListPanel, isBlogListPanelO
           description: formData.description,
           content: formData.content,
           featured_image_url: finalFeaturedImageUrl,
+          published: formData.published,
           updated_at: new Date().toISOString(),
         })
         .eq('id', blogPost.id);
 
       if (blogPostError) throw blogPostError;
+
+      
 
       // 4. Update blog_post_categories (delete old, insert new)
       await supabase.from('blog_post_categories').delete().eq('post_id', blogPost.id);
@@ -464,12 +483,13 @@ export function BlogPageReadEdit({ blogId, onOpenBlogListPanel, isBlogListPanelO
         if (inlineImagesError) console.error('Error inserting new inline images:', inlineImagesError);
       }
 
+      setIsLoading(false);
       setSuccessMessage('Blog post updated successfully!');
       setEditMode(false); // Exit edit mode after saving
       // Re-fetch the blog post to update the UI with latest data
       // This will trigger the useEffect at the top
       setBlogPost(null); // Clear to force re-fetch
-      setIsLoading(true); // Set loading to true to show spinner while re-fetching
+      //setIsLoading(true); // Set loading to true to show spinner while re-fetching
       // A more direct way would be to call fetchBlogData() again, but this works.
 
     } catch (err: any) {
@@ -480,6 +500,7 @@ export function BlogPageReadEdit({ blogId, onOpenBlogListPanel, isBlogListPanelO
       }
     } finally {
       setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
@@ -510,11 +531,11 @@ export function BlogPageReadEdit({ blogId, onOpenBlogListPanel, isBlogListPanelO
         [{ 'indent': '-1' }, { 'indent': '+1' }],
         [{ 'direction': 'rtl' }],
         [{ 'align': [] }],
-        ['link', 'image', 'video'], // Include image and video buttons
+        ['link', 'image', 'video'],
         ['clean']
       ],
       handlers: {
-        image: imageHandler, // Custom image handler
+        image: imageHandler,
         video: videoHandler,
       },
     },
@@ -701,7 +722,7 @@ export function BlogPageReadEdit({ blogId, onOpenBlogListPanel, isBlogListPanelO
               </div>
             ) : (
               blogPost.featured_image_url && (
-                <img src={blogPost.featured_image_url} alt={blogPost.title} className="w-full h-64 object-cover rounded-lg" />
+                <img src={blogPost.featured_image_url} alt={blogPost.title} className="w-full h-full object-cover rounded-lg" />
               )
             )}
           </div>
