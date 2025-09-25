@@ -89,7 +89,6 @@ function ComposePosts() {
   //const [copySuccessMap, setCopySuccessMap] = useState<{ [key: string]: boolean }>({});
   const [copySuccessMap, setCopySuccessMap] = useState(false);
 
-
   const [max_length, setMaxLength] = useState(300);
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
@@ -484,7 +483,6 @@ useEffect(() => {
     setIsHookListModalOpen(true);
   };
 
-  
   const handleCloseHookListModal = () => {
     setIsHookListModalOpen(false);
     setIsDraftPostModalOpen(false);
@@ -502,21 +500,21 @@ useEffect(() => {
 
    // NEW: Function to handle updating content from HookListModal (e.g., after generating killer hook)
 
-  const handleRewriteHook = (revisedHook: string) => {
+    const handleRewriteHook = (revisedHook: string) => {
     setContent('');
     setContent(revisedHook + '\n' + content);
     //console.log("executed handleRewriteHook")
   };
 
   const handleCopyToClipboard = async (text: string) => {
-        try {
-          await navigator.clipboard.writeText(text);
-          setCopySuccessMap(() => (true));
-          setTimeout(() => setCopySuccessMap(false), 2000);
-        } catch (err) {
-          console.error('Failed to copy text:', err);
-        }
-      };
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopySuccessMap(() => (true));
+      setTimeout(() => setCopySuccessMap(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+    }
+  };
 
   const handleRequestMoreBlueskyAccounts = () => {
    setShowAddSocialTabModal(false); 
@@ -1009,7 +1007,6 @@ if (!activeAccountId) {
     setIsLoading(false);
   }
 };
-
 
   const handleCloseContentCalendarModal = () => {
     setIsContentCalendarModalOpen(false);
@@ -1538,33 +1535,73 @@ const onModalScheduleError = (error: any) => {
                 <button
                   
                   type="button"
-                    onClick={() => setContent('')}
-                   className="absolute right-32 top-1 p-1 bg-red-100 hover:bg-red-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
+                   disabled={!activeAccountId || !content.trim() || isSchedulingPost}
+                  onClick={() => setContent('')}
+                   className="absolute right-32 top-1 p-1 bg-red-100 hover:bg-red-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
                   <TooltipHelp text="⚡ Clear Text">
                    <Trash2 className="w-3 h-3 text-red-500" />       
                     </TooltipHelp>
                   </button>
                  
-                {/*End New Delete AI Button*/}
+                {/*End New Deletewitter AI Button*/}
 
-                <button                  
+
+              <button                  
                   type="button"
                     //onClick={() => setContent('')}
+                  disabled={!activeAccountId || !content.trim() || isSchedulingPost}
                    onClick={() => handleCopyToClipboard(content)}
-                   className="absolute right-40 top-1 p-1 bg-blue-100 hover:bg-blue-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
-                  <TooltipHelp text={copySuccessMap ? "Copied!" : "⚡Copy Text"}>
+                   className="absolute right-40 top-1 p-1 bg-blue-100 hover:bg-blue-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  <TooltipHelp text={copySuccessMap ? "Copied!" : "⚡Copy Post"}>
                    <Copy className="w-3 h-3 text-blue-500" />       
                   </TooltipHelp>
               </button>
                  
                 {/*End New Copy Text Button*/}
 
+                
+                 <button                  
+                   type="button"
+                   disabled={!activeAccountId || !content.trim() || isSchedulingPost}
+                   //onClick={() => handleCopyToClipboard(content)}
+                   onClick={handleSchedulePost}
+                   className="absolute right-48 top-1 p-1 bg-green-100 hover:bg-green-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
+
+                   
+                    {isSchedulingPost ? (
+                      <>
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      </>
+                     ):(
+                     <>
+                       <TooltipHelp text="⚡Schedule Post">
+                            <Calendar className="w-3 h-3 text-green-700" />   
+                       </TooltipHelp>
+                    </>
+                     )}
+                    
+                 
+              </button>
+                
+                 
+                {/*End New Copy Text Button*/}
+
+
                 {/*start linkedin button */}
-          
+
+                {/*   
+              <TooltipHelp text={tooltipMessage}>     
+                    <span className={`text-xs ${
+                      postContent.length > max_length  ? 'text-red-500 bg-red-50 rounded-full p-2' : 'text-green-500 bg-green-50 rounded-full p-2'
+                    }`}>
+                      {postContent.length}/{max_length} Characters
+                    </span>      
+             </TooltipHelp>
+          */}
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <div className="text-sm mt-4 text-gray-500">
-                  <span className={`text-sm ${
+                      <span className={`text-sm ${
                           content.length > max_length  
                               ? 'text-red-500 bg-red-50 rounded-full p-2' 
                               : 'text-green-500 bg-green-50 rounded-full p-2'
@@ -1593,7 +1630,8 @@ const onModalScheduleError = (error: any) => {
                       </>
                     )}
                   </button>
-            
+
+                    {/*
                    <button
                     type="button" // Changed to type="button" to prevent form submission
                     disabled={!activeAccountId || !content.trim() || isSchedulingPost}
@@ -1612,6 +1650,7 @@ const onModalScheduleError = (error: any) => {
                       </>
                     )}
                   </button>
+                  */}
 
            <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToPost()}>                    
                   <button
@@ -1726,7 +1765,9 @@ const onModalScheduleError = (error: any) => {
 
       <DraftPostModal
           isOpen={isDraftPostModalOpen}
-          onClose={() => setIsDraftPostModalOpen(false)}
+          onClose={() => setIsDraftPostModalOpen(false)
+                
+          }
           onContinueDraft={handleContinueDraft}
          />
 

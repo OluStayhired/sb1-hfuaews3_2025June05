@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Send, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2 } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -20,11 +20,13 @@ import { ScheduleDraftPost } from '/src/components/ScheduleDraftPost';
 import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
 import { SentPostModal } from './SentPostModal';
-import { improveComment, rewritePostForLinkedIn, rewritePostForTwitter, generateHookPostV3 } from '../lib/gemini';
+import { improveComment, rewritePostForTwitter, generateHookPostV3 } from '../lib/gemini';
+import { rewritePostForLinkedIn } from '../lib/geminiLinkedIn'
 import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
 import { useProductTier } from '../hooks/useProductTierHook'
 import { ProPlanLimitModal } from './ProPlanLimitModal';
+import { HookListModal } from './HookListModal';
 
 
 
@@ -84,6 +86,8 @@ function ComposePosts() {
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
+  //const [copySuccessMap, setCopySuccessMap] = useState<{ [key: string]: boolean }>({});
+  const [copySuccessMap, setCopySuccessMap] = useState(false);
 
 
   const [max_length, setMaxLength] = useState(300);
@@ -104,6 +108,8 @@ function ComposePosts() {
   //Sent Post State Management
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false); // Existing state for Drafts Modal
   const [isSentPostModalOpen, setIsSentPostModalOpen] = useState(false); // NEW: State for Sent Posts Modal
+  const [isHookListModalOpen, setIsHookListModalOpen] = useState(false); // NEW: State for HookListModal
+
 
 
     // Check Limits Based on Product Tier
@@ -467,8 +473,50 @@ useEffect(() => {
 
   const handleCloseSentPostModal = () => {
     setIsSentPostModalOpen(false);
+    setIsHookListModalOpen(false);
+    setIsDraftPostModalOpen(false);
+    setIsContentCalendarModalOpen(false);
+    setIsContentCalendarModalOpen(false);
   };
-            
+
+   // NEW: Functions to manage the Hook List Modal
+  const handleOpenHookListModal = () => {
+    setIsHookListModalOpen(true);
+  };
+
+  
+  const handleCloseHookListModal = () => {
+    setIsHookListModalOpen(false);
+    setIsDraftPostModalOpen(false);
+    setIsContentCalendarModalOpen(false);
+    setIsSentPostModalOpen(false);
+    setIsContentCalendarModalOpen(false);
+  };
+
+  // NEW: Function to handle using a hook from HookListModal
+  const handleUseHook = (hookContent: string) => {
+    // Prepend the hook content to the existing post content
+    setContent(hookContent + '\n\n' + content);
+    //console.log("executed handleUseHook")
+  };
+
+   // NEW: Function to handle updating content from HookListModal (e.g., after generating killer hook)
+
+  const handleRewriteHook = (revisedHook: string) => {
+    setContent('');
+    setContent(revisedHook + '\n' + content);
+    //console.log("executed handleRewriteHook")
+  };
+
+  const handleCopyToClipboard = async (text: string) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setCopySuccessMap(() => (true));
+          setTimeout(() => setCopySuccessMap(false), 2000);
+        } catch (err) {
+          console.error('Failed to copy text:', err);
+        }
+      };
 
   const handleRequestMoreBlueskyAccounts = () => {
    setShowAddSocialTabModal(false); 
@@ -962,8 +1010,13 @@ if (!activeAccountId) {
   }
 };
 
+
   const handleCloseContentCalendarModal = () => {
     setIsContentCalendarModalOpen(false);
+    setIsHookListModalOpen(false);
+    setIsDraftPostModalOpen(false);
+    setIsContentCalendarModalOpen(false);
+    setIsSentPostModalOpen(false);    
   };
 
   const handleSaveDraft = async (e: React.FormEvent) => {
@@ -1328,7 +1381,23 @@ const onModalScheduleError = (error: any) => {
         </button>
        </TooltipHelp>
 
-                    {/*----------------- End Add button to show draft posts --------------------------- */}
+      {/*----------------- End Add button to show sent posts --------------------------- */}
+
+                    
+       {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
+
+       <TooltipHelp text={`⚡ add killer hooks`}>   
+         <button
+            onClick={handleOpenHookListModal} 
+            className="ml-2 px-2 py-2 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"    
+            >
+           <BookText className="w-4 h-4" />
+           
+           {/*Add Hook 🪝*/}
+        </button>
+       </TooltipHelp>     
+
+    {/* ----------------- End Add button Add Hooks to Posts ---------------- */}                      
                     
                     
                   </>
@@ -1462,14 +1531,46 @@ const onModalScheduleError = (error: any) => {
                           )}
                     </button>
                 {/*End New Twitter AI Button*/}
+
+
+              {/*Start New Delete button*/}
                 
+                <button
+                  
+                  type="button"
+                    onClick={() => setContent('')}
+                   className="absolute right-32 top-1 p-1 bg-red-100 hover:bg-red-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
+                  <TooltipHelp text="⚡ Clear Text">
+                   <Trash2 className="w-3 h-3 text-red-500" />       
+                    </TooltipHelp>
+                  </button>
+                 
+                {/*End New Delete AI Button*/}
+
+                <button                  
+                  type="button"
+                    //onClick={() => setContent('')}
+                   onClick={() => handleCopyToClipboard(content)}
+                   className="absolute right-40 top-1 p-1 bg-blue-100 hover:bg-blue-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
+                  <TooltipHelp text={copySuccessMap ? "Copied!" : "⚡Copy Text"}>
+                   <Copy className="w-3 h-3 text-blue-500" />       
+                  </TooltipHelp>
+              </button>
+                 
+                {/*End New Copy Text Button*/}
 
                 {/*start linkedin button */}
           
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                  <div className="text-sm text-gray-500">
-                    {max_length - content.length} characters remaining
+                  <div className="text-sm mt-4 text-gray-500">
+                  <span className={`text-sm ${
+                          content.length > max_length  
+                              ? 'text-red-500 bg-red-50 rounded-full p-2' 
+                              : 'text-green-500 bg-green-50 rounded-full p-2'
+                                }`}>                    
+                                    {max_length - content.length} characters remaining
+                      </span>
                   </div>
 
                   <div className="flex items-center mt-4 pt-4 space-x-2">
@@ -1634,6 +1735,15 @@ const onModalScheduleError = (error: any) => {
           isOpen={isSentPostModalOpen}
           onClose={handleCloseSentPostModal}
           onEditSentPost={handleEditSentPost}
+        />
+
+       {/* NEW: Hook List Modal */}
+        <HookListModal
+          isOpen={isHookListModalOpen}
+          onClose={handleCloseHookListModal}
+          onUseHook={handleUseHook} 
+          currentComposeContent={content} 
+          onRewriteHook={handleRewriteHook} 
         />
 
        {/* Upgrade Modal After Free Trial Runs Out */}
