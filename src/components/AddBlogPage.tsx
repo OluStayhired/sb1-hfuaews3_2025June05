@@ -157,6 +157,41 @@ export function AddBlogPage() {
     };
   }, []);
 
+  // --- NEW: Custom Video Handler ---
+    const videoHandler = useCallback(() => {
+      const url = prompt('Enter YouTube or Vimeo URL:');
+      if (url) {
+        const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+        const quillEditor = quillRef.current?.getEditor();
+        const range = quillEditor?.getSelection();
+    
+        if (quillEditor && range) {
+          let embedUrl = '';
+          if (youtubeMatch && youtubeMatch[1]) {
+            embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}?showinfo=0`;
+          } else {
+            embedUrl = url;
+          }
+    
+          if (embedUrl) {
+            // Get the current content and selection
+            const content = quillEditor.getContents();
+            const index = range.index;
+    
+            // Create a new block with a div wrapping the video
+            const videoHtml = `
+              <div class="aspect-w-16 aspect-h-9 my-4">
+                <iframe src="${embedUrl}" class="w-full h-full rounded-md" frameborder="0" allowfullscreen></iframe>
+              </div>
+            `;
+    
+            // Insert the new HTML block
+            quillEditor.clipboard.dangerouslyPasteHTML(index, videoHtml);
+          }
+        }
+      }
+    }, []);
+
   // --- Helper: Extract Images from HTML Content ---
   const extractImagesFromHtml = (htmlContent: string): { url: string; alt: string }[] => {
     const parser = new DOMParser();
@@ -360,25 +395,26 @@ export function AddBlogPage() {
     }
   };
 
-  // --- ReactQuill Modules and Formats ---
-  const modules = React.useMemo(() => ({
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'script': 'sub' }, { 'script': 'super' }],
-        [{ 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video'], // Include image and video buttons
-        ['clean']
-      ],
-      handlers: {
-        image: imageHandler, // Custom image handler
-      },
+ // --- ReactQuill Modules and Formats ---
+ const modules = React.useMemo(() => ({
+  toolbar: {
+    container: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'align': [] }],
+      ['link', 'image', 'video'], // Include image and video buttons
+      ['clean']
+    ],
+    handlers: {
+      image: imageHandler, // Custom image handler
+      video: videoHandler,
     },
-  }), [imageHandler]);
+  },
+}), [imageHandler, videoHandler]);
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike', 'blockquote',
