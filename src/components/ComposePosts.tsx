@@ -195,7 +195,7 @@ function ComposePosts() {
 
 const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
 
-//New UseEffect to include Premium Twitter
+//New UseEffect to include Premium Twitter . . 
    useEffect(() => {
     if (activeAccountId) {
       //const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
