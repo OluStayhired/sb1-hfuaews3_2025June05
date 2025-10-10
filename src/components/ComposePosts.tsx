@@ -20,8 +20,10 @@ import { ScheduleDraftPost } from '/src/components/ScheduleDraftPost';
 import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
 import { SentPostModal } from './SentPostModal';
-import { improveComment, rewritePostForTwitter, generateHookPostV3 } from '../lib/gemini';
+import { improveComment, generateHookPostV3 } from '../lib/gemini';
+import { rewritePostForBluesky } from '../lib/geminiBluesky'
 import { rewritePostForLinkedIn } from '../lib/geminiLinkedIn'
+import { rewritePostForTwitter} from '../lib/geminiTwitter'
 import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
 import { useProductTier } from '../hooks/useProductTierHook'
@@ -1132,6 +1134,7 @@ const handleEditSentPost = (content: string, socialChannel: string, userHandle: 
   };
 
 // Add this function to handle content generation
+  {/*
 const handleGenerateContent = async () => {
    if (!content.trim()) return; 
   
@@ -1153,6 +1156,30 @@ const handleGenerateContent = async () => {
     setIsGenerating(false);
   }
 };
+*/}
+
+// Add this function to handle content generation (new geminiBluesky ts)
+const handleGenerateContent = async () => {
+  if (!content.trim()) return; 
+ 
+ try {
+   setIsGenerating(true);
+   
+   // Get the theme and topic from the selected calendar content
+   const improvedContent = await rewritePostForBluesky(content, 300);
+
+   if (!improvedContent.error) {
+      setContent(improvedContent.text);
+   } else {
+     console.error('Error improving content:', improvedContent.error);
+     // Optionally show an error message to the user
+   }
+ } catch (err) {
+   console.error('Error generating content:', err);
+ } finally {
+   setIsGenerating(false);
+ }
+};   
 
 // Add this function to handle content generation
 const handleGenerateLinkedInContent = async () => {
