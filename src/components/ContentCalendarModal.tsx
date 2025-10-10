@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Calendar, Lightbulb, X, Sparkles, Copy, Loader2, PlusCircle } from 'lucide-react';
 import { generateListPost, generateHookPost, generateHookPostV2, generateHookPostV3} from '../lib/gemini';
 import { generateLinkedInHookPostV3 } from '../lib/geminiLinkedIn';
+import { generateTwitterHookPostV3 } from '../lib/geminiTwitter';
+import { generateBlueskyHookPostV3 } from '../lib/geminiBluesky';
 import { useNavigate, Navigate } from 'react-router-dom';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -92,14 +94,14 @@ export function ContentCalendarModal({
 
 const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
 
-  ////console.log('itemid: ', item.id)
-  ////console.log('char_length: ', char_length)
+  //console.log('itemid: ', item.id)
+  //console.log('char_length: ', char_length)
 
   const uniqueKey = `${item.id}_${char_length}`;
   setLoadingProcess(uniqueKey);
 
-  ////console.log('loadingProcess:  ', loadingProcess)
-  ////console.log('uniqueKey:  ', uniqueKey)
+  //console.log('loadingProcess:  ', loadingProcess)
+  //console.log('uniqueKey:  ', uniqueKey)
   
   await new Promise(resolve => setTimeout(resolve, 2000));
   
@@ -113,7 +115,7 @@ const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
       char_length
     );
 
-    ////console.log('executing the Hook Posts Here')
+    //console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error)
       else {
@@ -134,14 +136,14 @@ const handleHookPostV2 = async (item: ContentItem, char_length: string) => {
 
 const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
 
-  ////console.log('itemid: ', item.id)
-  ////console.log('char_length: ', char_length)
+  //console.log('itemid: ', item.id)
+  //console.log('char_length: ', char_length)
 
   const uniqueKey = `${item.id}_${char_length}`;
   setLoadingProcess(uniqueKey);
 
-  ////console.log('loadingProcess:  ', loadingProcess)
-  ////console.log('uniqueKey:  ', uniqueKey)
+  //console.log('loadingProcess:  ', loadingProcess)
+  //console.log('uniqueKey:  ', uniqueKey)
   
   await new Promise(resolve => setTimeout(resolve, 2000));
   
@@ -155,7 +157,7 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
       char_length
     );
 
-    ////console.log('executing the Hook Posts Here')
+    //console.log('executing the Hook Posts Here')
 
     if (improvedContent.error) throw new Error(improvedContent.error)
       else {
@@ -166,24 +168,60 @@ const handleHookPostV3 = async (item: ContentItem, char_length: string) => {
     console.error('Error improving content:', err);
     // Could add error state/toast here
   } finally {
-    //setRewritingItemId(null);
-    //setLoadingCharLength(null);
-    //setLoadingLinkedIn(false)
     setLoadingProcess(null);
   }
-};    
-   
+};   
+
+
 const handleLinkedInHookPostV3 = async (item: ContentItem, char_length: string) => {
 
   const uniqueKey = `${item.id}_${char_length}`;
   setLoadingProcess(uniqueKey);
 
+  //console.log('loadingProcess:  ', loadingProcess)
+  //console.log('uniqueKey:  ', uniqueKey)
   
   await new Promise(resolve => setTimeout(resolve, 2000));
   
   try {
     
   const improvedContent = await generateLinkedInHookPostV3(  
+      //hooksData,
+      item.theme,
+      item.topic,
+      item.target_audience || '', // Add target_audience to interface if not present
+      item.content,
+      char_length
+    );
+
+    if (improvedContent.error) throw new Error(improvedContent.error)
+      else {
+        onRewriteContent(improvedContent.text);
+      }
+
+  } catch (err) {
+    console.error('Error improving content:', err);
+    // Could add error state/toast here
+  } finally {
+    setLoadingProcess(null);
+  }
+};   
+
+
+const handleTwitterHookPostV3 = async (item: ContentItem, char_length: string) => {
+
+  const uniqueKey = `${item.id}_${char_length}`;
+  setLoadingProcess(uniqueKey);
+
+  //console.log('loadingProcess:  ', loadingProcess)
+  //console.log('uniqueKey:  ', uniqueKey)
+  
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  
+  try {
+    
+  const improvedContent = await generateTwitterHookPostV3(  
+      //hooksData,
       item.theme,
       item.topic,
       item.target_audience || '', // Add target_audience to interface if not present
@@ -203,6 +241,41 @@ const handleLinkedInHookPostV3 = async (item: ContentItem, char_length: string) 
     setLoadingProcess(null);
   }
 };    
+
+const handleBlueskyHookPostV3 = async (item: ContentItem, char_length: string) => {
+
+  const uniqueKey = `${item.id}_${char_length}`;
+  setLoadingProcess(uniqueKey);
+
+  //console.log('loadingProcess:  ', loadingProcess)
+  //console.log('uniqueKey:  ', uniqueKey)
+  
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  
+  try {
+    
+  const improvedContent = await generateBlueskyHookPostV3(  
+      //hooksData,
+      item.theme,
+      item.topic,
+      item.target_audience || '', // Add target_audience to interface if not present
+      item.content,
+      char_length
+    );
+
+    if (improvedContent.error) throw new Error(improvedContent.error)
+      else {
+        onRewriteContent(improvedContent.text);
+      }
+
+  } catch (err) {
+    console.error('Error improving content:', err);
+    // Could add error state/toast here
+  } finally {
+    setLoadingProcess(null);
+  }
+};      
+ 
 
   const handleCreateCampaign = () => {
     navigate('/dashboard/campaign');
@@ -289,16 +362,15 @@ const handleLinkedInHookPostV3 = async (item: ContentItem, char_length: string) 
                 </div>
 
 
-                <div className="flex items-center justify-center mt-1 space-x-2"> 
+                <div className="flex items-center justify-center mt-1 space-x-2 z-10000000"> 
                   
                   {/* Added space-x-2 for gap between buttons */}
 
                   
 
-                  {/*------------------- Start all the social media buttons --------------------*/}
+    {/*------------------- Start all the social media buttons --------------------*/}
 
-
-                  <TooltipHelp  text="⚡Rewrite for LinkedIn">
+            <TooltipHelp  text="⚡Rewrite for LinkedIn">
               <button
                 
                 onClick={() => {
@@ -329,7 +401,8 @@ const handleLinkedInHookPostV3 = async (item: ContentItem, char_length: string) 
 
             <TooltipHelp  text = "⚡Rewrite for Bluesky">
               <button
-                onClick={() => handleHookPostV3(item, '300')}
+                //onClick={() => handleHookPostV3(item, '300')}
+                onClick={() => handleBlueskyHookPostV3(item, '300')}
                 disabled={loadingProcess === `${item.id}_300`|| isHooksLoading || hooksError !== null} 
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
@@ -351,7 +424,8 @@ const handleLinkedInHookPostV3 = async (item: ContentItem, char_length: string) 
 
             <TooltipHelp  text = "⚡Rewrite for X">
               <button
-                onClick={() => handleHookPostV3(item, '280')}
+                //onClick={() => handleHookPostV3(item, '280')}
+                onClick={() =>handleTwitterHookPostV3(item, '280')}
                 disabled={loadingProcess === `${item.id}_280`|| isHooksLoading || hooksError !== null}
                 className="p-1 bg-gradient-to-r from-blue-50 to-white border border-blue-100 text-gray-900 hover:border-blue-300 transition-all group duration-200 flex items-center space-x-1 rounded-md"
               >
