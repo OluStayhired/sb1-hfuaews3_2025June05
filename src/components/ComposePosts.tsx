@@ -1592,7 +1592,7 @@ const onModalScheduleError = (error: any) => {
                    disabled={!activeAccountId || !content.trim() || isSchedulingPost}
                    //onClick={() => handleCopyToClipboard(content)}
                    onClick={handleSchedulePost}
-                   className="absolute right-48 top-1 p-1 bg-green-100 hover:bg-green-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
+                   className="absolute right-48 top-1 px-1 py-0.5 bg-green-100 hover:bg-green-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
 
                    
                     {isSchedulingPost ? (
