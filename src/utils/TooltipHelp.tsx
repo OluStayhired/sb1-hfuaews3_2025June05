@@ -21,7 +21,11 @@ export function TooltipHelp({ text, children, bgColor = 'gray-900', textColor = 
       onMouseEnter={() => setIsTooltipVisible(true)} // Set tooltip visible on hover in
       onMouseLeave={() => setIsTooltipVisible(false)} // Hide tooltip on hover out
     >
-      {children} {/* This is the trigger element (your button/icon) removed whitespace-nowrap */}
+      {/*{children} This is the trigger element (your button/icon) removed whitespace-nowrap */}
+
+      <div className={className}> {/* Apply className here */}
+        {children}
+      </div>
       <div
           className={`absolute z-1000 bottom-full left-1/2 transform -translate-x-1/2 mb-2
            bg-gray-900 text-white text-xs rounded-md py-1 px-2 // Static classes for testing

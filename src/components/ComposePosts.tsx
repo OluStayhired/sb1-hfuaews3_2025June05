@@ -1601,8 +1601,10 @@ const onModalScheduleError = (error: any) => {
                       </>
                      ):(
                      <>
-                       <TooltipHelp text="⚡Schedule Post">
-                            <Calendar className="w-3 h-3 text-green-700" />   
+                       
+                       <TooltipHelp text="⚡Schedule Post" className="flex items-center space-x-1">
+                            <Calendar className="w-3 h-3 text-green-700 disabled:opacity-70" />
+                         <span className="text-xs text-green-700">Schedule</span>
                        </TooltipHelp>
                     </>
                      )}
