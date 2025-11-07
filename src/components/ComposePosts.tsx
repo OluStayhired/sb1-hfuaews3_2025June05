@@ -1590,7 +1590,7 @@ const onModalScheduleError = (error: any) => {
                  <button                  
                    type="button"
                    disabled={!activeAccountId || !content.trim() || isSchedulingPost}
-                   //onClick={() => handleCopyToClipboard(content)}
+                   //onClick={() => handleCopyToClipboard(content)}//
                    onClick={handleSchedulePost}
                    className="absolute right-48 top-1 px-1 py-0.5 bg-green-100 hover:bg-green-200 border border-green-500 rounded-md transition duration-200 flex items-center space-x-1 disabled:bg-green-50 disabled:border-green-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-70">
 
