@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, PlusCircle, MailCheck, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2 } from 'lucide-react';
+import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, PlusCircle, MailCheck, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText,BookOpenText, Trash2 } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -1428,12 +1428,13 @@ const onModalScheduleError = (error: any) => {
                     
        {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
 
-       <TooltipHelp text={`⚡ use killer hooks`}>   
+       <TooltipHelp text={`⚡ 220+ writing hooks`}>   
          <button
             onClick={handleOpenHookListModal} 
             className="ml-2 px-2 py-2 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"    
             >
-           <BookText className="w-4 h-4 mr-1" />
+          
+           <BookOpenText className="w-4 h-4 mr-1" />
            <span className="text-sm font-semibold">Hooks</span>
            
            {/*Add Hook 🪝*/}
