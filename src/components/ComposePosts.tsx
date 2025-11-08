@@ -1274,6 +1274,13 @@ const onModalScheduleError = (error: any) => {
   return (
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
+      <div className="mb-6">
+              <span className="text-gray-900 font-bold text-xl">Draft & Schedule Posts</span>
+              <p className="text-gray-400 font-normal text-sm mt-2">
+                👋 Welcome to your content scratch pad. Generate posts from ideas, draft posts 
+                <br/>from scratch, save your drafts and recycle old posts. 
+              </p>
+        </div>
 
         {isLoading ? (
           <div className="flex justify-center py-8">
