@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2 } from 'lucide-react';
+import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, PlusCircle, MailCheck, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2 } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -1353,13 +1353,15 @@ const onModalScheduleError = (error: any) => {
                           
                         }}
 
-                       className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+                        className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                      
-                    >
-                    
-                      <Plus className="w-4 h-4"/>              
-                    </button>
-                      </TooltipHelp>
+                        >
+                        
+                          {/*<Plus className="w-4 h-4"/>  */}
+                          <PlusCircle className="w-4 h-4 mr-1"/>
+                          <span className="text-sm font-semibold">Account</span>
+                        </button>
+                          </TooltipHelp>
                     
                     
 
@@ -1367,8 +1369,9 @@ const onModalScheduleError = (error: any) => {
                 <TooltipHelp text="⚡ browse ideas">
                     <button
                       onClick={handleOpenContentCalendarModal}
-                      className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors" >
-                        <Lightbulb className="w-4 h-4"/>
+                      className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors" >
+                        <Lightbulb className="w-4 h-4 font-semibold mr-1"/>
+                      <span className="text-sm font-semibold">Ideas</span>
                       </button>
                   </TooltipHelp>
                 
@@ -1384,10 +1387,12 @@ const onModalScheduleError = (error: any) => {
                   setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
                 }}
               
-               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+                className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                 // Added 'items-center' to the button's class for vertical alignment
             >
-            <FileEdit className="w-4 h-4" />
+              {/*<FileEdit className="w-4 h-4 mr-1" />*/}
+            <Save className="w-4 h-4 mr-1" />
+          <span className="text-sm font-semibold">Drafts</span>
         </button>
        </TooltipHelp>
 
@@ -1395,13 +1400,15 @@ const onModalScheduleError = (error: any) => {
 
           {/* ----------------- Start Add button to show sent posts ---------------- */}  
                     
-         <TooltipHelp text={`⚡ recycle posts`}>   
+         <TooltipHelp text={`⚡ recycle sent posts`}>   
             <button
                onClick={handleOpenSentPostModal}        
-               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                 
             >
-            <Recycle className="w-4 h-4" />
+              {/*<Recycle className="w-4 h-4" />*/}
+          <MailCheck className="w-4 h-4 mr-1" />   
+        <span className="text-sm font-semibold">Sent</span>
         </button>
        </TooltipHelp>
 
@@ -1410,12 +1417,13 @@ const onModalScheduleError = (error: any) => {
                     
        {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
 
-       <TooltipHelp text={`⚡ add killer hooks`}>   
+       <TooltipHelp text={`⚡ use killer hooks`}>   
          <button
             onClick={handleOpenHookListModal} 
-            className="ml-2 px-2 py-2 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"    
+            className="ml-2 px-2 py-2 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"    
             >
-           <BookText className="w-4 h-4" />
+           <BookText className="w-4 h-4 mr-1" />
+           <span className="text-sm font-semibold">Hooks</span>
            
            {/*Add Hook 🪝*/}
         </button>
