@@ -1274,13 +1274,17 @@ const onModalScheduleError = (error: any) => {
   return (
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-              <span className="text-gray-900 font-bold text-xl">Draft & Schedule Posts</span>
-              <p className="text-gray-400 font-normal text-sm mt-2">
+      <div className="flex items-center space-x-2">
+              <div className="p-2 bg-blue-50 rounded-full">
+                <PlusCircle className="w-5 h-5 text-blue-500"/>
+              </div>
+              <h2 className="text-gray-900 font-semibold text-xl">Draft & Schedule Posts</h2>
+              
+        </div>
+        <p className="text-gray-400 font-normal text-sm mb-6 mt-2">
                 👋 Welcome to your content scratch pad. Generate posts from ideas, draft posts 
                 <br/>from scratch, save your drafts and recycle old posts. 
-              </p>
-        </div>
+          </p>
 
         {isLoading ? (
           <div className="flex justify-center py-8">
