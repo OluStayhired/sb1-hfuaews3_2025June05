@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { CalendarCheck, Sparkles, PenSquare, ThumbsUp, Calendar, Clock, Users, LogOut, ChevronDown, 
   PenTool, UserPlus, Megaphone, Settings, Puzzle, AlertCircle, CreditCard, Globe, Target, Combine, 
-  PlusCircle, LayoutGrid, FileEdit, CalendarClock } from 'lucide-react';
+  PlusCircle, MinusCircle, LayoutGrid, FileEdit, CalendarClock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ComposePosts from '../components/ComposePosts';
 import ManageSchedule from '../components/ManageSchedule';
@@ -52,6 +52,7 @@ function Dashboard() {
   const [isTwitterModalOpen, setIsTwitterModalOpen] = useState(false);
   const [isCampaignSuccessModalOpen, setIsCampaignSuccessModalOpen] = useState(false);
   const [createdCampaignName, setCreatedCampaignName] = useState('');
+  const [showConnectButtons, setShowConnectButtons] = useState(true);
 
     //Twitter OAUTH
   const [twitterUser, setTwitterUser] = useState<SocialAccount | null>(null);
@@ -1303,10 +1304,32 @@ if(path !== "settings") {
           <div className="p-4 border-b border-gray-200">
         <div className="flex items-center space-x-2 mb-3"> {/* Added flex, items-center, space-x-2 */}
         
-          <span className="bg-blue-50 px-3 py-3 rounded-full p-1 text-blue-500"><PlusCircle className="h-5 w-5"/></span>
+           {/*<span className="bg-blue-50 px-3 py-3 rounded-full p-1 text-blue-500"><PlusCircle className="h-5 w-5"/></span>*/}
+          {/* CHANGE: Make the icon a button and toggle showConnectButtons state */}
+          <button
+                type="button"
+                onClick={() => setShowConnectButtons(!showConnectButtons)}
+                className="bg-blue-50 px-3 py-3 rounded-full p-1 text-blue-500 hover:bg-blue-100 transition-colors duration-200"
+              >
+              {/* CHANGE: Conditionally render PlusCircle or MinusCircle */}
+                {showConnectButtons ? (
+                    <MinusCircle className="h-5 w-5" />
+                      ) : (
+                    <PlusCircle className="h-5 w-5" />
+                  )}
+              </button>
+              
             <h3 className="text-lg font-medium text-blue-500 m-0 p-0">Channels</h3> 
         
         </div>
+
+{/* CHANGE: Conditionally render the div with transition classes */}
+      <div
+          className={`
+                overflow-hidden transition-all duration-300 ease-in-out
+                  ${showConnectButtons ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}
+                  `}
+        >            
             
             <div className="space-y-2">
               <button
@@ -1341,6 +1364,7 @@ if(path !== "settings") {
               </button>
             </div>
           </div>
+        </div>  {/*Added a new div to update */}
 
           <nav className="p-4">
             <ul className="space-y-2">
