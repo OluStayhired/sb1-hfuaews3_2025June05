@@ -1281,7 +1281,7 @@ const onModalScheduleError = (error: any) => {
               <h2 className="text-gray-900 font-semibold text-xl">Draft Studio</h2>
               
         </div>
-        <p className="text-gray-500 font-normal text-sm mb-6 mt-2 bg-gray-100 rounded-md p-2 inline-block">
+        <p className="text-blue-500 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
                 👋 Welcome to your content <b>scratch pad</b>. Generate posts from ideas, draft posts 
                 <br/>from scratch, save your drafts and recycle old posts... 
           </p>
