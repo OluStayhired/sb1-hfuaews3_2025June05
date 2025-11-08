@@ -1365,7 +1365,7 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
       
             </div>
 
-<div className="flex items-center space-x-4">
+<div className="flex items-center space-x-4 mt-8">
   {/* Segmented control for View Mode */}
   <div className="flex rounded-lg border border-gray-300 overflow-hidden">
     {/* List View Button */}
@@ -1444,6 +1444,19 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
  
   </div>
 </div>
+
+{viewMode === 'list' ? (      
+  <div className="text-gray-500 font-normal text-sm mb-6 mt-2 bg-gray-100 rounded-md p-2 inline-block">        
+    💡 Seamlessly manage the next <b>2 weeks of posts</b>. Reschedule posts, create posts,<br/> 
+    disable posts and repurpose your posts for multiple accounts.       
+  </div>
+      ):(
+  <div className="text-gray-500 font-normal text-sm mb-6 mt-2 bg-gray-100 rounded-md p-2 inline-block">       
+    💡 Quickly view and manage <b>months of posts</b>. Review old posts failed and successful<br/>
+    posts. Reschedule posts, edit and refresh and repost old posts instantly.       
+  </div>
+      
+      )}
 
 {/* NEW: Copy Success/Error Message */}
         {copySuccessMessage && (

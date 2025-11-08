@@ -1278,12 +1278,12 @@ const onModalScheduleError = (error: any) => {
               <div className="p-2 bg-blue-50 rounded-full">
                 <PlusCircle className="w-5 h-5 text-blue-500"/>
               </div>
-              <h2 className="text-gray-900 font-semibold text-xl">Draft & Schedule Posts</h2>
+              <h2 className="text-gray-900 font-semibold text-xl">Draft Studio</h2>
               
         </div>
-        <p className="text-gray-400 font-normal text-sm mb-6 mt-2">
-                👋 Welcome to your content scratch pad. Generate posts from ideas, draft posts 
-                <br/>from scratch, save your drafts and recycle old posts. 
+        <p className="text-gray-500 font-normal text-sm mb-6 mt-2 bg-gray-100 rounded-md p-2 inline-block">
+                👋 Welcome to your <b>content scratch pad</b>. Generate posts from ideas, draft posts 
+                <br/>from scratch, save your drafts and <b>recycle</b> old posts. 
           </p>
 
         {isLoading ? (
