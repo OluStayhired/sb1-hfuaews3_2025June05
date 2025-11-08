@@ -1283,7 +1283,7 @@ const onModalScheduleError = (error: any) => {
         </div>
         <p className="text-gray-500 font-normal text-sm mb-6 mt-2 bg-gray-100 rounded-md p-2 inline-block">
                 👋 Welcome to your content <b>scratch pad</b>. Generate posts from ideas, draft posts 
-                <br/>from scratch, save your drafts and recycle old posts. 
+                <br/>from scratch, save your drafts and recycle old posts... 
           </p>
 
         {isLoading ? (
