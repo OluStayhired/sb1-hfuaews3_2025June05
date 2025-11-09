@@ -1374,7 +1374,7 @@ const onModalScheduleError = (error: any) => {
                         
                           {/*<Plus className="w-4 h-4"/>  */}
                           <PlusCircle className="w-4 h-4 mr-1"/>
-                          <span className="text-sm font-semibold">Account</span>
+                          <span className="text-sm">Account</span>
                         </button>
                           </TooltipHelp>
                     
@@ -1386,7 +1386,7 @@ const onModalScheduleError = (error: any) => {
                       onClick={handleOpenContentCalendarModal}
                       className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors" >
                         <Lightbulb className="w-4 h-4 font-semibold mr-1"/>
-                      <span className="text-sm font-semibold">Ideas</span>
+                      <span className="text-sm">Ideas</span>
                       </button>
                   </TooltipHelp>
                 
@@ -1407,7 +1407,7 @@ const onModalScheduleError = (error: any) => {
             >
               {/*<FileEdit className="w-4 h-4 mr-1" />*/}
             <Save className="w-4 h-4 mr-1" />
-          <span className="text-sm font-semibold">Drafts</span>
+          <span className="text-sm">Drafts</span>
         </button>
        </TooltipHelp>
 
@@ -1423,7 +1423,7 @@ const onModalScheduleError = (error: any) => {
             >
               {/*<Recycle className="w-4 h-4" />*/}
           <MailCheck className="w-4 h-4 mr-1" />   
-        <span className="text-sm font-semibold">Sent</span>
+        <span className="text-sm">Sent</span>
         </button>
        </TooltipHelp>
 
@@ -1439,7 +1439,7 @@ const onModalScheduleError = (error: any) => {
             >
           
            <BookOpenText className="w-4 h-4 mr-1" />
-           <span className="text-sm font-semibold">Hooks</span>
+           <span className="text-sm">Hooks</span>
            
            {/*Add Hook 🪝*/}
         </button>
