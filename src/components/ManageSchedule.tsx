@@ -1354,7 +1354,7 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
           {/* Wrap this into a condition */}
           
           <div className="flex items-center space-x-2 mb-8"> 
-              <div className="p-2 bg-blue-100 rounded-md"> 
+              <div className="p-2 bg-blue-50 rounded-full"> 
                  <CalendarClock className="w-5 h-5 text-blue-500"/> 
               </div>
                 {viewMode === 'list' ? (
