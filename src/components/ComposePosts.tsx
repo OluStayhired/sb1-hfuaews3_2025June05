@@ -1272,8 +1272,12 @@ const onModalScheduleError = (error: any) => {
 
 
   return (
-    <div className="p-8">
-      <div className="max-w-4xl w-3/4">
+
+    /*<div className="p-8">
+      <div className="max-w-4xl w-3/4">*/
+      
+<div className="p-4 bg-white min-h-screen">
+<div className="max-w-8xl w-3/4">
       <div className="flex items-center space-x-2">
               <div className="p-2 bg-blue-50 rounded-full">
                 <PlusCircle className="w-5 h-5 text-blue-500"/>
