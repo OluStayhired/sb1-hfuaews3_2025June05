@@ -1273,7 +1273,7 @@ const onModalScheduleError = (error: any) => {
 
   return (
     <div className="p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl w-3/4">
       <div className="flex items-center space-x-2">
               <div className="p-2 bg-blue-50 rounded-full">
                 <PlusCircle className="w-5 h-5 text-blue-500"/>
@@ -1281,7 +1281,7 @@ const onModalScheduleError = (error: any) => {
               <h2 className="text-gray-900 font-semibold text-xl">Draft Studio</h2>
               
         </div>
-        <p className="text-blue-500 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
+        <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
                 👋 Welcome to your content <b>scratch pad</b>. Generate posts from ideas, draft posts 
                 <br/>from scratch, save your drafts and recycle old posts... 
           </p>
