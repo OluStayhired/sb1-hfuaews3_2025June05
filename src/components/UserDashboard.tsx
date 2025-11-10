@@ -1252,8 +1252,28 @@ const handleOpenScheduledPost = async () => {
       </div>
 
           {/*----------------- Start Button to Generate Posts ------------------*/}
-
+{/*
       <span className="py-4 items-center justify-center">
+    <TooltipExtended text="⚡Get a full calendar of posts and ideas in just a few seconds" >
+          <button
+            onClick={handleCreateCampaign}
+            className="text-white font-medium justify-center inline-flex items-center px-4 py-2 rounded-full text-base
+           bg-blue-500 border border-blue-500 rounded-md hover:border-blue-500 hover:bg-blue-600 transition-all group shadow-lg shadow-blue-500/60 hover:shadow-xl hover:shadow-blue-500/80"
+            >
+              <Sparkles className="w-4 h-4 mr-2 text-blue-50 fill-blue-500 animate-ping" /> 
+                Start Here!
+              <ArrowRight className="ml-2 w-4 h-4 text-white transition-transform duration-300 group-hover:translate-x-1"/>
+            </button>
+        </TooltipExtended>
+    </span>
+ */}
+    {/*------------------End Button to Generate Posts ----------------------*/}
+      
+    </div>
+
+{/*----------------- Start Button to Generate Posts ------------------*/}
+
+<span className="py-4 px-4 items-center justify-center">
     <TooltipExtended text="⚡Get a full calendar of posts and ideas in just a few seconds" >
           <button
             onClick={handleCreateCampaign}
@@ -1268,10 +1288,6 @@ const handleOpenScheduledPost = async () => {
     </span>
 
     {/*------------------End Button to Generate Posts ----------------------*/}
-      
-    </div>
-
-
     
   </div>
 
@@ -1305,7 +1321,7 @@ const handleOpenScheduledPost = async () => {
         </p>
       </div>
 
-      {/* Call to Action Button */}
+      {/* Call to Action Button 
       <div className="mt-auto sm:mt-6">
       <TooltipExtended text="⚡Add your posts to existing time slots OR create new time slots" >
         <button
@@ -1319,8 +1335,25 @@ const handleOpenScheduledPost = async () => {
         </button>
       </TooltipExtended>
       </div>
+          */}
       
     </div>
+      {/* ------------------- Call to Action Schedule Button ------------------ */}
+    {/*<div className="mt-auto sm:mt-6">*/}
+    <div className="mt-auto py-4 px-4 items-center justify-center">
+      <TooltipExtended text="⚡Add your posts to existing time slots OR create new time slots" >
+        <button
+          onClick={handleSchedulePost}
+          className="relative flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-100 text-gray-700 font-medium border border-gray-500
+                    transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+        >
+          <PlusCircle className="mr-2 w-4 h-4" />
+          <span>Schedule Posts</span>
+          
+        </button>
+      </TooltipExtended>
+      </div>
+      {/* ------------------- Call to Action Schedule Button ------------------ */}
   </div>
 </div>
   {/*End New Main Metrics & Quick Actions*/}
