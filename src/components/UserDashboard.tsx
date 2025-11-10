@@ -1344,7 +1344,7 @@ const handleOpenScheduledPost = async () => {
       <TooltipExtended text="⚡Add your posts to existing time slots OR create new time slots" >
         <button
           onClick={handleSchedulePost}
-          className="relative flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-100 text-gray-700 font-medium border border-gray-500
+          className="relative flex items-center justify-center w-full py-2 px-4 rounded-md bg-gray-100 text-gray-600 font-normal border border-gray-500
                     transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
         >
           <PlusCircle className="mr-2 w-4 h-4" />
