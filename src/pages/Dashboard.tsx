@@ -1127,7 +1127,7 @@ if(path !== "settings") {
              
 
              
-
+{/*
               <button 
                 onClick={() => navigate('feedback')}
                 className={`flex bg-blue-50 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
@@ -1139,6 +1139,8 @@ if(path !== "settings") {
                        <ThumbsUp className="w-4 h-4"/>        
                 <span className="font-medium">Feedback</span>
               </button>
+
+*/}              
 
           {/*Using the Paid Plan logic from the useProductTierHook hook */}
           {/*!isPaidPlan && (*/}
@@ -1171,12 +1173,20 @@ if(path !== "settings") {
               */}
               
             </div>
-
-
             
           </div>
           
-          
+          <button 
+                onClick={() => navigate('feedback')}
+                className={`flex bg-blue-50 items-center space-x-2 px-4 py-1 rounded-lg transition-colors ${
+                  location.pathname.includes('feedback')
+                    ? 'text-blue-500'
+                    : 'text-blue-500 bg-blue-50 hover:bg-blue-100'
+                }`}
+              >
+                       <ThumbsUp className="w-4 h-4"/>        
+                <span className="font-medium">Feedback</span>
+            </button>         
 
 
           {user && (
