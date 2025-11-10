@@ -237,7 +237,7 @@ const getNextButtonTooltip = () => {
     return "Please choose a social channel to continue.";
   }
   if (content.trim().length === 0) {
-    return "Write a post to enable the post button";
+    return "⚡ start writing to enable button";
   }
   // Check if content length is greater than or equal to max_length, which disables the button
   if (content.trim().length >= max_length) {
@@ -1277,7 +1277,7 @@ const onModalScheduleError = (error: any) => {
       <div className="max-w-4xl w-3/4">*/
       
 <div className="p-4 bg-white min-h-screen">
-<div className="max-w-8xl w-3/4">
+<div className="max-w-8xl w-1/2">
       <div className="flex items-center space-x-2">
               <div className="p-2 bg-blue-50 rounded-full">
                 <PlusCircle className="w-5 h-5 text-blue-500"/>
