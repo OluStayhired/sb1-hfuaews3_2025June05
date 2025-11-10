@@ -1285,7 +1285,7 @@ const onModalScheduleError = (error: any) => {
               <h2 className="text-gray-900 font-semibold text-xl">Draft Studio</h2>
               
         </div>
-        <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
+        <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-gradient-to-r from-blue-50 to-white rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
                 👋 Welcome to your content scratch pad. Generate posts from ideas, draft posts 
                 <br/>from scratch, save your drafts and recycle old posts... 
           </p>
@@ -1402,7 +1402,7 @@ const onModalScheduleError = (error: any) => {
                       setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
                     }}
                   
-                   className="ml-2 border border-blue-200 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                   className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                     // Added 'items-center' to the button's class for vertical alignment
                 >
                   {/*<FileEdit className="w-4 h-4 mr-1" />*/}

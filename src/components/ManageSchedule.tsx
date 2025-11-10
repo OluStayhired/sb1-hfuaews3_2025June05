@@ -1446,12 +1446,12 @@ const handleDeleteVideo = async (postId: string) => { // New function for video 
 </div>
 
 {viewMode === 'list' ? (      
-  <div className="text-blue-500 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200"> 
+  <div className="text-blue-500 font-normal text-sm mb-6 mt-2 bg-gradient-to-r from-blue-50 to-white rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200"> 
     💡 Seamlessly manage the next <b>2 weeks of posts</b>. Reschedule posts, create posts,<br/> 
     disable posts and repurpose your posts for multiple accounts.  
   </div>
       ):(
-  <div className="text-blue-500 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">  
+  <div className="text-blue-500 font-normal text-sm mb-6 mt-2 bg-gradient-to-r from-blue-50 to-white rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">  
     💡 Quickly view and manage <b>months of posts</b>. Review old posts failed and successful<br/>
     posts. Reschedule posts, edit and refresh and repost old posts instantly.       
   </div>

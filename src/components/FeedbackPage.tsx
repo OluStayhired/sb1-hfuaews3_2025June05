@@ -153,7 +153,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                   <h3 className="text-xl font-medium text-gray-900">Report Problem</h3>
                 </div>
 
-                <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
+                <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-gradient-to-r from-blue-50 to-white rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
          👍 Please share your feedback, bugs and testimonials here. Your product feedback 
             <br/>will be used eventually be displayed as our roadmap. 
               </p>
