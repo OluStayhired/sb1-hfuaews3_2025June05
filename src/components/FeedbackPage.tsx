@@ -129,11 +129,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
         </div>
         {/*End Header Section Here*/}
 
-        <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
-         ⭐ Please share your bugs, feedback and testimonials here. Your product feedback 
-            <br/>will be used eventually be displayed as our roadmap. 
-        </p>
-        
+       
         {/*Start inside white background p-12 is height*/}
         <div className="bg-white rounded-lg p-12">
           {submitSuccess ? (
@@ -156,6 +152,12 @@ export function FeedbackPage({}: FeedbackPageProps) {
                   </span>  
                   <h3 className="text-xl font-medium text-gray-900">Report Problem</h3>
                 </div>
+
+                <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
+         ⭐ Please share your bugs, feedback and testimonials here. Your product feedback 
+            <br/>will be used eventually be displayed as our roadmap. 
+              </p>
+        
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Feature Type */}
