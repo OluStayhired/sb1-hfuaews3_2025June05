@@ -20,6 +20,7 @@ import {
   CalendarCheck,
   ChevronRight, 
   Layers,
+  LayoutDashboard,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 //import { useNavigate } from 'react-router-dom';
@@ -1022,9 +1023,17 @@ const handleOpenScheduledPost = async () => {
   }
 
   return (
-  <div className="p-6 md:p-8 lg:p-10 bg-gray-50 min-h-screen"> {/* Subtle background */}
-    <div className="max-w-7xl mx-auto">
-      {/* Header Section */}
+<div className="p-4 bg-white min-h-screen"> {/* Subtle background */}
+    <div className="max-w-8xl mx-auto">
+      
+      {/*Header Section Start */}
+      <div className="flex items-center space-x-2 mb-8">
+          <div className="p-2 bg-blue-50 rounded-full">
+            <LayoutDashboard className="w-5 h-5 text-blue-500"/>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900">Dashboard</h2>
+        </div>
+        {/*Header Section End */}
 
       {/*
       <div className="mb-8">
@@ -1053,7 +1062,7 @@ const handleOpenScheduledPost = async () => {
           {/* Left-aligned text */}
             <div>
              
-              <h1 className="text-3xl font-extrabold text-gray-900 leading-tight">Hey!👋</h1>
+              <h1 className="text-3xl font-semibold text-gray-900 leading-tight">Hey!👋</h1>
               <p className="text-gray-600 mt-1 text-lg">Welcome back! Here's an overview of your social media activity.</p>
             </div>
 
@@ -1201,7 +1210,7 @@ const handleOpenScheduledPost = async () => {
   </div>
 
   {/* Column 2: Posting Streak Card */}
-  <div className="flex flex-col gap-6 
+  <div className="flex flex-col gap-6 border border-blue-50 hover:border-blue-100 
     bg-gradient-to-t from-blue-100 via-white via-white via-white to-white
     
     rounded-lg"> {/* Ensure this is still a flex column for consistent spacing */}
@@ -1267,7 +1276,8 @@ const handleOpenScheduledPost = async () => {
   </div>
 
   {/* Column 3: Upcoming Posts Card */}
-  <div className="flex flex-col gap-6"> {/* Ensure this is also a flex column for consistent spacing */}
+  <div className="flex flex-col gap-6 border border-blue-50 hover:border-blue-100 
+    bg-gradient-to-t from-blue-100 via-white via-white via-white to-white rounded-lg"> {/* Ensure this is also a flex column for consistent spacing */}
     {/* Card: Upcoming Posts (Planning) */}
     <div className="card p-6 flex flex-col justify-between">
       {/* Header */}
