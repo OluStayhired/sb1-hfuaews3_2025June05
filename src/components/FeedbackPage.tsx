@@ -135,7 +135,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
         </p>
         
         {/*Start inside white background p-12 is height*/}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12">
+        <div className="bg-white rounded-lg p-12">
           {submitSuccess ? (
             <div className="flex flex-col items-center justify-center text-center py-8">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
