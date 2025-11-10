@@ -1286,7 +1286,7 @@ const onModalScheduleError = (error: any) => {
               
         </div>
         <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
-                👋 Welcome to your content <b>scratch pad</b>. Generate posts from ideas, draft posts 
+                👋 Welcome to your content scratch pad. Generate posts from ideas, draft posts 
                 <br/>from scratch, save your drafts and recycle old posts... 
           </p>
 

@@ -122,12 +122,17 @@ export function FeedbackPage({}: FeedbackPageProps) {
       <div className="max-w-8xl mx-auto">
         {/*Header Section Starts Here*/}
         <div className="flex items-center space-x-2 mb-8">
-          <div className="p-2 bg-blue-100 rounded-md">
+          <div className="p-2 bg-blue-50 rounded-full">
             <ThumbsUp className="w-5 h-5 text-blue-500"/>
           </div>
           <h2 className="text-xl font-semibold text-gray-900">Feedback</h2>
         </div>
         {/*End Header Section Here*/}
+
+        <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
+         ⭐ Please share your bugs, feedback and testimonials here. Your product feedback 
+            <br/>will be used eventually be displayed as our roadmap. 
+        </p>
         
         {/*Start inside white background p-12 is height*/}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12">
