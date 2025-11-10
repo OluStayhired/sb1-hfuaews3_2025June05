@@ -154,7 +154,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                 </div>
 
                 <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-blue-50 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
-         ⭐ Please share your bugs, feedback and testimonials here. Your product feedback 
+         👍 Please share your feedback, bugs and testimonials here. Your product feedback 
             <br/>will be used eventually be displayed as our roadmap. 
               </p>
         
