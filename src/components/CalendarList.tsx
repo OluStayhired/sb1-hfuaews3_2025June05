@@ -237,31 +237,35 @@ const handleDeleteCampaign = async (calendarName: string) => {
         <div className="flex item-center">
 
           
-        {/* "Active" Button */}
+{/* "Refresh" Button */}
 
-          <button
+<button
             onClick={handleShowCampaignList}
-            //className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors mr-4"
-              className="inline-flex text-sm items-center px-4 py-2 bg-blue-50 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-100 border border-blue-200 rounded-lg text-gray-600 mr-2">
-         
-            <RefreshCcw className="text-blue-500 w-4 h-4 mr-2" />
+              className="inline-flex space-x-1 text-sm items-center px-4 py-2 bg-white hover:border-blue-400 hover:text-blue-500 hover:bg-blue-100 border border-blue-200 rounded-lg text-gray-600 mr-2 transition-all">
+
+          <div className="p-1 bg-blue-50 rounded-full"> 
+            <RefreshCcw className="text-blue-500 w-4 h-4 hover:animate-spin" />
+          </div> 
             <span className="text-blue-500">Refresh List</span>
         </button>
-        
+
+          {/* "Create Campaign" Button */}
         <button
             onClick={handleCreateCampaign}
-            //className="inline-flex items-center px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors mr-4"
-              className="inline-flex text-sm items-center px-4 py-2 hover:border-blue-400 hover:text-blue-500 hover:bg-gray-50 bg-white border border-gray-200 rounded-lg text-gray-600 mr-2">
-         
-            <PlusCircle className="w-4 h-4 mr-2" />
+              className="inline-flex space-x-1 text-sm items-center px-4 py-2 hover:border-blue-400 hover:text-blue-500 hover:bg-gray-50 bg-white border border-gray-200 rounded-lg text-gray-600 mr-2">
+         <div className="p-1 bg-blue-50 rounded-full"> 
+            <PlusCircle className="w-4 h-4 text-blue-500" />
+         </div> 
             <span>Create Campaign</span>
         </button>
-      
-         <div className="flex rounded-lg border border-gray-300 overflow-hidden"> 
+
+
+          {/* "Active Button" */} 
+         <div className="flex rounded-lg border border-gray-300 hover:border-blue-400 overflow-hidden hover:text-blue-500"> 
           <button
             onClick={() => setShowOnlyActiveLocal(true)} // Sets state to show only active
             className={`
-                  flex items-center px-4 py-2 text-sm font-normal
+                  flex items-center px-4 py-2 text-sm font-normal space-x-1
                   ${showOnlyActiveLocal // If showOnlyActiveLocal is true, this button is active
                     ? 'bg-blue-500 text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -269,7 +273,9 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 transition-colors duration-200
                 ${!showOnlyActiveLocal ? 'border-r border-gray-300' : ''}`}
               >
-                <CheckCircle className="w-4 h-4 mr-2" />
+            <div className="p-1 bg-blue-50 rounded-full"> 
+                <CheckCircle className="w-4 h-4 text-blue-500" />
+            </div> 
                   <span>Active</span>
           </button>
 
@@ -277,7 +283,7 @@ const handleDeleteCampaign = async (calendarName: string) => {
           <button
             onClick={() => setShowOnlyActiveLocal(false)} // Sets state to show all
             className={`
-              flex items-center px-4 py-2 text-sm font-normal
+              flex items-center px-4 py-2 text-sm font-normal space-x-1 
                ${!showOnlyActiveLocal // If showOnlyActiveLocal is false, this button is active
                 ? 'bg-blue-500 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -285,8 +291,11 @@ const handleDeleteCampaign = async (calendarName: string) => {
                 transition-colors duration-200
               `}
               >
-              <ListChecks className="w-4 h-4 mr-2" />
+            <div className="p-1 bg-blue-50 rounded-full"> 
+              <ListChecks className="w-4 h-4 text-blue-500" />
+             </div> 
                 <span>All</span>
+            
             </button>
           </div>
         </div>
