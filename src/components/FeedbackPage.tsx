@@ -147,7 +147,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
+            <form onSubmit={handleSubmit} className="max-w-3xl">
               {/* Problem Type Section */}
               <div className="mb-8">
                 <div className="flex items-center text-center space-x-2 mb-4">
