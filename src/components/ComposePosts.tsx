@@ -1368,7 +1368,7 @@ const onModalScheduleError = (error: any) => {
                           
                         }}
 
-                        className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                        className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                      
                         >
                         
@@ -1377,75 +1377,74 @@ const onModalScheduleError = (error: any) => {
                           <span className="text-sm">Account</span>
                         </button>
                           </TooltipHelp>
+                        
+                        
+    
+                    {/* Start Add a button to open the ContentCampaignModal */}
+                    <TooltipHelp text="⚡ browse ideas">
+                        <button
+                          onClick={handleOpenContentCalendarModal}
+                          className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors" >
+                            <Lightbulb className="w-4 h-4 mr-1"/>
+                          <span className="text-sm">Ideas</span>
+                          </button>
+                      </TooltipHelp>
                     
-                    
-
-                {/* Start Add a button to open the ContentCampaignModal */}
-                <TooltipHelp text="⚡ browse ideas">
-                    <button
-                      onClick={handleOpenContentCalendarModal}
-                      className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors" >
-                        <Lightbulb className="w-4 h-4 font-semibold mr-1"/>
-                      <span className="text-sm">Ideas</span>
-                      </button>
-                  </TooltipHelp>
-                
-                {/* ------------------------ End Add a button to open the ContentCampaignModal --------------------- */}
-
-          {/*-------------------- Start Add button to show draft posts ------------------------------ */}  
-          
-          <TooltipHelp text={`⚡ (${totalDraftCount}) saved drafts `}>
-            
-            <button
-                onClick={() => {
-                  setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
-                  setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
-                }}
+                    {/* ------------------------ End Add a button to open the ContentCampaignModal --------------------- */}
+    
+              {/*-------------------- Start Add button to show draft posts ------------------------------ */}  
               
-                className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
-                // Added 'items-center' to the button's class for vertical alignment
-            >
-              {/*<FileEdit className="w-4 h-4 mr-1" />*/}
-            <Save className="w-4 h-4 mr-1" />
-          <span className="text-sm">Drafts</span>
-        </button>
-       </TooltipHelp>
-
-         {/* End Add button to show draft posts */}
-
-          {/* ----------------- Start Add button to show sent posts ---------------- */}  
-                    
-         <TooltipHelp text={`⚡ recycle sent posts`}>   
-            <button
-               onClick={handleOpenSentPostModal}        
-               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+              <TooltipHelp text={`⚡ (${totalDraftCount}) saved drafts `}>
                 
-            >
-              {/*<Recycle className="w-4 h-4" />*/}
-          <MailCheck className="w-4 h-4 mr-1" />   
-        <span className="text-sm">Sent</span>
-        </button>
-       </TooltipHelp>
-
-      {/*----------------- End Add button to show sent posts --------------------------- */}
-
+                <button
+                    onClick={() => {
+                      setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
+                      setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
+                    }}
+                  
+                   className="ml-2 border border-blue-200 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                    // Added 'items-center' to the button's class for vertical alignment
+                >
+                  {/*<FileEdit className="w-4 h-4 mr-1" />*/}
+            <Save className="w-4 h-4 mr-1" />
+              <span className="text-sm">Drafts</span>
+            </button>
+           </TooltipHelp>
+    
+             {/* End Add button to show draft posts */}
+    
+              {/* ----------------- Start Add button to show sent posts ---------------- */}  
+                        
+             <TooltipHelp text={`⚡ recycle sent posts`}>   
+                <button
+                   onClick={handleOpenSentPostModal}        
+                   className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                     
-       {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
-
-       <TooltipHelp text={`⚡ 220+ writing hooks`}>   
-         <button
-            onClick={handleOpenHookListModal} 
-            className="ml-2 px-2 py-2 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"    
-            >
-          
-           <BookOpenText className="w-4 h-4 mr-1" />
-           <span className="text-sm">Hooks</span>
-           
-           {/*Add Hook 🪝*/}
-        </button>
-       </TooltipHelp>     
-
-    {/* ----------------- End Add button Add Hooks to Posts ----------------- */}                      
+                >
+                  {/*<Recycle className="w-4 h-4" />*/}
+              <MailCheck className="w-4 h-4 mr-1" />   
+            <span className="text-sm">Sent</span>
+            </button>
+           </TooltipHelp>
+    
+          {/*----------------- End Add button to show sent posts --------------------------- */}
+    
+                        
+           {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
+    
+           <TooltipHelp text={`⚡ access 220+ hooks`}>   
+             <button
+                onClick={handleOpenHookListModal} 
+                className="ml-2 border border-blue-100 px-2 py-1 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"    
+                >
+               <BookOpenText className="w-4 h-4 mr-1" />
+               <span className="text-sm">Hooks</span>
+               
+               {/*Add Hook 🪝*/}
+            </button>
+           </TooltipHelp>     
+    
+        {/* ----------------- End Add button Add Hooks to Posts ---------------- */}                        
                     
                     
                   </>
