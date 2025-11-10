@@ -172,7 +172,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                             name="featureType"
                             value={formData.featureType}
                             onChange={handleInputChange}
-                            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                            className={`w-full text-sm px-1 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                             ${formData.featureType === '' ? 'text-gray-400' : 'text-gray-900'}`
                               }
                             required
@@ -194,7 +194,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                       name="appSection"
                       value={formData.appSection}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                      className={`w-full text-sm px-1 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                             ${formData.featureType === '' ? 'text-gray-400' : 'text-gray-900'}`
                               }
                       required
@@ -216,7 +216,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                       name="socialChannel"
                       value={formData.socialChannel}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                      className={`w-full text-sm px-1 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                             ${formData.featureType === '' ? 'text-gray-400' : 'text-gray-900'}`
                               }
                       required
@@ -237,7 +237,7 @@ export function FeedbackPage({}: FeedbackPageProps) {
                 {/* Problem Subject */}
                 <div className="mb-4">
                   <label htmlFor="problemSubject" className="block text-sm font-medium text-gray-700 mb-1">
-                    Subject
+                    {/*Subject*/}
                   </label>
                   <input
                     type="text"
@@ -245,8 +245,8 @@ export function FeedbackPage({}: FeedbackPageProps) {
                     name="problemSubject"
                     value={formData.problemSubject}
                     onChange={handleInputChange}
-                    placeholder="Brief description of the issue or request"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Brief subject title"
+                    className="w-full text-sm px-1 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
                 </div>
@@ -262,8 +262,8 @@ export function FeedbackPage({}: FeedbackPageProps) {
                     value={formData.problemDetail}
                     onChange={handleInputChange}
                     placeholder="Please provide detailed information about your feedback (minimum 25 characters)"
-                    rows={5}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    rows={3}
+                    className="w-full text-sm px-1 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     required
                     minLength={25}
                   />
