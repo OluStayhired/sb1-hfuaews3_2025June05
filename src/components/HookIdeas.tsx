@@ -194,10 +194,9 @@ export function HookIdeas({ // Renamed component
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="p-2 items-center bg-gray-100 rounded-full">
-              <BookOpenText className="h-5 w-5 text-gray-400" />
+              <BookOpenText className="h-4 w-4 text-gray-400" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-500">Hook Library ({totalFilteredHooks})</h2>
-            
+            <h3 className="text-lg font-semibold text-gray-500">Generate Writing Hooks ({totalFilteredHooks})</h3>
           </div>
           
           {/* No close button */}
@@ -276,7 +275,7 @@ export function HookIdeas({ // Renamed component
                     </div>
                   )}
 
-                  <div className="absolute top-2 right-4 flex space-x-1 z-[100001]">
+                  <div className="absolute top-2 right-4 flex space-x-1">
                     
                         <button
                             onClick={() => handleCopyToClipboard(hookItem.hooks, hookItem.id)} // Assuming hookItem.id is unique

@@ -1,13 +1,12 @@
 // src/components/SentPostModal.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Loader2, ArrowRight, ArrowLeft, Trash2, Clock, Send, PlusCircle, Search, Recycle, MailCheck } from 'lucide-react';
+import { X, Loader2, ArrowRight, ArrowLeft, Trash2, Clock, Send, PlusCircle, Search, Recycle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import { format, parseISO, addWeeks, addDays, isWithinInterval, differenceInDays, startOfWeek, endOfWeek } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { TooltipHelp } from '../utils/TooltipHelp';
 
 interface SentPost {
   id: string;
@@ -254,11 +253,18 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
 
   return (
     <>
+       {/* Overlay for the rest of the screen
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        onClick={onClose}
+      ></div>
+
+       */}
 
       {/* The actual side panel content */}
       <div
         className={`
-          fixed top-0 right-0 h-screen w-2/5 bg-white shadow-lg border-r border-gray-200 z-50
+          fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-r border-gray-200 z-50
           transform transition-transform duration-1000 ease-in-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
@@ -267,7 +273,7 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <div className="p-2 items-center bg-blue-50 rounded-full">
-                <MailCheck className="h-5 w-5 text-blue-500" />
+                <Recycle className="h-5 w-5 text-blue-500" />
               </div>
               <h2 className="text-lg font-semibold text-gray-900">Sent Posts ({totalSentCount})</h2>
             </div>
@@ -354,7 +360,7 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
               {Object.entries(sentPosts).length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-gray-500">
                   <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
-                    <MailCheck className="w-12 h-12 font-light text-blue-500" />
+                    <Recycle className="w-12 h-12 font-light text-blue-500" />
                   </div>
                   <p className="text-gray-600 mb-3 mt-4">No sent posts found 😔</p>
                   <p className="text-gray-400 mb-4 text-sm">Start scheduling and sending posts!</p>
@@ -416,22 +422,29 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
                         
                         <div className="mt-2 p-2 bg-gray-50 rounded-md">
                           <p className="text-xs text-gray-600 whitespace-pre-wrap">
-                            {/*{truncateText(post.full_content)}*/}
-                            {post.full_content}
+                            {truncateText(post.full_content)}
                           </p>
                         </div>
                         
                         <div className="flex justify-end mt-3 space-x-2">
-                          <TooltipHelp  text = "⚡ Send to Draft">
                           <button
                             
                             onClick={() => handleEditSentPost(post.full_content, post.social_channel, post.user_handle)}
                             className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center"
                           >
                             <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                            <span>Copy Post</span>
+                            <span>Recycle Post ♻️</span>
                           </button>
-                          </TooltipHelp>
+
+                          {/*
+                          <button
+                            onClick={() => handleDeleteSentPost(post.id)}
+                            className="px-3 py-1.5 text-xs bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors flex items-center"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 mr-1" />
+                            <span>Delete</span>
+                          </button>
+                          */}
                         </div>
                       </div>
                     ))}
