@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2 } from 'lucide-react';
+import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, PlusCircle, MailCheck, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText,BookOpenText, Trash2 } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -20,8 +20,10 @@ import { ScheduleDraftPost } from '/src/components/ScheduleDraftPost';
 import { ContentCalendarModal } from './ContentCalendarModal';
 import { DraftPostModal } from './DraftPostModal';
 import { SentPostModal } from './SentPostModal';
-import { improveComment, rewritePostForTwitter, generateHookPostV3 } from '../lib/gemini';
+import { improveComment, generateHookPostV3 } from '../lib/gemini';
+import { rewritePostForBluesky } from '../lib/geminiBluesky'
 import { rewritePostForLinkedIn } from '../lib/geminiLinkedIn'
+import { rewritePostForTwitter} from '../lib/geminiTwitter'
 import { useLocation } from 'react-router-dom';
 import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsForLinks';
 import { useProductTier } from '../hooks/useProductTierHook'
@@ -88,7 +90,6 @@ function ComposePosts() {
   const [editedContent, setEditedContent] = useState(content);
   //const [copySuccessMap, setCopySuccessMap] = useState<{ [key: string]: boolean }>({});
   const [copySuccessMap, setCopySuccessMap] = useState(false);
-
 
   const [max_length, setMaxLength] = useState(300);
 
@@ -196,7 +197,7 @@ function ComposePosts() {
 
 const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
 
-//New UseEffect to include Premium Twitter
+//New UseEffect to include Premium Twitter . . 
    useEffect(() => {
     if (activeAccountId) {
       //const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
@@ -236,7 +237,7 @@ const getNextButtonTooltip = () => {
     return "Please choose a social channel to continue.";
   }
   if (content.trim().length === 0) {
-    return "Write a post to enable the post button";
+    return "⚡ start writing to enable button";
   }
   // Check if content length is greater than or equal to max_length, which disables the button
   if (content.trim().length >= max_length) {
@@ -484,7 +485,6 @@ useEffect(() => {
     setIsHookListModalOpen(true);
   };
 
-  
   const handleCloseHookListModal = () => {
     setIsHookListModalOpen(false);
     setIsDraftPostModalOpen(false);
@@ -502,21 +502,21 @@ useEffect(() => {
 
    // NEW: Function to handle updating content from HookListModal (e.g., after generating killer hook)
 
-  const handleRewriteHook = (revisedHook: string) => {
+    const handleRewriteHook = (revisedHook: string) => {
     setContent('');
     setContent(revisedHook + '\n' + content);
     //console.log("executed handleRewriteHook")
   };
 
   const handleCopyToClipboard = async (text: string) => {
-        try {
-          await navigator.clipboard.writeText(text);
-          setCopySuccessMap(() => (true));
-          setTimeout(() => setCopySuccessMap(false), 2000);
-        } catch (err) {
-          console.error('Failed to copy text:', err);
-        }
-      };
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopySuccessMap(() => (true));
+      setTimeout(() => setCopySuccessMap(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+    }
+  };
 
   const handleRequestMoreBlueskyAccounts = () => {
    setShowAddSocialTabModal(false); 
@@ -1010,7 +1010,6 @@ if (!activeAccountId) {
   }
 };
 
-
   const handleCloseContentCalendarModal = () => {
     setIsContentCalendarModalOpen(false);
     setIsHookListModalOpen(false);
@@ -1135,6 +1134,7 @@ const handleEditSentPost = (content: string, socialChannel: string, userHandle: 
   };
 
 // Add this function to handle content generation
+  {/*
 const handleGenerateContent = async () => {
    if (!content.trim()) return; 
   
@@ -1156,6 +1156,30 @@ const handleGenerateContent = async () => {
     setIsGenerating(false);
   }
 };
+*/}
+
+// Add this function to handle content generation (new geminiBluesky ts)
+const handleGenerateContent = async () => {
+  if (!content.trim()) return; 
+ 
+ try {
+   setIsGenerating(true);
+   
+   // Get the theme and topic from the selected calendar content
+   const improvedContent = await rewritePostForBluesky(content, 300);
+
+   if (!improvedContent.error) {
+      setContent(improvedContent.text);
+   } else {
+     console.error('Error improving content:', improvedContent.error);
+     // Optionally show an error message to the user
+   }
+ } catch (err) {
+   console.error('Error generating content:', err);
+ } finally {
+   setIsGenerating(false);
+ }
+};   
 
 // Add this function to handle content generation
 const handleGenerateLinkedInContent = async () => {
@@ -1248,8 +1272,23 @@ const onModalScheduleError = (error: any) => {
 
 
   return (
-    <div className="p-8">
-      <div className="max-w-4xl mx-auto">
+
+    /*<div className="p-8">
+      <div className="max-w-4xl w-3/4">*/
+      
+<div className="p-4 bg-white min-h-screen">
+<div className="max-w-8xl w-1/2">
+      <div className="flex items-center space-x-2">
+              <div className="p-2 bg-blue-50 rounded-full">
+                <PlusCircle className="w-5 h-5 text-blue-500"/>
+              </div>
+              <h2 className="text-gray-900 font-semibold text-xl">Draft Studio</h2>
+              
+        </div>
+        <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-gradient-to-r from-blue-50 to-white rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
+                👋 Welcome to your content scratch pad. Generate posts from ideas, draft posts 
+                <br/>from scratch, save your drafts and recycle old posts... 
+          </p>
 
         {isLoading ? (
           <div className="flex justify-center py-8">
@@ -1329,75 +1368,83 @@ const onModalScheduleError = (error: any) => {
                           
                         }}
 
-                       className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+                        className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                      
-                    >
-                    
-                      <Plus className="w-4 h-4"/>              
-                    </button>
+                        >
+                        
+                          {/*<Plus className="w-4 h-4"/>  */}
+                          <PlusCircle className="w-4 h-4 mr-1"/>
+                          <span className="text-sm">Account</span>
+                        </button>
+                          </TooltipHelp>
+                        
+                        
+    
+                    {/* Start Add a button to open the ContentCampaignModal */}
+                    <TooltipHelp text="⚡ browse ideas">
+                        <button
+                          onClick={handleOpenContentCalendarModal}
+                          className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors" >
+                            <Lightbulb className="w-4 h-4 mr-1"/>
+                          <span className="text-sm">Ideas</span>
+                          </button>
                       </TooltipHelp>
                     
-                    
-
-                {/* Start Add a button to open the ContentCampaignModal */}
-                <TooltipHelp text="⚡ browse ideas">
-                    <button
-                      onClick={handleOpenContentCalendarModal}
-                      className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors" >
-                        <Lightbulb className="w-4 h-4"/>
-                      </button>
-                  </TooltipHelp>
-                
-                {/* ------------------------ End Add a button to open the ContentCampaignModal --------------------- */}
-
-          {/*-------------------- Start Add button to show draft posts ------------------------------ */}  
-          
-          <TooltipHelp text={`⚡ (${totalDraftCount}) saved drafts `}>
-            
-            <button
-                onClick={() => {
-                  setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
-                  setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
-                }}
+                    {/* ------------------------ End Add a button to open the ContentCampaignModal --------------------- */}
+    
+              {/*-------------------- Start Add button to show draft posts ------------------------------ */}  
               
-               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
-                // Added 'items-center' to the button's class for vertical alignment
-            >
-            <FileEdit className="w-4 h-4" />
-        </button>
-       </TooltipHelp>
-
-         {/* End Add button to show draft posts */}
-
-          {/* ----------------- Start Add button to show sent posts ---------------- */}  
-                    
-         <TooltipHelp text={`⚡ recycle posts`}>   
-            <button
-               onClick={handleOpenSentPostModal}        
-               className="ml-2 px-2 py-2 bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"
+              <TooltipHelp text={`⚡ (${totalDraftCount}) saved drafts `}>
                 
-            >
-            <Recycle className="w-4 h-4" />
-        </button>
-       </TooltipHelp>
-
-      {/*----------------- End Add button to show sent posts --------------------------- */}
-
+                <button
+                    onClick={() => {
+                      setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
+                      setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
+                    }}
+                  
+                   className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                    // Added 'items-center' to the button's class for vertical alignment
+                >
+                  {/*<FileEdit className="w-4 h-4 mr-1" />*/}
+            <Save className="w-4 h-4 mr-1" />
+              <span className="text-sm">Drafts</span>
+            </button>
+           </TooltipHelp>
+    
+             {/* End Add button to show draft posts */}
+    
+              {/* ----------------- Start Add button to show sent posts ---------------- */}  
+                        
+             <TooltipHelp text={`⚡ recycle sent posts`}>   
+                <button
+                   onClick={handleOpenSentPostModal}        
+                   className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                     
-       {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
-
-       <TooltipHelp text={`⚡ add killer hooks`}>   
-         <button
-            onClick={handleOpenHookListModal} 
-            className="ml-2 px-2 py-2 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-500 hover:bg-blue-100 rounded-full transition-colors"    
-            >
-           <BookText className="w-4 h-4" />
-           
-           {/*Add Hook 🪝*/}
-        </button>
-       </TooltipHelp>     
-
-    {/* ----------------- End Add button Add Hooks to Posts ---------------- */}                      
+                >
+                  {/*<Recycle className="w-4 h-4" />*/}
+              <MailCheck className="w-4 h-4 mr-1" />   
+            <span className="text-sm">Sent</span>
+            </button>
+           </TooltipHelp>
+    
+          {/*----------------- End Add button to show sent posts --------------------------- */}
+    
+                        
+           {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
+    
+           <TooltipHelp text={`⚡ access 220+ hooks`}>   
+             <button
+                onClick={handleOpenHookListModal} 
+                className="ml-2 border border-blue-100 px-2 py-1 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"    
+                >
+               <BookOpenText className="w-4 h-4 mr-1" />
+               <span className="text-sm">Hooks</span>
+               
+               {/*Add Hook 🪝*/}
+            </button>
+           </TooltipHelp>     
+    
+        {/* ----------------- End Add button Add Hooks to Posts ---------------- */}                        
                     
                     
                   </>
@@ -1538,33 +1585,75 @@ const onModalScheduleError = (error: any) => {
                 <button
                   
                   type="button"
-                    onClick={() => setContent('')}
-                   className="absolute right-32 top-1 p-1 bg-red-100 hover:bg-red-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
+                   disabled={!activeAccountId || !content.trim() || isSchedulingPost}
+                  onClick={() => setContent('')}
+                   className="absolute right-32 top-1 p-1 bg-red-100 hover:bg-red-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
                   <TooltipHelp text="⚡ Clear Text">
                    <Trash2 className="w-3 h-3 text-red-500" />       
                     </TooltipHelp>
                   </button>
                  
-                {/*End New Delete AI Button*/}
+                {/*End New Deletewitter AI Button*/}
 
-                <button                  
+
+              <button                  
                   type="button"
                     //onClick={() => setContent('')}
+                  disabled={!activeAccountId || !content.trim() || isSchedulingPost}
                    onClick={() => handleCopyToClipboard(content)}
-                   className="absolute right-40 top-1 p-1 bg-blue-100 hover:bg-blue-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1">
-                  <TooltipHelp text={copySuccessMap ? "Copied!" : "⚡Copy Text"}>
+                   className="absolute right-40 top-1 p-1 bg-blue-100 hover:bg-blue-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  <TooltipHelp text={copySuccessMap ? "Copied!" : "⚡Copy Post"}>
                    <Copy className="w-3 h-3 text-blue-500" />       
                   </TooltipHelp>
               </button>
                  
                 {/*End New Copy Text Button*/}
 
+                
+                 <button                  
+                   type="button"
+                   disabled={!activeAccountId || !content.trim() || isSchedulingPost}
+                   //onClick={() => handleCopyToClipboard(content)}//
+                   onClick={handleSchedulePost}
+                   className="absolute right-48 top-1 px-1 py-0.5 bg-green-100 hover:bg-green-200 border border-green-500 rounded-md transition duration-200 flex items-center space-x-1 disabled:bg-green-50 disabled:border-green-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-70">
+
+                   
+                    {isSchedulingPost ? (
+                      <>
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      </>
+                     ):(
+                     <>
+                       
+                       <TooltipHelp text="⚡Schedule Post" className="flex items-center space-x-1">
+                            <Calendar className="w-3 h-3 text-green-700 disabled:opacity-70" />
+                         <span className="text-xs text-green-700">Schedule</span>
+                       </TooltipHelp>
+                    </>
+                     )}
+                    
+                 
+              </button>
+                
+                 
+                {/*End New Copy Text Button*/}
+
+
                 {/*start linkedin button */}
-          
+
+                {/*   
+              <TooltipHelp text={tooltipMessage}>     
+                    <span className={`text-xs ${
+                      postContent.length > max_length  ? 'text-red-500 bg-red-50 rounded-full p-2' : 'text-green-500 bg-green-50 rounded-full p-2'
+                    }`}>
+                      {postContent.length}/{max_length} Characters
+                    </span>      
+             </TooltipHelp>
+          */}
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <div className="text-sm mt-4 text-gray-500">
-                  <span className={`text-sm ${
+                      <span className={`text-sm ${
                           content.length > max_length  
                               ? 'text-red-500 bg-red-50 rounded-full p-2' 
                               : 'text-green-500 bg-green-50 rounded-full p-2'
@@ -1593,7 +1682,8 @@ const onModalScheduleError = (error: any) => {
                       </>
                     )}
                   </button>
-            
+
+                    {/*
                    <button
                     type="button" // Changed to type="button" to prevent form submission
                     disabled={!activeAccountId || !content.trim() || isSchedulingPost}
@@ -1612,6 +1702,7 @@ const onModalScheduleError = (error: any) => {
                       </>
                     )}
                   </button>
+                  */}
 
            <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToPost()}>                    
                   <button
@@ -1726,7 +1817,9 @@ const onModalScheduleError = (error: any) => {
 
       <DraftPostModal
           isOpen={isDraftPostModalOpen}
-          onClose={() => setIsDraftPostModalOpen(false)}
+          onClose={() => setIsDraftPostModalOpen(false)
+                
+          }
           onContinueDraft={handleContinueDraft}
          />
 

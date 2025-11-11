@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Send, Copy, Calendar, CalendarPlus, SquarePen, Loader2, X, Plus, PlusCircle, MailCheck, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText,BookOpenText, Trash2 } from 'lucide-react';
+import { Send, Copy, Calendar, CalendarPlus, PlusCircle, SquarePen, Loader2, X, Plus, Lightbulb, Save, List, FileEdit, Sparkles, Check, Recycle, BookText, Trash2, MailCheck, BookOpenText } from 'lucide-react';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
@@ -29,6 +29,7 @@ import { generateBlueskyFacetsForLinks } from '../utils/generateBlueskyFacetsFor
 import { useProductTier } from '../hooks/useProductTierHook'
 import { ProPlanLimitModal } from './ProPlanLimitModal';
 import { HookListModal } from './HookListModal';
+import { HookIdeas } from './HookIdeas';
 
 
 
@@ -88,7 +89,6 @@ function ComposePosts() {
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
-  //const [copySuccessMap, setCopySuccessMap] = useState<{ [key: string]: boolean }>({});
   const [copySuccessMap, setCopySuccessMap] = useState(false);
 
   const [max_length, setMaxLength] = useState(300);
@@ -98,7 +98,6 @@ function ComposePosts() {
   const handleRewriteContent = (rewrittenContent: string) => {
     setContent('');
     setContent(rewrittenContent);
-    //setIsContentCalendarModalOpen(false);
   };
 
   const [draftPosts, setDraftPosts] = useState<{[key: string]: DraftPost[]}>({});
@@ -197,13 +196,13 @@ function ComposePosts() {
 
 const activeAccount = connectedAccounts.find(account => account.id === activeAccountId);
 
-//New UseEffect to include Premium Twitter . . 
+//New UseEffect to include Premium Twitter
    useEffect(() => {
     if (activeAccountId) {
       //const activeAccount = socialChannels.find(channel => channel.id === selectedChannel);
       const activeSocialAccount = connectedAccounts.find(account => account.id === activeAccountId);
       if (activeSocialAccount) {
-        //console.log('Selected Social Channel:', activeSocialAccount.social_channel); 
+        console.log('Selected Social Channel:', activeSocialAccount.social_channel); 
         switch (activeSocialAccount.social_channel) {
           case 'Bluesky':
             setMaxLength(300);
@@ -309,7 +308,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
     setModalMessage(''); // Clear previous modal message
     setIsProPlanLimitModalOpen(false);
 
-    //console.log(`[checkActionLimits] Action requested: ${action}`);
+    console.log(`[checkActionLimits] Action requested: ${action}`);
 
     try {
         const { data: userPreferences, error: supabaseError } = await supabase
@@ -333,7 +332,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
               if (isLimitedCampaignAccountType && hasExceededCampaigns) {
         setModalMessage(`You have reached your limit of ${MAX_FREE_CAMPAIGNS} campaigns for your ${userPreferences.account_type} plan. Upgrade to create more!`);
         setIsProPlanLimitModalOpen(true);
-        //console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
+        console.log("[checkActionLimits] Limit exceeded for createCampaign. Returning false.");
         return false;
       }
       break;
@@ -345,7 +344,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                 setModalMessage(`You have reached your limit of ${MAX_FREE_ACCOUNTS} connected accounts for your ${userPreferences.account_type}. Upgrade to connect more!`);
                 setIsProPlanLimitModalOpen(true);
 
-                //console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
+                console.log("[checkActionLimits] Limit exceeded for addAccount. Returning false.");
 
               return false;
 
@@ -358,7 +357,7 @@ type ActionType = 'createCampaign' | 'addAccount' | 'freeTrialEnded';
                   
                 setModalMessage(`Your Free Trial on SoSavvy has ended for your ${userPreferences.account_type}. Upgrade your account to Pro Plan to continue creating posts!`);
                 setIsProPlanLimitModalOpen(true);
-                //console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
+                console.log("[checkActionLimits] Limit exceeded for freeTrials. Returning false.");
           
                 return false;
               }
@@ -582,7 +581,7 @@ useEffect(() => {
   };
 
   const handleConnectLinkedIn = () => {
-    //console.log('Connecting to LinkedIn');
+    console.log('Connecting to LinkedIn');
   };
 
   const fetchConnectedAccounts = async () => {
@@ -679,7 +678,7 @@ useEffect(() => {
       })
       .eq('id', accountId);
     
-    //console.log('Post successful:', postResult);
+    console.log('Post successful:', postResult);
     return true;
     
   } catch (error) {
@@ -689,7 +688,7 @@ useEffect(() => {
 };
 
 const handlePostOnLinkedIn = async (postId: string): Promise<boolean> => {
-  //console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', postId);
+  console.log('handlePostOnLinkedIn: Triggering Edge Function for postId:', postId);
 
   if (!VITE_LINKEDIN_POSTER_URL) {
       console.error('handlePostOnLinkedIn: LinkedIn poster Edge Function URL is not configured.');
@@ -710,10 +709,10 @@ const handlePostOnLinkedIn = async (postId: string): Promise<boolean> => {
       body: JSON.stringify({ postId: postId }), // Send the postId in the request body
     });
 
-    //console.log('handlePostOnLinkedIn: Edge Function response status:', response.status);
+    console.log('handlePostOnLinkedIn: Edge Function response status:', response.status);
 
     const responseBody = await response.json();
-    //console.log('handlePostOnLinkedIn: Edge Function response body:', responseBody);
+    console.log('handlePostOnLinkedIn: Edge Function response body:', responseBody);
 
 
     if (!response.ok) {
@@ -726,7 +725,7 @@ const handlePostOnLinkedIn = async (postId: string): Promise<boolean> => {
     // Check the response body from the Edge Function for success details
     // (Your Edge Function returns { message: '...', linkedinPostId: '...' })
     if (responseBody.message === 'LinkedIn post successful') {
-         //console.log('handlePostOnLinkedIn: Edge Function confirmed successful LinkedIn post.');
+         console.log('handlePostOnLinkedIn: Edge Function confirmed successful LinkedIn post.');
          // Optionally, store the linkedinPostId returned in responseBody.linkedinPostId
          // if you need it on the frontend.
         return true; // Indicate success
@@ -748,7 +747,7 @@ const handlePostOnLinkedIn = async (postId: string): Promise<boolean> => {
 
 //handle Post function for Twitter
 const handlePostOnTwitter = async (postId: string): Promise<boolean> => {
-  //console.log('handlePostOnTwitter: Triggering Edge Function for postId:', postId);
+  console.log('handlePostOnTwitter: Triggering Edge Function for postId:', postId);
 
   // --- Check for the Twitter poster Edge Function URL environment variable ---
   if (!VITE_TWITTER_POSTER_URL) { // Use process.env.VITE_... based on your build tool
@@ -769,13 +768,13 @@ const handlePostOnTwitter = async (postId: string): Promise<boolean> => {
       body: JSON.stringify({ postId: postId }), // Send the postId in the request body
     });
 
-    //console.log('handlePostOnTwitter: Edge Function response status:', response.status);
+    console.log('handlePostOnTwitter: Edge Function response status:', response.status);
 
     // Attempt to parse the response body as JSON for logging/error details
     let responseBody = null;
     try {
          responseBody = await response.json();
-         //console.log('handlePostOnTwitter: Edge Function response body:', responseBody);
+         console.log('handlePostOnTwitter: Edge Function response body:', responseBody);
     } catch (jsonParseError) {
         console.error('handlePostOnTwitter: Failed to parse Edge Function response body as JSON:', jsonParseError);
          // Even if parsing fails, we can still check response.ok and status
@@ -798,7 +797,7 @@ const handlePostOnTwitter = async (postId: string): Promise<boolean> => {
     // It returns other error messages/structures on failure (!response.ok)
 
     if (responseBody && (responseBody.message === 'Twitter post successful' || responseBody.message === 'Post detected as duplicate by Twitter')) {
-         //console.log('handlePostOnTwitter: Edge Function confirmed Twitter post handled (success or duplicate).');
+         console.log('handlePostOnTwitter: Edge Function confirmed Twitter post handled (success or duplicate).');
          // Optionally, store the twitterPostId returned in responseBody.twitterPostId
          // if you need it on the frontend.
         return true; // Indicate success (task handled by Edge Function)
@@ -853,7 +852,7 @@ if (!activeAccountId) {
     // --- Branching logic based on social_channel ---
     if (activeAccount.social_channel === 'Bluesky') {
       // --- Bluesky Posting (Direct Client-Side API Call) ---
-      //console.log('handleSubmit: Calling client-side Bluesky post handler.');
+      console.log('handleSubmit: Calling client-side Bluesky post handler.');
       // Call the original handlePostOnBluesky function
       success = await handlePostOnBluesky(postContent, activeAccountId);
 
@@ -861,12 +860,12 @@ if (!activeAccountId) {
 
     } else if (activeAccount.social_channel === 'LinkedIn' || activeAccount.social_channel === 'Twitter') {
       // --- Backend-Triggered Posting (LinkedIn, Twitter, etc.) ---
-      //console.log(`handleSubmit: Handling backend-triggered post for ${activeAccount.social_channel}.`);
+      console.log(`handleSubmit: Handling backend-triggered post for ${activeAccount.social_channel}.`);
 
       // --- STEP 1: Create a pending post record in the database ---
       // This record will hold the content and link it to the user and social channel
       // Use your standard Supabase client here (not the service role one) as this is frontend
-      //console.log('handleSubmit: Creating pending post record in user_post_schedule...');
+      console.log('handleSubmit: Creating pending post record in user_post_schedule...');
       // Ensure currentUserId is available in this scope
       if (!currentUserId) {
           console.error('handleSubmit: Current user ID is not available.');
@@ -910,17 +909,17 @@ if (!activeAccountId) {
       }
 
       const postId = newPostData.id; // Get the ID of the newly created post record
-      //console.log('handleSubmit: Pending post record created with ID:', postId);
+      console.log('handleSubmit: Pending post record created with ID:', postId);
 
 
       // --- STEP 2: Call the appropriate Edge Function trigger handler with the postId ---
       if (activeAccount.social_channel === 'LinkedIn') {
-         //console.log('handleSubmit: Calling handlePostOnLinkedIn with postId:', postId);
+         console.log('handleSubmit: Calling handlePostOnLinkedIn with postId:', postId);
         // Call the new handlePostOnLinkedIn function, passing the postId
         success = await handlePostOnLinkedIn(postId);
 
       } else if (activeAccount.social_channel === 'Twitter') {
-         //console.log('handleSubmit: Calling handlePostOnTwitter with postId:', postId);
+         console.log('handleSubmit: Calling handlePostOnTwitter with postId:', postId);
         // TODO: Implement handlePostOnTwitter(postId) similar to handlePostOnLinkedIn
         success = await handlePostOnTwitter(postId);
          //success = false; // Placeholder for Twitter until implemented
@@ -938,7 +937,7 @@ if (!activeAccountId) {
 
     // --- Handle the outcome based on the 'success' flag ---
     if (success) {
-      //console.log('handleSubmit: Posting process reported success.');
+      console.log('handleSubmit: Posting process reported success.');
       setContent(''); // Clear content after successful post
       // TODO: Show a success message notification (e.g., "Post is being sent!")
     } else {
@@ -1082,9 +1081,6 @@ if (!activeAccountId) {
 };
   
    //handle to populate the text area
-
- 
-
   const handleContinueDraft = (content: string, socialChannel: string, userHandle: string) => {
   // Always set the content in the textarea
   setContent(content);
@@ -1097,7 +1093,7 @@ if (!activeAccountId) {
   if (matchingAccount) {
     // If a matching connected account is found, set it as active
     setActiveAccountId(matchingAccount.id);
-    //console.log(`Draft continued for account: ${userHandle} on ${socialChannel}. Tab set.`);
+    console.log(`Draft continued for account: ${userHandle} on ${socialChannel}. Tab set.`);
     // UX improvement: Optionally, provide a temporary visual confirmation to the user
     // e.g., a toast notification: "Draft loaded! Account set to @yourhandle (Platform)"
   } else {
@@ -1118,7 +1114,7 @@ const handleEditSentPost = (content: string, socialChannel: string, userHandle: 
   if (matchingAccount) {
     // If a matching connected account is found, set it as active
     setActiveAccountId(matchingAccount.id);
-    //console.log(`Edit continued for account: ${userHandle} on ${socialChannel}. Tab set.`);
+    console.log(`Edit continued for account: ${userHandle} on ${socialChannel}. Tab set.`);
     // UX improvement: Optionally, provide a temporary visual confirmation to the user
     // e.g., a toast notification: "Draft loaded! Account set to @yourhandle (Platform)"
   } else {
@@ -1133,8 +1129,8 @@ const handleEditSentPost = (content: string, socialChannel: string, userHandle: 
     return name.length > 5 ? name.substring(0, 5) + '...' : name;
   };
 
+
 // Add this function to handle content generation
-  {/*
 const handleGenerateContent = async () => {
    if (!content.trim()) return; 
   
@@ -1142,7 +1138,7 @@ const handleGenerateContent = async () => {
     setIsGenerating(true);
     
     // Get the theme and topic from the selected calendar content
-    const improvedContent = await improveComment(content);
+    const improvedContent = await rewritePostForBluesky(content, 300);
 
     if (!improvedContent.error) {
        setContent(improvedContent.text);
@@ -1155,31 +1151,7 @@ const handleGenerateContent = async () => {
   } finally {
     setIsGenerating(false);
   }
-};
-*/}
-
-// Add this function to handle content generation (new geminiBluesky ts)
-const handleGenerateContent = async () => {
-  if (!content.trim()) return; 
- 
- try {
-   setIsGenerating(true);
-   
-   // Get the theme and topic from the selected calendar content
-   const improvedContent = await rewritePostForBluesky(content, 300);
-
-   if (!improvedContent.error) {
-      setContent(improvedContent.text);
-   } else {
-     console.error('Error improving content:', improvedContent.error);
-     // Optionally show an error message to the user
-   }
- } catch (err) {
-   console.error('Error generating content:', err);
- } finally {
-   setIsGenerating(false);
- }
-};   
+};      
 
 // Add this function to handle content generation
 const handleGenerateLinkedInContent = async () => {
@@ -1272,24 +1244,22 @@ const onModalScheduleError = (error: any) => {
 
 
   return (
+    <div className="p-4 bg-white grid grid-cols-2 gap-6">
+      <div className="col-span-1 min-h-screen"> {/* wrap the content section */}
 
-    /*<div className="p-8">
-      <div className="max-w-4xl w-3/4">*/
-      
-<div className="p-4 bg-white min-h-screen">
-<div className="max-w-8xl w-1/2">
-      <div className="flex items-center space-x-2">
+        {/*header*/}
+        <div className="flex items-center space-x-2 mb-8">
               <div className="p-2 bg-blue-50 rounded-full">
                 <PlusCircle className="w-5 h-5 text-blue-500"/>
               </div>
-              <h2 className="text-gray-900 font-semibold text-xl">Draft Studio</h2>
-              
+              <h2 className="text-xl text-gray-900 font-semibold">Draft Studio</h2>            
         </div>
-        <p className="text-blue-400 font-normal text-sm mb-6 mt-2 bg-gradient-to-r from-blue-50 to-white rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
-                👋 Welcome to your content scratch pad. Generate posts from ideas, draft posts 
-                <br/>from scratch, save your drafts and recycle old posts... 
+        {/*end header*/}
+        
+        <p className="bg-gradient-to-r from-blue-50 to-white text-blue-400 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
+                👋 Welcome to your content scratch pad. Learn to write like the top 1%. Generate posts from scratch, save drafts and recycle old posts. 
           </p>
-
+        
         {isLoading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
@@ -1336,19 +1306,12 @@ const onModalScheduleError = (error: any) => {
                               />
                             </div>
                           </div>
-                          {/* REMOVED DISPLAY NAME
-                          <span className="text-sm font-medium">
-                            {truncateDisplayName(account.display_name, account.handle)}
-                          </span>
-                          */}
                         </button>
                     
                       ))}
                     </div>
                     
-                    {/* Add Account Button */}
-                    {/*<TooltipHelp text="Add accounts">*/}
-                    
+                    {/* Add Account Button */}                    
                   <TooltipHelp text={`⚡ add upto ${MAX_FREE_ACCOUNTS} accounts`}>
                     <button
                         onClick={(e) => {
@@ -1368,83 +1331,82 @@ const onModalScheduleError = (error: any) => {
                           
                         }}
 
-                        className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                       className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                      
-                        >
-                        
-                          {/*<Plus className="w-4 h-4"/>  */}
-                          <PlusCircle className="w-4 h-4 mr-1"/>
-                          <span className="text-sm">Account</span>
-                        </button>
-                          </TooltipHelp>
-                        
-                        
-    
-                    {/* Start Add a button to open the ContentCampaignModal */}
-                    <TooltipHelp text="⚡ browse ideas">
-                        <button
-                          onClick={handleOpenContentCalendarModal}
-                          className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors" >
-                            <Lightbulb className="w-4 h-4 mr-1"/>
-                          <span className="text-sm">Ideas</span>
-                          </button>
+                    >
+                    
+                      <PlusCircle className="w-4 h-4 mr-1"/>
+                      <span className="text-sm">Account</span>
+                    </button>
                       </TooltipHelp>
-                    
-                    {/* ------------------------ End Add a button to open the ContentCampaignModal --------------------- */}
-    
-              {/*-------------------- Start Add button to show draft posts ------------------------------ */}  
-              
-              <TooltipHelp text={`⚡ (${totalDraftCount}) saved drafts `}>
+                                    
+
+                {/* Start Add a button to open the ContentCampaignModal */}
+                <TooltipHelp text="⚡ browse ideas">
+                    <button
+                      onClick={handleOpenContentCalendarModal}
+                      className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors" >
+                        <Lightbulb className="w-4 h-4 mr-1"/>
+                      <span className="text-sm">Ideas</span>
+                      </button>
+                  </TooltipHelp>
                 
-                <button
-                    onClick={() => {
-                      setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
-                      setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
-                    }}
-                  
-                   className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
-                    // Added 'items-center' to the button's class for vertical alignment
-                >
-                  {/*<FileEdit className="w-4 h-4 mr-1" />*/}
-            <Save className="w-4 h-4 mr-1" />
-              <span className="text-sm">Drafts</span>
-            </button>
-           </TooltipHelp>
-    
-             {/* End Add button to show draft posts */}
-    
-              {/* ----------------- Start Add button to show sent posts ---------------- */}  
-                        
-             <TooltipHelp text={`⚡ recycle sent posts`}>   
-                <button
-                   onClick={handleOpenSentPostModal}        
-                   className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                {/* ------------------------ End Add a button to open the ContentCampaignModal --------------------- */}
+
+          {/*-------------------- Start Add button to show draft posts ------------------------------ */}  
+          
+          <TooltipHelp text={`⚡ (${totalDraftCount}) saved drafts `}>
+            
+            <button
+                onClick={() => {
+                  setIsDraftPostModalOpen(!isDraftPostModalOpen); // Open the DraftPostModal
+                  setIsContentCalendarModalOpen(false); // Close the ContentCalendarModal
+                }}
+              
+               className="ml-2 border border-blue-200 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                // Added 'items-center' to the button's class for vertical alignment
+            >
+              {/*<FileEdit className="w-4 h-4 mr-1" />*/}
+        <Save className="w-4 h-4 mr-1" />
+          <span className="text-sm">Drafts</span>
+        </button>
+       </TooltipHelp>
+
+         {/* End Add button to show draft posts */}
+
+          {/* ----------------- Start Add button to show sent posts ---------------- */}  
                     
-                >
-                  {/*<Recycle className="w-4 h-4" />*/}
-              <MailCheck className="w-4 h-4 mr-1" />   
-            <span className="text-sm">Sent</span>
-            </button>
-           </TooltipHelp>
-    
-          {/*----------------- End Add button to show sent posts --------------------------- */}
-    
-                        
-           {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
-    
-           <TooltipHelp text={`⚡ access 220+ hooks`}>   
-             <button
-                onClick={handleOpenHookListModal} 
-                className="ml-2 border border-blue-100 px-2 py-1 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"    
-                >
-               <BookOpenText className="w-4 h-4 mr-1" />
-               <span className="text-sm">Hooks</span>
-               
-               {/*Add Hook 🪝*/}
-            </button>
-           </TooltipHelp>     
-    
-        {/* ----------------- End Add button Add Hooks to Posts ---------------- */}                        
+         <TooltipHelp text={`⚡ recycle sent posts`}>   
+            <button
+               onClick={handleOpenSentPostModal}        
+               className="ml-2 border border-blue-100 px-2 py-1 bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+                
+            >
+              {/*<Recycle className="w-4 h-4" />*/}
+          <MailCheck className="w-4 h-4 mr-1" />   
+        <span className="text-sm">Sent</span>
+        </button>
+       </TooltipHelp>
+
+      {/*----------------- End Add button to show sent posts --------------------------- */}
+
+                    
+       {/* ----------------- Start Add button Add Hooks to Posts ---------------- */}                      
+
+    {/*
+       <TooltipHelp text={`⚡ use hooks library`}>   
+         <button
+            onClick={handleOpenHookListModal} 
+            className="ml-2 border border-blue-100 px-2 py-1 text-xs bg-blue-50 flex items-center text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors"    
+            >
+           <BookOpenText className="w-4 h-4 mr-1" />
+           <span className="text-sm">Hooks</span>
+           
+        </button>
+       </TooltipHelp>  
+    */}
+
+    {/* ----------------- End Add button Add Hooks to Posts ---------------- */}                      
                     
                     
                   </>
@@ -1469,12 +1431,12 @@ const onModalScheduleError = (error: any) => {
 
             {/* Compose Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 p-8">             
+              <div className="relative bg-white rounded-lg shadow-lg border border-gray-200 p-8 border hover:border-blue-200">             
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={activeAccountId ? " What's on your mind? 💡" : " Connect an account to start posting"}
-                  className="w-full h-64 resize-none outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md text-sm"
+                  className="w-full h-64 resize-none outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 rounded-md text-sm"
                   disabled={!activeAccountId || isPosting}
                 />
 
@@ -1589,7 +1551,9 @@ const onModalScheduleError = (error: any) => {
                   onClick={() => setContent('')}
                    className="absolute right-32 top-1 p-1 bg-red-100 hover:bg-red-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
                   <TooltipHelp text="⚡ Clear Text">
-                   <Trash2 className="w-3 h-3 text-red-500" />       
+                    <span className="bg-red-700 text-red-500 disabled:text-gray-200 disabled:opacity-70 rounded-full">
+                       <Trash2 className="w-3 h-3 disabled:opacity-70" />       
+                    </span>
                     </TooltipHelp>
                   </button>
                  
@@ -1598,12 +1562,11 @@ const onModalScheduleError = (error: any) => {
 
               <button                  
                   type="button"
-                    //onClick={() => setContent('')}
                   disabled={!activeAccountId || !content.trim() || isSchedulingPost}
                    onClick={() => handleCopyToClipboard(content)}
-                   className="absolute right-40 top-1 p-1 bg-blue-100 hover:bg-blue-200 rounded-md shadow-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">
+                   className="absolute right-40 top-1 p-1 bg-blue-100 hover:bg-blue-200 rounded-md shadow-md  transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed">          
                   <TooltipHelp text={copySuccessMap ? "Copied!" : "⚡Copy Post"}>
-                   <Copy className="w-3 h-3 text-blue-500" />       
+                   <Copy className="w-3 h-3 text-blue-500 disabled:opacity-70" />   
                   </TooltipHelp>
               </button>
                  
@@ -1613,19 +1576,18 @@ const onModalScheduleError = (error: any) => {
                  <button                  
                    type="button"
                    disabled={!activeAccountId || !content.trim() || isSchedulingPost}
-                   //onClick={() => handleCopyToClipboard(content)}//
+                   //onClick={() => handleCopyToClipboard(content)}
                    onClick={handleSchedulePost}
                    className="absolute right-48 top-1 px-1 py-0.5 bg-green-100 hover:bg-green-200 border border-green-500 rounded-md transition duration-200 flex items-center space-x-1 disabled:bg-green-50 disabled:border-green-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-70">
-
-                   
+                                  
                     {isSchedulingPost ? (
                       <>
                         <Loader2 className="w-3 h-3 animate-spin" />
                       </>
                      ):(
                      <>
-                       
-                       <TooltipHelp text="⚡Schedule Post" className="flex items-center space-x-1">
+              
+                         <TooltipHelp text="⚡Schedule Post" className="flex items-center space-x-1">
                             <Calendar className="w-3 h-3 text-green-700 disabled:opacity-70" />
                          <span className="text-xs text-green-700">Schedule</span>
                        </TooltipHelp>
@@ -1640,23 +1602,13 @@ const onModalScheduleError = (error: any) => {
 
 
                 {/*start linkedin button */}
-
-                {/*   
-              <TooltipHelp text={tooltipMessage}>     
-                    <span className={`text-xs ${
-                      postContent.length > max_length  ? 'text-red-500 bg-red-50 rounded-full p-2' : 'text-green-500 bg-green-50 rounded-full p-2'
-                    }`}>
-                      {postContent.length}/{max_length} Characters
-                    </span>      
-             </TooltipHelp>
-          */}
                          
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                  <div className="text-sm mt-4 text-gray-500">
+                  <div className="text-sm mt-4 pt-4 text-gray-500">
                       <span className={`text-sm ${
                           content.length > max_length  
-                              ? 'text-red-500 bg-red-50 rounded-full p-2' 
-                              : 'text-green-500 bg-green-50 rounded-full p-2'
+                              ? 'text-red-500 bg-red-50 rounded-lg p-2' 
+                              : 'text-green-500 bg-green-50 rounded-lg p-2'
                                 }`}>                    
                                     {max_length - content.length} characters remaining
                       </span>
@@ -1683,26 +1635,7 @@ const onModalScheduleError = (error: any) => {
                     )}
                   </button>
 
-                    {/*
-                   <button
-                    type="button" // Changed to type="button" to prevent form submission
-                    disabled={!activeAccountId || !content.trim() || isSchedulingPost}
-                      className="px-4 py-2 text-sm bg-white border border-gray-300 text-gray-500 rounded-lg hover:bg-gray-100 transition-colors flex items-center space-x-2 disabled:bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                    onClick={handleSchedulePost}
-                  >
-                    {isSchedulingPost ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Scheduling Post...</span>
-                      </>
-                    ) : (
-                      <>
-                        <CalendarPlus className="w-4 h-4" />
-                        <span>Schedule Post</span>
-                      </>
-                    )}
-                  </button>
-                  */}
+                    
 
            <TooltipExtended text={getNextButtonTooltip()} show={!canProceedToPost()}>                    
                   <button
@@ -1726,7 +1659,7 @@ const onModalScheduleError = (error: any) => {
            </TooltipExtended>
                   </div>
                   
-                </div>
+                </div>              
               </div>
           
             </form>
@@ -1750,6 +1683,17 @@ const onModalScheduleError = (error: any) => {
         )}
         
       </div>
+
+         {/* Right side: Permanently open HookIdeas component */}
+          {/* CHANGE: Render HookIdeas directly here */}
+      <div className="col-span-1 h-[700px] overflow-y-auto">
+            <HookIdeas
+              onUseHook={handleUseHook}
+              currentComposeContent={content}
+              onRewriteHook={handleRewriteHook}
+            />
+          </div>
+
 
       <NoSocialModal
         isOpen={showNoSocialModal}
@@ -1888,8 +1832,10 @@ const onModalScheduleError = (error: any) => {
     </div>
   </div>
 ) : null}
-           
+
+       
     </div>
+
   );
 }
 
