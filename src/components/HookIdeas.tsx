@@ -188,16 +188,16 @@ export function HookIdeas({ // Renamed component
     // This div is now the main container for the HookIdeas component
     // Its width and height will be controlled by the parent (ComposePosts.tsx)
     <div
-      /*className="bg-gray-50  shadow-lg z-50 h-full break-words rounded-lg"*/
       className="bg-white hover:bg-gray-50 border-l border-gray-200 z-50 h-full break-words"
     >
-      <div className="p-4 h-full flex flex-col">
+      <div className="p-4 h-full rounded-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="p-2 items-center bg-gray-100 rounded-full">
               <BookOpenText className="h-4 w-4 text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-500">Available Hooks ({totalFilteredHooks})</h3>
+            
           </div>
           
           {/* No close button */}
@@ -263,16 +263,16 @@ export function HookIdeas({ // Renamed component
               displayedHooks.map((hookItem, index) => (
                 <div key={index} className="bg-white p-3 rounded-lg border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all relative">
                   {hookItem.hook_category && (
-                    <span className="mb-3 relative text-sm top-2 px-1 py-0.5 font-medium bg-gradient-to-r from-blue-50 to-white text-gray-800 rounded-md">
+                    <span className="mb-3 relative text-sm top-2 px-1 py-2 font-medium bg-gradient-to-r from-blue-50 to-white text-blue-400 rounded-md">
                       {hookItem.hook_category}
                     </span>
                   )}
                   
-                  <p className="mt-5 p-1 text-xs bg-gray-50 rounded-md text-gray-600 overflow-wrap hover:bg-gray-100 break-words">{hookItem.hooks}</p>
+                  <p className="mt-5 p-1 text-sm font-normal rounded-md text-gray-600 overflow-wrap hover:text-blue-600 break-words">{hookItem.hooks}</p>
 
                   {hookItem.example_hook && (
-                    <div className="mt-2 p-1 bg-gray-100 rounded-md">
-                      <p className="text-xs text-gray-400 italic text-wrap break-words">{hookItem.example_hook}</p>
+                    <div className="mt-2 p-1 bg-gray-50 rounded-md">
+                      <p className="text-xs text-gray-400 text-wrap break-words">{hookItem.example_hook}</p>
                     </div>
                   )}
 
