@@ -188,7 +188,8 @@ export function HookIdeas({ // Renamed component
     // This div is now the main container for the HookIdeas component
     // Its width and height will be controlled by the parent (ComposePosts.tsx)
     <div
-      className="bg-gray-50  shadow-lg z-50 h-full break-words rounded-lg"
+      /*className="bg-gray-50  shadow-lg z-50 h-full break-words rounded-lg"*/
+      className="bg-white hover:bg-gray-50 border-l border-gray-200 z-50 h-full break-words"
     >
       <div className="p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
