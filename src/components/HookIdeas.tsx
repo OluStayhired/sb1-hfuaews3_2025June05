@@ -201,7 +201,7 @@ export function HookIdeas({ // Renamed component
           
           {/* No close button */}
         </div>
-        <p className="text-gray-400 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block">
+        <p className="text-gray-400 hover:text-gray-500 hover:bg-gray-100 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block">
           Make your posts super engaging. Generate 200 scroll stopping hooks from handpicked hook templates. Simply write the post and click "Generate Hook"
           </p>
 
