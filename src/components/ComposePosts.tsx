@@ -1257,7 +1257,7 @@ const onModalScheduleError = (error: any) => {
         {/*end header*/}
         
         <p className="bg-gradient-to-r from-blue-50 to-white text-blue-400 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
-                👋 Welcome to your content scratch pad. Learn to write like the top 1%. Generate posts from scratch, save drafts and recycle old posts. 
+        👋 Welcome to your content scratch pad. Learn to write like the top 1%. Create posts from scratch, save drafts & recycle old posts. Write 50 chars to generate hooks with AI.
           </p>
         
         {isLoading ? (

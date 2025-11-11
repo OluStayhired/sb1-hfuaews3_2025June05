@@ -1,6 +1,6 @@
 // src/components/DraftPostModal.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Loader2, ArrowRight, ArrowLeft, Trash2, Clock, FileEdit, PlusCircle } from 'lucide-react';
+import { X, Loader2, ArrowRight, ArrowLeft, Trash2, Clock, FileEdit, PlusCircle, Save } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -262,12 +262,12 @@ const fetchDraftPosts = useCallback(async () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
+    <div className="fixed top-0 right-0 h-screen w-2/5 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
       <div className="p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="p-2 items-center bg-blue-50 rounded-full">
-                <FileEdit className="h-5 w-5 text-blue-500" />
+                <Save className="h-5 w-5 text-blue-500" />
             </div>
             
             <h2 className="text-lg font-semibold text-gray-900">Saved Drafts ({totalDraftCount})</h2>
@@ -341,7 +341,8 @@ const fetchDraftPosts = useCallback(async () => {
                       
                       <div className="mt-2 p-2 bg-gray-50 rounded-md">
                         <p className="text-xs text-gray-600 whitespace-pre-wrap">
-                          {truncateText(post.full_content)}
+                          {/*{truncateText(post.full_content)}*/}
+                          {post.full_content}
                         </p>
                       </div>
                       
