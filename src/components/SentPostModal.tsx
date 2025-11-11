@@ -276,6 +276,10 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
             </button>
           </div>
 
+          <p className="text-gray-400 hover:text-gray-500 hover:bg-gray-100 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
+          💡 Recycle all your previously sent posts manually or with AI. Simply copy your sent posts into the Draft Studio and generate brand new posts instantly.        
+          </p>
+
           {/* Search Input */}
           <div className="relative mb-4">
             <input
@@ -295,10 +299,6 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
               </button>
             )}
           </div>
-
-          <p className="text-gray-400 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
-          💡 Recycle all your previously sent posts manually or with AI. Simply copy your sent posts into the Draft Studio and generate brand new posts instantly.        
-          </p>
 
           {/* NEW: Social Media Channel Filter Buttons */}
           <div className="flex justify-between mb-4 space-x-2">
