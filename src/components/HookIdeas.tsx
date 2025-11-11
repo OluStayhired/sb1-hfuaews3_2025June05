@@ -196,7 +196,7 @@ export function HookIdeas({ // Renamed component
             <div className="p-2 items-center bg-gray-100 rounded-full">
               <BookOpenText className="h-4 w-4 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-500">Generate Writing Hooks ({totalFilteredHooks})</h3>
+            <h3 className="text-lg font-semibold text-gray-500">Available Hooks ({totalFilteredHooks})</h3>
           </div>
           
           {/* No close button */}
