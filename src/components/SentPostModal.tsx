@@ -296,6 +296,10 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
             )}
           </div>
 
+          <p className="text-gray-400 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
+          💡 Recycle all your previously sent posts manually or with AI. Simply copy your sent posts into the Draft Studio and generate brand new posts instantly.        
+          </p>
+
           {/* NEW: Social Media Channel Filter Buttons */}
           <div className="flex justify-between mb-4 space-x-2">
             <button
@@ -422,7 +426,7 @@ export function SentPostModal({ isOpen, onClose, onEditSentPost }: SentPostModal
                         </div>
                         
                         <div className="flex justify-end mt-3 space-x-2">
-                          <TooltipHelp  text = "⚡ Send to Draft">
+                          <TooltipHelp  text = "⚡ send to draft">
                           <button
                             
                             onClick={() => handleEditSentPost(post.full_content, post.social_channel, post.user_handle)}

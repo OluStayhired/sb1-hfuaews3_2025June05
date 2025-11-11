@@ -283,7 +283,7 @@ const handleBlueskyHookPostV3 = async (item: ContentItem, char_length: string) =
   };
 
   return (
-    <div className="fixed top-0 right-0 h-screen w-2/5 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
+    <div className="fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
       <div className="p-4  h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
@@ -297,13 +297,14 @@ const handleBlueskyHookPostV3 = async (item: ContentItem, char_length: string) =
           </button>
         </div>
 
-        <p className="text-gray-400 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
-          💡 Use ideas from active content campaigns to generate highly engaging posts. Click any of the social media button to enrich each idea and make it post-ready. 
-          </p>
+        
+        {/*
+        <div className="space-y-6 mb-6 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 scrollbar-track-gray-100" style={{ maxHeight: '80vh' }}> */}
 
-        <div className="space-y-6 flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div className="space-y-6 overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 scrollbar-track-gray-100">
 
           {contentItems.length === 0 ? (
+      //<p className="text-sm text-gray-500">No content found for today.</p>
           <div className="flex flex-col items-center justify-center h-full text-gray-500">
                 <div className="mx-auto flex items-center justify-center bg-blue-50 rounded-full w-24 h-24">
                 <Lightbulb className="w-12 h-12 font-light text-blue-500" />
@@ -323,7 +324,7 @@ const handleBlueskyHookPostV3 = async (item: ContentItem, char_length: string) =
       
           ) : (
             contentItems.map((item) => (
-              <div key={item.id} className="space-y-4 p-2 rounded-md mb-6 pb-4 border-b border-gray-100 border last:border-b-0 hover:border hover:border-blue-100">
+              <div key={item.id} className="space-y-4 p-2 hover:rounded-md mb-6 pb-4 border-b border-gray-100 last:border-b-0 hover:border hover:border-blue-100">
                 <div className="flex p-2 items-center space-x-2 rounded-lg bg-gradient-to-r from-blue-50 to-white  rounded-lg">
                   
                       <Lightbulb className="h-3.5 w-3.5 text-blue-500" />
@@ -342,7 +343,7 @@ const handleBlueskyHookPostV3 = async (item: ContentItem, char_length: string) =
                         <TooltipHelp  text = "Copy">
                             <button
                                 onClick={() => handleCopyToClipboard(item.content, item.id)}
-                                className="p-1 space-x-2 text-xs bg-blue-50 text-blue-300 rounded-lg hover:bg-blue-100 hover:text-blue-500 transition-colors flex items-center space-x-2"
+                                className="p-2 space-x-2 text-xs bg-blue-50 text-blue-300 rounded-lg hover:bg-blue-100 hover:text-blue-500 transition-colors flex items-center space-x-2"
                             >
                                 {copySuccessMap[item.id] ? (
                                   <span className="text-green-500">Copied!</span>
@@ -361,7 +362,7 @@ const handleBlueskyHookPostV3 = async (item: ContentItem, char_length: string) =
                 </div>
 
 
-                <div className="flex items-center justify-end mt-1 space-x-2 z-10000000"> 
+                <div className="flex items-center justify-center mt-1 space-x-2 z-10000000"> 
                   
                   {/* Added space-x-2 for gap between buttons */}
 

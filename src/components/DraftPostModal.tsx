@@ -7,6 +7,7 @@ import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import { format } from 'date-fns';
 import { useNavigate, Navigate } from 'react-router-dom';
+import { TooltipHelp } from '../utils/TooltipHelp';
 
 interface DraftPost {
   id: string;
@@ -276,6 +277,9 @@ const fetchDraftPosts = useCallback(async () => {
             <X className="h-5 w-5" />
           </button>
         </div>
+                <p className="text-gray-400 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
+          💡 Repurpose all your saved posts and LLM prompts with AI. Simply copy your saved draft into the Draft Studio and generate brand new posts instantly.        
+          </p>
 
         {isLoading ? (
           <div className="flex items-center justify-center flex-grow">
@@ -347,18 +351,22 @@ const fetchDraftPosts = useCallback(async () => {
                       </div>
                       
                       <div className="flex justify-end mt-3 space-x-2">
+                    <TooltipHelp text="⚡send to draft studio">
                         <button 
                           onClick={() => handleContinueDraft(post.full_content, post.social_channel, post.user_handle)}
                           className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center">
                           <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                          <span>Edit</span>
+                          <span>Copy Draft</span>
                         </button>
+                      </TooltipHelp>
+                       <TooltipHelp text="⚡delete draft"> 
                         <button 
                           onClick={() => handleDeleteDraft(post.id)}
                           className="px-3 py-1.5 text-xs bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors flex items-center">
                           <Trash2 className="w-3.5 h-3.5 mr-1" />
                           <span>Delete</span>
                         </button>
+                      </TooltipHelp>
                       </div>
                     </div>
                   ))}
