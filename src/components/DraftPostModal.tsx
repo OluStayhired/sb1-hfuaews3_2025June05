@@ -277,7 +277,7 @@ const fetchDraftPosts = useCallback(async () => {
             <X className="h-5 w-5" />
           </button>
         </div>
-                <p className="text-gray-400 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
+        <p className="text-gray-400 hover:text-gray-500 hover:bg-gray-100 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
           💡 Repurpose all your saved posts and LLM prompts with AI. Simply copy your saved draft into the Draft Studio and generate brand new posts instantly.        
           </p>
 

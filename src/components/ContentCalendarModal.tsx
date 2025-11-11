@@ -297,7 +297,7 @@ const handleBlueskyHookPostV3 = async (item: ContentItem, char_length: string) =
           </button>
         </div>
 
-        <p className="text-gray-400 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
+        <p className="text-gray-400 hover:text-gray-500 hover:bg-gray-100 font-normal text-sm mb-6 mt-2 rounded-md bg-gray-50 p-2 inline-block">
           💡 Use ideas from active content campaigns to generate highly engaging posts. Click any of the social media button to enrich each idea and make it post-ready. 
           </p>
 
