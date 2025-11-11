@@ -283,7 +283,7 @@ const handleBlueskyHookPostV3 = async (item: ContentItem, char_length: string) =
   };
 
   return (
-    <div className="fixed top-0 right-0 h-screen w-2/5 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
+    <div className="fixed top-0 right-0 h-screen overflow-y-auto w-2/5 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
       <div className="p-4  h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
