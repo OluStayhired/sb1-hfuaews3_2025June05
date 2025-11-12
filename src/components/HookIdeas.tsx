@@ -5,6 +5,16 @@ import { supabase } from '../lib/supabase';
 import { TooltipHelp } from '../utils/TooltipHelp';
 import { generateKillerHook } from '../lib/gemini';
 import { TooltipExtended } from '../utils/TooltipExtended';
+import { checkConnectedSocials } from '../utils/checkConnectedSocial';
+
+
+
+// NEW: Interface for ConnectedSocials
+interface ConnectedSocials {
+  bluesky: boolean;
+  linkedin: boolean;
+  twitter: boolean;
+}
 
 // NEW: Interface for a single hook item
 interface HookItem {
@@ -34,9 +44,14 @@ export function HookIdeas({ // Renamed component
   const [useHookSuccessIndex, setUseHookSuccessIndex] = useState<number | null>(null);
   const [isGeneratingKillerHook, setIsGeneratingKillerHook] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  // NEW: State to store connected social accounts
+  const [connectedSocials, setConnectedSocials] = useState<ConnectedSocials | null>(null);
+
 
   const hooksPerPage = 50;
 
+  const socials = checkConnectedSocials();
+ 
   const uniqueCategories = useMemo(() => {
     const categories = new Set(allHooks.map(h => h.hook_category).filter(Boolean));
     return ['All', ...Array.from(categories).sort()];
@@ -48,11 +63,33 @@ export function HookIdeas({ // Renamed component
 
   const getGenerateHookTooltip = () => {
     if (currentComposeContent.trim().length < 50) {
-      return "⚡type 50 chars to activate AI";
+      return "⚡activate AI with 50 chars";
     }
     return "⚡create a hook";
   };
 
+  
+  const getGenerateCopyHookTooltip = () => {
+     // Check for connected social accounts first
+    const socials = checkConnectedSocials();
+  
+    if (!socials || (!socials.bluesky && !socials.linkedin && !socials.twitter)) {
+    // No social accounts connected,  show NoSocialModal
+    
+    return "⚡add social account"
+    }
+    return "⚡copy template"
+  }
+
+  // NEW: Function to determine the tooltip for the "Copy Template" button
+  const getCopyTemplateTooltip = () => {
+    if (!connectedSocials || (!connectedSocials.bluesky && !connectedSocials.linkedin && !connectedSocials.twitter)) {
+      return "⚡connect account";
+    }
+    return "⚡send to draft";
+  };
+
+  
   const fetchHooks = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -126,6 +163,16 @@ export function HookIdeas({ // Renamed component
     setSelectedCategory('All');
   }, [fetchHooks]); // Only fetch on mount or if fetchHooks changes (unlikely)
 
+
+  // NEW: Fetch connected social accounts on mount
+  useEffect(() => {
+    const fetchConnected = async () => {
+      const socials = await checkConnectedSocials();
+      setConnectedSocials(socials);
+    };
+    fetchConnected();
+  }, []); // Run once on mount
+
   const handleCopyToClipboard = async (text: string, itemId: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -136,7 +183,8 @@ export function HookIdeas({ // Renamed component
     }
   };
 
-  const handleUseHookClick = (hookItem: HookItem, index: number) => {
+  
+  const handleUseHookClick = async(hookItem: HookItem, index: number) => {
     onUseHook(hookItem.hooks);
     setUseHookSuccessIndex(index);
     setTimeout(() => {
@@ -183,6 +231,10 @@ export function HookIdeas({ // Renamed component
     ? allHooks.filter(hook => hook.hooks.toLowerCase().includes(searchQuery.toLowerCase())).length
     : allHooks.length;
   const totalPages = Math.ceil(totalFilteredHooks / hooksPerPage);
+
+  // NEW: Determine if the "Copy Template" button should be disabled
+  const isCopyTemplateDisabled = !connectedSocials || (!connectedSocials.bluesky && !connectedSocials.linkedin && !connectedSocials.twitter);
+
 
   return (
     // This div is now the main container for the HookIdeas component
@@ -318,13 +370,17 @@ export function HookIdeas({ // Renamed component
                       </button>
                     </TooltipHelp>
 
-                    <TooltipHelp text={useHookSuccessIndex === index ? "Template Used!" : "⚡copy template"}>
+                     {/* NEW: Update disabled prop and TooltipHelp text */}
+                    <TooltipHelp text={useHookSuccessIndex === index ? "Template Used!" : getCopyTemplateTooltip()}>
                       <button
                         onClick={() => handleUseHookClick(hookItem, index)}
+                        disabled={isCopyTemplateDisabled} // NEW: Use the disabled state
                         className={`p-1.5 text-xs rounded-lg transition-colors flex items-center justify-center ${
                           useHookSuccessIndex === index
                             ? 'bg-green-500 text-white'
-                            : 'bg-blue-50 text-blue-500 hover:bg-blue-100'
+                            : isCopyTemplateDisabled // NEW: Apply disabled styling
+                              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                              : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
                         }`}
                       >
                         {useHookSuccessIndex === index ? (
@@ -368,5 +424,6 @@ export function HookIdeas({ // Renamed component
         )}
       </div>
     </div>
+      
   );
 }
