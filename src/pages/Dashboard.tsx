@@ -1185,7 +1185,7 @@ if(path !== "settings") {
                 }`}
               >
                        <ThumbsUp className="w-4 h-4"/>        
-                <span className="font-medium">Feedback</span>
+                <span className="font-medium">Share Feedback</span>
             </button>         
 
 

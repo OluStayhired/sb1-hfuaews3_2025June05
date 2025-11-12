@@ -122,6 +122,30 @@ function ComposePosts() {
   const location = useLocation();
   const [firstLineLength, setFirstLineLength] = useState(() => calculateFirstLineLength(content));
 
+  const rotatingMessagesNoAccount = [
+    " Connect an account to start posting ⚡",
+    " Write viral posts in seconds 😲",
+    " Get 200+ Content Ideas 💡",
+];
+
+const rotatingMessages = [
+    " What's on your mind? 🤔",
+    " Start typing . . .💡",
+    " Then Rewrite with AI . . .🚀",
+];
+const [messageIndex, setMessageIndex] = useState(0);
+
+useEffect(() => {
+    const interval = setInterval(() => {
+        setMessageIndex(prevIndex => 
+            (prevIndex + 1) % rotatingMessages.length
+        );
+    }, 3000); // 3 seconds
+
+    return () => clearInterval(interval);
+}, []);
+
+
   //First Line Implementation
    const MAX_FIRST_LINE = 40;
 
@@ -1438,7 +1462,7 @@ const onModalScheduleError = (error: any) => {
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder={activeAccountId ? " What's on your mind? 💡" : " Connect an account to start posting"}
+                  placeholder={activeAccountId ? rotatingMessages[messageIndex] : rotatingMessagesNoAccount[messageIndex]}
                   className="w-full p-2 mt-1 h-64 resize-none outline-none bg-gray-50 hover:bg-customGray-75 focus:border-gray-200 focus:ring-1 focus:ring-gray-200 rounded-md text-sm"
                   disabled={!activeAccountId || isPosting}
                 />
