@@ -1431,12 +1431,13 @@ const onModalScheduleError = (error: any) => {
 
             {/* Compose Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="relative bg-white rounded-lg shadow-lg border border-gray-200 p-8 border hover:border-blue-200">             
+
+              <div className="relative bg-white rounded-lg shadow-lg border border-gray-200 p-8 hover:shadow-2xl">             
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={activeAccountId ? " What's on your mind? 💡" : " Connect an account to start posting"}
-                  className="w-full h-64 resize-none outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 rounded-md text-sm"
+                  className="w-full p-2 mt-1 h-64 resize-none outline-none bg-gray-50 hover:bg-customGray-75 focus:border-gray-200 focus:ring-1 focus:ring-gray-200 rounded-md text-sm"
                   disabled={!activeAccountId || isPosting}
                 />
 
