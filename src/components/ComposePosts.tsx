@@ -129,10 +129,13 @@ function ComposePosts() {
 ];
 
 const rotatingMessages = [
-    " What's on your mind? 🤔",
-    " Start typing . . .💡",
-    " Then Rewrite with AI . . .🚀",
+  " What's on your mind? 🤔",
+  " Start typing . . .💡",
+  " Then Rewrite with AI . . .✍️",
+  " Now add a Hook . . .🪝",
+  " Review and Post . . .🚀",
 ];
+
 const [messageIndex, setMessageIndex] = useState(0);
 
 useEffect(() => {
