@@ -43,6 +43,7 @@ import { useProductTier } from '../hooks/useProductTierHook'
 import { OnboardingModal } from '../components/OnboardingModal'; // NEW: Import the OnboardingModal component
 import VideoPillButton from './VideoPillButton';
 import VideoPlayerModal from './VideoPlayerModal';
+import { CalendarView } from '/src/components/CalendarView';
 
 interface DashboardMetrics {
   todayPosts: {
@@ -1377,6 +1378,17 @@ const handleOpenScheduledPost = async () => {
       */}
 
     </div>
+
+    <div className="px-4 py-6 sm:px-0 border-t border-gray-200">
+      <div className="flex items-center space-x-2 mb-8">
+          <div className="p-2 bg-blue-50 rounded-full">
+            <CalendarCheck className="w-5 h-5 text-blue-500"/>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900">Calendar</h2>
+        </div>
+          {/* NEW: Integrate the CalendarView component here */}
+          <CalendarView />
+        </div>
 
     {/* Side Panels - These remain outside the main dashboard content */}
     <ScheduledPostsToday

@@ -238,8 +238,8 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
       <div className="p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            <div className="p-2 items-center bg-yellow-50 rounded-full">
-                <Save className="h-5 w-5 text-yellow-500" />
+            <div className="p-2 items-center bg-blue-50 rounded-full">
+                <Save className="h-5 w-5 text-blue-500" />
             </div> 
             <h2 className="text-lg font-semibold text-gray-900">Saved Drafts ({totalDraftCount})</h2>
           </div>

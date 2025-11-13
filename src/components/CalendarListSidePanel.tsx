@@ -166,8 +166,8 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
       <div className="p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            <div className="p-2 items-center bg-green-100 rounded-full">
-                <CalendarSearch className="h-5 w-5 text-green-600" />
+            <div className="p-2 items-center bg-blue-50 rounded-full">
+                <CalendarSearch className="h-5 w-5 text-blue-500" />
             </div>
             <h2 className="text-lg font-semibold text-gray-900">Active Campaigns</h2>
           </div>

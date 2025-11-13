@@ -803,7 +803,7 @@ const handleEmptySlotClick = (date: Date, time: string) => {
       <div className="max-w-8xl mx-auto">
         {/* Calendar Header */}
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-blue-500">
             {format(currentMonth, 'MMMM yyyy')}
           </h2>
           <div className="flex space-x-4">

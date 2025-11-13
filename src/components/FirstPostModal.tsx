@@ -152,8 +152,8 @@ export function FirstPostModal({ isOpen, onClose, onEdit, onToggleShowPost }: Fi
       <div className="p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            <div className="p-2 items-center bg-gray-100 rounded-full">
-              <Send className="h-5 w-5 text-gray-500" />
+            <div className="p-2 items-center bg-blue-50 rounded-full">
+              <Send className="h-5 w-5 text-blue-500" />
             </div>
             <h2 className="text-lg font-semibold text-gray-900">Your First Post</h2>
           </div>
