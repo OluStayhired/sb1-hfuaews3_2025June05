@@ -351,7 +351,8 @@ export function HookIdeas({ // Renamed component
                     </span>
                   )}
                   
-                  <p className="mt-5 p-1 text-sm font-normal rounded-md text-blue-400 overflow-wrap hover:text-gray-600 break-words">{hookItem.hooks}</p>
+              
+                  <p className="mt-5 p-1 text-sm font-normal rounded-md text-gray-600 overflow-wrap hover:text-blue-400 break-words">{hookItem.hooks}</p>
 
                   {hookItem.example_hook && (
                     <div className="mt-2 p-1 border-t border-gray-200">
