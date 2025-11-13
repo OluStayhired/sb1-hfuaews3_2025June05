@@ -144,25 +144,25 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
 
   return (
     //<div className="fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
-      
-    // Starting the change for the overlay
-    <>
-    {/* Overlay for the rest of the screen */}
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 z-40"
-      onClick={onClose} // Clicking outside closes the panel
-    ></div>
+    
+// Starting the change for the overlay
+     <>
+      {/* Overlay for the rest of the screen */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        onClick={onClose} // Clicking outside closes the panel
+      ></div>
 
-   {/* The actual side panel content */}
-    <div
-      className={`
-        fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-r border-gray-200 z-50
-        transform transition-transform duration-1000 ease-in-out
-        ${isOpen ? 'translate-x-0' : 'translate-x-full'}
-      `}
-    >
-      {/*Ending the part for the changes*/}
-      
+     {/* The actual side panel content */}
+      <div
+        className={`
+          fixed top-0 right-0 h-screen w-2/5 bg-white shadow-lg border-r border-gray-200 z-50
+          transform transition-transform duration-1000 ease-in-out
+          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+        `}
+      >
+        {/*Ending the part for the changes*/}
+       
       <div className="p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
@@ -228,69 +228,51 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
                   <div 
                     key={calendar.calendar_name}
                     onClick={() => handleSelectCalendar(calendar.calendar_name)} // renable this line here
-                    className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer"
+                    className="bg-gradient-to-r from-blue-50 to-white p-4 rounded-lg border border-blue-200 hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer"
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-medium text-gray-900">{calendar.calendar_name}</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor} whitespace-nowrap`}>
-                        {daysLeft} days left
-                      </span>
+                      <h3 className="font-medium hover:text-blue-500 text-lg text-gray-600">{calendar.calendar_name}</h3>
                     </div>
                     
                     <p className="text-sm text-gray-500 mb-3 line-clamp-2">
                       {calendar.description}
                     </p>
                     
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <div className="flex items-center">
-                        <Clock className="w-3.5 h-3.5 mr-1" />
-                        <span>
-                          {format(parseISO(calendar.start_date), 'MMM d')} - {format(parseISO(calendar.end_date), 'MMM d')}
-                        </span>
-
-                          <TooltipExtended text={`⚡ ${calendar.calendar_description}`}>
-                      <button
-                            //onClick={() => handleShowCampaignInfo(calendar.calendar_name)} 
-                            className="text-gray-500 hover:text-gray-600 px-2 py-1 rounded-md text-xs font-normal flex items-center" 
-                        >
-                            <Info className="w-3.5 h-3.5 ml-3 mr-1" />
-                            <span>Details</span> 
-                        {/* Changed "More Info" to "Details" */}
-                            
-                        </button>
-                        </TooltipExtended>
-                        
-                      </div>
-
-                    {/*  
-                      <div className="space-x-2"> 
-
-                        <TooltipExtended text={`💡 ${calendar.calendar_description}`}>
-                      <button
-                            //onClick={() => handleShowCampaignInfo(calendar.calendar_name)} 
-                            className="text-gray-500 hover:text-gray-600 px-2 py-1 rounded-md text-xs font-normal flex items-center border border-gray-200 hover:bg-gray-50" 
-                        >
-                            <Info className="w-3.5 h-3.5 mr-1" />
-                            <span>Info</span> //Changed "More Info" to "Details" 
-                       
-                            
-                        </button>
-                        </TooltipExtended>
-
-                        
-                        <button
-                            onClick={() => handleSelectCalendar(calendar.calendar_name)} // This button navigates
-                            className="text-gray-500 hover:text-gray-600 px-2 py-1 rounded-md text-xs font-normal flex items-center border border-gray-200 hover:bg-gray-50" // Make it look like a secondary action to navigate
-                        >
-                          <CalendarCheck className="w-3.5 h-3.5 mr-1" />
-                          <span>Select</span> 
-                            
-                        </button>
-                        
-                     
+                    <div className="flex items-center justify-between text-sm text-gray-50">
                       
+                      <div className="flex items-center mt-8 space-x-2">
+
+                        <TooltipHelp text="⚡campaign duration">
+                       <div className="flex items-center bg-blue-500 rounded-md px-2 py-1"> 
+                              <Calendar className="w-3.5 h-3.5 mr-1" />
+                              <span>
+                                {format(parseISO(calendar.start_date), 'MMM d')} - {format(parseISO(calendar.end_date), 'MMM d')}
+                              </span>
+
                       </div>
-                  */}
+                          </TooltipHelp>
+
+
+                        <div>
+                              <TooltipExtended text={`⚡ ${calendar.calendar_description}`}>
+                                <button
+                                   className="text-blue-500 bg-blue-100 hover:text-blue-600 px-2 py-1 rounded-md text-sm font-normal flex items-center" 
+                                >
+                                  <Info className="w-3.5 h-3.5 mr-1" />
+                                  <span>Details</span> 
+          
+                            
+                                </button>
+                                </TooltipExtended>
+                        </div>
+
+                        <div>
+                              <span className={`px-2 py-1 hover:shadow-sm rounded-lg text-sm font-medium ${statusColor} whitespace-nowrap`}>
+                              {daysLeft} days left
+                            </span>
+                        </div>
+                        
+                      </div>
                       
                     </div>
                   </div>
@@ -334,8 +316,7 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
           onCreateNewCampaign={handleCreateNewCampaignFromModal}
       />
     </div>
-    
-    </>
+  </> // Added this as a close for the return
   );
 }
 
