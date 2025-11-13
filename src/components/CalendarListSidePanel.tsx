@@ -231,7 +231,7 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
                     className="bg-gradient-to-r from-blue-50 to-white p-4 rounded-lg border border-blue-200 hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer"
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-medium hover:text-blue-500 text-lg text-gray-600">{calendar.calendar_name}</h3>
+                      <h3 className="font-medium hover:text-blue-500 text-sm text-gray-600">{calendar.calendar_name}</h3>
                     </div>
                     
                     <p className="text-sm text-gray-500 mb-3 line-clamp-2">
@@ -243,7 +243,7 @@ export function CalendarListSidePanel({ isOpen, onClose, onBackToList, onSelectC
                       <div className="flex items-center mt-8 space-x-2">
 
                         <TooltipHelp text="⚡campaign duration">
-                       <div className="flex items-center bg-blue-500 rounded-md px-2 py-1"> 
+                       <div className="flex items-center text-blue-500 bg-gradient-blue-50 to-white border border-blue-200 hover:border-blue-300 rounded-md px-2 py-1"> 
                               <Calendar className="w-3.5 h-3.5 mr-1" />
                               <span>
                                 {format(parseISO(calendar.start_date), 'MMM d')} - {format(parseISO(calendar.end_date), 'MMM d')}
