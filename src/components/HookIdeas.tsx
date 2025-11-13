@@ -210,7 +210,7 @@ export function HookIdeas({ // Renamed component
       setIsGeneratingKillerHook(null);
     }
   };
-*/}
+ */}
 
   // NEW: handleGenerateKillerHook now receives HookItem
   const handleGenerateKillerHook = async (hookItem: HookItem, index: number) => {
