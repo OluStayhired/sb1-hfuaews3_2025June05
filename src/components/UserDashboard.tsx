@@ -1379,16 +1379,16 @@ const handleOpenScheduledPost = async () => {
 
     </div>
 
-    <div className="px-4 py-6 sm:px-0 border-t border-gray-200">
-      <div className="flex items-center space-x-2 mb-8">
-          <div className="p-2 bg-blue-50 rounded-full">
-            <CalendarCheck className="w-5 h-5 text-blue-500"/>
+    <div className="px-4 py-4 sm:px-0 bg-gradient-to-b from-gray-50 via-gray-50 via-white via-white to-white rounded-lg ">    
+      <div className="flex items-center space-x-2 py-4 px-2 mb-8 border-b border-gray-200">
+          <div className="p-2 bg-gray-100 rounded-full">
+              <CalendarCheck className="w-5 h-5 text-gray-400"/>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900">Calendar</h2>
-        </div>
+              <h2 className="text-xl font-semibold text-gray-500">Calendar</h2>        
+      </div>
           {/* NEW: Integrate the CalendarView component here */}
           <CalendarView />
-        </div>
+    </div>
 
     {/* Side Panels - These remain outside the main dashboard content */}
     <ScheduledPostsToday
