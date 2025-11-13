@@ -192,7 +192,7 @@ export function HookIdeas({ // Renamed component
       // No onClose() here as it's permanently open
     }, 500);
   };
-
+{/*
   const handleGenerateKillerHook = async (hookItem: HookItem, index: number) => {
     setIsGeneratingKillerHook(index);
     try {
@@ -203,6 +203,36 @@ export function HookIdeas({ // Renamed component
       } else {
         onRewriteHook(revisedHook.text);
       }
+    } catch (err: any) {
+      console.error('Error generating killer hook:', err);
+      setError('Failed to generate killer hook. ' + err.message);
+    } finally {
+      setIsGeneratingKillerHook(null);
+    }
+  };
+*/}
+
+  // NEW: handleGenerateKillerHook now receives HookItem
+  const handleGenerateKillerHook = async (hookItem: HookItem, index: number) => {
+    setIsGeneratingKillerHook(index);
+    try {
+      // Call the Gemini API function with the current content and the main hook content
+      const revisedHook = await generateKillerHook(currentComposeContent, hookItem.hooks);
+
+      // Prepend the revised hook to the existing content in ComposePosts.tsx
+      //onRewriteHook(revisedHook + '\n' + currentComposeContent);
+      onRewriteHook(revisedHook +'\n\n');
+
+       if (revisedHook.error) {
+        console.error('Error rewriting hook:', revisedHook.error);
+      } else {
+        onRewriteHook(revisedHook.text);
+        //onClose() was removed as per your request
+      }
+
+      //onClose(); // Close the modal after successful generation
+      // don't close after successful re-write
+      
     } catch (err: any) {
       console.error('Error generating killer hook:', err);
       setError('Failed to generate killer hook. ' + err.message);
@@ -255,8 +285,8 @@ export function HookIdeas({ // Renamed component
           {/* No close button */}
         </div>
         <p className="text-gray-400 hover:text-gray-500 hover:bg-gray-100 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block">
-          Make your posts super engaging. Generate 200 scroll stopping hooks from handpicked hook templates. Simply write the post and click "Generate Hook"
-          </p>
+          Make your posts super engaging with 200 scroll stopping hooks from handpicked hook templates. Simply write your post and click "Generate Hook"
+       </p>
 
         {/* Search Input */}
         <div className="relative mb-4 ">
