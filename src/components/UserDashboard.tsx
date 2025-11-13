@@ -21,6 +21,7 @@ import {
   ChevronRight, 
   Layers,
   LayoutDashboard,
+  Save,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 //import { useNavigate } from 'react-router-dom';
@@ -1148,7 +1149,7 @@ const handleOpenScheduledPost = async () => {
     >
       <div className="flex items-center">
         <div className="rounded-full bg-yellow-50 items-center p-1 mr-3">
-            <FileEdit className="w-5 h-5 text-yellow-500" />
+            <Save className="w-5 h-5 text-yellow-500" />
         </div> 
         <div>
           <TooltipExtended text="⚡Click to View/Edit/Delete all your saved drafts here">

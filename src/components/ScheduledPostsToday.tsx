@@ -206,7 +206,7 @@ export function ScheduledPostsToday({ isOpen, onClose, onEditPost, onDeletePost 
    {/* The actual side panel content */}
     <div
       className={`
-        fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-r border-gray-200 z-50
+        fixed top-0 right-0 h-screen w-2/5 bg-white shadow-lg border-r border-gray-200 z-50
         transform transition-transform duration-1000 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}
       `}

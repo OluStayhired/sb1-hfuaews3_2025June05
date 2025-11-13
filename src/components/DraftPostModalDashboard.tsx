@@ -1,6 +1,6 @@
 // src/components/DraftPostModalDashboard.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Loader2, ArrowRight, ArrowLeft, Trash2, Clock, FileEdit, PlusCircle } from 'lucide-react';
+import { X, Loader2, ArrowRight, ArrowLeft, Trash2, Clock, FileEdit, PlusCircle, Save } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BlueskyLogo from '../images/bluesky-logo.svg';
 import LinkedInLogo from '../images/linkedin-solid-logo.svg';
@@ -335,7 +335,7 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="p-2 items-center bg-yellow-50 rounded-full">
-                <FileEdit className="h-5 w-5 text-yellow-500" />
+                <Save className="h-5 w-5 text-yellow-500" />
             </div> 
             <h2 className="text-lg font-semibold text-gray-900">Saved Drafts ({totalDraftCount})</h2>
           </div>
