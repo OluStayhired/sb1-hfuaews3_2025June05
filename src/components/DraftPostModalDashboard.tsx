@@ -7,6 +7,7 @@ import LinkedInLogo from '../images/linkedin-solid-logo.svg';
 import XLogo from '../images/x-logo.svg';
 import { format } from 'date-fns';
 import { useNavigate, Navigate } from 'react-router-dom';
+import { TooltipHelp } from '../utils/TooltipHelp';
 
 interface DraftPost {
   id: string;
@@ -34,104 +35,7 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
   const [totalDraftCount, setTotalDraftCount] = useState(0); // New state variable
   const navigate = useNavigate();
 
-  {/*
-  useEffect(() => {
-    const fetchDraftPosts = async () => {
-      try {
-        setIsLoading(true);
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user?.email) return;
-
-        const { data, error } = await supabase
-          .from('user_post_draft')
-          .select('*')
-          .eq('user_email', session.user.email)
-          .eq('draft_status', true)
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        // Group drafts by social channel
-        const groupedDrafts: {[key: string]: DraftPost[]} = data.reduce((acc, post) => {
-          const channel = post.social_channel;
-          if (!acc[channel]) {
-            acc[channel] = [];
-          }
-          acc[channel].push(post);
-          return acc;
-        }, {});
-
-        setDraftPosts(groupedDrafts);
-
-        // Calculate total draft count
-        let count = 0;
-        for (const channel in groupedDrafts) {
-          count += groupedDrafts[channel].length;
-        }
-        setTotalDraftCount(count);
-        
-      } catch (err) {
-        console.error('Error fetching draft posts:', err);
-        setError('Failed to load draft posts');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (isOpen) {
-      fetchDraftPosts();
-    }
-  }, [isOpen]);
-*/}
-
-  {/* 
-   const fetchDraftPosts = useCallback(async () => {
-        try {
-            setIsLoading(true); // Set loading state when fetching
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session?.user?.email) {
-                console.warn('No user session found to fetch drafts.');
-                setDraftPosts({}); // Clear drafts if no session
-                setTotalDraftCount(0);
-                return;
-            }
-
-            const { data, error: fetchError } = await supabase
-                .from('user_post_draft')
-                .select('*')
-                .eq('user_email', session.user.email)
-                .eq('draft_status', true)
-                .order('created_at', { ascending: false });
-
-            if (fetchError) throw fetchError;
-
-            const groupedDrafts: {[key: string]: DraftPost[]} = data.reduce((acc, post) => {
-                const channel = post.social_channel;
-                if (!acc[channel]) {
-                    acc[channel] = [];
-                }
-                acc[channel].push(post);
-                return acc;
-            }, {});
-
-            setDraftPosts(groupedDrafts);
-
-            let count = 0;
-            for (const channel in groupedDrafts) {
-                count += groupedDrafts[channel].length;
-            }
-            setTotalDraftCount(count);
-            setError(null); // Clear any previous errors on successful fetch
-        } catch (err) {
-            console.error('Error fetching draft posts:', err);
-            setError('Failed to load draft posts');
-            setDraftPosts({}); // Clear drafts on error
-            setTotalDraftCount(0);
-        } finally {
-            setIsLoading(false); // Reset loading state regardless of success or failure
-        }
-    }, []);
-*/}
+  
 
   const fetchDraftPosts = useCallback(async () => {
         try {
@@ -315,22 +219,22 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
 
   return (
     //<div className="fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-l border-gray-200 z-50 transform transition-transform duration-300 ease-in-out">
-    <>
-    {/* Overlay for the rest of the screen */}
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 z-40"
-      onClick={onClose} // Clicking outside closes the panel
-    ></div>
+     <>
+      {/* Overlay for the rest of the screen */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        onClick={onClose} // Clicking outside closes the panel
+      ></div>
 
-   {/* The actual side panel content */}
-    <div
-      className={`
-        fixed top-0 right-0 h-screen w-80 bg-white shadow-lg border-r border-gray-200 z-50
-        transform transition-transform duration-1000 ease-in-out
-        ${isOpen ? 'translate-x-0' : 'translate-x-full'}
-      `}
-    >
-      {/*Ending the part for the changes*/}
+     {/* The actual side panel content */}
+      <div
+        className={`
+          fixed top-0 right-0 h-screen w-2/5 bg-white shadow-lg border-r border-gray-200 z-50
+          transform transition-transform duration-1000 ease-in-out
+          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+        `}
+      >
+        {/*Ending the part for the changes*/}
       <div className="p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
@@ -373,7 +277,7 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
               Object.entries(draftPosts).map(([channel, posts]) => (
                 <div key={channel} className="space-y-3">
                   {/*<div className="flex items-center space-x-2 px-2 py-1 bg-blue-50 rounded-lg">*/}
-                   <div className="flex items-center space-x-2 px-2 py-2 rounded-lg bg-gradient-to-r from-gray-50 to-white">
+                   <div className="flex items-center space-x-2 px-2 py-2 rounded-lg bg-gradient-to-r from-blue-50 via-white to-white">
                     <img src={getSocialLogo(channel)} alt={channel} className="w-4 h-4" />
                     <h3 className="text-sm font-medium text-gray-700">{channel}</h3>
                   </div>
@@ -409,21 +313,15 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
                       
                       <div className="mt-2 p-2 bg-gray-50 rounded-md">
                         <p className="text-xs text-gray-600 whitespace-pre-wrap">
-                          {truncateText(post.full_content)}
+                          {/*truncateText(post.full_content)*/}
+                          {post.full_content}
                         </p>
                       </div>
 
                      
                       <div className="flex justify-end mt-3 space-x-2">
-                       {/*
-                        <button 
-                          onClick={() => handleContinueDraft(post.full_content, post.social_channel, post.user_handle)}
-                          className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center">
-                          <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                          <span>Continue</span>
-                        </button>
-                        */}
 
+                        <TooltipHelp text="⚡send to draft studio"> 
                         <button
                             onClick={() => {
                             onContinueDraft(post.full_content, post.social_channel, post.user_handle);
@@ -432,15 +330,17 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
                             className="px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center"
                           >
                             <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                            <span>Edit</span>
+                            <span>Copy Draft</span>
                        </button>
-                      
+                          </TooltipHelp>
+                      <TooltipHelp text="⚡delete post"> 
                         <button 
                           onClick={() => handleDeleteDraft(post.id)}
                           className="px-3 py-1.5 text-xs bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors flex items-center">
                           <Trash2 className="w-3.5 h-3.5 mr-1" />
                           <span>Delete</span>
                         </button>
+                        </TooltipHelp>
                       </div>
 
                       
@@ -453,20 +353,24 @@ export function DraftPostModalDashboard({ isOpen, onClose, onContinueDraft }: Dr
         )}
 
          {Object.entries(draftPosts).length > 0 && (
-        <div className="pt-4 border-t border-gray-200 mt-4">
+       
+        <div className="pt-4 border-t border-gray-200 mt-1">
+          
             <button
               onClick={handleDraftPost}
               className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center"
             >
+            
               <ArrowLeft className="w-4 h-4 mr-2" />
               <span>Create Drafts</span>
-            </button>
-          </div>
+            </button>        
+        </div>
+  
           )}
         
       </div>
     </div>
-    </>
+     </>
   );
 }
 
