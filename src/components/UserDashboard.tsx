@@ -1148,8 +1148,8 @@ const handleOpenScheduledPost = async () => {
       className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
     >
       <div className="flex items-center">
-        <div className="rounded-full bg-yellow-50 items-center p-1 mr-3">
-            <Save className="w-5 h-5 text-yellow-500" />
+        <div className="rounded-full bg-blue-100 items-center p-1 mr-3">
+            <Save className="w-5 h-5 text-blue-500" />
         </div> 
         <div>
           <TooltipExtended text="⚡Click to View/Edit/Delete all your saved drafts here">
@@ -1171,8 +1171,8 @@ const handleOpenScheduledPost = async () => {
       className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
     >
       <div className="flex items-center">
-        <div className="rounded-full bg-green-100 items-center p-1 mr-3">
-        <CalendarSearch className="w-5 h-5 text-green-600" />
+        <div className="rounded-full bg-blue-100 items-center p-1 mr-3">
+        <CalendarSearch className="w-5 h-5 text-blue-500" />
         </div>
         <div>
           <TooltipExtended text="⚡Click to view your campaigns. date started, days left & more">
@@ -1193,8 +1193,8 @@ const handleOpenScheduledPost = async () => {
       className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
     >
       <div className="flex items-center">
-        <div className="rounded-full bg-gray-100 items-center p-1 mr-3">
-        <Send className="w-5 h-5 text-gray-500" />
+        <div className="rounded-full bg-blue-100 items-center p-1 mr-3">
+        <Send className="w-5 h-5 text-blue-500" />
         </div>
         <div>
           <TooltipExtended text="⚡Click here to view your first post created when you joined">
