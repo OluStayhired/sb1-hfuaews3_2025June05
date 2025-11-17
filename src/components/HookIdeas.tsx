@@ -62,10 +62,19 @@ export function HookIdeas({ // Renamed component
   };
 
   const getGenerateHookTooltip = () => {
+
+   if (!connectedSocials || (!connectedSocials.bluesky && !connectedSocials.linkedin && !connectedSocials.twitter)) {
+    // No social accounts connected,  show NoSocialModal
+    
+    return "⚡connect account"
+    }
+    else {
+    
     if (currentComposeContent.trim().length < 50) {
       return "⚡activate AI with 50 chars";
     }
     return "⚡create a hook";
+    }
   };
 
   
@@ -192,7 +201,8 @@ export function HookIdeas({ // Renamed component
       // No onClose() here as it's permanently open
     }, 500);
   };
-{/*
+
+  {/*
   const handleGenerateKillerHook = async (hookItem: HookItem, index: number) => {
     setIsGeneratingKillerHook(index);
     try {
@@ -210,7 +220,7 @@ export function HookIdeas({ // Renamed component
       setIsGeneratingKillerHook(null);
     }
   };
- */}
+*/}
 
   // NEW: handleGenerateKillerHook now receives HookItem
   const handleGenerateKillerHook = async (hookItem: HookItem, index: number) => {
@@ -276,18 +286,18 @@ export function HookIdeas({ // Renamed component
       <div className="p-4 h-full rounded-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            <div className="p-2 items-center bg-gray-100 rounded-full">
-              <BookOpenText className="h-4 w-4 text-gray-400" />
+            <div className="p-2 items-center bg-gray-200 rounded-full">
+              <BookOpenText className="h-4 w-4 text-gray-500" />
             </div>
-            <h3 className="text-base font-semibold text-gray-500">Available Hooks ({totalFilteredHooks})</h3>
+            <h3 className="text-base font-semibold text-gray-500">Hook Templates ({totalFilteredHooks})</h3>
             
           </div>
           
           {/* No close button */}
         </div>
-        <p className="text-gray-400 hover:text-gray-500 hover:bg-gray-100 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block">
-          Make your posts super engaging with 200 scroll stopping hooks from handpicked hook templates. Simply write your post and click "Generate Hook"
-       </p>
+        <p className="text-gray-500 hover:text-gray-600 hover:bg-gray-200 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block">
+          Generate engagement and convert leads with 200 scroll stopping hooks from the top creators.
+          </p>
 
         {/* Search Input */}
         <div className="relative mb-4 ">
@@ -343,20 +353,47 @@ export function HookIdeas({ // Renamed component
                 <p className="text-gray-400 mb-4 text-sm">We're working to add more hooks . . .</p>
               </div>
             ) : (
-              displayedHooks.map((hookItem, index) => (
-                <div key={index} className="bg-white p-3 rounded-lg border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all relative">
+
+            <div className="grid grid-cols-2 gap-2">
+            {
+              displayedHooks.map((hookItem, index) => (     
+            
+                /*<div key={index} className="bg-white p-3 rounded-lg border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all relative">*/
+      <div key={index} className="bg-white px-3 pt-3 pb-12 rounded-lg border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all relative">
                   {hookItem.hook_category && (
-                    <span className="mb-3 relative text-sm top-2 px-1 py-2 font-medium bg-gradient-to-r from-blue-50 to-white text-blue-400 rounded-md">
+                    <span className={`mb-3 relative text-sm top-2 px-1 py-2 font-medium rounded-md
+                    
+                    ${hookItem.hook_category === 'Problem & Solution 💡' 
+                      ? 'bg-gradient-to-r from-yellow-50 to-white text-yellow-600 ' 
+                      : hookItem.hook_category === "'How-To' & Educational 🎓"
+                      ? 'bg-gradient-to-r from-green-50 to-white text-green-800'   
+                      : hookItem.hook_category === 'Attention & Intrigue 😲'
+                      ? 'bg-gradient-to-r from-green-50 to-white text-green-600' 
+                      : hookItem.hook_category === 'Audience-Specific & Targeted 🎯'
+                      ? 'bg-gradient-to-r from-red-50 to-white text-red-700' 
+                      : hookItem.hook_category === 'Case Study & Framework 🧪'
+                      ? 'bg-gradient-to-r from-yellow-50 to-white text-yellow-800' 
+                      : hookItem.hook_category === 'Controversial & Bold 🥊'
+                      ? 'bg-gradient-to-r from-red-50 to-white text-red-400' 
+                      : hookItem.hook_category === 'List & Ranking 📊'
+                      ? 'bg-gradient-to-r from-purple-50 to-white text-purple-600' 
+                      : hookItem.hook_category === 'Personal Story & Experience 🗣️'
+                      ? 'bg-gradient-to-r from-green-50 to-white text-green-600' 
+                      : hookItem.hook_category === 'Storytelling : New Realization 🤩'
+                      ? 'bg-gradient-to-r from-blue-50 to-white text-blue-700' 
+                      : hookItem.hook_category === "The 'Data & Evidence' Hook 📈"
+                      ? 'bg-gradient-to-r from-indigo-50 to-white text-indigo-600'                    
+                      : 'bg-gradient-to-r from-gray-50 to-white text-gray-400'   
+                    }`}>
                       {hookItem.hook_category}
                     </span>
                   )}
                   
-              
-                  <p className="mt-5 p-1 text-sm font-normal rounded-md text-gray-600 overflow-wrap hover:text-blue-400 break-words">{hookItem.hooks}</p>
+                  <p className="mt-5 bg-gray-50 p-1 text-xs font-normal rounded-md text-gray-600 overflow-wrap hover:text-blue-400 break-words">{hookItem.hooks}</p>
 
                   {hookItem.example_hook && (
                     <div className="mt-2 p-1 border-t border-gray-200">
-                      <p className="text-sm text-gray-400 text-wrap break-words">{hookItem.example_hook}</p>
+                      <p className="text-xs text-gray-400 text-wrap break-words">{hookItem.example_hook}</p>
                     </div>
                   )}
 
@@ -364,7 +401,7 @@ export function HookIdeas({ // Renamed component
                     
                         <button
                             onClick={() => handleCopyToClipboard(hookItem.hooks, hookItem.id)} // Assuming hookItem.id is unique
-                            className="p-2 space-x-2 text-xs bg-blue-50 text-blue-300 rounded-lg hover:bg-blue-100 hover:text-blue-500 transition-colors flex items-center space-x-2"
+                            className="p-1 space-x-2 text-xs bg-blue-50 text-blue-300 rounded-lg hover:bg-blue-100 hover:text-blue-500 transition-colors flex items-center space-x-2"
                         >
                             {copySuccessMap[hookItem.id] ? ( // Use hookItem.id for map key
                                 <span className="text-green-500">Copied!</span>
@@ -376,14 +413,14 @@ export function HookIdeas({ // Renamed component
                         </button>
                     
                   </div>
-
-                  <div className="flex justify-end mt-3 space-x-2 z-10">
+                  {/* <div className="flex justify-end mt-3 space-x-2 z-10">*/}
+                <div className="absolute bottom-2 right-2 flex space-x-2 z-10">
                     <TooltipHelp text={getGenerateHookTooltip()}>
                       <button
                         onClick={() => handleGenerateKillerHook(hookItem, index)}
-                        disabled={isGeneratingKillerHook === index || !canProceedToGenerateHook()}
+                        disabled={isGeneratingKillerHook === index || !canProceedToGenerateHook() || isCopyTemplateDisabled} // NEW: Use the disabled state}
                         className={`p-1.5 text-xs rounded-lg transition-colors flex items-center justify-center ${
-                          isGeneratingKillerHook === index || !canProceedToGenerateHook()
+                          isGeneratingKillerHook === index || !canProceedToGenerateHook() || isCopyTemplateDisabled
                             ? 'bg-blue-300 text-white cursor-not-allowed'
                             : 'bg-blue-500 text-white hover:bg-blue-600'
                         }`}
@@ -427,10 +464,17 @@ export function HookIdeas({ // Renamed component
                     </TooltipHelp>
                   </div>
                 </div>
+            
               ))
+
+            } {/*added now*/}
+            </div> 
             )}
-          </div>
+                      
+          </div>              
         )}
+          
+                                 
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
@@ -455,6 +499,7 @@ export function HookIdeas({ // Renamed component
           </div>
         )}
       </div>
+      
     </div>
       
   );

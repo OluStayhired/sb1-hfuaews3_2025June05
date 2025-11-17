@@ -1384,7 +1384,7 @@ const handleOpenScheduledPost = async () => {
       <div className="p-2 bg-green-100 rounded-full">
               <CalendarCheck className="w-5 h-5 text-green-500"/>
           </div>
-              <h2 className="text-xl font-semibold text-gray-500">Calendar</h2>        
+              <h2 className="text-xl font-semibold text-gray-500">Post Calendar</h2>        
       </div>
           {/* NEW: Integrate the CalendarView component here */}
           <CalendarView />

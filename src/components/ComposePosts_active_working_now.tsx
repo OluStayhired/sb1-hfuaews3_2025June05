@@ -30,8 +30,6 @@ import { useProductTier } from '../hooks/useProductTierHook'
 import { ProPlanLimitModal } from './ProPlanLimitModal';
 import { HookListModal } from './HookListModal';
 import { HookIdeas } from './HookIdeas';
-import { PromptDailyIdeas} from './PromptDailyIdeas';
-import { TypingEffect } from './TypingEffect'; 
 
 
 
@@ -59,7 +57,6 @@ const calculateFirstLineLength = (text: string): number => {
 
 function ComposePosts() {
   const [content, setContent] = useState('');
-  const [postContent, setPostContent] = useState('');
   const [showNoSocialModal, setShowNoSocialModal] = useState(false);
   const { user: blueskyUser, agent } = useBlueskyStore();
   const [showAddSocialTabModal, setShowAddSocialTabModal] = useState(false);
@@ -121,39 +118,36 @@ function ComposePosts() {
   const [userMessage, setUserMessage] = useState('');
   const [modalMessage, setModalMessage] = useState('');
 
-  //PromptDaily Variables
-  const [isPromptDailyIdeasOpen, setIsPromptDailyIdeasOpen] = useState(false);
-    // NEW: State to manage the active tab
-  const [activeTab, setActiveTab] = useState<'hooks' | 'prompts'>('hooks');
-
   // --- NEW: Use useLocation hook to access navigation state ---
   const location = useLocation();
   const [firstLineLength, setFirstLineLength] = useState(() => calculateFirstLineLength(content));
-  
+
   const rotatingMessagesNoAccount = [
-        " Connect an account to start posting ⚡",
-        " Write viral posts in seconds 😲",
-        " Get 200+ Content Ideas 💡",
-    ];
-  
-  const rotatingMessages = [
-        " What's on your mind? 🤔",
-        " Start typing . . .💡",
-        " Then Rewrite with AI . . .✍️",
-        " Now add a Hook . . .🪝",
-        " Review and Post . . .🚀",
-    ];
-  const [messageIndex, setMessageIndex] = useState(0);
+    " Connect an account to start posting ⚡",
+    " Write viral posts in seconds 😲",
+    " Get 200+ Content Ideas 💡",
+];
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setMessageIndex(prevIndex => 
-                (prevIndex + 1) % rotatingMessages.length
-            );
-        }, 3000); // 3 seconds
+const rotatingMessages = [
+  " What's on your mind? 🤔",
+  " Start typing . . .💡",
+  " Then Rewrite with AI . . .✍️",
+  " Now add a Hook . . .🪝",
+  " Review and Post . . .🚀",
+];
 
-        return () => clearInterval(interval);
-    }, []);
+const [messageIndex, setMessageIndex] = useState(0);
+
+useEffect(() => {
+    const interval = setInterval(() => {
+        setMessageIndex(prevIndex => 
+            (prevIndex + 1) % rotatingMessages.length
+        );
+    }, 3000); // 3 seconds
+
+    return () => clearInterval(interval);
+}, []);
+
 
   //First Line Implementation
    const MAX_FIRST_LINE = 40;
@@ -166,28 +160,6 @@ function ComposePosts() {
     //}
   }, [content]);
 
-
-  // NEW: Handler to open PromptDailyIdeas
-  const handleOpenPromptDailyIdeas = () => {
-    setIsPromptDailyIdeasOpen(true);
-  };
-
-  // NEW: Handler to close PromptDailyIdeas
-  const handleClosePromptDailyIdeas = () => {
-    setIsPromptDailyIdeasOpen(false);
-    setActiveTab('hooks')
-  };
-
-  // NEW: Handler to receive prompt content from PromptDailyIdeas
-  const handleUseDailyPrompt = (promptContent: string) => {
-    // Assuming you have a state variable like `postContent` that holds the current post text
-    // and a setter function like `setPostContent` to update it.
-    //setPostContent(prevContent => promptContent + '\n\n' + prevContent); // Prepend the prompt
-    //setContent(promptContent + '\n\n' + content);
-    setContent(promptContent);
-     setActiveTab('prompts');
-    //setIsPromptDailyIdeasOpen(false); // Close the modal after using a prompt
-  };
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
@@ -1299,7 +1271,7 @@ const onModalScheduleError = (error: any) => {
 
 
   return (
-    <div className="p-4 bg-white grid grid-cols-2 gap-4">
+    <div className="p-4 bg-white grid grid-cols-2 gap-6">
       <div className="col-span-1 min-h-screen"> {/* wrap the content section */}
 
         {/*header*/}
@@ -1310,14 +1282,12 @@ const onModalScheduleError = (error: any) => {
               <h2 className="text-xl text-gray-900 font-semibold">Draft Studio</h2>            
         </div>
         {/*end header*/}
-
+        
         {/*
         <p className="bg-gradient-to-r from-blue-50 to-white text-blue-400 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block border border-blue-100 hover:border-blue-200">
-                👋 Welcome to your content scratch pad. Learn to write like the top 1%. Create posts from scratch, save drafts & recycle old posts. Write 50 chars to generate hooks with AI.
+        👋 Welcome to your content scratch pad. Learn to write like the top 1%. Create posts from scratch, save drafts & recycle old posts. Write 50 chars to generate hooks with AI.
           </p>
-          */}
-
-        
+        */}
         
         {isLoading ? (
           <div className="flex justify-center py-8">
@@ -1490,6 +1460,7 @@ const onModalScheduleError = (error: any) => {
 
             {/* Compose Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
+
               <div className="relative bg-white rounded-lg shadow-lg border border-gray-200 p-8 hover:shadow-2xl">             
                 <textarea
                   value={content}
@@ -1745,70 +1716,13 @@ const onModalScheduleError = (error: any) => {
 
          {/* Right side: Permanently open HookIdeas component */}
           {/* CHANGE: Render HookIdeas directly here */}
-      {/*<div className="col-span-1 h-[700px] overflow-y-auto">*/}
-
-      {/*
-      <div className="col-span-1 h-screen overflow-y-auto">
+      <div className="col-span-1 h-[700px] overflow-y-auto">
             <HookIdeas
               onUseHook={handleUseHook}
               currentComposeContent={content}
               onRewriteHook={handleRewriteHook}
             />
           </div>
-
-  <div className="col-span-1 h-screen overflow-y-auto">
-      <PromptDailyIdeas
-          onClose={handleClosePromptDailyIdeas}
-          onUsePrompt={handleUseDailyPrompt}
-        />
-
-  </div>
-  */}
-
-       {/* Right side: Tabbed interface for HookIdeas and PromptDailyIdeas */}
-      <div className="col-span-1 h-screen overflow-y-auto border-l border-gray-200">
-        {/* Tab buttons */}
-        <div className="flex border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab('hooks')}
-            className={`flex-1 py-2 text-sm font-medium ${
-              activeTab === 'hooks'
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Hooks
-          </button>
-          <button
-            onClick={() => setActiveTab('prompts')}
-            className={`flex-1 py-2 text-sm font-medium ${
-              activeTab === 'prompts'
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Prompts
-          </button>
-        </div>
-
-        {/* Tab content */}
-        <div className="p-1">
-          {activeTab === 'hooks' && (
-            <HookIdeas
-              onUseHook={handleUseHook}
-              currentComposeContent={content}
-              onRewriteHook={handleRewriteHook}
-            />
-          )}
-          {activeTab === 'prompts' && (
-            <PromptDailyIdeas
-              onClose={handleClosePromptDailyIdeas} // Pass the handler to switch tabs
-              onUsePrompt={handleUseDailyPrompt}
-            />
-          )}
-        </div>
-      </div>
-      {/*End of */}
 
 
       <NoSocialModal
