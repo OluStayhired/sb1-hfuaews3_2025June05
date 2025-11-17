@@ -206,7 +206,7 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
           </div>
         </div>
       <p className="text-gray-500 hover:text-gray-600 hover:bg-gray-200 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block"> 
-        Grow inbound inquiries on LinkedIn with these custom built prompts. Craft posts to help your clients with 1-click.
+        Grow inbound inquiries on LinkedIn with these custom built prompts. Generate posts that build trust and book more client appointments.
         </p>
 
         {/* [requirement] - Free text search similar to HookIdeas */}
