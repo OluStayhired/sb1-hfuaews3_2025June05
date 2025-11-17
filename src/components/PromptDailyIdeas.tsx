@@ -55,7 +55,7 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
       const { data, error: fetchError } = await supabase
         .from('prompt_daily')
         .select('id, prompt_text, day_of_week, prompt_category, business_type')
-        //.eq('business_type','Accountant');
+        // .eq('business_type','Accountant');
       if (fetchError) {
         throw fetchError;
       }
