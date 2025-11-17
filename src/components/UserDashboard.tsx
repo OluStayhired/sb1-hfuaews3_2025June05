@@ -1382,7 +1382,7 @@ const handleOpenScheduledPost = async () => {
     <div className="px-4 py-4 sm:px-0 bg-gradient-to-b from-gray-50 via-gray-50 via-white via-white to-white rounded-lg ">    
       <div className="flex items-center space-x-2 py-4 px-2 mb-8 border-b border-gray-200">
       <div className="p-2 bg-green-100 rounded-full">
-              <CalendarCheck className="w-5 h-5 text-green-500"/>
+              <CalendarCheck className="w-5 h-5 text-green-700"/>
           </div>
               <h2 className="text-xl font-semibold text-gray-500">Post Calendar</h2>        
       </div>
