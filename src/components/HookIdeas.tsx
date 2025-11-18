@@ -104,7 +104,8 @@ export function HookIdeas({ // Renamed component
       setIsLoading(true);
       const { data, error: fetchError } = await supabase
         .from('content_hooks')
-        .select('hooks, example_hook, hook_category');
+        .select('id, hooks, example_hook, hook_category')
+        .order('id')
 
       if (fetchError) {
         throw fetchError;
