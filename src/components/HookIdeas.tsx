@@ -390,28 +390,28 @@ export function HookIdeas({ // Renamed component
                   )}
                   
                   <p className={`mt-5 bg-gray-50 p-1 text-xs font-normal rounded-md text-gray-600 overflow-wrap break-words
-                   ${hookItem.hook_category === 'Problem & Solution 💡' 
-                      ? 'hover:bg-gradient-to-r from-yellow-50 to-white hover:text-yellow-600 ' 
-                      : hookItem.hook_category === "'How-To' & Educational 🎓"
-                      ? 'hover:bg-gradient-to-r from-green-50 to-white hover:text-green-800'   
-                      : hookItem.hook_category === 'Attention & Intrigue 😲'
-                      ? 'hover:bg-gradient-to-r from-green-50 to-white hover:text-green-600' 
-                      : hookItem.hook_category === 'Audience-Specific & Targeted 🎯'
-                      ? 'hover:bg-gradient-to-r from-red-50 to-white hover:text-red-700' 
-                      : hookItem.hook_category === 'Case Study & Framework 🧪'
-                      ? 'hover:bg-gradient-to-r from-yellow-50 to-white hover:text-yellow-800' 
-                      : hookItem.hook_category === 'Controversial & Bold 🥊'
-                      ? 'hover:bg-gradient-to-r from-red-50 to-white hover:text-red-400' 
-                      : hookItem.hook_category === 'List & Ranking 📊'
-                      ? 'hover:bg-gradient-to-r from-purple-50 to-white hover:text-purple-600' 
-                      : hookItem.hook_category === 'Personal Story & Experience 🗣️'
-                      ? 'hover:bg-gradient-to-r from-green-50 to-white hover:text-green-600' 
-                      : hookItem.hook_category === 'Storytelling : New Realization 🤩'
-                      ? 'hover:bg-gradient-to-r from-blue-50 to-white hover:text-blue-700' 
-                      : hookItem.hook_category === "The 'Data & Evidence' Hook 📈"
-                      ? 'hover:bg-gradient-to-r from-indigo-50 to-white hover:text-indigo-600'                    
-                      : 'hover:bg-gradient-to-r from-blue-50 to-white hover:text-blue-400' 
-                   }`}>
+                   ${hookItem.hook_category === 'Problem & Solutionx 💡' 
+                   ? 'hover:bg-gradient-to-r from-yellow-50 to-white hover:text-yellow-600 ' 
+                   : hookItem.hook_category === "'How-To' & Educationalx 🎓"
+                   ? 'hover:bg-gradient-to-r from-green-50 to-white hover:text-green-800'   
+                   : hookItem.hook_category === 'Attention & Intriguex 😲'
+                   ? 'hover:bg-gradient-to-r from-green-50 to-white hover:text-green-600' 
+                   : hookItem.hook_category === 'Audience-Specific & Targetedx 🎯'
+                   ? 'hover:bg-gradient-to-r from-red-50 to-white hover:text-red-700' 
+                   : hookItem.hook_category === 'Case Study & Frameworkx 🧪'
+                   ? 'hover:bg-gradient-to-r from-yellow-50 to-white hover:text-yellow-800' 
+                   : hookItem.hook_category === 'Controversial & Boldx 🥊'
+                   ? 'hover:bg-gradient-to-r from-red-50 to-white hover:text-red-400' 
+                   : hookItem.hook_category === 'List & Ranking 📊'
+                   ? 'hover:bg-gradient-to-r from-purple-50 to-white hover:text-purple-600' 
+                   : hookItem.hook_category === 'Personal Story & Experiencex 🗣️'
+                   ? 'hover:bg-gradient-to-r from-green-50 to-white hover:text-green-600' 
+                   : hookItem.hook_category === 'Storytelling : New Realizationx 🤩'
+                   ? 'hover:bg-gradient-to-r from-blue-50 to-white hover:text-blue-700' 
+                   : hookItem.hook_category === "The 'Data & Evidence' Hookx 📈"
+                   ? 'hover:bg-gradient-to-r from-indigo-50 to-white hover:text-indigo-600'                    
+                   : 'hover:bg-gradient-to-r from-blue-50 to-white hover:text-blue-500' 
+                }`}>
                     
                     {hookItem.hooks}</p>
 

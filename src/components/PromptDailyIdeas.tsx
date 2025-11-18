@@ -20,6 +20,7 @@ interface PromptItem {
   day_of_week: string;
   prompt_category: string;
   business_type: string;
+  prompt_description: string;
 }
 
 interface PromptDailyIdeasProps {
@@ -318,7 +319,7 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
                   {/* [requirement] - Display prompt_text */}
                   {/*<p className="mt-5 p-2 text-xs bg-gray-50 rounded-md text-gray-600 overflow-wrap break-words">{promptItem.prompt_text}</p>*/}
 
-                  <p className="mt-5 p-2 text-xs bg-gray-50 rounded-md text-gray-600 overflow-wrap break-words">{promptItem.prompt_description}</p>
+                  <p className="mt-5 p-2 text-xs bg-gray-50 rounded-md text-gray-600 hover:bg-blue-50 hover:text-blue-500 overflow-wrap break-words">{promptItem.prompt_description}</p>
 
                   <div className="absolute space-x-2 top-2 right-4 flex space-x-1">
                     
