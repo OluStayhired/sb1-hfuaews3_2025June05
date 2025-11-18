@@ -361,35 +361,34 @@ export function HookIdeas({ // Renamed component
                 /*<div key={index} className="bg-white p-3 rounded-lg border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all relative">*/
       <div key={index} className="bg-white px-3 pt-3 pb-12 rounded-lg border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all relative">
                   {hookItem.hook_category && (
-                    <span className={`mb-3 relative text-sm top-2 px-1 py-2 font-medium rounded-md
+                    <span className={`mb-3 relative text-sm top-2 px-1 py-2 font-semibold rounded-md
                     
-                    ${hookItem.hook_category === 'Problem & Solution 💡' 
+                    ${hookItem.hook_category === 'Problem & Solutionx 💡' 
                       ? 'bg-gradient-to-r from-yellow-50 to-white text-yellow-600 ' 
-                      : hookItem.hook_category === "'How-To' & Educational 🎓"
+                      : hookItem.hook_category === "'How-To' & Educationalx 🎓"
                       ? 'bg-gradient-to-r from-green-50 to-white text-green-800'   
-                      : hookItem.hook_category === 'Attention & Intrigue 😲'
+                      : hookItem.hook_category === 'Attention & Intriguex 😲'
                       ? 'bg-gradient-to-r from-green-50 to-white text-green-600' 
-                      : hookItem.hook_category === 'Audience-Specific & Targeted 🎯'
+                      : hookItem.hook_category === 'Audience-Specific & Targetedx 🎯'
                       ? 'bg-gradient-to-r from-red-50 to-white text-red-700' 
-                      : hookItem.hook_category === 'Case Study & Framework 🧪'
+                      : hookItem.hook_category === 'Case Study & Frameworkx 🧪'
                       ? 'bg-gradient-to-r from-yellow-50 to-white text-yellow-800' 
-                      : hookItem.hook_category === 'Controversial & Bold 🥊'
+                      : hookItem.hook_category === 'Controversial & Boldx 🥊'
                       ? 'bg-gradient-to-r from-red-50 to-white text-red-400' 
-                      : hookItem.hook_category === 'List & Ranking 📊'
+                      : hookItem.hook_category === 'List & Rankingx 📊'
                       ? 'bg-gradient-to-r from-purple-50 to-white text-purple-600' 
-                      : hookItem.hook_category === 'Personal Story & Experience 🗣️'
+                      : hookItem.hook_category === 'Personal Story & Experiencex 🗣️'
                       ? 'bg-gradient-to-r from-green-50 to-white text-green-600' 
-                      : hookItem.hook_category === 'Storytelling : New Realization 🤩'
+                      : hookItem.hook_category === 'Storytelling : New Realizationx 🤩'
                       ? 'bg-gradient-to-r from-blue-50 to-white text-blue-700' 
-                      : hookItem.hook_category === "The 'Data & Evidence' Hook 📈"
+                      : hookItem.hook_category === "The 'Data & Evidence' Hookx 📈"
                       ? 'bg-gradient-to-r from-indigo-50 to-white text-indigo-600'                    
-                      : 'bg-gradient-to-r from-gray-50 to-white text-gray-400'   
+                      : 'bg-gradient-to-r from-gray-50 to-white text-gray-600'   
                     }`}>
                       {hookItem.hook_category}
                     </span>
                   )}
                   
-                  {/*<p className="mt-5 bg-gray-50 p-1 text-xs font-normal rounded-md text-gray-600 overflow-wrap hover:text-blue-400 break-words">*/}
                   <p className={`mt-5 bg-gray-50 p-1 text-xs font-normal rounded-md text-gray-600 overflow-wrap break-words
                    ${hookItem.hook_category === 'Problem & Solution 💡' 
                       ? 'hover:bg-gradient-to-r from-yellow-50 to-white hover:text-yellow-600 ' 
@@ -426,10 +425,10 @@ export function HookIdeas({ // Renamed component
                     
                         <button
                             onClick={() => handleCopyToClipboard(hookItem.hooks, hookItem.id)} // Assuming hookItem.id is unique
-                            className="p-1 space-x-2 text-xs bg-blue-50 text-blue-300 rounded-lg hover:bg-blue-100 hover:text-blue-500 transition-colors flex items-center space-x-2"
+                            className="p-1 space-x-2 text-xs bg-gray-100 text-gray-400 rounded-lg hover:bg-gray-200 hover:text-gray-600 transition-colors flex items-center space-x-2"
                         >
                             {copySuccessMap[hookItem.id] ? ( // Use hookItem.id for map key
-                                <span className="text-green-500">Copied!</span>
+                                <span className="text-gray-600">Copied!</span>
                             ) : (
                           
                                 <Copy className="w-3 h-3" />

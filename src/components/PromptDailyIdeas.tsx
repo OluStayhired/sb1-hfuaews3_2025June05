@@ -54,8 +54,8 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
       // [definition] - Query all columns from the 'prompt_daily' table
       const { data, error: fetchError } = await supabase
         .from('prompt_daily')
-        .select('id, prompt_text, day_of_week, prompt_category, business_type')
-        // .eq('business_type','Accountant');
+        .select('id, prompt_text, day_of_week, prompt_category, business_type, prompt_description')
+        //.eq('business_type','Accountant');
       if (fetchError) {
         throw fetchError;
       }
@@ -68,6 +68,7 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
             day_of_week: record.day_of_week,
             prompt_category: record.prompt_category,
             business_type: record.business_type,
+            prompt_description: record.prompt_description,
           }))
           .filter(item => item.prompt_text && item.prompt_text.trim().length > 0); // Ensure main prompt content exists
         setAllPrompts(fetchedPrompts);
@@ -99,7 +100,8 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
         prompt.prompt_text.toLowerCase().includes(lowerCaseQuery) ||
         (prompt.day_of_week && prompt.day_of_week.toLowerCase().includes(lowerCaseQuery)) ||
         (prompt.prompt_category && prompt.prompt_category.toLowerCase().includes(lowerCaseQuery)) ||
-        (prompt.business_type && prompt.business_type.toLowerCase().includes(lowerCaseQuery))
+        (prompt.business_type && prompt.business_type.toLowerCase().includes(lowerCaseQuery)) ||
+        (prompt.prompt_description && prompt.prompt_description.toLowerCase().includes(lowerCaseQuery))
       );
     }
 
@@ -269,7 +271,8 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
               displayedPrompts.map((promptItem, index) => (
                 <div key={promptItem.id} className="bg-white px-3 pt-3 pb-12 rounded-lg  hover:shadow-sm transition-all relative">
                   
-              <div className="space-y-2 mt-6">   
+              <div className="space-y-2 mt-6">  
+                {/*   
               {promptItem.day_of_week && (
                   <span className={`mb-3 relative text-sm top-2 px-1 py-0.5 font-medium rounded-md 
                     ${
@@ -289,10 +292,22 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
                       {promptItem.day_of_week}
                     </span>
                   )}
-                  
+                  */}
+                
                   {/* [requirement] - Show prompt_category and day_of_week */}
                   {promptItem.prompt_category && (
-                    <p className="mb-3 relative text-sm top-2 px-1 py-0.5 font-normal border-b border-gray-200 text-gray-800">
+                  /*<p className="mb-3 relative text-sm top-2 px-1 py-0.5 font-normal border-b border-gray-200 text-gray-800">*/
+                  <p className={`mb-3 rounded-lg relative text-sm top-2 px-1 py-0.5 font-semibold
+                            ${
+                        promptItem.business_type === 'Recruiterx' 
+                            ? 'bg-gradient-to-r from-blue-50 text-blue-700' //border-blue-100'
+                            : promptItem.business_type === 'Executive Coachesx'
+                            ? 'bg-gradient-to-r from-red-50 text-red-700' //border-red-200'
+                            : promptItem.business_type === 'Accountantx'
+                            ? 'bg-gradient-to-r from-green-50 text-green-600' //border-yellow-200'
+                            : 'bg-gradient-to-r from-gray-50 text-gray-600' //border-gray-200' // Default/Fallback for Saturday/Sunday or unknown
+                      }
+                    `}>
                       {promptItem.prompt_category}
                     </p>
                   )}
@@ -301,18 +316,20 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
                   
                   
                   {/* [requirement] - Display prompt_text */}
-                  <p className="mt-5 p-2 text-xs bg-gray-50 rounded-md text-gray-600 overflow-wrap break-words">{promptItem.prompt_text}</p>
+                  {/*<p className="mt-5 p-2 text-xs bg-gray-50 rounded-md text-gray-600 overflow-wrap break-words">{promptItem.prompt_text}</p>*/}
+
+                  <p className="mt-5 p-2 text-xs bg-gray-50 rounded-md text-gray-600 overflow-wrap break-words">{promptItem.prompt_description}</p>
 
                   <div className="absolute space-x-2 top-2 right-4 flex space-x-1">
                     
-                       <p className="flex justify-center items-center text-xs text-green-600 px-1 py-0.5 bg-green-50 rounded-md">
+                       <p className="flex justify-center items-center text-xs text-gray-600 px-1 py-0.5 bg-gray-50 rounded-md">
                          <Briefcase className="w-3 h-3 mr-1" />
                          {promptItem.business_type}</p>
 
                     
                       <button
                         onClick={() => handleCopyToClipboard(promptItem.prompt_text, promptItem.id)}
-                        className="p-1 space-x-2 text-xs bg-blue-50 text-blue-300 rounded-lg hover:bg-blue-100 hover:text-blue-500 transition-colors flex items-center justify-center"
+                        className="p-1 space-x-2 text-xs bg-gray-100 text-gray-400 rounded-lg hover:bg-gray-200 hover:text-gray-600 transition-colors flex items-center justify-center"
                       >
                         {copySuccessMap[promptItem.id] ? (
                           <Check className="w-3 h-3" />
