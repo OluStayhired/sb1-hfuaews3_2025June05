@@ -124,7 +124,7 @@ function ComposePosts() {
   //PromptDaily Variables
   const [isPromptDailyIdeasOpen, setIsPromptDailyIdeasOpen] = useState(false);
     // NEW: State to manage the active tab
-  const [activeTab, setActiveTab] = useState<'hooks' | 'prompts'>('hooks');
+  const [activeTab, setActiveTab] = useState<'hooks' | 'prompts'>('prompts');
 
   // --- NEW: Use useLocation hook to access navigation state ---
   const location = useLocation();
