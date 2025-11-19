@@ -1769,16 +1769,7 @@ const onModalScheduleError = (error: any) => {
       <div className="col-span-1 h-screen overflow-y-auto border-l border-gray-200">
         {/* Tab buttons */}
         <div className="flex border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab('hooks')}
-            className={`flex-1 py-2 text-sm font-medium ${
-              activeTab === 'hooks'
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Hooks
-          </button>
+          
           <button
             onClick={() => setActiveTab('prompts')}
             className={`flex-1 py-2 text-sm font-medium ${
@@ -1788,6 +1779,17 @@ const onModalScheduleError = (error: any) => {
             }`}
           >
             Prompts
+          </button>
+          
+          <button
+            onClick={() => setActiveTab('hooks')}
+            className={`flex-1 py-2 text-sm font-medium ${
+              activeTab === 'hooks'
+                ? 'border-b-2 border-blue-500 text-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Hooks
           </button>
         </div>
 

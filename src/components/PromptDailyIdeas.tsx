@@ -21,6 +21,10 @@ interface PromptItem {
   prompt_category: string;
   business_type: string;
   prompt_description: string;
+  // NEW: Fields from social_channels table
+  social_channel_display_name?: string; // Optional, as it might be null if left join
+  social_channel_avatar_url?: string;   // Optional
+  social_channel_platform?: string;     // The name of the social channel (e.g., 'LinkedIn', 'Bluesky')
 }
 
 interface PromptDailyIdeasProps {
@@ -55,8 +59,16 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
       // [definition] - Query all columns from the 'prompt_daily' table
       const { data, error: fetchError } = await supabase
         .from('prompt_daily')
-        .select('id, prompt_text, day_of_week, prompt_category, business_type, prompt_description')
-        .order('id')
+        .select(`
+          id,
+          prompt_text,
+          day_of_week,
+          prompt_category,
+          business_type,
+          prompt_description,
+          social_channels!left(display_name, avatar_url, social_channel) // Join and select specific columns
+        `)
+        .order('id');
         //.eq('business_type','Accountant');
       if (fetchError) {
         throw fetchError;
@@ -71,6 +83,10 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
             prompt_category: record.prompt_category,
             business_type: record.business_type,
             prompt_description: record.prompt_description,
+          // NEW: Extract data from the nested social_channels object
+            social_channel_display_name: record.social_channels?.display_name,
+            social_channel_avatar_url: record.social_channels?.avatar_url,
+            social_channel_platform: record.social_channels?.social_channel,
           }))
           .filter(item => item.prompt_text && item.prompt_text.trim().length > 0); // Ensure main prompt content exists
         setAllPrompts(fetchedPrompts);
@@ -103,7 +119,8 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
         (prompt.day_of_week && prompt.day_of_week.toLowerCase().includes(lowerCaseQuery)) ||
         (prompt.prompt_category && prompt.prompt_category.toLowerCase().includes(lowerCaseQuery)) ||
         (prompt.business_type && prompt.business_type.toLowerCase().includes(lowerCaseQuery)) ||
-        (prompt.prompt_description && prompt.prompt_description.toLowerCase().includes(lowerCaseQuery))
+        (prompt.prompt_description && prompt.prompt_description.toLowerCase().includes(lowerCaseQuery)) ||
+        (prompt.social_channel_display_name && prompt.social_channel_display_name.toLowerCase().includes(lowerCaseQuery))
       );
     }
 
@@ -206,7 +223,7 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
             <div className="p-2 items-center bg-gray-200 rounded-full">
               <Lightbulb className="h-4 w-4 text-gray-500" />
             </div>
-            <h3 className="text-base font-semibold text-gray-500">Post Templates ({totalFilteredPrompts})</h3>
+            <h3 className="text-base font-semibold text-gray-500">Prompt Library ({totalFilteredPrompts})</h3>
           </div>
         </div>
       <p className="text-gray-500 hover:text-gray-600 hover:bg-gray-200 font-normal text-sm mb-6 mt-2 rounded-md p-2 inline-block"> 
@@ -274,7 +291,7 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
                 <div key={promptItem.id} className="bg-white px-3 pt-3 pb-12 rounded-lg  hover:shadow-sm transition-all relative">
                   
               <div className="space-y-2 mt-6">  
-                {/*   
+                {/*  
               {promptItem.day_of_week && (
                   <span className={`mb-3 relative text-sm top-2 px-1 py-0.5 font-medium rounded-md 
                     ${
@@ -323,6 +340,18 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
                   <p className="mt-5 p-2 text-xs bg-gray-50 rounded-md text-gray-600 hover:bg-blue-50 hover:text-blue-500 overflow-wrap break-words">{promptItem.prompt_description}</p>
 
                   <div className="absolute space-x-2 top-2 right-4 flex space-x-1">
+                     {/* NEW: Display social channel info if available 
+                        {promptItem.social_channel_platform && (
+                          <div className="flex px-1.5 bg-gray-50 rounded-lg items-center space-x-2">
+                            {promptItem.social_channel_avatar_url && (
+                        <img src={promptItem.social_channel_avatar_url} alt={promptItem.social_channel_display_name || 'Avatar'} className="w-6 h-6 rounded-full" />
+                      )}
+                      <span className="text-xs text-gray-600">
+                        {promptItem.social_channel_display_name || promptItem.social_channel_platform}
+                      </span>
+                    </div>
+                  )}
+                  */}
                     
                        <p className="flex justify-center items-center text-xs text-gray-600 px-1 py-0.5 bg-gray-50 rounded-md">
                          <Briefcase className="w-3 h-3 mr-1" />
@@ -343,12 +372,32 @@ export function PromptDailyIdeas({ onUsePrompt }: PromptDailyIdeasProps) {
                   </div>
 
                   <div className="absolute bottom-2 right-2 flex mt-3 space-x-2 z-10">
+
+                 {/* NEW: Display social channel info if available */}
+                 
+                  {promptItem.social_channel_platform && (
+                  <TooltipHelp text="⚡prompt creator">
+                    <div className="flex p-1.5 bg-gray-50 rounded-lg items-center space-x-2">
+                      {promptItem.social_channel_avatar_url && (
+                        <img src={promptItem.social_channel_avatar_url} alt={promptItem.social_channel_display_name || 'Avatar'} className="w-5 h-5 rounded-full" />
+                      )}
+                      <span className="text-xs text-gray-600">
+                        {promptItem.social_channel_display_name || promptItem.social_channel_platform}
+                      </span>
+                    </div>
+                  </TooltipHelp>   
+                  )}
+
+              
+
+
+                    
                     {/* [requirement] - Similar button to "copy template" in HookIdeas */}
                     <TooltipHelp text={usePromptSuccessIndex === index ? "Prompt Used!" : getCopyTemplateTooltip()}>
                       <button
                         disabled={isCopyTemplateDisabled}
                         onClick={() => handleUsePromptClick(promptItem.prompt_text, index)}
-                        className={`p-1.5 text-xs rounded-lg transition-colors flex items-center justify-center ${
+                        className={`p-2 text-xs rounded-lg transition-colors flex items-center justify-center ${
                           usePromptSuccessIndex === index
                             ? 'bg-green-500 text-white'
                               : isCopyTemplateDisabled // NEW: Apply disabled styling
