@@ -1637,8 +1637,7 @@ const onModalScheduleError = (error: any) => {
                    disabled={!activeAccountId || !content.trim() || isSchedulingPost}
                    //onClick={() => handleCopyToClipboard(content)}
                    onClick={handleSchedulePost}
-                   className="absolute right-48 top-1 px-1 py-0.5 bg-green-100 hover:bg-green-200 border border-green-500 rounded-md transition duration-200 flex items-center space-x-1 disabled:bg-green-50 disabled:border-green-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-70">
-                                  
+                   className="absolute right-48 top-1 px-1 py-0.5 bg-gray-900 text-gray-100 hover:text-gray-500 hover:bg-gray-100 border border-gray-500 rounded-md transition duration-200 flex items-center space-x-1 disabled:bg-gray-50 disabled:border-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed disabled:opacity-70">
                     {isSchedulingPost ? (
                       <>
                         <Loader2 className="w-3 h-3 animate-spin" />
@@ -1647,8 +1646,9 @@ const onModalScheduleError = (error: any) => {
                      <>
               
                          <TooltipHelp text="⚡Schedule Post" className="flex items-center space-x-1">
-                            <Calendar className="w-3 h-3 text-green-700 disabled:opacity-70" />
-                         <span className="text-xs text-green-700">Schedule</span>
+                            <Calendar className="w-3 h-3 disabled:opacity-70" />
+                           {/*<span className="text-xs text-green-700">Schedule</span>*/}
+                           <span className="text-xs">Schedule</span>
                        </TooltipHelp>
                     </>
                      )}
