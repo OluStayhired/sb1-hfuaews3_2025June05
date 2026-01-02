@@ -25,7 +25,8 @@ const genAI = new GoogleGenerativeAI('', { // Pass an empty string or null, as t
 // Create a reusable model instance with correct model name
 // This 'model' instance will only be used if the GEMINI_PROXY_EDGE_FUNCTION_URL is NOT available,
 // which, in your secure setup, should ideally never happen.
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+//const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -83,7 +84,8 @@ export async function generateContent(prompt: string): Promise<GeminiResponse> {
       },
       body: JSON.stringify({
         prompt,
-        model: 'gemini-2.0-flash', // Pass the model name to the Edge Function if it's dynamic
+        model: 'gemini-3-flash-preview',
+        //model: 'gemini-2.0-flash', // Pass the model name to the Edge Function if it's dynamic
         // Optional: Add a cache key for the Edge Function to use
         cacheKey: prompt.substring(0, 50) // Use first 50 chars as cache key
       }),

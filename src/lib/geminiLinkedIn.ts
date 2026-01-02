@@ -25,7 +25,8 @@ const genAI = new GoogleGenerativeAI('', { // Pass an empty string or null, as t
 // Create a reusable model instance with correct model name
 // This 'model' instance will only be used if the GEMINI_PROXY_EDGE_FUNCTION_URL is NOT available,
 // which, in your secure setup, should ideally never happen.
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+//const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
